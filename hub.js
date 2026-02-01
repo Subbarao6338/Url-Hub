@@ -64,7 +64,8 @@ const Core = {
       // Try fetching the external file first
       let raw = [];
       try {
-        const res = await fetch('links.json');
+        // const res = await fetch('links.json');
+        const res = await fetch(`links.json?t=${new Date().getTime()}`);
         if (res.ok) raw = await res.json();
       } catch (fetchErr) {
         console.warn("Could not fetch links.json (likely file:// protocol restriction). Falling back to embedded.", fetchErr);
@@ -403,3 +404,4 @@ const PageTools = {
 
 // Initial Start
 Core.init();
+
