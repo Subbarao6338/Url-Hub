@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tools Hub</title>
+  <link rel="icon" href="urlhub.png">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <button class="icon-btn sidebar-toggle-desktop" title="Toggle Sidebar">☰</button>
+      </div>
+      <div class="sidebar-search">
+        <input type="search" id="search" placeholder="Search..." />
+      </div>
+      <nav id="category-filter" class="category-nav">
+        <!-- Categories injected here -->
+      </nav>
+      <div class="sidebar-footer">
+        <button onclick="Tools.exportData()">↓ Export</button>
+        <label class="btn-text">
+          ↑ Import
+          <input type="file" hidden accept="application/json" onchange="Tools.importData(this)" />
+        </label>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-bar">
+        <button class="icon-btn mobile-only sidebar-toggle-mobile" title="Toggle Sidebar">☰</button>
+        <h1 class="page-title">URL Hub</h1>
+        <div class="top-actions">
+          <!-- Page Tools merged here -->
+          <button onclick="PageTools.toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
+          <!-- <button onclick="PageTools.cleanPage()" title="Clean Page">🧹</button> -->
+        </div>
+      </header>
+
+      <div id="content" class="tools-container">
+        <!-- Content injected here -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Floating Action Button -->
+  <button class="fab" onclick="UI.openModal('modal-add')" title="Add New Tool">+</button>
+
+  <!-- Modals -->
+  <div id="modal-overlay" class="modal-overlay" style="display:none;"></div>
+
+  <!-- Add/Edit Modal -->
+  <div id="modal-add" class="modal" style="display:none;">
+    <h2 id="modal-title">Add Tool</h2>
+    <form id="tool-form" onsubmit="UI.handleFormSubmit(event)">
+      <input type="hidden" id="edit-id">
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="tool-title" required placeholder="My Tool">
+      </div>
+      <div class="form-group">
+        <label>URL</label>
+        <input type="url" id="tool-url" required placeholder="https://example.com">
+      </div>
+      <div class="form-group">
+        <label>Icon (URL or Emoji) - Optional</label>
+        <input type="text" id="tool-icon" placeholder="e.g. 🚀 or https://...">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" id="tool-category" list="category-list" required placeholder="Utilities">
+        <datalist id="category-list"></datalist>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" onclick="UI.closeModal()">Cancel</button>
+        <button type="submit" class="btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Iframe viewer -->
+  <div id="site-viewer" style="display:none;">
+    <button id="close-site" onclick="closeSite()">Close</button>
+    <iframe id="content-frame"></iframe>
+  </div>
+
+  <!-- Inline JSON data (Fallback) -->
+  <script src="links.json" type="application/json" id="data"></script>
+  <script src="hub.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,297 @@
+[
+  {
+    "title": "APKMirror",
+    "url": "https://www.apkmirror.com",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "APKPure",
+    "url": "https://apkpure.com",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "Aptoide",
+    "url": "https://en.aptoide.com",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "FOSSdroid",
+    "url": "https://fossdroid.com",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "OpenAPK",
+    "url": "https://www.openapk.net",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "IzzyOnDroid Repo",
+    "url": "https://apt.izzysoft.de/fdroid",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "Accrescent",
+    "url": "https://accrescent.app",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "AndroidFreeware",
+    "url": "https://androidfreeware.net",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "LiteAPKs",
+    "url": "https://liteapks.com",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "AN1",
+    "url": "https://an1.com",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "Mobilism",
+    "url": "https://mobilism.org",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "XDA Developers",
+    "url": "https://forum.xda-developers.com",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "GitLab",
+    "url": "https://gitlab.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "JSFiddle",
+    "url": "https://jsfiddle.net",
+    "category": "Utilities"
+  },
+  {
+    "title": "Regex101",
+    "url": "https://regex101.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "JSON Formatter",
+    "url": "https://jsonformatter.org",
+    "category": "Utilities"
+  },
+  {
+    "title": "VirusTotal",
+    "url": "https://www.virustotal.com",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "Have I Been Pwned",
+    "url": "https://haveibeenpwned.com",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "OWASP",
+    "url": "https://owasp.org",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "Exploit DB",
+    "url": "https://www.exploit-db.com",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "Can I Use",
+    "url": "https://caniuse.com",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "Web.dev",
+    "url": "https://web.dev",
+    "category": "Utilities"
+  },
+  {
+    "title": "Hugging Face",
+    "url": "https://huggingface.co",
+    "category": "AI"
+  },
+  {
+    "title": "ArXiv",
+    "url": "https://arxiv.org",
+    "category": "Utilities"
+  },
+  {
+    "title": "Vercel",
+    "url": "https://vercel.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "Netlify",
+    "url": "https://www.netlify.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "GitHub Pages",
+    "url": "https://pages.github.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "NextDNS",
+    "url": "https://nextdns.io",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "Cloudflare DNS",
+    "url": "https://1.1.1.1",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "Exodus Privacy",
+    "url": "https://reports.exodus-privacy.eu.org/en",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "SimpleLogin",
+    "url": "https://app.simplelogin.io",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "UPI Help (NPCI)",
+    "url": "https://www.upihelp.npci.org.in",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "LMSYS Arena",
+    "url": "https://lmarena.ai",
+    "category": "AI"
+  },
+  {
+    "title": "Andi Search",
+    "url": "https://andisearch.com",
+    "category": "AI"
+  },
+  {
+    "title": "WolframAlpha (Mobile)",
+    "url": "http://m.wolframalpha.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "Omni Calculator",
+    "url": "https://www.omnicalculator.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "Unitto",
+    "url": "https://sadellie.github.io/unitto/app",
+    "category": "Utilities"
+  },
+  {
+    "title": "PDF24 Tools",
+    "url": "https://www.pdf24.org/en",
+    "category": "Utilities"
+  },
+  {
+    "title": "Online-Convert",
+    "url": "https://www.online-convert.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "123Apps",
+    "url": "https://123apps.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "Networking Toolbox",
+    "url": "https://networking-toolbox.as93.net",
+    "category": "Utilities"
+  },
+  {
+    "title": "OmniTools",
+    "url": "https://omnitools.netlify.app",
+    "category": "Utilities"
+  },
+  {
+    "title": "Woobx",
+    "url": "https://ol.woobx.cn",
+    "category": "Utilities"
+  },
+  {
+    "title": "Notion",
+    "url": "https://www.notion.so",
+    "category": "Productivity"
+  },
+  {
+    "title": "AniList",
+    "url": "https://anilist.co",
+    "category": "Anime"
+  },
+  {
+    "title": "MyAnimeList",
+    "url": "https://myanimelist.net",
+    "category": "Anime"
+  },
+  {
+    "title": "Beebom Bio",
+    "url": "https://beebom.bio",
+    "category": "Shopping"
+  },
+  {
+    "title": "Sillycorns",
+    "url": "https://lnk.bio/Sillycorns",
+    "category": "Shopping"
+  },
+  {
+    "title": "TechWiser Store",
+    "url": "https://techwiser.store",
+    "category": "Shopping"
+  },
+  {
+    "title": "Simpleghar Telugu",
+    "url": "https://simpleghar.com/telugu",
+    "category": "Shopping"
+  },
+  {
+    "title": "Neal.fun",
+    "url": "https://neal.fun",
+    "category": "Utilities"
+  },
+  {
+    "title": "100k Stars",
+    "url": "https://stars.chromeexperiments.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "Getting Old",
+    "url": "https://you.regettingold.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "Your Metric Birthday",
+    "url": "https://www.yourmetricbirthday.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "Worldometers",
+    "url": "https://www.worldometers.info",
+    "category": "Utilities"
+  },
+  {
+    "title": "Taskernet",
+    "url": "https://taskernet.com/?public=&tags=&time=AllTime",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "My Life Hub ･ﾟ✧ | Notion",
+    "url": "https://subbarao.notion.site/My-Life-Hub-1ebb6c26d9ba802fa6b2e3df077da3d9",
+    "category": "Productivity"
+  },
+  {
+    "title": "Knowledge | Notion",
+    "url": "https://subbarao.notion.site/Knowledge-21cb6c26d9ba808da8d4f72eb2193ca2",
+    "category": "Productivity"
+  },
+  {
+    "title": "Word Rank Calculator",
+    "url": "https://l-kaushik.github.io/Word-rank-calculator/",
+    "category": "Utilities"
+  }
+]
