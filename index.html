@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>URL Hub</title>
+  <title>Tools Hub</title>
   <link rel="icon" href="urlhub.png">
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -22,14 +22,9 @@
       <nav id="category-filter" class="category-nav">
         <!-- Categories injected here -->
       </nav>
-      <div class="sidebar-footer">
-        <button onclick="Tools.exportData()">↓ Export</button>
-        <label class="btn-text">
-          ↑ Import
-          <input type="file" hidden accept="application/json" onchange="Tools.importData(this)" />
-        </label>
-        <button onclick="Tools.resetData()" title="Reset to default links">↻ Reset</button>
-      </div>
+      <!-- <div class="sidebar-footer">
+        Actions moved to Floating Menu
+      </div> -->
     </aside>
 
     <!-- Main Content -->
@@ -39,6 +34,18 @@
         <h1 class="page-title">URL Hub</h1>
         <div class="top-actions">
           <!-- Page Tools merged here -->
+          <div class="fab-container" id="fab-container">
+            <div class="fab-menu">
+              <button class="fab-item" data-label="Add Tool" onclick="UI.openModal('modal-add')">+</button>
+              <button class="fab-item" data-label="Export Data" onclick="Tools.exportData()">↓</button>
+              <label class="fab-item" data-label="Import Data">
+                ↑
+                <input type="file" accept="application/json" onchange="Tools.importData(this)" />
+              </label>
+              <button class="fab-item" data-label="Reset Dashboard" onclick="Tools.resetData()">↺</button>
+            </div>
+            <button class="fab" onclick="UI.toggleFab()" title="Menu">☰</button>
+          </div>
           <button onclick="PageTools.toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
           <!-- <button onclick="PageTools.cleanPage()" title="Clean Page">🧹</button> -->
         </div>
@@ -49,9 +56,6 @@
       </div>
     </main>
   </div>
-
-  <!-- Floating Action Button -->
-  <button class="fab" onclick="UI.openModal('modal-add')" title="Add New Tool">+</button>
 
   <!-- Modals -->
   <div id="modal-overlay" class="modal-overlay" style="display:none;"></div>
@@ -98,5 +102,3 @@
 </body>
 
 </html>
-
-

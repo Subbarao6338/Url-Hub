@@ -168,8 +168,19 @@ const UI = {
       });
     });
 
-    // Close modal on outside click
-    document.getElementById('modal-overlay').addEventListener('click', this.closeModal);
+    // Close modal or FAB on outside click
+    document.getElementById('modal-overlay').addEventListener('click', () => {
+      this.closeModal();
+      this.closeFab();
+    });
+
+    // Close FAB on body click (if not clicking FAB)
+    document.addEventListener('click', (e) => {
+      const fabContainer = document.getElementById('fab-container');
+      if (fabContainer && !fabContainer.contains(e.target)) {
+        this.closeFab();
+      }
+    });
   },
 
   renderSidebar() {
@@ -306,6 +317,7 @@ const UI = {
 
   // Modal Handling
   openModal(id) {
+    this.closeFab();
     document.getElementById(id).style.display = 'block';
     document.getElementById('modal-overlay').style.display = 'block';
     // Populate Datalist for categories
@@ -350,6 +362,21 @@ const UI = {
     }
     this.closeModal();
     this.renderSidebar(); // Update counts
+  },
+
+  // FAB Speed Dial
+  toggleFab() {
+    const container = document.getElementById('fab-container');
+    const fab = container.querySelector('.fab');
+    container.classList.toggle('active');
+    fab.classList.toggle('active');
+  },
+
+  closeFab() {
+    const container = document.getElementById('fab-container');
+    const fab = container.querySelector('.fab');
+    container.classList.remove('active');
+    fab.classList.remove('active');
   }
 };
 

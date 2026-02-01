@@ -253,19 +253,13 @@ body {
   border-top: 1px solid var(--border);
   display: flex;
   gap: 10px;
+  justify-content: center;
+  align-items: center;
+  min-height: 50px;
 }
 
-.sidebar-footer button,
-.sidebar-footer .btn-text {
-  flex: 1;
-  font-size: 0.85rem;
-  padding: 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--surface);
-  color: var(--text);
-  cursor: pointer;
-  text-align: center;
+.sidebar.collapsed .sidebar-footer {
+  padding: 1rem 0;
 }
 
 /* Main Content */
@@ -535,30 +529,134 @@ body {
   background: #ffe5e5 !important;
 }
 
-/* FAB */
+/* FAB Container & Speed Dial - Integrated into Top Bar */
+.fab-container {
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  z-index: 2000;
+}
+
 .fab {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 56px;
-  height: 56px;
-  background: var(--md-sys-color-primary-container);
-  color: var(--md-sys-color-on-primary-container);
-  border-radius: 16px;
-  /* Squircle */
+  width: 40px;
+  height: 40px;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
+  border-radius: 50%;
   border: none;
-  font-size: 1.5rem;
-  box-shadow: var(--shadow-2);
+  font-size: 1.2rem;
+  box-shadow: var(--shadow-1);
   cursor: pointer;
-  transition: transform 0.2s;
-  z-index: 500;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2001;
 }
 
 .fab:hover {
+  filter: brightness(1.2);
+}
+
+.fab.active {
+  transform: rotate(45deg);
+  background: var(--danger);
+  color: white;
+}
+
+.fab-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fab-container.active .fab-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.fab-item {
+  width: 44px;
+  height: 44px;
+  background: var(--md-sys-color-surface-container);
+  color: var(--text);
+  border-radius: 50%;
+  /* Circle shape match */
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  transition: all 0.2s;
+  position: relative;
+}
+
+/* Individual Colorful Item Styles */
+.fab-item:nth-child(1) {
+  background: var(--surface-green);
+  color: var(--on-surface-green);
+}
+
+.fab-item:nth-child(2) {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.fab-item:nth-child(3) {
+  background: var(--surface-cyan);
+  color: var(--on-surface-cyan);
+}
+
+.fab-item:nth-child(4) {
+  background: var(--surface-red);
+  color: var(--on-surface-red);
+}
+
+.fab-item:hover {
+  filter: brightness(0.9);
   transform: scale(1.1);
+}
+
+[data-theme="dark"] .fab-item:hover {
+  filter: brightness(1.15);
+}
+
+.fab-item::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 60px;
+  background: var(--md-sys-color-surface-container-high);
+  color: var(--text);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-1);
+  pointer-events: none;
+}
+
+.fab-item:hover::after {
+  opacity: 1;
+  visibility: visible;
+  right: 64px;
+}
+
+.fab-item input[type="file"] {
+  display: none;
 }
 
 /* Modals */
