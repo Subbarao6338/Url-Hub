@@ -337,7 +337,7 @@
   {
     "title": "FTWA",
     "url": "https://ftwa.mathix.dev/",
-    "category": "Utilities"
+    "category": "Apps & Stores"
   },
   {
     "title": "v0",
@@ -408,5 +408,20 @@
     "title": "Netflix Mirror",
     "url": "https://m.netflixmirror.com/home",
     "category": "Streaming"
-  }
+  },
+  {
+    "title": "Store.app",
+    "url": "https://store.app/",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "We Share Apps",
+    "url": "https://weshareapps.com/",
+    "category": "Apps & Stores"
+  },
+  {
+    "title": "Appscope",
+    "url": "https://appsco.pe/",
+    "category": "Apps & Stores"
+  } 
 ]
