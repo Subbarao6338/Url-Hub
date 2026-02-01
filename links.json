@@ -62,7 +62,7 @@
   {
     "title": "GitLab",
     "url": "https://gitlab.com",
-    "category": "Utilities"
+    "category": "Hosting"
   },
   {
     "title": "JSFiddle",
@@ -105,34 +105,24 @@
     "category": "Privacy & Security"
   },
   {
-    "title": "Web.dev",
-    "url": "https://web.dev",
-    "category": "Utilities"
-  },
-  {
     "title": "Hugging Face",
     "url": "https://huggingface.co",
     "category": "AI"
   },
   {
-    "title": "ArXiv",
-    "url": "https://arxiv.org",
-    "category": "Utilities"
-  },
-  {
     "title": "Vercel",
     "url": "https://vercel.com",
-    "category": "Utilities"
+    "category": "Hosting"
   },
   {
     "title": "Netlify",
     "url": "https://www.netlify.com",
-    "category": "Utilities"
+    "category": "Hosting"
   },
   {
     "title": "GitHub Pages",
     "url": "https://pages.github.com",
-    "category": "Utilities"
+    "category": "Hosting"
   },
   {
     "title": "NextDNS",
@@ -210,7 +200,7 @@
     "category": "Utilities"
   },
   {
-    "title": "Woobx",
+    "title": "Woodbox",
     "url": "https://ol.woobx.cn",
     "category": "Utilities"
   },
