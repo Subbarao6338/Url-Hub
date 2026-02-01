@@ -1,8 +1,8 @@
 # URL Hub
 
-A personal, offline-first dashboard to organize and access your favorite tools, websites, and resources.
-
 ![URL Hub Screenshot](./urlhub.png)
+
+A personal, offline-first dashboard to organize and access your favorite tools, websites, and resources.
 
 ## Features
 
@@ -16,7 +16,7 @@ A personal, offline-first dashboard to organize and access your favorite tools, 
 
 ## Getting Started
 
-1. **Open the Dashboard**: Simply open `tools.html` in your web browser.
+1. **Open the Dashboard**: Simply open `index.html` in your web browser.
 2. **Initial Data**: The app loads initial data from `links.json`.
 3. **Customize**: 
    - Click the **Add Link** button (if available in UI) or use the edit/delete buttons on cards to manage your tools.
