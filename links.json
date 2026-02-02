@@ -1,5 +1,10 @@
 [
   {
+    "title": "Bitwarden",
+    "url": "https://vault.bitwarden.com/",
+    "category": "Privacy & Security"
+  },
+  {
     "title": "APKMirror",
     "url": "https://www.apkmirror.com",
     "category": "Apps & Stores"
@@ -789,4 +794,5 @@
     "url": "https://videosos.vercel.app/en",
     "category": "Media"
   }
+
 ]
