@@ -147,7 +147,7 @@
   {
     "title": "UPI Help (NPCI)",
     "url": "https://www.upihelp.npci.org.in",
-    "category": "Privacy & Security"
+    "category": "Banking / Finance"
   },
   {
     "title": "LMSYS Arena",
@@ -413,5 +413,380 @@
     "title": "Appscope",
     "url": "https://appsco.pe/",
     "category": "Apps & Stores"
-  } 
+  },
+  {
+    "title": "Gemini",
+    "url": "https://gemini.google.com/",
+    "category": "AI"
+  },
+  {
+    "title": "Telegram Web",
+    "url": "https://web.telegram.org/k/",
+    "category": "Social"
+  },
+  {
+    "title": "WhatsApp Web",
+    "url": "https://web.whatsapp.com/",
+    "category": "Social"
+  },
+  {
+    "title": "Stremio Addons",
+    "url": "https://stremio-addons.net/",
+    "category": "Streaming"
+  },
+  {
+    "title": "Gmail",
+    "url": "https://mail.google.com/",
+    "category": "Email"
+  },
+  {
+    "title": "Ente Auth",
+    "url": "https://auth.ente.io/",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "NextDNS Logs",
+    "url": "https://my.nextdns.io/d893f5/logs",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "Outlook",
+    "url": "https://outlook.live.com/",
+    "category": "Email"
+  },
+  {
+    "title": "ILovePDF",
+    "url": "https://www.ilovepdf.com/",
+    "category": "Utilities"
+  },
+  {
+    "title": "OneDrive",
+    "url": "https://onedrive.live.com/",
+    "category": "Storage"
+  },
+  {
+    "title": "Microsoft Word Online",
+    "url": "https://word.cloud.microsoft/",
+    "category": "Productivity"
+  },
+  {
+    "title": "Microsoft 365",
+    "url": "https://m365.cloud.microsoft/",
+    "category": "Productivity"
+  },
+  {
+    "title": "Grok",
+    "url": "https://grok.com/",
+    "category": "AI"
+  },
+  {
+    "title": "ChatGPT",
+    "url": "https://chatgpt.com/",
+    "category": "AI"
+  },
+  {
+    "title": "Notion Mail",
+    "url": "https://mail.notion.so/inbox",
+    "category": "Email"
+  },
+  {
+    "title": "Google Account Dashboard",
+    "url": "https://myaccount.google.com/dashboard",
+    "category": "Google"
+  },
+  {
+    "title": "Google Account",
+    "url": "https://myaccount.google.com/",
+    "category": "Google"
+  },
+  {
+    "title": "Google Docs Videos",
+    "url": "https://docs.google.com/videos/",
+    "category": "Google"
+  },
+  {
+    "title": "Google One",
+    "url": "https://one.google.com/",
+    "category": "Google"
+  },
+  {
+    "title": "Google Photos",
+    "url": "https://photos.google.com/",
+    "category": "Google"
+  },
+  {
+    "title": "YouTube",
+    "url": "https://www.youtube.com/",
+    "category": "Google"
+  },
+  {
+    "title": "Google Drive",
+    "url": "https://drive.google.com/",
+    "category": "Google"
+  },
+  {
+    "title": "AdGuard DNS Dashboard",
+    "url": "https://adguard-dns.io/en/dashboard",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "Down for Everyone or Just Me",
+    "url": "https://downforeveryoneorjustme.com/",
+    "category": "Utilities"
+  },
+  {
+    "title": "GitHub Notifications",
+    "url": "https://github.com/notifications",
+    "category": "Hosting"
+  },
+  {
+    "title": "HDFC Bank MyCards",
+    "url": "https://mycards.hdfcbank.com/home",
+    "category": "Banking / Finance"
+  },
+  {
+    "title": "OneURL - subbu",
+    "url": "https://oneurl.live/subbu",
+    "category": "Personal"
+  },
+  {
+    "title": "OpenApps",
+    "url": "https://openapps.pro/",
+    "category": "Apps"
+  },
+  {
+    "title": "OpenAlternative",
+    "url": "https://openalternative.co/",
+    "category": "Apps"
+  },
+  {
+    "title": "DistroWatch",
+    "url": "https://distrowatch.com/",
+    "category": "Linux"
+  },
+  {
+    "title": "Vert.sh",
+    "url": "https://vert.sh/",
+    "category": "Utilities"
+  },
+  {
+    "title": "Aixploria",
+    "url": "https://www.aixploria.com/en/",
+    "category": "AI"
+  },
+  {
+    "title": "Yoink",
+    "url": "https://yoink.tools/",
+    "category": "Utilities"
+  },
+  {
+    "title": "Open Directory Finder",
+    "url": "https://ewasion.github.io/opendirectory-finder/",
+    "category": "Search"
+  },
+  {
+    "title": "Raindrop.io",
+    "url": "https://app.raindrop.io/",
+    "category": "Utilities"
+  },
+  {
+    "title": "Ente Auth Login",
+    "url": "https://auth.ente.io/auth",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "AI Code Translator",
+    "url": "https://ai-code-translator.vercel.app",
+    "category": "AI"
+  },
+  {
+    "title": "Microsoft Copilot",
+    "url": "https://copilot.microsoft.com",
+    "category": "AI"
+  },
+  {
+    "title": "Google Labs",
+    "url": "https://labs.google/",
+    "category": "Google"
+  },
+  {
+    "title": "GPT-OSS",
+    "url": "https://gpt-oss.com/",
+    "category": "AI"
+  },
+  {
+    "title": "Higgsfield AI",
+    "url": "https://higgsfield.ai/",
+    "category": "AI"
+  },
+  {
+    "title": "Perplexity AI",
+    "url": "https://www.perplexity.ai/",
+    "category": "AI"
+  },
+  {
+    "title": "Ollama",
+    "url": "https://ollama.com/",
+    "category": "AI"
+  },
+  {
+    "title": "LM Studio",
+    "url": "https://lmstudio.ai/",
+    "category": "AI"
+  },
+  {
+    "title": "GitHub",
+    "url": "github.com",
+    "category": "Hosting"
+  },
+  {
+    "title": "AppSales Now Free",
+    "url": "https://www.app-sales.net/nowfree",
+    "category": "Apps"
+  },
+  {
+    "title": "Cafe Bazaar",
+    "url": "https://cafebazaar.ir/app?l=en",
+    "category": "Apps"
+  },
+  {
+    "title": "Uptodown Android",
+    "url": "https://en.uptodown.com/android",
+    "category": "Apps"
+  },
+  {
+    "title": "PlayStore Sales Free Apps",
+    "url": "https://www.playstoresales.com/apps/free-apps",
+    "category": "Apps"
+  },
+  {
+    "title": "Days Old",
+    "url": "https://www.daysold.com",
+    "category": "Utilities"
+  },
+  {
+    "title": "Multi Calculator",
+    "url": "https://www.multicalculator.app/",
+    "category": "Utilities"
+  },
+  {
+    "title": "Google AI Studio",
+    "url": "https://aistudio.google.com/",
+    "category": "AI"
+  },
+  {
+    "title": "Awesome Selfhosted",
+    "url": "https://awesomeselfhosted.netlify.app/",
+    "category": "Hosting"
+  },
+  {
+    "title": "Mega",
+    "url": "https://mega.nz",
+    "category": "Storage"
+  },
+  {
+    "title": "Unlim Cloud Login",
+    "url": "https://unlim-cloud.web.app/login",
+    "category": "Storage"
+  },
+  {
+    "title": "Diagrams.net (draw.io)",
+    "url": "https://www.draw.io",
+    "category": "Productivity"
+  },
+  {
+    "title": "Photopea",
+    "url": "https://www.photopea.com",
+    "category": "Media"
+  },
+  {
+    "title": "AppImage.org",
+    "url": "https://appimage.org",
+    "category": "Linux"
+  },
+  {
+    "title": "AppImageHub",
+    "url": "https://www.appimagehub.com/",
+    "category": "Linux"
+  },
+  {
+    "title": "DistroTest",
+    "url": "https://distrotest.net",
+    "category": "Linux"
+  },
+  {
+    "title": "Electron Apps",
+    "url": "https://www.electronjs.org/apps",
+    "category": "Linux"
+  },
+  {
+    "title": "Flathub",
+    "url": "https://flathub.org",
+    "category": "Linux"
+  },
+  {
+    "title": "Repo Hub",
+    "url": "https://repo-hub.com/",
+    "category": "Linux"
+  },
+  {
+    "title": "YouTube Music",
+    "url": "https://music.youtube.com",
+    "category": "Google"
+  },
+  {
+    "title": "Proton Account Mail Dashboard",
+    "url": "https://account.proton.me/u/0/mail/dashboard",
+    "category": "Email"
+  },
+  {
+    "title": "SimpleLogin Dashboard",
+    "url": "https://app.simplelogin.io/dashboard",
+    "category": "Email"
+  },
+  {
+    "title": "Facebook",
+    "url": "http://www.facebook.com",
+    "category": "Social"
+  },
+  {
+    "title": "Pinterest",
+    "url": "https://in.pinterest.com",
+    "category": "Social"
+  },
+  {
+    "title": "Instagram",
+    "url": "https://www.instagram.com",
+    "category": "Social"
+  },
+  {
+    "title": "Proton Mail Inbox",
+    "url": "https://mail.proton.me/u/0/inbox",
+    "category": "Email"
+  },
+  {
+    "title": "Awesome Privacy",
+    "url": "https://awesome-privacy.xyz/",
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "AITools.fyi",
+    "url": "https://aitools.fyi",
+    "category": "AI"
+  },
+  {
+    "title": "Awesome Open Source",
+    "url": "https://awesomeopensource.com",
+    "category": "Linux"
+  },
+  {
+    "title": "There's An AI For That",
+    "url": "theresanaiforthat.com",
+    "category": "AI"
+  },
+  {
+    "title": "Video SOS",
+    "url": "https://videosos.vercel.app/en",
+    "category": "Media"
+  }
 ]
