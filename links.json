@@ -552,12 +552,12 @@
   {
     "title": "OpenApps",
     "url": "https://openapps.pro/",
-    "category": "Apps"
+    "category": "Apps & Stores"
   },
   {
     "title": "OpenAlternative",
     "url": "https://openalternative.co/",
-    "category": "Apps"
+    "category": "Apps & Stores"
   },
   {
     "title": "DistroWatch",
@@ -636,28 +636,28 @@
   },
   {
     "title": "GitHub",
-    "url": "github.com",
+    "url": "https://github.com",
     "category": "Hosting"
   },
   {
     "title": "AppSales Now Free",
     "url": "https://www.app-sales.net/nowfree",
-    "category": "Apps"
+    "category": "Apps & Stores"
   },
   {
     "title": "Cafe Bazaar",
     "url": "https://cafebazaar.ir/app?l=en",
-    "category": "Apps"
+    "category": "Apps & Stores"
   },
   {
     "title": "Uptodown Android",
     "url": "https://en.uptodown.com/android",
-    "category": "Apps"
+    "category": "Apps & Stores"
   },
   {
     "title": "PlayStore Sales Free Apps",
     "url": "https://www.playstoresales.com/apps/free-apps",
-    "category": "Apps"
+    "category": "Apps & Stores"
   },
   {
     "title": "Days Old",
@@ -781,7 +781,7 @@
   },
   {
     "title": "There's An AI For That",
-    "url": "theresanaiforthat.com",
+    "url": "https://theresanaiforthat.com",
     "category": "AI"
   },
   {

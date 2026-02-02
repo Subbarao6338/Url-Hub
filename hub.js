@@ -22,7 +22,25 @@ const CAT_ICONS = {
   "Anime": "🎌",
   "Streaming": "📺",
   "Hosting": "🌐",
+  "Banking / Finance": "🏦",
+  "Email": "📧",
+  "Storage": "☁️",
+  "Google": "🌐",
+  "Personal": "👤",
+  "Linux": "🐧",
+  "Search": "🔍",
   "All": "🏠"
+};
+
+const Utils = {
+  getHostname(urlStr) {
+    try {
+      return new URL(urlStr).hostname;
+    } catch (e) {
+      console.warn("Invalid URL:", urlStr);
+      return urlStr.replace(/^https?:\/\//, '').split('/')[0];
+    }
+  }
 };
 
 // ============= CORE LOGIC =============
@@ -95,6 +113,7 @@ const Core = {
           id: Date.now() + Math.random().toString(36).substr(2, 9),
           title: item.title,
           url: item.url,
+          icon: item.icon || "",
           category: category
         };
       });
@@ -287,7 +306,7 @@ const UI = {
           imgHtml = `<div class="card-icon" style="display:grid;place-items:center;font-size:24px;background:var(--bg)">${userIcon}</div>`;
         } else {
           // URL (User provided or Auto Favicon)
-          const src = userIcon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=64`;
+          const src = userIcon || `https://www.google.com/s2/favicons?domain=${Utils.getHostname(link.url)}&sz=64`;
           const fallback = CAT_ICONS[cat] || "🔗";
           const fallbackSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>${fallback}</text></svg>`;
 
@@ -299,7 +318,7 @@ const UI = {
             ${imgHtml}
             <div class="card-title">${link.title}</div>
           </div>
-          <div class="card-url">${new URL(link.url).hostname}</div>
+          <div class="card-url">${Utils.getHostname(link.url)}</div>
           
           <div class="card-actions" onclick="event.preventDefault()">
              <button onclick="UI.openEdit('${link.id}')" title="Edit">✏️</button>
@@ -352,6 +371,7 @@ const UI = {
     const data = {
       title: document.getElementById('tool-title').value.trim(),
       url: document.getElementById('tool-url').value.trim(),
+      icon: document.getElementById('tool-icon').value.trim(),
       category: document.getElementById('tool-category').value.trim() || 'Others'
     };
 
