@@ -26,13 +26,13 @@ const CAT_ICONS = {
   "Email": "📧",
   "Storage": "☁️",
   "Google": "🌐",
-  "Personal": "👤",
+  // "Personal": "👤",
   "Linux": "🐧",
   "Search": "🔍",
   "Jobs": "💼",
   "News": "📰",
   "Windows": "🪟",
-  "Sports": "⚽",
+  // "Sports": "⚽",
   "All": "🏠"
 };
 
@@ -475,3 +475,4 @@ const PageTools = {
 
 // Initial Start
 Core.init();
+
