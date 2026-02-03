@@ -517,7 +517,7 @@
   {
     "title": "OneURL - subbu",
     "url": "https://oneurl.live/subbu",
-    "category": "Personal"
+    "category": "Productivity"
   },
   {
     "title": "OpenApps",
@@ -655,7 +655,7 @@
     "category": "Storage"
   },
   {
-    "title": "Diagrams.net (draw.io)",
+    "title": "Diagrams",
     "url": "https://www.draw.io",
     "category": "Productivity"
   },
@@ -845,4 +845,5 @@
     "category": "Utilities"
   }
 ]
+
 
