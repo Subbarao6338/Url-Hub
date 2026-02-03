@@ -1,5 +1,10 @@
 [
   {
+    "title": "Bitwarden Vault",
+    "url": "https://vault.bitwarden.com/",
+    "category": "Privacy & Security"
+  },
+  {
     "title": "PGSharp",
     "url": "https://www.pgsharp.com/",
     "category": "Games"
@@ -840,3 +845,4 @@
     "category": "Utilities"
   }
 ]
+
