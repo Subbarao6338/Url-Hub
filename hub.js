@@ -29,6 +29,10 @@ const CAT_ICONS = {
   "Personal": "👤",
   "Linux": "🐧",
   "Search": "🔍",
+  "Jobs": "💼",
+  "News": "📰",
+  "Windows": "🪟",
+  "Sports": "⚽",
   "All": "🏠"
 };
 

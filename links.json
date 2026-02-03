@@ -1,10 +1,5 @@
 [
   {
-    "title": "Bitwarden",
-    "url": "https://vault.bitwarden.com/",
-    "category": "Privacy & Security"
-  },
-  {
     "title": "APKMirror",
     "url": "https://www.apkmirror.com",
     "category": "Apps & Stores"
@@ -793,6 +788,100 @@
     "title": "Video SOS",
     "url": "https://videosos.vercel.app/en",
     "category": "Media"
+  },
+  {
+    "title": "Google Contacts",
+    "url": "https://contacts.google.com/",
+    "category": "Google"
+  },
+  {
+    "title": "Discord",
+    "url": "https://discord.com/",
+    "category": "Social"
+  },
+  {
+    "title": "addy.io",
+    "url": "https://addy.io/",
+    "category": "Email"
+  },
+  {
+    "title": "LinkedIn",
+    "url": "https://www.linkedin.com/",
+    "category": "Jobs"
+  },
+  {
+    "title": "Naukri",
+    "url": "https://www.naukri.com/",
+    "category": "Jobs"
+  },
+  {
+    "title": "Airtel",
+    "url": "https://www.airtel.in/",
+    "category": "Utilities"
+  },
+  {
+    "title": "Flipkart",
+    "url": "https://www.flipkart.com/",
+    "category": "Shopping"
+  },
+  {
+    "title": "Amazon.in",
+    "url": "https://www.amazon.in/",
+    "category": "Shopping"
+  },
+  {
+    "title": "Blinkit",
+    "url": "https://blinkit.com/",
+    "category": "Shopping"
+  },
+  {
+    "title": "Meesho",
+    "url": "https://www.meesho.com/",
+    "category": "Shopping"
+  },
+  {
+    "title": "Swiggy",
+    "url": "https://www.swiggy.com/",
+    "category": "Shopping"
+  },
+  {
+    "title": "Zepto",
+    "url": "https://www.zepto.co/",
+    "category": "Shopping"
+  },
+  {
+    "title": "Zomato",
+    "url": "https://www.zomato.com/",
+    "category": "Shopping"
+  },
+  {
+    "title": "BookMyShow",
+    "url": "https://in.bookmyshow.com/",
+    "category": "Shopping"
+  },
+  {
+    "title": "JioMart",
+    "url": "https://www.jiomart.com/",
+    "category": "Shopping"
+  },
+  {
+    "title": "Cricbuzz",
+    "url": "https://www.cricbuzz.com/",
+    "category": "News"
+  },
+  {
+    "title": "Dailyhunt",
+    "url": "https://www.dailyhunt.in/",
+    "category": "News"
+  },
+  {
+    "title": "AccuWeather",
+    "url": "https://www.accuweather.com/",
+    "category": "Utilities"
+  },
+  {
+    "title": "Xiaomi Firmware Updater (marble)",
+    "url": "https://xmfirmwareupdater.com/firmware/marble/",
+    "category": "Utilities"
   }
-
 ]
