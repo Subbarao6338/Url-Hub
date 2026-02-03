@@ -1,5 +1,10 @@
 [
   {
+    "title": "PGSharp",
+    "url": "https://www.pgsharp.com/",
+    "category": "Games"
+  },
+  {
     "title": "APKMirror",
     "url": "https://www.apkmirror.com",
     "category": "Apps & Stores"
@@ -41,7 +46,7 @@
   },
   {
     "title": "LiteAPKs",
-    "url": "https://liteapks.com",
+    "url": "https://liteapks.com/apps",
     "category": "Apps & Stores"
   },
   {
@@ -51,7 +56,7 @@
   },
   {
     "title": "Mobilism",
-    "url": "https://mobilism.org",
+    "url": "https://forum.mobilism.org/viewforum.php?f=399",
     "category": "Apps & Stores"
   },
   {
@@ -90,16 +95,6 @@
     "category": "Privacy & Security"
   },
   {
-    "title": "OWASP",
-    "url": "https://owasp.org",
-    "category": "Privacy & Security"
-  },
-  {
-    "title": "Exploit DB",
-    "url": "https://www.exploit-db.com",
-    "category": "Privacy & Security"
-  },
-  {
     "title": "Can I Use",
     "url": "https://caniuse.com",
     "category": "Privacy & Security"
@@ -110,26 +105,6 @@
     "category": "AI"
   },
   {
-    "title": "Vercel",
-    "url": "https://vercel.com",
-    "category": "Hosting"
-  },
-  {
-    "title": "Netlify",
-    "url": "https://www.netlify.com",
-    "category": "Hosting"
-  },
-  {
-    "title": "GitHub Pages",
-    "url": "https://pages.github.com",
-    "category": "Hosting"
-  },
-  {
-    "title": "NextDNS",
-    "url": "https://nextdns.io",
-    "category": "Privacy & Security"
-  },
-  {
     "title": "Cloudflare DNS",
     "url": "https://1.1.1.1",
     "category": "Privacy & Security"
@@ -137,11 +112,6 @@
   {
     "title": "Exodus Privacy",
     "url": "https://reports.exodus-privacy.eu.org/en",
-    "category": "Privacy & Security"
-  },
-  {
-    "title": "SimpleLogin",
-    "url": "https://app.simplelogin.io",
     "category": "Privacy & Security"
   },
   {
@@ -157,7 +127,7 @@
   {
     "title": "Andi Search",
     "url": "https://andisearch.com",
-    "category": "AI"
+    "category": "Search"
   },
   {
     "title": "WolframAlpha (Mobile)",
@@ -440,12 +410,7 @@
     "category": "Email"
   },
   {
-    "title": "Ente Auth",
-    "url": "https://auth.ente.io/",
-    "category": "Privacy & Security"
-  },
-  {
-    "title": "NextDNS Logs",
+    "title": "NextDNS",
     "url": "https://my.nextdns.io/d893f5/logs",
     "category": "Privacy & Security"
   },
@@ -512,17 +477,17 @@
   {
     "title": "Google Photos",
     "url": "https://photos.google.com/",
-    "category": "Google"
+    "category": "Storage"
   },
   {
     "title": "YouTube",
     "url": "https://www.youtube.com/",
-    "category": "Google"
+    "category": "Media"
   },
   {
     "title": "Google Drive",
     "url": "https://drive.google.com/",
-    "category": "Google"
+    "category": "Storage"
   },
   {
     "title": "AdGuard DNS Dashboard",
@@ -532,7 +497,7 @@
   {
     "title": "Down for Everyone or Just Me",
     "url": "https://downforeveryoneorjustme.com/",
-    "category": "Utilities"
+    "category": "Privacy & Security"
   },
   {
     "title": "GitHub Notifications",
@@ -590,13 +555,13 @@
     "category": "Utilities"
   },
   {
-    "title": "Ente Auth Login",
+    "title": "Ente Auth",
     "url": "https://auth.ente.io/auth",
     "category": "Privacy & Security"
   },
   {
     "title": "AI Code Translator",
-    "url": "https://ai-code-translator.vercel.app",
+    "url": "https://ai-code-translator.com/#translate",
     "category": "AI"
   },
   {
@@ -638,11 +603,6 @@
     "title": "GitHub",
     "url": "https://github.com",
     "category": "Hosting"
-  },
-  {
-    "title": "AppSales Now Free",
-    "url": "https://www.app-sales.net/nowfree",
-    "category": "Apps & Stores"
   },
   {
     "title": "Cafe Bazaar",
@@ -710,13 +670,8 @@
     "category": "Linux"
   },
   {
-    "title": "DistroTest",
-    "url": "https://distrotest.net",
-    "category": "Linux"
-  },
-  {
-    "title": "Electron Apps",
-    "url": "https://www.electronjs.org/apps",
+    "title": "Distrosea",
+    "url": "https://distrosea.com/",
     "category": "Linux"
   },
   {
@@ -732,11 +687,11 @@
   {
     "title": "YouTube Music",
     "url": "https://music.youtube.com",
-    "category": "Google"
+    "category": "Media"
   },
   {
-    "title": "Proton Account Mail Dashboard",
-    "url": "https://account.proton.me/u/0/mail/dashboard",
+    "title": "Proton Mail",
+    "url": "https://mail.proton.me/",
     "category": "Email"
   },
   {
@@ -760,14 +715,14 @@
     "category": "Social"
   },
   {
-    "title": "Proton Mail Inbox",
-    "url": "https://mail.proton.me/u/0/inbox",
-    "category": "Email"
+    "title": "Proton Pass",
+    "url": "https://pass.proton.me/",
+    "category": "Privacy & Security"
   },
   {
     "title": "Awesome Privacy",
     "url": "https://awesome-privacy.xyz/",
-    "category": "Privacy & Security"
+    "category": "Apps & Stores"
   },
   {
     "title": "AITools.fyi",
@@ -801,7 +756,7 @@
   },
   {
     "title": "addy.io",
-    "url": "https://addy.io/",
+    "url": "https://app.addy.io/",
     "category": "Email"
   },
   {
@@ -846,7 +801,7 @@
   },
   {
     "title": "Zepto",
-    "url": "https://www.zepto.co/",
+    "url": "https://www.zepto.com/",
     "category": "Shopping"
   },
   {
