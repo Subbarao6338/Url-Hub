@@ -219,6 +219,10 @@ body::after {
 
 .sidebar.collapsed .category-btn .icon {
   margin-right: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Global Tooltip for Collapsed Sidebar */
@@ -1200,4 +1204,5 @@ body::after {
   .tools-container {
     padding: 1.5rem;
   }
+
 }
