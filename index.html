@@ -14,25 +14,29 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <button class="icon-btn sidebar-toggle-desktop" title="Toggle Sidebar">☰</button>
+        <button class="icon-btn sidebar-toggle-desktop" title="Toggle Sidebar" data-label="Expand Sidebar">☰</button>
       </div>
-      <div class="sidebar-search">
-        <input type="search" id="search" placeholder="Search..." />
-      </div>
+      <!-- Search removed from here -->
       <nav id="category-filter" class="category-nav">
         <!-- Categories injected here -->
       </nav>
-      <!-- <div class="sidebar-footer">
-        Actions moved to Floating Menu
-      </div> -->
+      <!-- <div class="sidebar-footer"> -->
+      <!-- Actions moved to Floating Menu -->
+      <!-- </div> -->
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
       <header class="top-bar">
         <button class="icon-btn mobile-only sidebar-toggle-mobile" title="Toggle Sidebar">☰</button>
-        <h1 class="page-title">URL Hub</h1>
+        <div class="logo-container">
+          <img src="urlhub.png" alt="URL Hub Logo" class="app-logo">
+          <h1 class="page-title">URL Hub</h1>
+        </div>
         <div class="top-actions">
+          <div class="search-container">
+            <input type="search" id="search" placeholder="Search tools..." />
+          </div>
           <!-- Page Tools merged here -->
           <div class="fab-container" id="fab-container">
             <div class="fab-menu">
@@ -46,8 +50,7 @@
             </div>
             <button class="fab" onclick="UI.toggleFab()" title="Menu">☰</button>
           </div>
-          <button onclick="PageTools.toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
-          <!-- <button onclick="PageTools.cleanPage()" title="Clean Page">🧹</button> -->
+          <button id="theme-toggle" onclick="PageTools.toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
         </div>
       </header>
 
@@ -92,7 +95,7 @@
 
   <!-- Iframe viewer -->
   <div id="site-viewer" style="display:none;">
-    <button id="close-site" onclick="closeSite()">Close</button>
+    <button id="close-site" onclick="PageTools.closeSite()">Close</button>
     <iframe id="content-frame"></iframe>
   </div>
 
@@ -100,5 +103,6 @@
   <script src="links.json" type="application/json" id="data"></script>
   <script src="hub.js"></script>
 </body>
+
 
 </html>

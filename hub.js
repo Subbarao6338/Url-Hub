@@ -26,13 +26,13 @@ const CAT_ICONS = {
   "Email": "📧",
   "Storage": "☁️",
   "Google": "🌐",
-  // "Personal": "👤",
+  "Personal": "👤",
   "Linux": "🐧",
   "Search": "🔍",
   "Jobs": "💼",
   "News": "📰",
   "Windows": "🪟",
-  // "Sports": "⚽",
+  "Sports": "⚽",
   "All": "🏠"
 };
 
@@ -114,7 +114,7 @@ const Core = {
       STATE.links = raw.map(item => {
         let category = item.category || "Others";
         return {
-          id: Date.now() + Math.random().toString(36).substr(2, 9),
+          id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
           title: item.title,
           url: item.url,
           icon: item.icon || "",
@@ -131,7 +131,9 @@ const Core = {
 
   // CRUD
   addLink(link) {
-    STATE.links.unshift({ ...link, id: Date.now().toString(36) });
+    // Generate a more robust unique ID
+    const id = Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+    STATE.links.unshift({ ...link, id });
     this.saveData();
   },
 
@@ -204,6 +206,48 @@ const UI = {
         this.closeFab();
       }
     });
+
+    this.setupTooltips();
+  },
+
+  setupTooltips() {
+    let tooltip = document.querySelector('.global-tooltip');
+    if (!tooltip) {
+      tooltip = document.createElement('div');
+      tooltip.className = 'global-tooltip';
+      document.body.appendChild(tooltip);
+    }
+
+    const showTooltip = (e) => {
+      const sidebar = document.querySelector('.sidebar');
+      if (!sidebar.classList.contains('collapsed') || window.innerWidth <= 768) return;
+
+      const label = e.currentTarget.getAttribute('data-label');
+      if (!label) return;
+
+      tooltip.textContent = label;
+      const rect = e.currentTarget.getBoundingClientRect();
+
+      tooltip.style.top = `${rect.top + (rect.height / 2) - (tooltip.offsetHeight / 2)}px`;
+      tooltip.style.left = `${rect.right + 14}px`;
+
+      // Force layout for transition
+      tooltip.offsetHeight;
+      tooltip.classList.add('active');
+    };
+
+    const hideTooltip = () => {
+      tooltip.classList.remove('active');
+    };
+
+    // Re-attach to all elements with data-label in sidebar
+    const targets = document.querySelectorAll('.sidebar [data-label]');
+    targets.forEach(target => {
+      target.removeEventListener('mouseenter', showTooltip);
+      target.removeEventListener('mouseleave', hideTooltip);
+      target.addEventListener('mouseenter', showTooltip);
+      target.addEventListener('mouseleave', hideTooltip);
+    });
   },
 
   renderSidebar() {
@@ -215,7 +259,7 @@ const UI = {
     const existingCats = Object.keys(stats);
     const allCats = [...new Set([...definedCats, ...existingCats])].sort((a, b) => a.localeCompare(b));
 
-    let html = `<button class="category-btn ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All')" title="All Tools">
+    let html = `<button class="category-btn ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All')" title="All Tools" data-label="All Tools">
       <span class="icon">${CAT_ICONS["All"] || "🏠"}</span>
       <span class="text">All Tools</span>
       <span class="category-count">${STATE.links.length}</span>
@@ -223,7 +267,7 @@ const UI = {
 
     allCats.forEach(cat => {
       const count = stats[cat] || 0;
-      html += `<button class="category-btn ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}')" title="${cat}">
+      html += `<button class="category-btn ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}')" title="${cat}" data-label="${cat}">
         <span class="icon">${CAT_ICONS[cat] || "📦"}</span>
         <span class="text">${cat}</span>
         <span class="category-count">${count}</span>
@@ -231,6 +275,7 @@ const UI = {
     });
 
     nav.innerHTML = html;
+    this.setupTooltips(); // Refresh tooltips for new buttons
   },
 
   setCategory(cat) {
@@ -288,9 +333,10 @@ const UI = {
       const grid = document.createElement('div');
       grid.className = 'category-grid';
 
-      grouped[cat].forEach(link => {
+      grouped[cat].forEach((link, index) => {
         const card = document.createElement('a');
         card.className = 'card';
+        card.style.setProperty('--delay', index);
         card.href = link.url;
         card.target = '_blank';
         card.rel = 'noopener noreferrer';
@@ -363,6 +409,7 @@ const UI = {
     document.getElementById('edit-id').value = link.id;
     document.getElementById('tool-title').value = link.title;
     document.getElementById('tool-url').value = link.url;
+    document.getElementById('tool-icon').value = link.icon || '';
     document.getElementById('tool-category').value = link.category;
 
     document.getElementById('modal-title').textContent = 'Edit Tool';
@@ -458,6 +505,11 @@ const PageTools = {
 
   applyTheme() {
     document.documentElement.setAttribute('data-theme', STATE.isDarkMode ? 'dark' : 'light');
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+      themeBtn.innerHTML = STATE.isDarkMode ? '☀️' : '🌙';
+      themeBtn.title = STATE.isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    }
   },
 
   cleanPage() {
@@ -470,9 +522,26 @@ const PageTools = {
       });
     });
     alert(`Cleaned ${count} elements.`);
+  },
+
+  openSite(url) {
+    const viewer = document.getElementById('site-viewer');
+    const frame = document.getElementById('content-frame');
+    if (viewer && frame) {
+      frame.src = url;
+      viewer.style.display = 'block';
+    }
+  },
+
+  closeSite() {
+    const viewer = document.getElementById('site-viewer');
+    const frame = document.getElementById('content-frame');
+    if (viewer && frame) {
+      viewer.style.display = 'none';
+      frame.src = '';
+    }
   }
 };
 
 // Initial Start
 Core.init();
-
