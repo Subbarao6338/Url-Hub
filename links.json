@@ -402,6 +402,11 @@
   {
     "title": "Telegram Web",
     "url": "https://web.telegram.org/k/",
+    "urls": [
+      "https://web.telegram.org/k/",
+      "https://web.telegram.org/a/",
+      "https://webk.telegram.org/"
+    ],
     "category": "Social"
   },
   {
@@ -417,6 +422,11 @@
   {
     "title": "Gmail",
     "url": "https://mail.google.com/",
+    "urls": [
+      "https://mail.google.com/",
+      "https://mail.google.co.in/",
+      "https://mail.google.co.uk/"
+    ],
     "category": "Email"
   },
   {
@@ -427,6 +437,11 @@
   {
     "title": "Outlook",
     "url": "https://outlook.live.com/",
+    "urls": [
+      "https://outlook.live.com/",
+      "https://outlook.office.com/",
+      "https://outlook.office365.com/"
+    ],
     "category": "Email"
   },
   {
@@ -457,6 +472,11 @@
   {
     "title": "ChatGPT",
     "url": "https://chatgpt.com/",
+    "urls": [
+      "https://chatgpt.com/",
+      "https://chat.openai.com/",
+      "https://www.chatgpt.com/"
+    ],
     "category": "AI"
   },
   {
@@ -492,6 +512,11 @@
   {
     "title": "YouTube",
     "url": "https://www.youtube.com/",
+    "urls": [
+      "https://www.youtube.com/",
+      "https://www.youtube.co.in/",
+      "https://m.youtube.com/"
+    ],
     "category": "Media"
   },
   {
@@ -597,6 +622,11 @@
   {
     "title": "Perplexity AI",
     "url": "https://www.perplexity.ai/",
+    "urls": [
+      "https://www.perplexity.ai/",
+      "https://perplexity.ai/",
+      "https://labs.perplexity.ai/"
+    ],
     "category": "AI"
   },
   {
@@ -712,16 +742,31 @@
   {
     "title": "Facebook",
     "url": "http://www.facebook.com",
+    "urls": [
+      "https://www.facebook.com",
+      "https://m.facebook.com",
+      "https://web.facebook.com"
+    ],
     "category": "Social"
   },
   {
     "title": "Pinterest",
     "url": "https://in.pinterest.com",
+    "urls": [
+      "https://in.pinterest.com",
+      "https://www.pinterest.com",
+      "https://pinterest.com"
+    ],
     "category": "Social"
   },
   {
     "title": "Instagram",
     "url": "https://www.instagram.com",
+    "urls": [
+      "https://www.instagram.com",
+      "https://instagram.com",
+      "https://www.instagram.com/?hl=en"
+    ],
     "category": "Social"
   },
   {
@@ -850,3 +895,4 @@
     "category": "Utilities"
   }
 ]
+
