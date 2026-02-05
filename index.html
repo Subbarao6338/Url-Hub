@@ -73,8 +73,15 @@
         <input type="text" id="tool-title" required placeholder="My Tool">
       </div>
       <div class="form-group">
-        <label>URL</label>
+        <label>Primary URL</label>
         <input type="url" id="tool-url" required placeholder="https://example.com">
+      </div>
+      <div class="form-group">
+        <label>Alternative URLs (Optional) <button type="button" class="btn-small" onclick="UI.addUrlField()">+ Add
+            URL</button></label>
+        <div id="alternative-urls-container">
+          <!-- Dynamic URL fields will be added here -->
+        </div>
       </div>
       <div class="form-group">
         <label>Icon (URL or Emoji) - Optional</label>
@@ -103,6 +110,7 @@
   <script src="links.json" type="application/json" id="data"></script>
   <script src="hub.js"></script>
 </body>
+
 
 
 </html>
