@@ -44,6 +44,37 @@ const Utils = {
       console.warn("Invalid URL:", urlStr);
       return urlStr.replace(/^https?:\/\//, '').split('/')[0];
     }
+  },
+
+  // Try opening URL with fallback support
+  tryUrlWithFallback(urls, linkTitle) {
+    if (!urls || urls.length === 0) return;
+
+    // Try primary URL first
+    const primaryUrl = urls[0];
+    const win = window.open(primaryUrl, '_blank', 'noopener,noreferrer');
+
+    // If there are fallback URLs and window didn't open, try fallbacks
+    if (urls.length > 1 && (!win || win.closed || typeof win.closed === 'undefined')) {
+      // Try next URL
+      let tried = 1;
+      const tryNext = () => {
+        if (tried < urls.length) {
+          const fallbackUrl = urls[tried];
+          console.log(`Trying fallback URL ${tried} for ${linkTitle}: ${fallbackUrl}`);
+          const fallbackWin = window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
+          tried++;
+
+          // If this also fails and we have more URLs, continue
+          if ((!fallbackWin || fallbackWin.closed || typeof fallbackWin.closed === 'undefined') && tried < urls.length) {
+            setTimeout(tryNext, 500);
+          }
+        }
+      };
+
+      // Give a small delay before trying fallback
+      setTimeout(tryNext, 300);
+    }
   }
 };
 
@@ -113,10 +144,13 @@ const Core = {
 
       STATE.links = raw.map(item => {
         let category = item.category || "Others";
+        // Support both single url and multiple urls
+        let urls = item.urls || [item.url];
         return {
           id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
           title: item.title,
-          url: item.url,
+          url: item.url, // Keep primary URL for backward compatibility
+          urls: urls, // Store all URLs for fallback
           icon: item.icon || "",
           category: category
         };
@@ -334,12 +368,19 @@ const UI = {
       grid.className = 'category-grid';
 
       grouped[cat].forEach((link, index) => {
-        const card = document.createElement('a');
+        const card = document.createElement('div');
         card.className = 'card';
         card.style.setProperty('--delay', index);
-        card.href = link.url;
-        card.target = '_blank';
-        card.rel = 'noopener noreferrer';
+
+        // Custom click handler for fallback support
+        card.onclick = (e) => {
+          // Don't trigger if clicking action buttons
+          if (e.target.closest('.card-actions')) return;
+          e.preventDefault();
+          const urls = link.urls || [link.url];
+          Utils.tryUrlWithFallback(urls, link.title);
+        };
+        card.style.cursor = 'pointer';
 
         // Icon Logic:
         // 1. User defined Icon (if emoji or URL)
@@ -363,14 +404,19 @@ const UI = {
           imgHtml = `<img src="${src}" class="card-icon" loading="lazy" onerror="this.src='${fallbackSvg}'; this.onerror=null;">`;
         }
 
+        // Check if multiple URLs exist
+        const urls = link.urls || [link.url];
+        const hasMultipleUrls = urls.length > 1;
+        const fallbackBadge = hasMultipleUrls ? `<span class="fallback-badge" title="${urls.length} URLs available: ${urls.join(', ')}">${urls.length} URLs</span>` : '';
+
         card.innerHTML = `
           <div class="card-header">
             ${imgHtml}
             <div class="card-title">${link.title}</div>
           </div>
-          <div class="card-url">${Utils.getHostname(link.url)}</div>
+          <div class="card-url">${Utils.getHostname(link.url)}${fallbackBadge}</div>
           
-          <div class="card-actions" onclick="event.preventDefault()">
+          <div class="card-actions" onclick="event.stopPropagation()">
              <button onclick="UI.openEdit('${link.id}')" title="Edit">✏️</button>
              <button class="btn-delete" onclick="Core.deleteLink('${link.id}')" title="Delete">🗑️</button>
           </div>
@@ -400,6 +446,8 @@ const UI = {
     document.getElementById('tool-form').reset();
     document.getElementById('edit-id').value = '';
     document.getElementById('modal-title').textContent = 'Add Tool';
+    // Clear alternative URLs
+    document.getElementById('alternative-urls-container').innerHTML = '';
   },
 
   openEdit(id) {
@@ -412,6 +460,15 @@ const UI = {
     document.getElementById('tool-icon').value = link.icon || '';
     document.getElementById('tool-category').value = link.category;
 
+    // Load alternative URLs
+    const container = document.getElementById('alternative-urls-container');
+    container.innerHTML = '';
+    const urls = link.urls || [link.url];
+    // Skip first URL (primary) and add the rest as alternatives
+    for (let i = 1; i < urls.length; i++) {
+      this.addUrlField(urls[i]);
+    }
+
     document.getElementById('modal-title').textContent = 'Edit Tool';
     this.openModal('modal-add');
   },
@@ -419,9 +476,20 @@ const UI = {
   handleFormSubmit(e) {
     e.preventDefault();
     const id = document.getElementById('edit-id').value;
+
+    // Collect all URLs (primary + alternatives)
+    const primaryUrl = document.getElementById('tool-url').value.trim();
+    const altUrlInputs = document.querySelectorAll('.alt-url-input');
+    const urls = [primaryUrl];
+    altUrlInputs.forEach(input => {
+      const val = input.value.trim();
+      if (val && val !== primaryUrl) urls.push(val);
+    });
+
     const data = {
       title: document.getElementById('tool-title').value.trim(),
-      url: document.getElementById('tool-url').value.trim(),
+      url: primaryUrl,
+      urls: urls, // Store all URLs
       icon: document.getElementById('tool-icon').value.trim(),
       category: document.getElementById('tool-category').value.trim() || 'Others'
     };
@@ -448,6 +516,18 @@ const UI = {
     const fab = container.querySelector('.fab');
     container.classList.remove('active');
     fab.classList.remove('active');
+  },
+
+  // Add URL field for alternative URLs
+  addUrlField(value = '') {
+    const container = document.getElementById('alternative-urls-container');
+    const wrapper = document.createElement('div');
+    wrapper.className = 'url-field-wrapper';
+    wrapper.innerHTML = `
+      <input type="url" class="alt-url-input" placeholder="https://alternative-url.com" value="${value}">
+      <button type="button" class="btn-remove" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(wrapper);
   }
 };
 
@@ -545,3 +625,4 @@ const PageTools = {
 
 // Initial Start
 Core.init();
+
