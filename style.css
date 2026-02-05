@@ -755,6 +755,28 @@ body::after {
   transform: translateX(0);
 }
 
+/* Fallback URL Badge */
+.fallback-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: var(--primary);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 8px;
+  margin-left: 6px;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+  transition: all 0.2s ease;
+}
+
+.card:hover .fallback-badge {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+}
+
+
 /* Card Actions */
 .card-actions {
   position: absolute;
@@ -984,7 +1006,7 @@ body::after {
   inset: 0;
   background: rgba(15, 23, 42, 0.4);
   backdrop-filter: blur(4px);
-  z-index: 1000;
+  z-index: 3000;
   animation: fadeIn 0.3s ease;
 }
 
@@ -1011,7 +1033,7 @@ body::after {
   border-radius: var(--radius-xl);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-lg);
-  z-index: 1001;
+  z-index: 3001;
   animation: modalSlide 0.4s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -1063,6 +1085,59 @@ body::after {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-glow);
 }
+
+/* URL Field Wrapper for Multiple URLs */
+.url-field-wrapper {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.url-field-wrapper input {
+  flex: 1;
+}
+
+.btn-small {
+  padding: 4px 12px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 8px;
+}
+
+.btn-small:hover {
+  background: var(--primary);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-remove {
+  padding: 8px 12px;
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-remove:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+#alternative-urls-container {
+  margin-top: 8px;
+}
+
 
 .form-actions {
   display: flex;
@@ -1204,5 +1279,4 @@ body::after {
   .tools-container {
     padding: 1.5rem;
   }
-
 }
