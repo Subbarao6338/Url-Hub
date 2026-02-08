@@ -73,17 +73,17 @@
   {
     "title": "JSFiddle",
     "url": "https://jsfiddle.net",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Regex101",
     "url": "https://regex101.com",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "JSON Formatter",
     "url": "https://jsonformatter.org",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "VirusTotal",
@@ -134,47 +134,47 @@
   {
     "title": "WolframAlpha (Mobile)",
     "url": "http://m.wolframalpha.com",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Omni Calculator",
     "url": "https://www.omnicalculator.com",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Unitto",
     "url": "https://sadellie.github.io/unitto/app",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "PDF24 Tools",
     "url": "https://www.pdf24.org/en",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Online-Convert",
     "url": "https://www.online-convert.com",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "123Apps",
     "url": "https://123apps.com",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Networking Toolbox",
     "url": "https://networking-toolbox.as93.net",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "OmniTools",
     "url": "https://omnitools.netlify.app",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Woodbox",
     "url": "https://ol.woobx.cn",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Notion",
@@ -249,7 +249,7 @@
   {
     "title": "Word Rank Calculator",
     "url": "https://l-kaushik.github.io/Word-rank-calculator/",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Remove BG",
@@ -259,12 +259,12 @@
   {
     "title": "APSRTC Live Track",
     "url": "https://apsrtclivetrack.com/",
-    "category": "Utilities"
+    "category": "Travel"
   },
   {
     "title": "Datayze",
     "url": "https://datayze.com/",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Indus App Store",
@@ -436,7 +436,7 @@
   {
     "title": "ILovePDF",
     "url": "https://www.ilovepdf.com/",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "OneDrive",
@@ -556,7 +556,7 @@
   {
     "title": "Vert.sh",
     "url": "https://vert.sh/",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Aixploria",
@@ -566,7 +566,7 @@
   {
     "title": "Yoink",
     "url": "https://yoink.tools/",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Open Directory Finder",
@@ -576,7 +576,7 @@
   {
     "title": "Raindrop.io",
     "url": "https://app.raindrop.io/",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Ente Auth",
@@ -656,7 +656,7 @@
   {
     "title": "Multi Calculator",
     "url": "https://www.multicalculator.app/",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Google AI Studio",
@@ -813,7 +813,7 @@
   {
     "title": "Airtel",
     "url": "https://www.airtel.in/",
-    "category": "Utilities"
+    "category": "Network"
   },
   {
     "title": "Flipkart",
@@ -873,12 +873,12 @@
   {
     "title": "AccuWeather",
     "url": "https://www.accuweather.com/",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Poco F5 Firmware (marble)",
     "url": "https://xmfirmwareupdater.com/firmware/marble/",
-    "category": "Utilities"
+    "category": "Tools"
   },
   {
     "title": "Modyolo",
@@ -1071,3 +1071,4 @@
   }
 
 ]
+
