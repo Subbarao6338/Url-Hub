@@ -704,11 +704,6 @@
     "category": "Linux"
   },
   {
-    "title": "Flathub",
-    "url": "https://flathub.org",
-    "category": "Linux"
-  },
-  {
     "title": "Repo Hub",
     "url": "https://repo-hub.com/",
     "category": "Linux"
@@ -1074,4 +1069,5 @@
     "optional_icon": "https://repology.org/favicon.ico",
     "category": "Linux"
   }
+
 ]
