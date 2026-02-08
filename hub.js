@@ -5,11 +5,10 @@ const STATE = {
   activeCategory: 'All', // 'All' or specific category name
   searchQuery: '',
   isDarkMode: localStorage.getItem('hub_theme') === 'dark',
-  sidebarCollapsed: localStorage.getItem('hub_sidebar_collapsed') === 'true'
+  isDropdownOpen: false
 };
 
 const CAT_ICONS = {
-  "Apps & Stores": "📱",
   "Privacy & Security": "🛡️",
   "AI": "🤖",
   "Utilities": "🛠️",
@@ -21,19 +20,21 @@ const CAT_ICONS = {
   "Social": "💬",
   "Anime": "🎌",
   "Streaming": "📺",
-  "Hosting": "🌐",
+  "Hosting": "🚀",
   "Banking / Finance": "🏦",
   "Email": "📧",
   "Storage": "☁️",
-  "Google": "🌐",
+  "Google": "�",
   "Personal": "👤",
   "Linux": "🐧",
   "Search": "🔍",
   "Jobs": "💼",
   "News": "📰",
   "Windows": "🪟",
-  "Sports": "⚽",
-  "All": "🏠"
+  // "Sports": "⚽",
+  "All": "🏠",
+  "Android": "📱",
+  "Web apps": "🌐"
 };
 
 const Utils = {
@@ -198,33 +199,43 @@ const Core = {
 // ============= UI MANAGER =============
 const UI = {
   init() {
-    this.renderSidebar();
+    this.renderBreadcrumb();
     this.render();
 
-    // Apply initial sidebar state
-    if (STATE.sidebarCollapsed && window.innerWidth > 768) {
-      document.querySelector('.sidebar').classList.add('collapsed');
-      document.querySelector('.main-content').classList.add('collapsed');
-    }
-
     // Event Listeners
+    // Search Toggle
+    const searchContainer = document.getElementById('search-container');
+    const searchInput = document.getElementById('search');
+
+    document.getElementById('search-toggle').addEventListener('click', (e) => {
+      e.stopPropagation();
+      searchContainer.classList.toggle('active');
+      if (searchContainer.classList.contains('active')) {
+        searchInput.focus();
+      }
+    });
+
+    // Close search on outside click
+    document.addEventListener('click', (e) => {
+      if (!searchContainer.contains(e.target) && searchContainer.classList.contains('active')) {
+        // Only close if input is empty
+        if (searchInput.value === '') {
+          searchContainer.classList.remove('active');
+        }
+      }
+    });
+
     document.getElementById('search').addEventListener('input', (e) => {
       STATE.searchQuery = e.target.value.toLowerCase();
       this.render();
     });
 
-    // Sidebar Toggles (Desktop & Mobile)
-    document.querySelectorAll('.sidebar-toggle-desktop, .sidebar-toggle-mobile').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-          document.querySelector('.sidebar').classList.toggle('open');
-        } else {
-          STATE.sidebarCollapsed = !STATE.sidebarCollapsed;
-          localStorage.setItem('hub_sidebar_collapsed', STATE.sidebarCollapsed);
-          document.querySelector('.sidebar').classList.toggle('collapsed');
-          document.querySelector('.main-content').classList.toggle('collapsed');
-        }
-      });
+    // Close Dropdown on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.breadcrumb-nav')) {
+        STATE.isDropdownOpen = false;
+        this.renderBreadcrumb();
+      }
     });
 
     // Close modal or FAB on outside click
@@ -244,82 +255,56 @@ const UI = {
     this.setupTooltips();
   },
 
-  setupTooltips() {
-    let tooltip = document.querySelector('.global-tooltip');
-    if (!tooltip) {
-      tooltip = document.createElement('div');
-      tooltip.className = 'global-tooltip';
-      document.body.appendChild(tooltip);
-    }
 
-    const showTooltip = (e) => {
-      const sidebar = document.querySelector('.sidebar');
-      if (!sidebar.classList.contains('collapsed') || window.innerWidth <= 768) return;
 
-      const label = e.currentTarget.getAttribute('data-label');
-      if (!label) return;
-
-      tooltip.textContent = label;
-      const rect = e.currentTarget.getBoundingClientRect();
-
-      tooltip.style.top = `${rect.top + (rect.height / 2) - (tooltip.offsetHeight / 2)}px`;
-      tooltip.style.left = `${rect.right + 14}px`;
-
-      // Force layout for transition
-      tooltip.offsetHeight;
-      tooltip.classList.add('active');
-    };
-
-    const hideTooltip = () => {
-      tooltip.classList.remove('active');
-    };
-
-    // Re-attach to all elements with data-label in sidebar
-    const targets = document.querySelectorAll('.sidebar [data-label]');
-    targets.forEach(target => {
-      target.removeEventListener('mouseenter', showTooltip);
-      target.removeEventListener('mouseleave', hideTooltip);
-      target.addEventListener('mouseenter', showTooltip);
-      target.addEventListener('mouseleave', hideTooltip);
-    });
-  },
-
-  renderSidebar() {
-    const nav = document.getElementById('category-filter');
+  renderBreadcrumb() {
+    const nav = document.getElementById('breadcrumb-nav');
     const stats = Core.getStats();
 
-    // Get all unique categories (defined icons + existing in data)
+    // Get all unique categories
     const definedCats = Object.keys(CAT_ICONS).filter(c => c !== 'All');
     const existingCats = Object.keys(stats);
     const allCats = [...new Set([...definedCats, ...existingCats])].sort((a, b) => a.localeCompare(b));
+    // Ensure 'All' is first or handled separately
 
-    let html = `<button class="category-btn ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All')" title="All Tools" data-label="All Tools">
-      <span class="icon">${CAT_ICONS["All"] || "🏠"}</span>
-      <span class="text">All Tools</span>
-      <span class="category-count">${STATE.links.length}</span>
-    </button>`;
-
-    allCats.forEach(cat => {
+    // Breadcrumb HTML
+    let html = `
+      <div style="position:relative">
+         <span class="breadcrumb-active breadcrumb-item" onclick="UI.toggleDropdown(event)">
+            ${CAT_ICONS[STATE.activeCategory] || '📂'} ${STATE.activeCategory} <span style="font-size:0.8em;opacity:0.6">▼</span>
+         </span>
+         
+         <div class="category-dropdown ${STATE.isDropdownOpen ? 'active' : ''}">
+             <div class="dropdown-item" onclick="UI.setCategory('All')">
+                <span>🏠 All Tools</span>
+                <span class="count">${STATE.links.length}</span>
+             </div>
+             ${allCats.map(cat => {
       const count = stats[cat] || 0;
-      html += `<button class="category-btn ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}')" title="${cat}" data-label="${cat}">
-        <span class="icon">${CAT_ICONS[cat] || "📦"}</span>
-        <span class="text">${cat}</span>
-        <span class="category-count">${count}</span>
-      </button>`;
-    });
+      return `
+                 <div class="dropdown-item" onclick="UI.setCategory('${cat}')">
+                    <span>${CAT_ICONS[cat] || '📦'} ${cat}</span>
+                    <span class="count">${count}</span>
+                 </div>`;
+    }).join('')}
+         </div>
+      </div>
+    `;
 
     nav.innerHTML = html;
-    this.setupTooltips(); // Refresh tooltips for new buttons
+  },
+
+  toggleDropdown(e) {
+    e.stopPropagation();
+    STATE.isDropdownOpen = !STATE.isDropdownOpen;
+    this.renderBreadcrumb();
   },
 
   setCategory(cat) {
     STATE.activeCategory = cat;
-    this.renderSidebar();
+    STATE.isDropdownOpen = false;
+    this.renderBreadcrumb();
     this.render();
-    // On mobile, close sidebar after selection
-    if (window.innerWidth <= 768) {
-      document.querySelector('.sidebar').classList.remove('open');
-    }
   },
 
   render() {
@@ -372,10 +357,47 @@ const UI = {
         card.className = 'card';
         card.style.setProperty('--delay', index);
 
+        // Long Press Logic
+        let pressTimer;
+        const startPress = (e) => {
+          // Only for multi-URL links
+          const urls = link.urls || [link.url];
+          if (urls.length <= 1) return;
+
+          pressTimer = setTimeout(() => {
+            // Flag the card to ignore the next click
+            card.setAttribute('data-long-press', 'true');
+            UI.openUrlSelectionModal(link);
+          }, 500); // 500ms long press
+        };
+
+        const cancelPress = () => {
+          clearTimeout(pressTimer);
+        };
+
+        // Touch events
+        card.addEventListener('touchstart', startPress, { passive: true });
+        card.addEventListener('touchend', cancelPress);
+        card.addEventListener('touchmove', cancelPress);
+
+        // Mouse events
+        card.addEventListener('mousedown', (e) => {
+          if (e.button === 0) startPress(e);
+        });
+        card.addEventListener('mouseup', cancelPress);
+        card.addEventListener('mouseleave', cancelPress);
+
         // Custom click handler for fallback support
         card.onclick = (e) => {
           // Don't trigger if clicking action buttons
           if (e.target.closest('.card-actions')) return;
+
+          // Ignore if long press triggered
+          if (card.getAttribute('data-long-press') === 'true') {
+            card.removeAttribute('data-long-press');
+            return;
+          }
+
           e.preventDefault();
           const urls = link.urls || [link.url];
           Utils.tryUrlWithFallback(urls, link.title);
@@ -401,7 +423,18 @@ const UI = {
           const fallback = CAT_ICONS[cat] || "🔗";
           const fallbackSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>${fallback}</text></svg>`;
 
-          imgHtml = `<img src="${src}" class="card-icon" loading="lazy" onerror="this.src='${fallbackSvg}'; this.onerror=null;">`;
+          // Optional Icon Logic
+          const optionalIcon = link.optional_icon ? `'${link.optional_icon}'` : 'null';
+
+          imgHtml = `<img src="${src}" class="card-icon" loading="lazy" onerror="
+              if (this.getAttribute('data-tried-optional') !== 'true' && ${optionalIcon}) {
+                  this.setAttribute('data-tried-optional', 'true');
+                  this.src = ${optionalIcon};
+              } else {
+                  this.src='${fallbackSvg}'; 
+                  this.onerror=null;
+              }
+          ">`;
         }
 
         // Check if multiple URLs exist
@@ -438,6 +471,25 @@ const UI = {
     // Populate Datalist for categories
     const dl = document.getElementById('category-list');
     dl.innerHTML = Object.keys(Core.getStats()).map(c => `<option value="${c}">`).join('');
+  },
+
+  openUrlSelectionModal(link) {
+    const modal = document.getElementById('modal-url-selection');
+    const list = document.getElementById('url-list');
+    const overlay = document.getElementById('modal-overlay');
+
+    // Populate List
+    const urls = link.urls || [link.url];
+    list.innerHTML = urls.map(url => `
+      <a href="${url}" target="_blank" class="url-btn" onclick="UI.closeModal()">
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px;">${url}</span>
+        <span class="url-btn-icon">🔗</span>
+      </a>
+    `).join('');
+
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+    STATE.isModalOpen = true; // Use existing state flag if applicable or just manage display
   },
 
   closeModal() {
@@ -500,7 +552,8 @@ const UI = {
       Core.addLink(data);
     }
     this.closeModal();
-    this.renderSidebar(); // Update counts
+    this.closeModal();
+    this.renderBreadcrumb(); // Update counts
   },
 
   // FAB Speed Dial

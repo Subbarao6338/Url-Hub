@@ -1,10 +1,5 @@
 [
   {
-    "title": "URL Hub Notion",
-    "url": "https://subbarao.notion.site/2fdb6c26d9ba80888226f7ec69c250d4?v=2fdb6c26d9ba80b0a31b000cc24a024c",
-    "category": "Productivity"
-  },
-  {
     "title": "Bitwarden Vault",
     "url": "https://vault.bitwarden.com/",
     "category": "Privacy & Security"
@@ -17,62 +12,58 @@
   {
     "title": "APKMirror",
     "url": "https://www.apkmirror.com",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "APKPure",
     "url": "https://apkpure.com",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "Aptoide",
     "url": "https://en.aptoide.com",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "FOSSdroid",
     "url": "https://fossdroid.com",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "OpenAPK",
     "url": "https://www.openapk.net",
-    "category": "Apps & Stores"
+    "optional_icon": "https://www.openapk.net/favicon.ico",
+    "category": "Android"
   },
   {
     "title": "IzzyOnDroid Repo",
     "url": "https://apt.izzysoft.de/fdroid",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "Accrescent",
     "url": "https://accrescent.app",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "AndroidFreeware",
     "url": "https://androidfreeware.net",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "LiteAPKs",
     "url": "https://liteapks.com/apps",
-    "category": "Apps & Stores"
-  },
-  {
-    "title": "AN1",
-    "url": "https://an1.com",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "Mobilism",
     "url": "https://forum.mobilism.org/viewforum.php?f=399",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "XDA Developers",
     "url": "https://forum.xda-developers.com",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "GitLab",
@@ -127,6 +118,7 @@
   {
     "title": "UPI Help (NPCI)",
     "url": "https://www.upihelp.npci.org.in",
+    "optional_icon": "https://www.npci.org.in/favicon.ico",
     "category": "Banking / Finance"
   },
   {
@@ -187,6 +179,11 @@
   {
     "title": "Notion",
     "url": "https://www.notion.so",
+    "urls": [
+      "https://subbarao.notion.site/2fdb6c26d9ba80888226f7ec69c250d4?v=2fdb6c26d9ba80b0a31b000cc24a024c",
+      "https://subbarao.notion.site/My-Life-Hub-1ebb6c26d9ba802fa6b2e3df077da3d9",
+      "https://subbarao.notion.site/Knowledge-21cb6c26d9ba808da8d4f72eb2193ca2"
+    ],
     "category": "Productivity"
   },
   {
@@ -247,17 +244,7 @@
   {
     "title": "Taskernet",
     "url": "https://taskernet.com/?public=&tags=&time=AllTime",
-    "category": "Apps & Stores"
-  },
-  {
-    "title": "My Life Hub ･ﾟ✧ | Notion",
-    "url": "https://subbarao.notion.site/My-Life-Hub-1ebb6c26d9ba802fa6b2e3df077da3d9",
-    "category": "Productivity"
-  },
-  {
-    "title": "Knowledge | Notion",
-    "url": "https://subbarao.notion.site/Knowledge-21cb6c26d9ba808da8d4f72eb2193ca2",
-    "category": "Productivity"
+    "category": "Android"
   },
   {
     "title": "Word Rank Calculator",
@@ -282,7 +269,7 @@
   {
     "title": "Indus App Store",
     "url": "https://www.indusappstore.com/apps/featured/",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "endoflife.date",
@@ -307,7 +294,7 @@
   {
     "title": "FTWA",
     "url": "https://ftwa.mathix.dev/",
-    "category": "Apps & Stores"
+    "category": "Web apps"
   },
   {
     "title": "v0",
@@ -327,6 +314,7 @@
   {
     "title": "Anyme Next",
     "url": "https://anyme-next.vercel.app/",
+    "optional_icon": "https://anyme-next.vercel.app/favicon.ico",
     "category": "Anime"
   },
   {
@@ -382,17 +370,17 @@
   {
     "title": "Store.app",
     "url": "https://store.app/",
-    "category": "Apps & Stores"
+    "category": "Web apps"
   },
   {
     "title": "We Share Apps",
     "url": "https://weshareapps.com/",
-    "category": "Apps & Stores"
+    "category": "Web apps"
   },
   {
     "title": "Appscope",
     "url": "https://appsco.pe/",
-    "category": "Apps & Stores"
+    "category": "Web apps"
   },
   {
     "title": "Gemini",
@@ -422,6 +410,7 @@
   {
     "title": "Gmail",
     "url": "https://mail.google.com/",
+    "optional_icon": "https://mail.google.com/favicon.ico",
     "urls": [
       "https://mail.google.com/",
       "https://mail.google.co.in/",
@@ -552,12 +541,12 @@
   {
     "title": "OpenApps",
     "url": "https://openapps.pro/",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "OpenAlternative",
     "url": "https://openalternative.co/",
-    "category": "Apps & Stores"
+    "category": "Web apps"
   },
   {
     "title": "DistroWatch",
@@ -647,17 +636,17 @@
   {
     "title": "Cafe Bazaar",
     "url": "https://cafebazaar.ir/app?l=en",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "Uptodown Android",
     "url": "https://en.uptodown.com/android",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "PlayStore Sales Free Apps",
     "url": "https://www.playstoresales.com/apps/free-apps",
-    "category": "Apps & Stores"
+    "category": "Android"
   },
   {
     "title": "Days Old",
@@ -732,6 +721,7 @@
   {
     "title": "Proton Mail",
     "url": "https://mail.proton.me/",
+    "optional_icon": "https://proton.me/favicons/favicon.ico",
     "category": "Email"
   },
   {
@@ -777,7 +767,7 @@
   {
     "title": "Awesome Privacy",
     "url": "https://awesome-privacy.xyz/",
-    "category": "Apps & Stores"
+    "category": "Privacy & Security"
   },
   {
     "title": "AITools.fyi",
@@ -812,6 +802,7 @@
   {
     "title": "addy.io",
     "url": "https://app.addy.io/",
+    "optional_icon": "https://addy.io/favicon.ico",
     "category": "Email"
   },
   {
@@ -893,6 +884,194 @@
     "title": "Poco F5 Firmware (marble)",
     "url": "https://xmfirmwareupdater.com/firmware/marble/",
     "category": "Utilities"
+  },
+  {
+    "title": "Modyolo",
+    "url": "https://modyolo.com/apps",
+    "category": "Android"
+  },
+  {
+    "title": "APKDone",
+    "url": "https://apkdone.com/app/",
+    "category": "Android"
+  },
+  {
+    "title": "Moddroid",
+    "url": "https://moddroid.com/apps/",
+    "category": "Android"
+  },
+  {
+    "title": "Shareware On Sale (Windows)",
+    "url": "https://sharewareonsale.com/?os=windows",
+    "optional_icon": "https://sharewareonsale.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "Shareware On Sale (Android)",
+    "url": "https://sharewareonsale.com/?os=android",
+    "optional_icon": "https://sharewareonsale.com/favicon.ico",
+    "category": "Android"
+  },
+  {
+    "title": "Rahim Soft",
+    "url": "https://rahim-soft.com/category/softwares/",
+    "optional_icon": "https://rahim-soft.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "PortableApps",
+    "url": "https://portableapps.com/",
+    "optional_icon": "https://portableapps.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "Ninite",
+    "url": "https://ninite.com/",
+    "optional_icon": "https://ninite.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "Giveaway of the Day (Windows)",
+    "url": "https://www.giveawayoftheday.com/",
+    "optional_icon": "https://www.giveawayoftheday.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "Giveaway of the Day (Android)",
+    "url": "https://android.giveawayoftheday.com/",
+    "optional_icon": "https://android.giveawayoftheday.com/favicon.ico",
+    "category": "Android"
+  },
+  {
+    "title": "Malavida (Windows)",
+    "url": "https://www.malavida.com/en/windows/",
+    "optional_icon": "https://www.malavida.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "Malavida (Android)",
+    "url": "https://www.malavida.com/en/android/",
+    "optional_icon": "https://www.malavida.com/favicon.ico",
+    "category": "Android"
+  },
+  {
+    "title": "GetIntoPC",
+    "url": "https://getintopc.com/",
+    "optional_icon": "https://getintopc.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "FilePuma",
+    "url": "https://www.filepuma.com/",
+    "optional_icon": "https://www.filepuma.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "FileHippo",
+    "url": "https://www.filehippo.com/",
+    "optional_icon": "https://www.filehippo.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "FileHorse",
+    "url": "https://www.filehorse.com/",
+    "optional_icon": "https://www.filehorse.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "Softpedia",
+    "url": "https://www.softpedia.com/",
+    "optional_icon": "https://www.softpedia.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "Softonic",
+    "url": "https://www.softonic.com/",
+    "optional_icon": "https://www.softonic.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "Download.com",
+    "url": "https://www.download.com/",
+    "optional_icon": "https://www.download.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "FileCR (Windows)",
+    "url": "https://filecr.com/ms-windows/",
+    "optional_icon": "https://filecr.com/favicon.ico",
+    "category": "Windows"
+  },
+  {
+    "title": "FileCR (Android)",
+    "url": "https://filecr.com/android/",
+    "optional_icon": "https://filecr.com/favicon.ico",
+    "category": "Android"
+  },
+  {
+    "title": "Repo Hub",
+    "url": "https://repo-hub.com/",
+    "optional_icon": "https://repo-hub.com/favicon.ico",
+    "category": "Linux"
+  },
+  {
+    "title": "Malavida (Linux)",
+    "url": "https://www.malavida.com/en/linux/",
+    "optional_icon": "https://www.malavida.com/favicon.ico",
+    "category": "Linux"
+  },
+  {
+    "title": "Softpedia Linux",
+    "url": "https://linux.softpedia.com/",
+    "optional_icon": "https://linux.softpedia.com/favicon.ico",
+    "category": "Linux"
+  },
+  {
+    "title": "FileHorse Linux",
+    "url": "https://www.filehorse.com/linux/",
+    "optional_icon": "https://www.filehorse.com/favicon.ico",
+    "category": "Linux"
+  },
+  {
+    "title": "FilePuma Linux",
+    "url": "https://www.filepuma.com/linux/",
+    "optional_icon": "https://www.filepuma.com/favicon.ico",
+    "category": "Linux"
+  },
+  {
+    "title": "FileHippo Linux",
+    "url": "https://www.filehippo.com/linux/",
+    "optional_icon": "https://www.filehippo.com/favicon.ico",
+    "category": "Linux"
+  },
+  {
+    "title": "Softonic Linux",
+    "url": "https://www.softonic.com/linux/",
+    "optional_icon": "https://www.softonic.com/favicon.ico",
+    "category": "Linux"
+  },
+  {
+    "title": "Flathub",
+    "url": "https://flathub.org/en",
+    "optional_icon": "https://flathub.org/favicon.ico",
+    "category": "Linux"
+  },
+  {
+    "title": "Snapcraft",
+    "url": "https://snapcraft.io/store",
+    "optional_icon": "https://snapcraft.io/favicon.ico",
+    "category": "Linux"
+  },
+  {
+    "title": "Distribution Hub",
+    "url": "https://distributionhub.github.io/",
+    "optional_icon": "https://distributionhub.github.io/favicon.ico",
+    "category": "Linux"
+  },
+  {
+    "title": "Repology",
+    "url": "https://repology.org/",
+    "optional_icon": "https://repology.org/favicon.ico",
+    "category": "Linux"
   }
 ]
-

@@ -11,30 +11,19 @@
 
 <body>
   <div class="app-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <button class="icon-btn sidebar-toggle-desktop" title="Toggle Sidebar" data-label="Expand Sidebar">☰</button>
-      </div>
-      <!-- Search removed from here -->
-      <nav id="category-filter" class="category-nav">
-        <!-- Categories injected here -->
-      </nav>
-      <!-- <div class="sidebar-footer"> -->
-      <!-- Actions moved to Floating Menu -->
-      <!-- </div> -->
-    </aside>
-
     <!-- Main Content -->
     <main class="main-content">
       <header class="top-bar">
-        <button class="icon-btn mobile-only sidebar-toggle-mobile" title="Toggle Sidebar">☰</button>
         <div class="logo-container">
           <img src="urlhub.png" alt="URL Hub Logo" class="app-logo">
           <h1 class="page-title">URL Hub</h1>
+          <nav id="breadcrumb-nav" class="breadcrumb-nav">
+            <!-- Breadcrumb injected here -->
+          </nav>
         </div>
         <div class="top-actions">
-          <div class="search-container">
+          <div class="search-container" id="search-container">
+            <button id="search-toggle" class="icon-btn" title="Search">🔍</button>
             <input type="search" id="search" placeholder="Search tools..." />
           </div>
           <!-- Page Tools merged here -->
@@ -62,6 +51,17 @@
 
   <!-- Modals -->
   <div id="modal-overlay" class="modal-overlay" style="display:none;"></div>
+
+  <!-- URL Selection Modal -->
+  <div id="modal-url-selection" class="modal" style="display:none;">
+    <h2 id="modal-title-urls">Select URL</h2>
+    <div id="url-list" class="url-list">
+      <!-- URLs injected here -->
+    </div>
+    <div class="form-actions">
+      <button type="button" onclick="UI.closeModal()">Cancel</button>
+    </div>
+  </div>
 
   <!-- Add/Edit Modal -->
   <div id="modal-add" class="modal" style="display:none;">
@@ -110,7 +110,5 @@
   <script src="links.json" type="application/json" id="data"></script>
   <script src="hub.js"></script>
 </body>
-
-
 
 </html>
