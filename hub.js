@@ -9,32 +9,43 @@ const STATE = {
 };
 
 const CAT_ICONS = {
-  "Privacy & Security": "🛡️",
-  "AI": "🤖",
-  "Utilities": "🛠️",
-  "Productivity": "⚡",
-  "Media": "🎬",
-  "Shopping": "🛍️",
-  "Others": "📦",
-  "Games": "🎮",
-  "Social": "💬",
-  "Anime": "🎌",
-  "Streaming": "📺",
-  "Hosting": "🚀",
-  "Banking / Finance": "🏦",
-  "Email": "📧",
-  "Storage": "☁️",
-  "Google": "�",
-  "Personal": "👤",
-  "Linux": "🐧",
-  "Search": "🔍",
-  "Jobs": "💼",
-  "News": "📰",
-  "Windows": "🪟",
-  // "Sports": "⚽",
   "All": "🏠",
-  "Android": "📱",
-  "Web apps": "🌐"
+
+  "Privacy & Security": "🔐",
+  "Network": "🌐",
+
+  "AI": "🧠",
+  "Tools": "🧰",
+  "Utilities": "⚙️",
+
+  "Productivity": "🚀",
+  "Personal": "👤",
+
+  "Media": "🎥",
+  "Streaming": "📺",
+  "Anime": "🍥",
+  "Games": "🎮",
+
+  "Shopping": "🛒",
+  "Banking / Finance": "💰",
+
+  "Email": "✉️",
+  "Storage": "☁️",
+  "Hosting": "🛰️",
+
+  "Google": "🟢",
+  "Search": "🔎",
+
+  "Social": "💬",
+  "News": "🗞️",
+  "Jobs": "🧑‍💼",
+
+  "Android": "🤖",
+  "Linux": "🐧",
+  "Windows": "🪟",
+
+  "Travel": "✈️",
+  "Web apps": "🕸️"
 };
 
 const Utils = {
@@ -678,4 +689,5 @@ const PageTools = {
 
 // Initial Start
 Core.init();
+
 
