@@ -219,11 +219,7 @@
   {
     "title": "Notion",
     "url": "https://www.notion.so",
-    "urls": [
-      "https://subbarao.notion.site/2fdb6c26d9ba80888226f7ec69c250d4?v=2fdb6c26d9ba80b0a31b000cc24a024c",
-      "https://subbarao.notion.site/My-Life-Hub-1ebb6c26d9ba802fa6b2e3df077da3d9",
-      "https://subbarao.notion.site/Knowledge-21cb6c26d9ba808da8d4f72eb2193ca2"
-    ],
+    "urls": ["https://subbarao.notion.site/Knowledge-21cb6c26d9ba808da8d4f72eb2193ca2"],
     "category": "Productivity"
   },
   {
