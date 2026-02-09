@@ -15,6 +15,36 @@
 "category": "Android"
 },
   {
+    "title": "Jio",
+    "url": "https://www.jio.com/",
+    "optional_icon": "https://www.jio.com/favicon.ico",
+    "category": "Network"
+  },
+  {
+    "title": "Uber",
+    "url": "https://m.uber.com/go/home",
+    "optional_icon": "https://www.uber.com/favicon.ico",
+    "category": "Travel"
+  },
+  {
+    "title": "Google Maps",
+    "url": "https://www.google.com/maps",
+    "optional_icon": "https://www.google.com/favicon.ico",
+    "category": "Travel"
+  },
+  {
+    "title": "AbhiBus",
+    "url": "https://www.abhibus.com/",
+    "optional_icon": "https://www.abhibus.com/favicon.ico",
+    "category": "Travel"
+  },
+  {
+    "title": "IRCTC",
+    "url": "https://www.irctc.co.in/",
+    "optional_icon": "https://www.irctc.co.in/favicon.ico",
+    "category": "Travel"
+  },
+  {
     "title": "APKMirror",
     "url": "https://www.apkmirror.com",
     "category": "Android"
