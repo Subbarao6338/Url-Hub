@@ -9,11 +9,11 @@
     "url": "https://www.pgsharp.com/",
     "category": "Games"
   },
-{
-"title": "Appsales",
-"url": "https://www.app-sales.net/nowfree/",
-"category": "Android"
-},
+  {
+    "title": "Appsales",
+    "url": "https://www.app-sales.net/nowfree/",
+    "category": "Android"
+  },
   {
     "title": "Jio",
     "url": "https://www.jio.com/",
@@ -1106,4 +1106,5 @@
   }
 
 ]
+
 
