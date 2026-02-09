@@ -1,5 +1,10 @@
 [
   {
+    "title": "Panchang",
+    "url": "https://www.drikpanchang.com/",
+    "category": "Utilities"
+  },
+  {
     "title": "Bitwarden Vault",
     "url": "https://vault.bitwarden.com/",
     "category": "Privacy & Security"
