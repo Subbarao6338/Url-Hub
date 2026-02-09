@@ -2,7 +2,7 @@
 
 ![URL Hub Screenshot](./urlhub.png)
 
-A personal, offline-first dashboard to organize and access your favorite tools, websites, and resources.
+A personal dashboard to organize and access your favorite websites.
 
 ## Features
 
@@ -10,7 +10,7 @@ A personal, offline-first dashboard to organize and access your favorite tools, 
 - **Search**: Real-time filtering by title or URL.
 - **Local Storage**: Your changes (adding, editing, deleting links) are saved locally in your browser, so they persist across sessions.
 - **Dark/Light Mode**: Toggle between themes based on your preference.
-- **Responsive Design**: Works on desktop and mobile devices with a collapsible sidebar.
+- **Responsive Design**: Works on desktop and mobile devices.
 - **Import/Export**: Backup your links to a JSON file and restore them later.
 - **Privacy Focused**: No external tracking; everything runs locally.
 
@@ -24,7 +24,7 @@ A personal, offline-first dashboard to organize and access your favorite tools, 
 
 ## File Structure
 
-- `tools.html`: The main entry point for the application.
+- `index.html`: The main entry point for the application.
 - `hub.js`: Contains all the logic for the dashboard, including state management and UI rendering.
 - `style.css`: Styles for the application.
 - `links.json`: The default list of links used to populate the dashboard if no local data is found.
@@ -33,7 +33,7 @@ A personal, offline-first dashboard to organize and access your favorite tools, 
 
 You can manually edit `links.json` to change the default set of links that load for a new user (or if you clear your local storage).
 
-Mofidy the `links.json` file with the following structure:
+Modify the `links.json` file with the following structure:
 
 ```json
 [
