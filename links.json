@@ -26,6 +26,11 @@
     "category": "Network"
   },
   {
+    "title": "Cobalt",
+    "url": "https://cobalt.tools/",
+    "category": "Tools"
+  },
+  {
     "title": "Uber",
     "url": "https://m.uber.com/go/home",
     "optional_icon": "https://www.uber.com/favicon.ico",
@@ -1107,6 +1112,7 @@
   }
 
 ]
+
 
 
 
