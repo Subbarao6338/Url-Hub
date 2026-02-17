@@ -409,6 +409,9 @@
   {
     "title": "Netflix Mirror",
     "url": "https://m.netflixmirror.com/home",
+    "urls": [
+      "https://net22.cc/home"
+    ],
     "category": "Streaming"
   },
   {
@@ -1123,4 +1126,5 @@
     "optional_icon": "https://repology.org/favicon.ico",
     "category": "Linux"
   }
+
 ]
