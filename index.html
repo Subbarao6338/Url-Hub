@@ -7,6 +7,7 @@
   <title>URL Hub</title>
   <link rel="icon" href="backlink.png">
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
 <body>
@@ -39,6 +40,9 @@
             </div>
             <button class="fab" onclick="UI.toggleFab()" title="Menu">☰</button>
           </div>
+          <button id="about-toggle" onclick="UI.openAboutModal()" title="About">
+            <span class="material-icons">info</span>
+          </button>
           <button id="theme-toggle" onclick="PageTools.toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
         </div>
       </header>
@@ -98,6 +102,19 @@
         <button type="submit" class="btn-primary">Save</button>
       </div>
     </form>
+  </div>
+
+  <!-- About Modal -->
+  <div id="modal-about" class="modal" style="display:none;">
+    <div class="modal-header">
+      <h2><span class="material-icons">info</span> Description </h2>
+      <button class="modal-close" onclick="UI.closeAboutModal()" title="Close">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    <div class="about-content" id="about-content">
+      <!-- README content will be injected here -->
+    </div>
   </div>
 
   <!-- Iframe viewer -->

@@ -592,6 +592,76 @@ const UI = {
       <button type="button" class="btn-remove" onclick="this.parentElement.remove()">✕</button>
     `;
     container.appendChild(wrapper);
+  },
+
+  // About Modal Functions
+  async openAboutModal() {
+    this.closeFab();
+    const modal = document.getElementById('modal-about');
+    const overlay = document.getElementById('modal-overlay');
+    const content = document.getElementById('about-content');
+
+    // Load README content
+    try {
+      const response = await fetch('README.md');
+      if (response.ok) {
+        const markdown = await response.text();
+        content.innerHTML = this.markdownToHTML(markdown);
+      } else {
+        content.innerHTML = '<p>Unable to load README content.</p>';
+      }
+    } catch (error) {
+      console.error('Error loading README:', error);
+      content.innerHTML = '<p>Error loading README content.</p>';
+    }
+
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+  },
+
+  closeAboutModal() {
+    document.getElementById('modal-about').style.display = 'none';
+    document.getElementById('modal-overlay').style.display = 'none';
+  },
+
+  // Simple Markdown to HTML converter
+  markdownToHTML(markdown) {
+    let html = markdown;
+
+    // Convert images (must be before links to avoid conflicts)
+    html = html.replace(/!\[(.*?)\]\((.*?)\)/gim, '<img src="$2" alt="$1" style="max-width: 100%; height: auto; border-radius: 12px; margin: 1rem 0; box-shadow: var(--shadow-md);">');
+
+    // Convert headings
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+    // Convert bold
+    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+
+    // Convert code blocks
+    html = html.replace(/```json\n([\s\S]*?)```/gim, '<pre><code>$1</code></pre>');
+    html = html.replace(/```([\s\S]*?)```/gim, '<pre><code>$1</code></pre>');
+
+    // Convert inline code
+    html = html.replace(/`([^`]+)`/gim, '<code>$1</code>');
+
+    // Convert unordered lists
+    html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+
+    // Convert numbered lists
+    html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+
+    // Convert paragraphs (lines separated by blank lines)
+    html = html.split('\n\n').map(para => {
+      if (!para.match(/^<[h|u|o|p|l|i]/)) {
+        return '<p>' + para.replace(/\n/g, ' ') + '</p>';
+      }
+      return para;
+    }).join('\n');
+
+    return html;
   }
 };
 

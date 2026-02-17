@@ -16,6 +16,7 @@
 
   --surface: rgba(255, 255, 255, 0.7);
   --surface-hover: rgba(255, 255, 255, 0.85);
+  --surface-solid: rgba(255, 255, 255, 0.95);
   --on-surface: #1e293b;
   --text-muted: #64748b;
   --border: rgba(226, 232, 240, 0.8);
@@ -60,6 +61,7 @@
 
   --surface: rgba(30, 41, 59, 0.4);
   --surface-hover: rgba(30, 41, 59, 0.6);
+  --surface-solid: rgba(30, 41, 59, 0.95);
   --on-surface: #f1f5f9;
   --text-muted: #94a3b8;
   --border: rgba(51, 65, 85, 0.4);
@@ -229,7 +231,7 @@ body::after {
 
 .search-container.active {
   border-color: var(--primary);
-  background: var(--surface);
+  background: var(--surface-solid);
   box-shadow: 0 0 0 3px var(--primary-glow);
 }
 
@@ -557,6 +559,31 @@ body::after {
 .top-actions button#theme-toggle:hover {
   background: var(--surface-hover);
   transform: rotate(15deg);
+}
+
+.top-actions button#about-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.top-actions button#about-toggle .material-icons {
+  font-size: 20px;
+  color: var(--on-surface);
+}
+
+.top-actions button#about-toggle:hover {
+  background: var(--surface-hover);
+  transform: scale(1.1);
 }
 
 .tools-container {
@@ -1344,6 +1371,118 @@ body::after {
   white-space: nowrap;
 }
 
+/* About Modal Styles */
+#modal-about {
+  max-width: 700px;
+  max-height: 85vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+#modal-about .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+#modal-about .modal-header h2 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#modal-about .modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+#modal-about .modal-close .material-icons {
+  font-size: 24px;
+}
+
+#modal-about .modal-close:hover {
+  background: var(--surface-hover);
+  color: var(--on-surface);
+}
+
+#modal-about .about-content {
+  line-height: 1.7;
+  color: var(--on-surface);
+}
+
+#modal-about .about-content h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+#modal-about .about-content h2 {
+  font-size: 1.4rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--on-surface);
+  font-weight: 600;
+}
+
+#modal-about .about-content ul,
+#modal-about .about-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+#modal-about .about-content li {
+  margin-bottom: 0.5rem;
+}
+
+#modal-about .about-content p {
+  margin-bottom: 1rem;
+}
+
+#modal-about .about-content code {
+  background: var(--surface);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  color: var(--primary);
+}
+
+#modal-about .about-content pre {
+  background: var(--surface);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+}
+
+#modal-about .about-content pre code {
+  background: transparent;
+  padding: 0;
+  color: var(--on-surface);
+}
+
+#modal-about .about-content strong {
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .category-grid {
@@ -1376,10 +1515,9 @@ body::after {
   }
 
   .page-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-right: 0.5rem;
-    display: none;
-    /* Hide title on very small screens if needed, or keep */
+    /* Title now visible on mobile */
   }
 
   .logo-container {
