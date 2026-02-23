@@ -1,5 +1,55 @@
 [
   {
+    "title": "Aadhaar (UIDAI)",
+    "url": "https://myaadhaar.uidai.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "PAN Card (UTIITSL/NSDL)",
+    "url": "https://www.pan.utiitsl.com/PAN/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Vehicle Search (Parivahan)",
+    "url": "https://vahan.parivahan.gov.in/nrservices/",
+    "category": "Government Services"
+  },
+  {
+    "title": "EPFO Member Unified Portal",
+    "url": "https://unifiedportal-mem.epfindia.gov.in/memberinterface/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Income Tax e-Filing",
+    "url": "https://www.incometax.gov.in/iec/foportal/",
+    "category": "Government Services"
+  },
+  {
+    "title": "DigiLocker",
+    "url": "https://www.digilocker.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Voters' Services Portal (ECI)",
+    "url": "https://voters.eci.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Andhra Pradesh Mee Seva (AP Seva)",
+    "url": "https://ap.meeseva.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Passport Seva",
+    "url": "https://www.passportindia.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "UMANG",
+    "url": "https://web.umang.gov.in/",
+    "category": "Government Services"
+  },
+  {
    "title": "PaperKnife",
    "url": "https://potatameister.github.io/PaperKnife/",
    "category": "Tools" 
