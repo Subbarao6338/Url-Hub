@@ -37,13 +37,14 @@
                 <input type="file" accept="application/json" onchange="Tools.importData(this)" />
               </label>
               <button class="fab-item" data-label="Reset Dashboard" onclick="Tools.resetData()">↺</button>
-            </div>
-            <button class="fab" onclick="UI.toggleFab()" title="Menu">☰</button>
-          </div>
-          <button id="about-toggle" onclick="UI.openAboutModal()" title="About">
+              <button id="about-toggle" onclick="UI.openAboutModal()" title="About">
             <span class="material-icons">info</span>
           </button>
           <button id="theme-toggle" onclick="PageTools.toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
+            </div>
+            <button class="fab" onclick="UI.toggleFab()" title="Menu">☰</button>
+          </div>
+          
         </div>
       </header>
 
@@ -127,5 +128,6 @@
   <script src="links.json" type="application/json" id="data"></script>
   <script src="hub.js"></script>
 </body>
+
 
 </html>
