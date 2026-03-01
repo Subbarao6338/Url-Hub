@@ -10,7 +10,7 @@ const STATE = {
 
 const CAT_ICONS = {
   "All": "🏠",
-
+  "Government Services": "🏛️",
   "Privacy & Security": "🔐",
   "Network": "🌐",
 
@@ -759,5 +759,6 @@ const PageTools = {
 
 // Initial Start
 Core.init();
+
 
 
