@@ -1,4 +1,119 @@
-[
+[ 
+  {
+    "title": "Aadhaar (UIDAI)",
+    "url": "https://myaadhaar.uidai.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "PAN Card (UTIITSL/NSDL)",
+    "url": "https://www.pan.utiitsl.com/PAN/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Sanchar Saathi",
+    "url": "https://www.sancharsaathi.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "BIS Care (Product Verification)",
+    "url": "https://www.manakonline.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Vehicle Search (Parivahan)",
+    "url": "https://vahan.parivahan.gov.in/nrservices/",
+    "category": "Government Services"
+  },
+  {
+    "title": "EPFO Member Unified Portal",
+    "url": "https://unifiedportal-mem.epfindia.gov.in/memberinterface/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Income Tax e-Filing",
+    "url": "https://www.incometax.gov.in/iec/foportal/",
+    "category": "Government Services"
+  },
+  {
+    "title": "DigiLocker",
+    "url": "https://www.digilocker.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Voters' Services Portal (ECI)",
+    "url": "https://voters.eci.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Andhra Pradesh Mee Seva (AP Seva)",
+    "url": "https://ap.meeseva.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Passport Seva",
+    "url": "https://www.passportindia.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "UMANG",
+    "url": "https://web.umang.gov.in/",
+    "category": "Government Services"
+  },
+  {
+    "title": "Sarvam AI (Indus Chat)",
+    "url": "https://www.sarvam.ai/",
+    "category": "AI"
+  },
+  {
+    "title": "TransUnion CIBIL",
+    "url": "https://www.cibil.com/",
+    "category": "Banking / Finance"
+  },
+  {
+    "title": "Experian India",
+    "url": "https://www.experian.in/",
+    "category": "Banking / Finance"
+  },
+  {
+    "title": "Equifax India",
+    "url": "https://www.equifax.co.in/",
+    "category": "Banking / Finance"
+  },
+  {
+    "title": "CRIF High Mark",
+    "url": "https://www.crifhighmark.com/",
+    "category": "Banking / Finance"
+  },
+  {
+    "title": "Anumati (Perfios AA)",
+    "url": "https://www.anumati.co.in/",
+    "category": "Banking / Finance"
+  },
+  {
+    "title": "Finvu (Cookiejar Technologies)",
+    "url": "https://finvu.in/",
+    "category": "Banking / Finance"
+  },
+  {
+    "title": "CAMSfinserv",
+    "url": "https://www.camsfinserv.com/",
+    "category": "Banking / Finance"
+  },
+  {
+    "title": "OneMoney",
+    "url": "https://www.onemoney.in/",
+    "category": "Banking / Finance"
+  },
+  {
+    "title": "redBus",
+    "url": "https://www.redbus.in/",
+    "category": "Travel"
+  },
+  {
+    "title": "APSRTC Official Booking",
+    "url": "https://www.apsrtconline.in/",
+    "category": "Travel"
+  },
   {
     "title": "NewAiPrompt",
     "url": "https://newaiprompt.com/",
@@ -1188,3 +1303,4 @@
   }
 
 ]
+
