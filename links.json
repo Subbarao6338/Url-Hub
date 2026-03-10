@@ -1,4 +1,4 @@
-[ 
+[
   {
     "title": "1TamilMV",
     "url": "https://www.1tamilmv.lc",
@@ -22,6 +22,7 @@
   },
   {
     "title": "5MovieRulz",
+    "url": "https://www.5movierulz.claims/",
     "urls": [
       "https://www.5movierulz.claims/",
       "https://5movierulz.skin/",
@@ -30,445 +31,702 @@
       "https://5movierulz.ht/",
       "https://5movierulz.is/"
     ],
-    "url": "https://www.5movierulz.claims/",
     "category": "Streaming"
   },
   {
     "title": "Seelen UI",
     "url": "https://seelen.io/",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://seelen.io/"
+    ]
   },
   {
     "title": "Pinokio",
     "url": "https://pinokio.co/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://pinokio.co/"
+    ]
   },
   {
     "title": "Windhawk",
     "url": "https://windhawk.net/",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://windhawk.net/"
+    ]
   },
   {
     "title": "ChatGPT Free",
     "url": "https://chatgptfree.ai/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://chatgptfree.ai/"
+    ]
   },
   {
     "title": "Myal",
     "url": "https://myal.vercel.app/",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://myal.vercel.app/"
+    ]
   },
   {
     "title": "Hicine",
     "url": "https://hicine.app/",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://hicine.app/"
+    ]
   },
   {
     "title": "Wotaku Wiki",
     "url": "https://wotaku.wiki/",
-    "category": "Manga / Anime"
+    "category": "Manga / Anime",
+    "urls": [
+      "https://wotaku.wiki/"
+    ]
   },
   {
     "title": "FreeCut",
     "url": "https://freecut-sandy.vercel.app/",
-    "category": "Media"
+    "category": "Media",
+    "urls": [
+      "https://freecut-sandy.vercel.app/"
+    ]
   },
   {
     "title": "Aadhaar (UIDAI)",
     "url": "https://myaadhaar.uidai.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://myaadhaar.uidai.gov.in/"
+    ]
   },
   {
     "title": "PAN Card (UTIITSL/NSDL)",
     "url": "https://www.pan.utiitsl.com/PAN/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://www.pan.utiitsl.com/PAN/"
+    ]
   },
   {
     "title": "Sanchar Saathi",
     "url": "https://www.sancharsaathi.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://www.sancharsaathi.gov.in/"
+    ]
   },
   {
     "title": "BIS Care (Product Verification)",
     "url": "https://www.manakonline.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://www.manakonline.in/"
+    ]
   },
   {
     "title": "Vehicle Search (Parivahan)",
     "url": "https://vahan.parivahan.gov.in/nrservices/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://vahan.parivahan.gov.in/nrservices/"
+    ]
   },
   {
     "title": "EPFO Member Unified Portal",
     "url": "https://unifiedportal-mem.epfindia.gov.in/memberinterface/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://unifiedportal-mem.epfindia.gov.in/memberinterface/"
+    ]
   },
   {
     "title": "Income Tax e-Filing",
     "url": "https://www.incometax.gov.in/iec/foportal/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://www.incometax.gov.in/iec/foportal/"
+    ]
   },
   {
     "title": "DigiLocker",
     "url": "https://www.digilocker.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://www.digilocker.gov.in/"
+    ]
   },
   {
     "title": "Voters' Services Portal (ECI)",
     "url": "https://voters.eci.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://voters.eci.gov.in/"
+    ]
   },
   {
     "title": "Andhra Pradesh Mee Seva (AP Seva)",
     "url": "https://ap.meeseva.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://ap.meeseva.gov.in/"
+    ]
   },
   {
     "title": "Passport Seva",
     "url": "https://www.passportindia.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://www.passportindia.gov.in/"
+    ]
   },
   {
     "title": "UMANG",
     "url": "https://web.umang.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://web.umang.gov.in/"
+    ]
   },
   {
     "title": "Sarvam AI (Indus Chat)",
     "url": "https://www.sarvam.ai/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://www.sarvam.ai/"
+    ]
   },
   {
     "title": "TransUnion CIBIL",
     "url": "https://www.cibil.com/",
-    "category": "Banking / Finance"
+    "category": "Banking / Finance",
+    "urls": [
+      "https://www.cibil.com/"
+    ]
   },
   {
     "title": "Experian India",
     "url": "https://www.experian.in/",
-    "category": "Banking / Finance"
+    "category": "Banking / Finance",
+    "urls": [
+      "https://www.experian.in/"
+    ]
   },
   {
     "title": "Equifax India",
     "url": "https://www.equifax.co.in/",
-    "category": "Banking / Finance"
+    "category": "Banking / Finance",
+    "urls": [
+      "https://www.equifax.co.in/"
+    ]
   },
   {
     "title": "CRIF High Mark",
     "url": "https://www.crifhighmark.com/",
-    "category": "Banking / Finance"
+    "category": "Banking / Finance",
+    "urls": [
+      "https://www.crifhighmark.com/"
+    ]
   },
   {
     "title": "Anumati (Perfios AA)",
     "url": "https://www.anumati.co.in/",
-    "category": "Banking / Finance"
+    "category": "Banking / Finance",
+    "urls": [
+      "https://www.anumati.co.in/"
+    ]
   },
   {
     "title": "Finvu (Cookiejar Technologies)",
     "url": "https://finvu.in/",
-    "category": "Banking / Finance"
+    "category": "Banking / Finance",
+    "urls": [
+      "https://finvu.in/"
+    ]
   },
   {
     "title": "CAMSfinserv",
     "url": "https://www.camsfinserv.com/",
-    "category": "Banking / Finance"
+    "category": "Banking / Finance",
+    "urls": [
+      "https://www.camsfinserv.com/"
+    ]
   },
   {
     "title": "OneMoney",
     "url": "https://www.onemoney.in/",
-    "category": "Banking / Finance"
+    "category": "Banking / Finance",
+    "urls": [
+      "https://www.onemoney.in/"
+    ]
   },
   {
     "title": "redBus",
     "url": "https://www.redbus.in/",
-    "category": "Travel"
+    "category": "Travel",
+    "urls": [
+      "https://www.redbus.in/"
+    ]
   },
   {
     "title": "APSRTC Official Booking",
     "url": "https://www.apsrtconline.in/",
-    "category": "Travel"
+    "category": "Travel",
+    "urls": [
+      "https://www.apsrtconline.in/"
+    ]
   },
   {
     "title": "NewAiPrompt",
     "url": "https://newaiprompt.com/",
-    "category": "AI" 
+    "category": "AI",
+    "urls": [
+      "https://newaiprompt.com/"
+    ]
   },
   {
     "title": "Aadhaar (UIDAI)",
     "url": "https://myaadhaar.uidai.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://myaadhaar.uidai.gov.in/"
+    ]
   },
   {
     "title": "PAN Card (UTIITSL/NSDL)",
     "url": "https://www.pan.utiitsl.com/PAN/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://www.pan.utiitsl.com/PAN/"
+    ]
   },
   {
     "title": "Vehicle Search (Parivahan)",
     "url": "https://vahan.parivahan.gov.in/nrservices/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://vahan.parivahan.gov.in/nrservices/"
+    ]
   },
   {
     "title": "EPFO Member Unified Portal",
     "url": "https://unifiedportal-mem.epfindia.gov.in/memberinterface/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://unifiedportal-mem.epfindia.gov.in/memberinterface/"
+    ]
   },
   {
     "title": "Income Tax e-Filing",
     "url": "https://www.incometax.gov.in/iec/foportal/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://www.incometax.gov.in/iec/foportal/"
+    ]
   },
   {
     "title": "DigiLocker",
     "url": "https://www.digilocker.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://www.digilocker.gov.in/"
+    ]
   },
   {
     "title": "Voters' Services Portal (ECI)",
     "url": "https://voters.eci.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://voters.eci.gov.in/"
+    ]
   },
   {
     "title": "Andhra Pradesh Mee Seva (AP Seva)",
     "url": "https://ap.meeseva.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://ap.meeseva.gov.in/"
+    ]
   },
   {
     "title": "Passport Seva",
     "url": "https://www.passportindia.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://www.passportindia.gov.in/"
+    ]
   },
   {
     "title": "UMANG",
     "url": "https://web.umang.gov.in/",
-    "category": "Government Services"
+    "category": "Government Services",
+    "urls": [
+      "https://web.umang.gov.in/"
+    ]
   },
   {
-   "title": "PaperKnife",
-   "url": "https://potatameister.github.io/PaperKnife/",
-   "category": "Tools" 
+    "title": "PaperKnife",
+    "url": "https://potatameister.github.io/PaperKnife/",
+    "category": "Tools",
+    "urls": [
+      "https://potatameister.github.io/PaperKnife/"
+    ]
   },
   {
     "title": "Panchang",
     "url": "https://www.drikpanchang.com/",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://www.drikpanchang.com/"
+    ]
   },
   {
     "title": "Bitwarden Vault",
     "url": "https://vault.bitwarden.com/",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://vault.bitwarden.com/"
+    ]
   },
   {
     "title": "PGSharp",
     "url": "https://www.pgsharp.com/",
-    "category": "Games"
+    "category": "Games",
+    "urls": [
+      "https://www.pgsharp.com/"
+    ]
   },
   {
     "title": "Appsales",
     "url": "https://www.app-sales.net/nowfree/",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://www.app-sales.net/nowfree/"
+    ]
   },
   {
     "title": "Jio",
     "url": "https://www.jio.com/",
     "optional_icon": "https://www.jio.com/favicon.ico",
-    "category": "Network"
+    "category": "Network",
+    "urls": [
+      "https://www.jio.com/"
+    ]
   },
   {
     "title": "Cobalt",
     "url": "https://cobalt.tools/",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://cobalt.tools/"
+    ]
   },
   {
     "title": "Uber",
     "url": "https://m.uber.com/go/home",
     "optional_icon": "https://www.uber.com/favicon.ico",
-    "category": "Travel"
+    "category": "Travel",
+    "urls": [
+      "https://m.uber.com/go/home"
+    ]
   },
   {
     "title": "Google Maps",
     "url": "https://www.google.com/maps",
     "optional_icon": "https://www.google.com/favicon.ico",
-    "category": "Travel"
+    "category": "Travel",
+    "urls": [
+      "https://www.google.com/maps"
+    ]
   },
   {
     "title": "AbhiBus",
     "url": "https://www.abhibus.com/",
     "optional_icon": "https://www.abhibus.com/favicon.ico",
-    "category": "Travel"
+    "category": "Travel",
+    "urls": [
+      "https://www.abhibus.com/"
+    ]
   },
   {
     "title": "IRCTC",
     "url": "https://www.irctc.co.in/",
     "optional_icon": "https://www.irctc.co.in/favicon.ico",
-    "category": "Travel"
+    "category": "Travel",
+    "urls": [
+      "https://www.irctc.co.in/"
+    ]
   },
   {
     "title": "APKMirror",
     "url": "https://www.apkmirror.com",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://www.apkmirror.com"
+    ]
   },
   {
     "title": "APKPure",
     "url": "https://apkpure.com",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://apkpure.com"
+    ]
   },
   {
     "title": "Aptoide",
     "url": "https://en.aptoide.com",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://en.aptoide.com"
+    ]
   },
   {
     "title": "FOSSdroid",
     "url": "https://fossdroid.com",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://fossdroid.com"
+    ]
   },
   {
     "title": "OpenAPK",
     "url": "https://www.openapk.net",
     "optional_icon": "https://www.openapk.net/favicon.ico",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://www.openapk.net"
+    ]
   },
   {
     "title": "IzzyOnDroid Repo",
     "url": "https://apt.izzysoft.de/fdroid",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://apt.izzysoft.de/fdroid"
+    ]
   },
   {
     "title": "Accrescent",
     "url": "https://accrescent.app",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://accrescent.app"
+    ]
   },
   {
     "title": "AndroidFreeware",
     "url": "https://androidfreeware.net",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://androidfreeware.net"
+    ]
   },
   {
     "title": "LiteAPKs",
     "url": "https://liteapks.com/apps",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://liteapks.com/apps"
+    ]
   },
   {
     "title": "Mobilism",
     "url": "https://forum.mobilism.org/viewforum.php?f=399",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://forum.mobilism.org/viewforum.php?f=399"
+    ]
   },
   {
     "title": "XDA Developers",
     "url": "https://forum.xda-developers.com",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://forum.xda-developers.com"
+    ]
   },
   {
     "title": "GitLab",
     "url": "https://gitlab.com",
-    "category": "Hosting"
+    "category": "Hosting",
+    "urls": [
+      "https://gitlab.com"
+    ]
   },
   {
     "title": "JSFiddle",
     "url": "https://jsfiddle.net",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://jsfiddle.net"
+    ]
   },
   {
     "title": "Regex101",
     "url": "https://regex101.com",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://regex101.com"
+    ]
   },
   {
     "title": "JSON Formatter",
     "url": "https://jsonformatter.org",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://jsonformatter.org"
+    ]
   },
   {
     "title": "VirusTotal",
     "url": "https://www.virustotal.com",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://www.virustotal.com"
+    ]
   },
   {
     "title": "Have I Been Pwned",
     "url": "https://haveibeenpwned.com",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://haveibeenpwned.com"
+    ]
   },
   {
     "title": "Can I Use",
     "url": "https://caniuse.com",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://caniuse.com"
+    ]
   },
   {
     "title": "Hugging Face",
     "url": "https://huggingface.co",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://huggingface.co"
+    ]
   },
   {
     "title": "Cloudflare DNS",
     "url": "https://1.1.1.1",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://1.1.1.1"
+    ]
   },
   {
     "title": "Exodus Privacy",
     "url": "https://reports.exodus-privacy.eu.org/en",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://reports.exodus-privacy.eu.org/en"
+    ]
   },
   {
     "title": "UPI Help (NPCI)",
     "url": "https://www.upihelp.npci.org.in",
     "optional_icon": "https://www.npci.org.in/favicon.ico",
-    "category": "Banking / Finance"
+    "category": "Banking / Finance",
+    "urls": [
+      "https://www.upihelp.npci.org.in"
+    ]
   },
   {
     "title": "LMSYS Arena",
     "url": "https://lmarena.ai",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://lmarena.ai"
+    ]
   },
   {
     "title": "Andi Search",
     "url": "https://andisearch.com",
-    "category": "Search"
+    "category": "Search",
+    "urls": [
+      "https://andisearch.com"
+    ]
   },
   {
     "title": "WolframAlpha (Mobile)",
     "url": "http://m.wolframalpha.com",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "http://m.wolframalpha.com"
+    ]
   },
   {
     "title": "Omni Calculator",
     "url": "https://www.omnicalculator.com",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://www.omnicalculator.com"
+    ]
   },
   {
     "title": "Unitto",
     "url": "https://sadellie.github.io/unitto/app",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://sadellie.github.io/unitto/app"
+    ]
   },
   {
     "title": "PDF24 Tools",
     "url": "https://www.pdf24.org/en",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://www.pdf24.org/en"
+    ]
   },
   {
     "title": "Online-Convert",
     "url": "https://www.online-convert.com",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://www.online-convert.com"
+    ]
   },
   {
     "title": "123Apps",
     "url": "https://123apps.com",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://123apps.com"
+    ]
   },
   {
     "title": "Networking Toolbox",
     "url": "https://networking-toolbox.as93.net",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://networking-toolbox.as93.net"
+    ]
   },
   {
     "title": "OmniTools",
     "url": "https://omnitools.netlify.app",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://omnitools.netlify.app"
+    ]
   },
   {
     "title": "Woodbox",
     "url": "https://ol.woobx.cn",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://ol.woobx.cn"
+    ]
   },
   {
     "title": "Notion",
@@ -482,183 +740,290 @@
   {
     "title": "AniList",
     "url": "https://anilist.co",
-    "category": "Anime"
+    "category": "Manga / Anime",
+    "urls": [
+      "https://anilist.co"
+    ]
   },
   {
     "title": "MyAnimeList",
     "url": "https://myanimelist.net",
-    "category": "Anime"
+    "category": "Manga / Anime",
+    "urls": [
+      "https://myanimelist.net"
+    ]
   },
   {
     "title": "Beebom Bio",
     "url": "https://beebom.bio",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://beebom.bio"
+    ]
   },
   {
     "title": "Sillycorns",
     "url": "https://lnk.bio/Sillycorns",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://lnk.bio/Sillycorns"
+    ]
   },
   {
     "title": "TechWiser Store",
     "url": "https://techwiser.store",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://techwiser.store"
+    ]
   },
   {
     "title": "Simpleghar Telugu",
     "url": "https://simpleghar.com/telugu",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://simpleghar.com/telugu"
+    ]
   },
   {
     "title": "Neal.fun",
     "url": "https://neal.fun",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://neal.fun"
+    ]
   },
   {
     "title": "100k Stars",
     "url": "https://stars.chromeexperiments.com",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://stars.chromeexperiments.com"
+    ]
   },
   {
     "title": "Getting Old",
     "url": "https://you.regettingold.com",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://you.regettingold.com"
+    ]
   },
   {
     "title": "Your Metric Birthday",
     "url": "https://www.yourmetricbirthday.com",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://www.yourmetricbirthday.com"
+    ]
   },
   {
     "title": "Worldometers",
     "url": "https://www.worldometers.info",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://www.worldometers.info"
+    ]
   },
   {
     "title": "Taskernet",
     "url": "https://taskernet.com/?public=&tags=&time=AllTime",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://taskernet.com/?public=&tags=&time=AllTime"
+    ]
   },
   {
     "title": "Word Rank Calculator",
     "url": "https://l-kaushik.github.io/Word-rank-calculator/",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://l-kaushik.github.io/Word-rank-calculator/"
+    ]
   },
   {
     "title": "Remove BG",
     "url": "https://www.remove.bg/",
-    "category": "Media"
+    "category": "Media",
+    "urls": [
+      "https://www.remove.bg/"
+    ]
   },
   {
     "title": "APSRTC Live Track",
     "url": "https://apsrtclivetrack.com/",
-    "category": "Travel"
+    "category": "Travel",
+    "urls": [
+      "https://apsrtclivetrack.com/"
+    ]
   },
   {
     "title": "Datayze",
     "url": "https://datayze.com/",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://datayze.com/"
+    ]
   },
   {
     "title": "Indus App Store",
     "url": "https://www.indusappstore.com/apps/featured/",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://www.indusappstore.com/apps/featured/"
+    ]
   },
   {
     "title": "endoflife.date",
     "url": "https://endoflife.date/",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://endoflife.date/"
+    ]
   },
   {
     "title": "FMHY",
     "url": "https://fmhy.pages.dev/",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://fmhy.pages.dev/"
+    ]
   },
   {
     "title": "Killed by Google",
     "url": "https://killedbygoogle.com/",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://killedbygoogle.com/"
+    ]
   },
   {
     "title": "Killed by Microsoft",
     "url": "https://killedbymicrosoft.info/",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://killedbymicrosoft.info/"
+    ]
   },
   {
     "title": "FTWA",
     "url": "https://ftwa.mathix.dev/",
-    "category": "Web apps"
+    "category": "Web apps",
+    "urls": [
+      "https://ftwa.mathix.dev/"
+    ]
   },
   {
     "title": "v0",
     "url": "https://v0.app/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://v0.app/"
+    ]
   },
   {
     "title": "Stremio Web",
     "url": "https://web.stremio.com/#/",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://web.stremio.com/#/",
+      "https://stremio-addons.net/"
+    ]
   },
   {
     "title": "Anime-Planet",
     "url": "https://www.anime-planet.com/",
-    "category": "Anime"
+    "category": "Manga / Anime",
+    "urls": [
+      "https://www.anime-planet.com/"
+    ]
   },
   {
     "title": "Anyme Next",
     "url": "https://anyme-next.vercel.app/",
     "optional_icon": "https://anyme-next.vercel.app/favicon.ico",
-    "category": "Anime"
+    "category": "Manga / Anime",
+    "urls": [
+      "https://anyme-next.vercel.app/"
+    ]
   },
   {
     "title": "Blissey Husband",
     "url": "https://blisseyhusband.net/",
-    "category": "Anime"
+    "category": "Manga / Anime",
+    "urls": [
+      "https://blisseyhusband.net/"
+    ]
   },
   {
     "title": "ToonStream",
     "url": "https://toonstream.one/home/",
-    "category": "Anime"
+    "category": "Manga / Anime",
+    "urls": [
+      "https://toonstream.one/home/"
+    ]
   },
   {
     "title": "WCOFlix",
     "url": "https://www.wcoflix.tv/",
-    "category": "Anime"
+    "category": "Manga / Anime",
+    "urls": [
+      "https://www.wcoflix.tv/"
+    ]
   },
   {
     "title": "01fmovies",
     "url": "https://ww1.01fmovies.com/index.html",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://ww1.01fmovies.com/index.html"
+    ]
   },
   {
     "title": "NullFlix",
     "url": "https://v0-nullflix.vercel.app/",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://v0-nullflix.vercel.app/"
+    ]
   },
   {
     "title": "MX Player",
     "url": "https://www.mxplayer.in/",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://www.mxplayer.in/"
+    ]
   },
   {
     "title": "Disney+ Hotstar",
     "url": "https://www.hotstar.com/in/home",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://www.hotstar.com/in/home"
+    ]
   },
   {
     "title": "ZEE5",
     "url": "https://www.zee5.com/",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://www.zee5.com/"
+    ]
   },
   {
     "title": "Soap2Day",
     "url": "https://ww25.soap2day.day/soap2day-r26n8/",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://ww25.soap2day.day/soap2day-r26n8/"
+    ]
   },
   {
     "title": "Netflix Mirror",
     "url": "https://m.netflixmirror.com/home",
     "urls": [
+      "https://m.netflixmirror.com/home",
       "https://net22.cc/home"
     ],
     "category": "Streaming"
@@ -666,22 +1031,34 @@
   {
     "title": "Store.app",
     "url": "https://store.app/",
-    "category": "Web apps"
+    "category": "Web apps",
+    "urls": [
+      "https://store.app/"
+    ]
   },
   {
     "title": "We Share Apps",
     "url": "https://weshareapps.com/",
-    "category": "Web apps"
+    "category": "Web apps",
+    "urls": [
+      "https://weshareapps.com/"
+    ]
   },
   {
     "title": "Appscope",
     "url": "https://appsco.pe/",
-    "category": "Web apps"
+    "category": "Web apps",
+    "urls": [
+      "https://appsco.pe/"
+    ]
   },
   {
     "title": "Gemini",
     "url": "https://gemini.google.com/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://gemini.google.com/"
+    ]
   },
   {
     "title": "Telegram Web",
@@ -696,22 +1073,26 @@
   {
     "title": "WhatsApp Web",
     "url": "https://web.whatsapp.com/",
-    "category": "Social"
-  },
-  {
-    "title": "Stremio Addons",
-    "url": "https://stremio-addons.net/",
-    "category": "Streaming"
+    "category": "Social",
+    "urls": [
+      "https://web.whatsapp.com/"
+    ]
   },
   {
     "title": "GlobeTV",
     "url": "https://globetv.app/",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://globetv.app/"
+    ]
   },
   {
     "title": "CineHD",
     "url": "https://cinehd.cc/home",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://cinehd.cc/home"
+    ]
   },
   {
     "title": "Gmail",
@@ -727,7 +1108,10 @@
   {
     "title": "NextDNS",
     "url": "https://my.nextdns.io/d893f5/logs",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://my.nextdns.io/d893f5/logs"
+    ]
   },
   {
     "title": "Outlook",
@@ -742,27 +1126,58 @@
   {
     "title": "ILovePDF",
     "url": "https://www.ilovepdf.com/",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://www.ilovepdf.com/"
+    ]
   },
   {
     "title": "OneDrive",
     "url": "https://onedrive.live.com/",
-    "category": "Storage"
+    "category": "Storage",
+    "urls": [
+      "https://onedrive.live.com/"
+    ]
   },
   {
     "title": "Microsoft Word Online",
     "url": "https://word.cloud.microsoft/",
-    "category": "Productivity"
+    "category": "Productivity",
+    "urls": [
+      "https://word.cloud.microsoft/"
+    ]
+  },
+  {
+    "title": "Microsoft Excel Online",
+    "url": "https://excel.cloud.microsoft/",
+    "category": "Productivity",
+    "urls": [
+      "https://excel.cloud.microsoft/"
+    ]
+  },
+  {
+    "title": "Microsoft PowerPoint Online",
+    "url": "https://powerpoint.cloud.microsoft/",
+    "category": "Productivity",
+    "urls": [
+      "https://powerpoint.cloud.microsoft/"
+    ]
   },
   {
     "title": "Microsoft 365",
     "url": "https://m365.cloud.microsoft/",
-    "category": "Productivity"
+    "category": "Productivity",
+    "urls": [
+      "https://m365.cloud.microsoft/"
+    ]
   },
   {
     "title": "Grok",
     "url": "https://grok.com/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://grok.com/"
+    ]
   },
   {
     "title": "ChatGPT",
@@ -777,32 +1192,50 @@
   {
     "title": "Notion Mail",
     "url": "https://mail.notion.so/inbox",
-    "category": "Email"
+    "category": "Email",
+    "urls": [
+      "https://mail.notion.so/inbox"
+    ]
   },
   {
     "title": "Google Account Dashboard",
     "url": "https://myaccount.google.com/dashboard",
-    "category": "Google"
+    "category": "Google",
+    "urls": [
+      "https://myaccount.google.com/dashboard"
+    ]
   },
   {
     "title": "Google Account",
     "url": "https://myaccount.google.com/",
-    "category": "Google"
+    "category": "Google",
+    "urls": [
+      "https://myaccount.google.com/"
+    ]
   },
   {
     "title": "Google Docs Videos",
     "url": "https://docs.google.com/videos/",
-    "category": "Google"
+    "category": "Google",
+    "urls": [
+      "https://docs.google.com/videos/"
+    ]
   },
   {
     "title": "Google One",
     "url": "https://one.google.com/",
-    "category": "Google"
+    "category": "Google",
+    "urls": [
+      "https://one.google.com/"
+    ]
   },
   {
     "title": "Google Photos",
     "url": "https://photos.google.com/",
-    "category": "Storage"
+    "category": "Storage",
+    "urls": [
+      "https://photos.google.com/"
+    ]
   },
   {
     "title": "YouTube",
@@ -817,102 +1250,162 @@
   {
     "title": "Google Drive",
     "url": "https://drive.google.com/",
-    "category": "Storage"
+    "category": "Storage",
+    "urls": [
+      "https://drive.google.com/"
+    ]
   },
   {
     "title": "AdGuard DNS Dashboard",
     "url": "https://adguard-dns.io/en/dashboard",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://adguard-dns.io/en/dashboard"
+    ]
   },
   {
     "title": "Down for Everyone or Just Me",
     "url": "https://downforeveryoneorjustme.com/",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://downforeveryoneorjustme.com/"
+    ]
   },
   {
     "title": "GitHub Notifications",
     "url": "https://github.com/notifications",
-    "category": "Hosting"
+    "category": "Hosting",
+    "urls": [
+      "https://github.com/notifications"
+    ]
   },
   {
     "title": "HDFC Bank MyCards",
     "url": "https://mycards.hdfcbank.com/home",
-    "category": "Banking / Finance"
+    "category": "Banking / Finance",
+    "urls": [
+      "https://mycards.hdfcbank.com/home"
+    ]
   },
   {
     "title": "OneURL - subbu",
     "url": "https://oneurl.live/subbu",
-    "category": "Productivity"
+    "category": "Productivity",
+    "urls": [
+      "https://oneurl.live/subbu"
+    ]
   },
   {
     "title": "OpenApps",
     "url": "https://openapps.pro/",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://openapps.pro/"
+    ]
   },
   {
     "title": "OpenAlternative",
     "url": "https://openalternative.co/",
-    "category": "Web apps"
+    "category": "Web apps",
+    "urls": [
+      "https://openalternative.co/"
+    ]
   },
   {
     "title": "DistroWatch",
     "url": "https://distrowatch.com/",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://distrowatch.com/"
+    ]
   },
   {
     "title": "Vert.sh",
     "url": "https://vert.sh/",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://vert.sh/"
+    ]
   },
   {
     "title": "Aixploria",
     "url": "https://www.aixploria.com/en/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://www.aixploria.com/en/"
+    ]
   },
   {
     "title": "Yoink",
     "url": "https://yoink.tools/",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://yoink.tools/"
+    ]
   },
   {
     "title": "Open Directory Finder",
     "url": "https://ewasion.github.io/opendirectory-finder/",
-    "category": "Search"
+    "category": "Search",
+    "urls": [
+      "https://ewasion.github.io/opendirectory-finder/"
+    ]
   },
   {
     "title": "Raindrop.io",
     "url": "https://app.raindrop.io/",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://app.raindrop.io/"
+    ]
   },
   {
     "title": "Ente Auth",
     "url": "https://auth.ente.io/auth",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://auth.ente.io/auth"
+    ]
   },
   {
     "title": "AI Code Translator",
     "url": "https://ai-code-translator.com/#translate",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://ai-code-translator.com/#translate"
+    ]
   },
   {
     "title": "Microsoft Copilot",
     "url": "https://copilot.microsoft.com",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://copilot.microsoft.com"
+    ]
   },
   {
     "title": "Google Labs",
     "url": "https://labs.google/",
-    "category": "Google"
+    "category": "Google",
+    "urls": [
+      "https://labs.google/"
+    ]
   },
   {
     "title": "GPT-OSS",
     "url": "https://gpt-oss.com/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://gpt-oss.com/"
+    ]
   },
   {
     "title": "Higgsfield AI",
     "url": "https://higgsfield.ai/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://higgsfield.ai/"
+    ]
   },
   {
     "title": "Perplexity AI",
@@ -927,113 +1420,177 @@
   {
     "title": "Ollama",
     "url": "https://ollama.com/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://ollama.com/"
+    ]
   },
   {
     "title": "LM Studio",
     "url": "https://lmstudio.ai/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://lmstudio.ai/"
+    ]
   },
   {
     "title": "GitHub",
     "url": "https://github.com",
-    "category": "Hosting"
+    "category": "Hosting",
+    "urls": [
+      "https://github.com"
+    ]
   },
   {
     "title": "Cafe Bazaar",
     "url": "https://cafebazaar.ir/app?l=en",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://cafebazaar.ir/app?l=en"
+    ]
   },
   {
     "title": "Uptodown Android",
     "url": "https://en.uptodown.com/android",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://en.uptodown.com/android"
+    ]
   },
   {
     "title": "PlayStore Sales Free Apps",
     "url": "https://www.playstoresales.com/apps/free-apps",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://www.playstoresales.com/apps/free-apps"
+    ]
   },
   {
     "title": "Days Old",
     "url": "https://www.daysold.com",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://www.daysold.com"
+    ]
   },
   {
     "title": "Multi Calculator",
     "url": "https://www.multicalculator.app/",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://www.multicalculator.app/"
+    ]
   },
   {
     "title": "Google AI Studio",
     "url": "https://aistudio.google.com/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://aistudio.google.com/"
+    ]
   },
   {
     "title": "Awesome Selfhosted",
     "url": "https://awesomeselfhosted.netlify.app/",
-    "category": "Hosting"
+    "category": "Hosting",
+    "urls": [
+      "https://awesomeselfhosted.netlify.app/"
+    ]
   },
   {
     "title": "Mega",
     "url": "https://mega.nz",
-    "category": "Storage"
+    "category": "Storage",
+    "urls": [
+      "https://mega.nz"
+    ]
   },
   {
     "title": "Unlim Cloud Login",
     "url": "https://unlim-cloud.web.app/login",
-    "category": "Storage"
+    "category": "Storage",
+    "urls": [
+      "https://unlim-cloud.web.app/login"
+    ]
   },
   {
     "title": "Diagrams",
     "url": "https://www.draw.io",
-    "category": "Productivity"
+    "category": "Productivity",
+    "urls": [
+      "https://www.draw.io"
+    ]
   },
   {
     "title": "Photopea",
     "url": "https://www.photopea.com",
-    "category": "Media"
+    "category": "Media",
+    "urls": [
+      "https://www.photopea.com"
+    ]
   },
   {
     "title": "AppImage.org",
     "url": "https://appimage.org",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://appimage.org"
+    ]
   },
   {
     "title": "AppImageHub",
     "url": "https://www.appimagehub.com/",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://www.appimagehub.com/"
+    ]
   },
   {
     "title": "Distrosea",
     "url": "https://distrosea.com/",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://distrosea.com/"
+    ]
   },
   {
     "title": "Repo Hub",
     "url": "https://repo-hub.com/",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://repo-hub.com/"
+    ]
   },
   {
     "title": "YouTube Music",
     "url": "https://music.youtube.com",
-    "category": "Media"
+    "category": "Music",
+    "urls": [
+      "https://music.youtube.com"
+    ]
   },
   {
     "title": "Proton Mail",
     "url": "https://mail.proton.me/",
     "optional_icon": "https://proton.me/favicons/favicon.ico",
-    "category": "Email"
+    "category": "Email",
+    "urls": [
+      "https://mail.proton.me/"
+    ]
   },
   {
     "title": "SimpleLogin Dashboard",
     "url": "https://app.simplelogin.io/dashboard",
-    "category": "Email"
+    "category": "Email",
+    "urls": [
+      "https://app.simplelogin.io/dashboard"
+    ]
   },
   {
     "title": "Facebook",
     "url": "http://www.facebook.com",
     "urls": [
+      "http://www.facebook.com",
       "https://www.facebook.com",
       "https://m.facebook.com",
       "https://web.facebook.com"
@@ -1063,318 +1620,545 @@
   {
     "title": "Proton Pass",
     "url": "https://pass.proton.me/",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://pass.proton.me/"
+    ]
   },
   {
     "title": "Awesome Privacy",
     "url": "https://awesome-privacy.xyz/",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://awesome-privacy.xyz/"
+    ]
   },
   {
     "title": "AITools.fyi",
     "url": "https://aitools.fyi",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://aitools.fyi"
+    ]
   },
   {
     "title": "Awesome Open Source",
     "url": "https://awesomeopensource.com",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://awesomeopensource.com"
+    ]
   },
   {
     "title": "There's An AI For That",
     "url": "https://theresanaiforthat.com",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://theresanaiforthat.com"
+    ]
   },
   {
     "title": "Video SOS",
     "url": "https://videosos.vercel.app/en",
-    "category": "Media"
+    "category": "Media",
+    "urls": [
+      "https://videosos.vercel.app/en"
+    ]
   },
   {
     "title": "Google Contacts",
     "url": "https://contacts.google.com/",
-    "category": "Google"
+    "category": "Google",
+    "urls": [
+      "https://contacts.google.com/"
+    ]
   },
   {
     "title": "Discord",
     "url": "https://discord.com/",
-    "category": "Social"
+    "category": "Social",
+    "urls": [
+      "https://discord.com/"
+    ]
   },
   {
     "title": "addy.io",
     "url": "https://app.addy.io/",
     "optional_icon": "https://addy.io/favicon.ico",
-    "category": "Email"
+    "category": "Email",
+    "urls": [
+      "https://app.addy.io/"
+    ]
   },
   {
     "title": "LinkedIn",
     "url": "https://www.linkedin.com/",
-    "category": "Jobs"
+    "category": "Jobs",
+    "urls": [
+      "https://www.linkedin.com/"
+    ]
   },
   {
     "title": "Naukri",
     "url": "https://www.naukri.com/",
-    "category": "Jobs"
+    "category": "Jobs",
+    "urls": [
+      "https://www.naukri.com/"
+    ]
   },
   {
     "title": "Airtel",
     "url": "https://www.airtel.in/",
-    "category": "Network"
+    "category": "Network",
+    "urls": [
+      "https://www.airtel.in/"
+    ]
   },
   {
     "title": "Flipkart",
     "url": "https://www.flipkart.com/",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://www.flipkart.com/"
+    ]
   },
   {
     "title": "Amazon.in",
     "url": "https://www.amazon.in/",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://www.amazon.in/"
+    ]
   },
   {
     "title": "Blinkit",
     "url": "https://blinkit.com/",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://blinkit.com/"
+    ]
   },
   {
     "title": "Meesho",
     "url": "https://www.meesho.com/",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://www.meesho.com/"
+    ]
   },
   {
     "title": "Swiggy",
     "url": "https://www.swiggy.com/",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://www.swiggy.com/"
+    ]
   },
   {
     "title": "Zepto",
     "url": "https://www.zepto.com/",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://www.zepto.com/"
+    ]
   },
   {
     "title": "Zomato",
     "url": "https://www.zomato.com/",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://www.zomato.com/"
+    ]
   },
   {
     "title": "BookMyShow",
     "url": "https://in.bookmyshow.com/",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://in.bookmyshow.com/"
+    ]
   },
   {
     "title": "JioMart",
     "url": "https://www.jiomart.com/",
-    "category": "Shopping"
+    "category": "Shopping",
+    "urls": [
+      "https://www.jiomart.com/"
+    ]
   },
   {
     "title": "Cricbuzz",
     "url": "https://www.cricbuzz.com/",
-    "category": "News"
+    "category": "News",
+    "urls": [
+      "https://www.cricbuzz.com/"
+    ]
   },
   {
     "title": "Dailyhunt",
     "url": "https://www.dailyhunt.in/",
-    "category": "News"
+    "category": "News",
+    "urls": [
+      "https://www.dailyhunt.in/"
+    ]
   },
   {
     "title": "AccuWeather",
     "url": "https://www.accuweather.com/",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://www.accuweather.com/"
+    ]
   },
   {
     "title": "Poco F5 Firmware (marble)",
     "url": "https://xmfirmwareupdater.com/firmware/marble/",
-    "category": "Tools"
+    "category": "Tools",
+    "urls": [
+      "https://xmfirmwareupdater.com/firmware/marble/"
+    ]
   },
   {
     "title": "Modyolo",
     "url": "https://modyolo.com/apps",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://modyolo.com/apps"
+    ]
   },
   {
     "title": "APKDone",
     "url": "https://apkdone.com/app/",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://apkdone.com/app/"
+    ]
   },
   {
     "title": "Moddroid",
     "url": "https://moddroid.com/apps/",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://moddroid.com/apps/"
+    ]
   },
   {
     "title": "Shareware On Sale (Windows)",
     "url": "https://sharewareonsale.com/?os=windows",
     "optional_icon": "https://sharewareonsale.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://sharewareonsale.com/?os=windows"
+    ]
   },
   {
     "title": "Shareware On Sale (Android)",
     "url": "https://sharewareonsale.com/?os=android",
     "optional_icon": "https://sharewareonsale.com/favicon.ico",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://sharewareonsale.com/?os=android"
+    ]
   },
   {
     "title": "Rahim Soft",
     "url": "https://rahim-soft.com/category/softwares/",
     "optional_icon": "https://rahim-soft.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://rahim-soft.com/category/softwares/"
+    ]
   },
   {
     "title": "PortableApps",
     "url": "https://portableapps.com/",
     "optional_icon": "https://portableapps.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://portableapps.com/"
+    ]
   },
   {
     "title": "Ninite",
     "url": "https://ninite.com/",
     "optional_icon": "https://ninite.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://ninite.com/"
+    ]
   },
   {
     "title": "Giveaway of the Day (Windows)",
     "url": "https://www.giveawayoftheday.com/",
     "optional_icon": "https://www.giveawayoftheday.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://www.giveawayoftheday.com/"
+    ]
   },
   {
     "title": "Giveaway of the Day (Android)",
     "url": "https://android.giveawayoftheday.com/",
     "optional_icon": "https://android.giveawayoftheday.com/favicon.ico",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://android.giveawayoftheday.com/"
+    ]
   },
   {
     "title": "Malavida (Windows)",
     "url": "https://www.malavida.com/en/windows/",
     "optional_icon": "https://www.malavida.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://www.malavida.com/en/windows/"
+    ]
   },
   {
     "title": "Malavida (Android)",
     "url": "https://www.malavida.com/en/android/",
     "optional_icon": "https://www.malavida.com/favicon.ico",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://www.malavida.com/en/android/"
+    ]
   },
   {
     "title": "GetIntoPC",
     "url": "https://getintopc.com/",
     "optional_icon": "https://getintopc.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://getintopc.com/"
+    ]
   },
   {
     "title": "FilePuma",
     "url": "https://www.filepuma.com/",
     "optional_icon": "https://www.filepuma.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://www.filepuma.com/"
+    ]
   },
   {
     "title": "FileHippo",
     "url": "https://www.filehippo.com/",
     "optional_icon": "https://www.filehippo.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://www.filehippo.com/"
+    ]
   },
   {
     "title": "FileHorse",
     "url": "https://www.filehorse.com/",
     "optional_icon": "https://www.filehorse.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://www.filehorse.com/"
+    ]
   },
   {
     "title": "Softpedia",
     "url": "https://www.softpedia.com/",
     "optional_icon": "https://www.softpedia.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://www.softpedia.com/"
+    ]
   },
   {
     "title": "Softonic",
     "url": "https://www.softonic.com/",
     "optional_icon": "https://www.softonic.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://www.softonic.com/"
+    ]
   },
   {
     "title": "Download.com",
     "url": "https://www.download.com/",
     "optional_icon": "https://www.download.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://www.download.com/"
+    ]
   },
   {
     "title": "FileCR (Windows)",
     "url": "https://filecr.com/ms-windows/",
     "optional_icon": "https://filecr.com/favicon.ico",
-    "category": "Windows"
+    "category": "Windows",
+    "urls": [
+      "https://filecr.com/ms-windows/"
+    ]
   },
   {
     "title": "FileCR (Android)",
     "url": "https://filecr.com/android/",
     "optional_icon": "https://filecr.com/favicon.ico",
-    "category": "Android"
+    "category": "Android",
+    "urls": [
+      "https://filecr.com/android/"
+    ]
   },
   {
     "title": "Repo Hub",
     "url": "https://repo-hub.com/",
     "optional_icon": "https://repo-hub.com/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://repo-hub.com/"
+    ]
   },
   {
     "title": "Malavida (Linux)",
     "url": "https://www.malavida.com/en/linux/",
     "optional_icon": "https://www.malavida.com/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://www.malavida.com/en/linux/"
+    ]
   },
   {
     "title": "Softpedia Linux",
     "url": "https://linux.softpedia.com/",
     "optional_icon": "https://linux.softpedia.com/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://linux.softpedia.com/"
+    ]
   },
   {
     "title": "FileHorse Linux",
     "url": "https://www.filehorse.com/linux/",
     "optional_icon": "https://www.filehorse.com/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://www.filehorse.com/linux/"
+    ]
   },
   {
     "title": "FilePuma Linux",
     "url": "https://www.filepuma.com/linux/",
     "optional_icon": "https://www.filepuma.com/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://www.filepuma.com/linux/"
+    ]
   },
   {
     "title": "FileHippo Linux",
     "url": "https://www.filehippo.com/linux/",
     "optional_icon": "https://www.filehippo.com/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://www.filehippo.com/linux/"
+    ]
   },
   {
     "title": "Softonic Linux",
     "url": "https://www.softonic.com/linux/",
     "optional_icon": "https://www.softonic.com/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://www.softonic.com/linux/"
+    ]
   },
   {
     "title": "Flathub",
     "url": "https://flathub.org/en",
     "optional_icon": "https://flathub.org/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://flathub.org/en"
+    ]
   },
   {
     "title": "Snapcraft",
     "url": "https://snapcraft.io/store",
     "optional_icon": "https://snapcraft.io/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://snapcraft.io/store"
+    ]
   },
   {
     "title": "Distribution Hub",
     "url": "https://distributionhub.github.io/",
     "optional_icon": "https://distributionhub.github.io/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://distributionhub.github.io/"
+    ]
   },
   {
     "title": "Repology",
     "url": "https://repology.org/",
     "optional_icon": "https://repology.org/favicon.ico",
-    "category": "Linux"
+    "category": "Linux",
+    "urls": [
+      "https://repology.org/"
+    ]
+  },
+  {
+    "title": "TinyWow",
+    "url": "https://tinywow.com/",
+    "category": "Tools",
+    "urls": [
+      "https://tinywow.com/"
+    ]
+  },
+  {
+    "title": "GenSpark",
+    "url": "https://www.genspark.ai/",
+    "category": "AI",
+    "urls": [
+      "https://www.genspark.ai/"
+    ]
+  },
+  {
+    "title": "AccountKiller",
+    "url": "https://www.accountkiller.com/",
+    "category": "Privacy & Security",
+    "urls": [
+      "https://www.accountkiller.com/"
+    ]
+  },
+  {
+    "title": "10015.io",
+    "url": "https://10015.io/",
+    "category": "Tools",
+    "urls": [
+      "https://10015.io/"
+    ]
+  },
+  {
+    "title": "Sanchar Saathi",
+    "url": "https://www.sancharsaathi.gov.in/",
+    "category": "Government Services",
+    "urls": [
+      "https://www.sancharsaathi.gov.in/",
+      "https://sancharsaathi.gov.in/",
+      "https://tafcop.sancharsaathi.gov.in/telecomUser/"
+    ]
+  },
+  {
+    "title": "Spotify",
+    "url": "https://open.spotify.com/",
+    "urls": [
+      "https://open.spotify.com/"
+    ],
+    "category": "Music"
+  },
+  {
+    "title": "Jio Saavn",
+    "url": "https://www.jiosaavn.com/",
+    "urls": [
+      "https://www.jiosaavn.com/"
+    ],
+    "category": "Music"
   }
-
 ]
-
