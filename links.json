@@ -114,14 +114,6 @@
     ]
   },
   {
-    "title": "Sanchar Saathi",
-    "url": "https://www.sancharsaathi.gov.in/",
-    "category": "Government Services",
-    "urls": [
-      "https://www.sancharsaathi.gov.in/"
-    ]
-  },
-  {
     "title": "BIS Care (Product Verification)",
     "url": "https://www.manakonline.in/",
     "category": "Government Services",
@@ -287,86 +279,6 @@
     "category": "AI",
     "urls": [
       "https://newaiprompt.com/"
-    ]
-  },
-  {
-    "title": "Aadhaar (UIDAI)",
-    "url": "https://myaadhaar.uidai.gov.in/",
-    "category": "Government Services",
-    "urls": [
-      "https://myaadhaar.uidai.gov.in/"
-    ]
-  },
-  {
-    "title": "PAN Card (UTIITSL/NSDL)",
-    "url": "https://www.pan.utiitsl.com/PAN/",
-    "category": "Government Services",
-    "urls": [
-      "https://www.pan.utiitsl.com/PAN/"
-    ]
-  },
-  {
-    "title": "Vehicle Search (Parivahan)",
-    "url": "https://vahan.parivahan.gov.in/nrservices/",
-    "category": "Government Services",
-    "urls": [
-      "https://vahan.parivahan.gov.in/nrservices/"
-    ]
-  },
-  {
-    "title": "EPFO Member Unified Portal",
-    "url": "https://unifiedportal-mem.epfindia.gov.in/memberinterface/",
-    "category": "Government Services",
-    "urls": [
-      "https://unifiedportal-mem.epfindia.gov.in/memberinterface/"
-    ]
-  },
-  {
-    "title": "Income Tax e-Filing",
-    "url": "https://www.incometax.gov.in/iec/foportal/",
-    "category": "Government Services",
-    "urls": [
-      "https://www.incometax.gov.in/iec/foportal/"
-    ]
-  },
-  {
-    "title": "DigiLocker",
-    "url": "https://www.digilocker.gov.in/",
-    "category": "Government Services",
-    "urls": [
-      "https://www.digilocker.gov.in/"
-    ]
-  },
-  {
-    "title": "Voters' Services Portal (ECI)",
-    "url": "https://voters.eci.gov.in/",
-    "category": "Government Services",
-    "urls": [
-      "https://voters.eci.gov.in/"
-    ]
-  },
-  {
-    "title": "Andhra Pradesh Mee Seva (AP Seva)",
-    "url": "https://ap.meeseva.gov.in/",
-    "category": "Government Services",
-    "urls": [
-      "https://ap.meeseva.gov.in/"
-    ]
-  },
-  {
-    "title": "Passport Seva",
-    "url": "https://www.passportindia.gov.in/",
-    "category": "Government Services",
-    "urls": [
-      "https://www.passportindia.gov.in/"
-    ]
-  },
-  {
-    "title": "UMANG",
-    "url": "https://web.umang.gov.in/",
-    "category": "Government Services",
-    "urls": [
-      "https://web.umang.gov.in/"
     ]
   },
   {
@@ -733,7 +645,8 @@
     "url": "https://www.notion.so",
     "urls": [
       "https://www.notion.so",
-      "https://subbarao.notion.site/Knowledge-21cb6c26d9ba808da8d4f72eb2193ca2"
+      "https://subbarao.notion.site/Knowledge-21cb6c26d9ba808da8d4f72eb2193ca2",
+      "https://subbarao.notion.site/My-Life-1ebb6c26d9ba802fa6b2e3df077da3d9"
     ],
     "category": "Productivity"
   },
@@ -1506,11 +1419,11 @@
     ]
   },
   {
-    "title": "Unlim Cloud Login",
-    "url": "https://unlim-cloud.web.app/login",
+    "title": "Unlim Cloud",
+    "url": "https://unlim-cloud.web.app/",
     "category": "Storage",
     "urls": [
-      "https://unlim-cloud.web.app/login"
+      "https://unlim-cloud.web.app/"
     ]
   },
   {
