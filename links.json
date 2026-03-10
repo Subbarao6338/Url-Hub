@@ -2073,5 +2073,42 @@
       "https://www.jiosaavn.com/"
     ],
     "category": "Music"
+  },
+  {
+    "title": "Microsoft Teams",
+    "url": "https://teams.microsoft.com",
+    "urls": [
+      "https://teams.microsoft.com",
+      "https://microsoft.com/microsoft-teams"
+    ],
+    "category": "Jobs"
+  },
+  {
+    "title": "Zoom",
+    "url": "https://zoom.us",
+    "urls": [
+      "https://zoom.us",
+      "https://zoom.us/join"
+    ],
+    "category": "Jobs"
+  },
+  {
+    "title": "Google Chat",
+    "url": "https://chat.google.com",
+    "urls": [
+      "https://chat.google.com",
+      "https://mail.google.com/chat"
+    ],
+    "category": "Jobs"
+  },
+  {
+    "title": "Google Meet",
+    "url": "https://meet.google.com",
+    "urls": [
+      "https://meet.google.com",
+      "https://meet.new"
+    ],
+    "category": "Jobs"
   }
 ]
+
