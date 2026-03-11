@@ -16,6 +16,26 @@
     "category": "Tools"
   },
   {
+    "title": "Immersive Translate",
+    "url": "https://app.immersivetranslate.com",
+    "urls": [
+      "https://app.immersivetranslate.com",
+      "https://immersivetranslate.com",
+      "https://immersivetranslate.com/docs"
+    ],
+    "category": "Tools"
+  },
+  {
+    "title": "Google Translate",
+    "url": "https://translate.google.co.in/?sl=auto&tl=en&op=docs",
+    "urls": [
+      "https://translate.google.co.in",
+      "https://translate.google.com",
+      "https://translate.google.co.in/?sl=auto&tl=en&op=translate"
+    ],
+    "category": "Google"
+  },
+  {
     "title": "1TamilMV",
     "url": "https://www.1tamilmv.lc",
     "urls": [
@@ -2127,5 +2147,6 @@
     "category": "Jobs"
   }
 ]
+
 
 
