@@ -20,7 +20,7 @@
   {
     "title": "Arena AI",
     "url": "https://arena.ai/",
-    "urls": ["https://arena.ai/"],
+    "urls": ["https://arena.ai/", "https://lmarena.ai"],
     "category": "AI"
   },
   {
@@ -618,14 +618,7 @@
       "https://www.upihelp.npci.org.in"
     ]
   },
-  {
-    "title": "LMSYS Arena",
-    "url": "https://lmarena.ai",
-    "category": "AI",
-    "urls": [
-      "https://lmarena.ai"
-    ]
-  },
+  {
   {
     "title": "Andi Search",
     "url": "https://andisearch.com",
