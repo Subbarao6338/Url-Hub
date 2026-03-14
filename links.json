@@ -1,5 +1,11 @@
 [
   {
+    "title": "Movies and TV shows",
+    "url": "",
+    "urls": [],
+    "category": "Streaming" 
+  },
+  {
     "title": "Defuddle",
     "url": "https://defuddle.md/",
     "urls": ["https://defuddle.md/"],
