@@ -1,8 +1,48 @@
 [
   {
-    "title": "AnimeSalt",
+    "title": "Tango",
+    "url": "https://app.tangoapp.dev",
+    "urls": [
+      "app.tangoapp.dev"
+    ],
+    "category": "Tools 🧰"
+  },
+  {
+    "title": "Uncensored AI",
+    "url": "https://uncensored.com/ai",
+    "urls": [
+      "uncensored.com/ai"
+    ],
+    "category": "AI 🧠"
+  },
+  {
+    "title": "Napkin AI",
+    "url": "https://app.napkin.ai",
+    "urls": [
+      "app.napkin.ai"
+    ],
+    "category": "AI 🧠"
+  },
+  {
+    "title": "Folo",
+    "url": "https://folo.is",
+    "urls": [
+      "folo.is"
+    ],
+    "category": "Social 💬"
+  },
+  {
+    "title": "JustAnime",
+    "url": "https://justanime.to",
+    "urls": [
+      "justanime.to"
+    ],
+    "category": "Manga / Anime 🍥"
+  },
+  {
+    "title": "Anime India",
     "url": "https://animesalt.ac",
-    "urls": ["https://animesalt.ac"],
+    "urls": ["https://animesalt.ac", "https://animelok.xyz"],
     "category": "Manga / Anime"
   },
   {
@@ -19,7 +59,10 @@
      "https://cinehd.cc/home",
     "https://mapple.tv",
     "https://mappl.tv",
-    "https://mapple.cc"],
+    "https://mapple.cc",
+    "https://streamex.sh",
+      "https://1flex.nl"
+    ],
     "category": "Streaming" 
   },
   {
