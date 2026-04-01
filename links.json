@@ -2,41 +2,31 @@
   {
     "title": "Tango",
     "url": "https://app.tangoapp.dev",
-    "urls": [
-      "app.tangoapp.dev"
-    ],
+    "urls": ["https://app.tangoapp.dev"],
     "category": "Tools"
   },
   {
     "title": "Uncensored AI",
     "url": "https://uncensored.com/ai",
-    "urls": [
-      "uncensored.com/ai"
-    ],
+    "urls": ["https://uncensored.com/ai"],
     "category": "AI"
   },
   {
     "title": "Napkin AI",
     "url": "https://app.napkin.ai",
-    "urls": [
-      "app.napkin.ai"
-    ],
+    "urls": ["https://app.napkin.ai"],
     "category": "AI"
   },
   {
     "title": "Folo",
     "url": "https://folo.is",
-    "urls": [
-      "folo.is"
-    ],
+    "urls": ["https://folo.is"],
     "category": "Social"
   },
   {
     "title": "JustAnime",
     "url": "https://justanime.to",
-    "urls": [
-      "justanime.to"
-    ],
+    "urls": ["https://justanime.to"],
     "category": "Manga / Anime"
   },
   {
@@ -56,11 +46,11 @@
       "https://m.netflixmirror.com/home",
       "https://net22.cc/home",
       "https://ww25.soap2day.day/soap2day-r26n8/",
-     "https://cinehd.cc/home",
-    "https://mapple.tv",
-    "https://mappl.tv",
-    "https://mapple.cc",
-    "https://streamex.sh",
+      "https://cinehd.cc/home",
+      "https://mapple.tv",
+      "https://mappl.tv",
+      "https://mapple.cc",
+      "https://streamex.sh",
       "https://1flex.nl"
     ],
     "category": "Streaming" 
