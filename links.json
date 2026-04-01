@@ -183,14 +183,6 @@
     ]
   },
   {
-    "title": "ChatGPT Free",
-    "url": "https://chatgptfree.ai/",
-    "category": "AI",
-    "urls": [
-      "https://chatgptfree.ai/"
-    ]
-  },
-  {
     "title": "Myal",
     "url": "https://myal.vercel.app/",
     "category": "Android",
@@ -1158,7 +1150,8 @@
     "urls": [
       "https://chatgpt.com/",
       "https://chat.openai.com/",
-      "https://www.chatgpt.com/"
+      "https://www.chatgpt.com/",
+      "https://chatgptfree.ai/"
     ],
     "category": "AI"
   },
