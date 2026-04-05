@@ -1,5 +1,38 @@
 [
   {
+    "title": "Proton Pass",
+    "url": "https://pass.proton.me",
+    "urls": [
+      "https://pass.proton.me"
+    ],
+    "category": "Privacy & Security"
+  },
+  {
+    "title": "NotebookLM",
+    "url": "https://notebooklm.google.com",
+    "urls": [
+      "https://notebooklm.google.com"
+    ],
+    "category": "AI"
+  },
+  {
+    "title": "OpenRouter",
+    "url": "https://openrouter.ai",
+    "urls": [
+      "https://openrouter.ai"
+    ],
+    "category": "AI"
+  },
+  {
+    "title": "Godmode",
+    "url": "https://godmode.space",
+    "urls": [
+      "https://godmode.space",
+      "https://godmod3.ai"
+    ],
+    "category": "AI"
+  },
+  {
     "title": "AdGuard DNS",
     "url": "https://adguard-dns.io/en/dashboard/",
     "urls": ["https://adguard-dns.io/en/dashboard/"],
