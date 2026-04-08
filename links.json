@@ -27,7 +27,7 @@
   {
     "title": "AdGuard DNS",
     "url": "https://adguard-dns.io/en/welcome.html",
-    "urls": ["https://adguard-dns.io/en/welcome.html"],
+    "urls": ["https://adguard-dns.io/en/welcome.html", "https://adguard-dns.io/en/dashboard/statistics/query"],
     "category": "Privacy & Security"
   },
   {
@@ -119,13 +119,7 @@
   {
     "title": "Arena AI",
     "url": "https://arena.ai/",
-    "urls": ["https://arena.ai/", "https://lmarena.ai"],
-    "category": "AI"
-  },
-  {
-    "title": "Yupp AI",
-    "url": "https://yupp.ai/",
-    "urls": ["https://yupp.ai/"],
+    "urls": ["https://arena.ai/", "https://lmarena.ai", "https://yupp.ai/"],
     "category": "AI"
   },
   {
