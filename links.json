@@ -304,12 +304,10 @@
     ]
   },
   {
-    "title": "Sarvam AI (Indus Chat)",
-    "url": "https://www.sarvam.ai/",
+    "title": "Sarvam AI",
+    "url": "https://dashboard.sarvam.ai/chat",
     "category": "AI",
-    "urls": [
-      "https://www.sarvam.ai/"
-    ]
+    "urls": ["https://www.sarvam.ai/", "https://dashboard.sarvam.ai/chat", "https://indus.sarvam.ai/"]
   },
   {
     "title": "TransUnion CIBIL",
