@@ -27,61 +27,82 @@
   {
     "title": "AdGuard DNS",
     "url": "https://adguard-dns.io/en/welcome.html",
-    "urls": ["https://adguard-dns.io/en/welcome.html", "https://adguard-dns.io/en/dashboard/statistics/query"],
+    "urls": [
+      "https://adguard-dns.io/en/welcome.html",
+      "https://adguard-dns.io/en/dashboard/statistics/query"
+    ],
     "category": "Privacy & Security"
   },
   {
     "title": "Distro Finder",
     "url": "https://distro-finder.com/",
-    "urls": ["https://distro-finder.com"],
+    "urls": [
+      "https://distro-finder.com"
+    ],
     "category": "Linux"
   },
   {
     "title": "Claude AI",
     "url": "https://claude.ai/",
-    "urls": ["https://claude.ai"],
+    "urls": [
+      "https://claude.ai"
+    ],
     "category": "AI"
   },
   {
     "title": "OpenClaw",
     "url": "https://openclaw.ai/",
-    "urls": ["https://openclaw.ai"],
+    "urls": [
+      "https://openclaw.ai"
+    ],
     "category": "AI"
   },
   {
     "title": "Folio Playground",
     "url": "https://folio-playground.pages.dev/",
-    "urls": ["https://folio-playground.pages.dev"],
+    "urls": [
+      "https://folio-playground.pages.dev"
+    ],
     "category": "Tools"
   },
   {
     "title": "Tango",
     "url": "https://app.tangoapp.dev",
-    "urls": ["https://app.tangoapp.dev"],
+    "urls": [
+      "https://app.tangoapp.dev"
+    ],
     "category": "Tools"
   },
   {
     "title": "Napkin AI",
     "url": "https://app.napkin.ai",
-    "urls": ["https://app.napkin.ai"],
+    "urls": [
+      "https://app.napkin.ai"
+    ],
     "category": "AI"
   },
   {
     "title": "JustAnime",
     "url": "https://justanime.to",
-    "urls": ["https://justanime.to"],
+    "urls": [
+      "https://justanime.to"
+    ],
     "category": "Manga / Anime"
   },
   {
     "title": "Anime India",
     "url": "https://animesalt.ac",
-    "urls": ["https://animesalt.ac", "https://animelok.xyz"],
+    "urls": [
+      "https://animesalt.ac",
+      "https://animelok.xyz"
+    ],
     "category": "Manga / Anime"
   },
   {
     "title": "Movies and TV shows",
     "url": "https://web.stremio.com/",
-    "urls": ["https://web.stremio.com/#/",
+    "urls": [
+      "https://web.stremio.com/#/",
       "https://stremio-addons.net/",
       "https://hicine.app/",
       "https://ww1.01fmovies.com/index.html",
@@ -96,30 +117,40 @@
       "https://streamex.sh",
       "https://1flex.nl"
     ],
-    "category": "Streaming" 
+    "category": "Streaming"
   },
   {
     "title": "Defuddle",
     "url": "https://defuddle.md/",
-    "urls": ["https://defuddle.md/"],
+    "urls": [
+      "https://defuddle.md/"
+    ],
     "category": "Tools"
   },
   {
     "title": "VibeShare",
     "url": "https://www.vibeshare.tech/",
-    "urls": ["https://www.vibeshare.tech/"],
+    "urls": [
+      "https://www.vibeshare.tech/"
+    ],
     "category": "Hosting"
   },
   {
     "title": "Cloudflare Pages",
     "url": "https://pages.cloudflare.com/",
-    "urls": ["https://pages.cloudflare.com/"],
+    "urls": [
+      "https://pages.cloudflare.com/"
+    ],
     "category": "Hosting"
   },
   {
     "title": "Arena AI",
     "url": "https://arena.ai/",
-    "urls": ["https://arena.ai/", "https://lmarena.ai", "https://yupp.ai/"],
+    "urls": [
+      "https://arena.ai/",
+      "https://lmarena.ai",
+      "https://yupp.ai/"
+    ],
     "category": "AI"
   },
   {
@@ -307,7 +338,11 @@
     "title": "Sarvam AI",
     "url": "https://dashboard.sarvam.ai/chat",
     "category": "AI",
-    "urls": ["https://dashboard.sarvam.ai/chat", "https://indus.sarvam.ai/", "https://www.sarvam.ai/"]
+    "urls": [
+      "https://dashboard.sarvam.ai/chat",
+      "https://indus.sarvam.ai/",
+      "https://www.sarvam.ai/"
+    ]
   },
   {
     "title": "TransUnion CIBIL",
@@ -668,7 +703,6 @@
       "https://www.upihelp.npci.org.in"
     ]
   },
-
   {
     "title": "Andi Search",
     "url": "https://andisearch.com",
@@ -1449,7 +1483,7 @@
   {
     "title": "Google AI Studio",
     "url": "https://aistudio.google.com/",
-    "category": "AI",
+    "category": "Coding",
     "urls": [
       "https://aistudio.google.com/"
     ]
@@ -2161,8 +2195,45 @@
       "https://meet.new"
     ],
     "category": "Jobs"
+  },
+  {
+    "title": "Jules",
+    "url": "https://jules.google.com/",
+    "urls": [
+      "https://jules.google.com/"
+    ],
+    "category": "Coding"
+  },
+  {
+    "title": "Lovable",
+    "url": "https://lovable.dev/",
+    "urls": [
+      "https://lovable.dev/"
+    ],
+    "category": "Coding"
+  },
+  {
+    "title": "Bolt",
+    "url": "https://bolt.new/",
+    "urls": [
+      "https://bolt.new/"
+    ],
+    "category": "Coding"
+  },
+  {
+    "title": "Emergent",
+    "url": "https://emergent.sh/",
+    "urls": [
+      "https://emergent.sh/"
+    ],
+    "category": "Coding"
+  },
+  {
+    "title": "Replit",
+    "url": "https://replit.com/",
+    "urls": [
+      "https://replit.com/"
+    ],
+    "category": "Coding"
   }
 ]
-
-
-

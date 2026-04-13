@@ -44,6 +44,7 @@ const CAT_ICONS = {
   "Android": "🤖",
   "Linux": "🐧",
   "Windows": "🪟",
+  "Coding": "👨‍💻",
 
   "Travel": "✈️",
   "Web apps": "🕸️"
@@ -135,7 +136,7 @@ const Core = {
         if (res.ok) raw = await res.json();
       } catch (fetchErr) {
         console.warn("Could not fetch links.json", fetchErr);
-        // alert("Failed to fetch links.json: " + fetchErr.message); 
+        // alert("Failed to fetch links.json: " + fetchErr.message);
       }
 
       try {
@@ -267,6 +268,10 @@ const UI = {
     this.setupTooltips();
   },
 
+  setupTooltips() {
+    // Placeholder for tooltip initialization logic
+  },
+
 
 
   renderBreadcrumb() {
@@ -285,7 +290,7 @@ const UI = {
          <span class="breadcrumb-active breadcrumb-item" onclick="UI.toggleDropdown(event)">
             ${CAT_ICONS[STATE.activeCategory] || '📂'} ${STATE.activeCategory} <span style="font-size:0.8em;opacity:0.6">▼</span>
          </span>
-         
+
          <div class="category-dropdown ${STATE.isDropdownOpen ? 'active' : ''}">
              <div class="dropdown-item" onclick="UI.setCategory('All')">
                 <span>🏠 All Tools</span>
@@ -444,7 +449,7 @@ const UI = {
                   this.setAttribute('data-tried-optional', 'true');
                   this.src = ${optionalIcon};
               } else {
-                  this.src='${fallbackSvg}'; 
+                  this.src='${fallbackSvg}';
                   this.onerror=null;
               }
           ">`;
@@ -461,7 +466,7 @@ const UI = {
             <div class="card-title">${link.title}</div>
           </div>
           <div class="card-url">${Utils.getHostname(link.url)}${fallbackBadge}</div>
-          
+
           <div class="card-actions" onclick="event.stopPropagation()">
              <button onclick="UI.openEdit('${link.id}')" title="Edit">✏️</button>
              <button class="btn-delete" onclick="Core.deleteLink('${link.id}')" title="Delete">🗑️</button>
@@ -564,7 +569,6 @@ const UI = {
     } else {
       Core.addLink(data);
     }
-    this.closeModal();
     this.closeModal();
     this.renderBreadcrumb(); // Update counts
   },
@@ -761,7 +765,3 @@ const PageTools = {
 
 // Initial Start
 Core.init();
-
-
-
-
