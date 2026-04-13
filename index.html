@@ -5,7 +5,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>URL Hub</title>
+  <meta name="description" content="A personal dashboard to organize and access your favorite websites.">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="URL Hub">
+  <link rel="apple-touch-icon" href="backlink.png">
   <link rel="icon" href="backlink.png">
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
@@ -127,6 +134,15 @@
   <!-- Inline JSON data (Fallback) -->
   <script src="links.json" type="application/json" id="data"></script>
   <script src="hub.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker registered', reg))
+          .catch(err => console.log('Service Worker registration failed', err));
+      });
+    }
+  </script>
 </body>
 
 

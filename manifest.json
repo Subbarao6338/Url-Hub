@@ -1,0 +1,23 @@
+{
+  "name": "URL Hub",
+  "short_name": "URL Hub",
+  "description": "A personal dashboard to organize and access your favorite websites.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "backlink.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "urlhub.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
