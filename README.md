@@ -41,8 +41,27 @@ Modify the `links.json` file with the following structure:
     "title": "Example Title",
     "url": "https://example.com",
     "optional_icon": "https://example.com/favicons/favicon.ico",
-    "urls": ["multiple urls separated by comma"],
+    "urls": ["https://example.com", "https://backup.example.com"],
     "category": "Utilities"
   }
 ]
 ```
+
+## Settings Options
+
+The application provides several customization options via the Settings modal:
+
+### Appearance
+- **Dark Mode**: Toggles between light and dark color schemes.
+- **Compact View**: Switches to a denser grid layout for more links on screen.
+- **Hide URLs**: Hides the display of tool URLs on the cards for a cleaner look.
+- **Hide Icons**: Disables fetching and displaying favicons or emojis.
+- **Solid Mode**: Disables glassmorphism and background animations for better performance.
+- **Show Counts**: Toggles the visibility of link counts next to categories.
+- **Aurora BG**: Toggles the animated background effect.
+- **Color Palette**: Choose from various accent colors to customize the theme.
+
+### Data Management
+- **Export Backup**: Downloads your current link collection as a JSON file.
+- **Import Backup**: Restores your collection from a previously exported JSON file.
+- **Reset Dashboard**: Clears all local changes and restores the default set of links from `links.json`.

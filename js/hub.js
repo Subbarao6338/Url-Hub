@@ -8,6 +8,7 @@ const STATE = {
   isDarkMode: localStorage.getItem('hub_theme') === 'dark' || (localStorage.getItem('hub_theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches),
   isCompact: localStorage.getItem('hub_compact') === 'true',
   hideUrls: localStorage.getItem('hub_hide_urls') === 'true',
+  hideIcons: localStorage.getItem('hub_hide_icons') === 'true',
   disableGlass: localStorage.getItem('hub_disable_glass') === 'true',
   showStats: localStorage.getItem('hub_show_stats') !== 'false',
   enableAurora: localStorage.getItem('hub_enable_aurora') !== 'false',
@@ -610,32 +611,38 @@ const UI = {
         // 2. Google Favicon
         // 3. Category Fallback Emoji
 
-        // Check if user icon is an emoji (simple check: short and no 'http')
-        const userIcon = link.icon || "";
-        const isEmoji = userIcon && !userIcon.includes('/') && userIcon.length < 5;
-
         let imgHtml = '';
-        if (isEmoji) {
-          // User provided an emoji
-          imgHtml = `<div class="card-icon" style="display:grid;place-items:center;font-size:24px;background:var(--bg)">${userIcon}</div>`;
-        } else {
-          // URL (User provided or Auto Favicon)
-          const src = userIcon || `https://www.google.com/s2/favicons?domain=${Utils.getHostname(link.url)}&sz=64`;
-          const fallback = CAT_ICONS[cat] || "link";
-          const fallbackSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='${encodedColor}'><text y='.9em' font-size='80' font-family='Material Icons'>${fallback}</text></svg>`;
+        if (!STATE.hideIcons) {
+          // Check if user icon is an emoji (simple check: short and no 'http')
+          const userIcon = link.icon || "";
+          const isEmoji = userIcon && !userIcon.includes('/') && userIcon.length < 5;
 
-          // Optional Icon Logic
-          const optionalIcon = link.optional_icon ? `'${link.optional_icon}'` : 'null';
+          if (isEmoji) {
+            // User provided an emoji
+            imgHtml = `<div class="card-icon" style="display:grid;place-items:center;font-size:24px;background:var(--bg)">${userIcon}</div>`;
+          } else {
+            // URL (User provided or Auto Favicon)
+            const hostname = Utils.getHostname(link.url);
+            const src = userIcon || `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
+            const fallback = CAT_ICONS[cat] || "link";
+            const fallbackSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='${encodedColor}'><text y='.9em' font-size='80' font-family='Material Icons'>${fallback}</text></svg>`;
 
-          imgHtml = `<img src="${src}" class="card-icon" loading="lazy" onerror="
-              if (this.getAttribute('data-tried-optional') !== 'true' && ${optionalIcon}) {
-                  this.setAttribute('data-tried-optional', 'true');
-                  this.src = ${optionalIcon};
-              } else {
-                  this.src='${fallbackSvg}';
-                  this.onerror=null;
-              }
-          ">`;
+            // Optional Icon Logic
+            const optionalIcon = link.optional_icon ? `'${link.optional_icon}'` : 'null';
+
+            imgHtml = `<img src="${src}" class="card-icon" loading="lazy" onerror="
+                if (this.getAttribute('data-tried-optional') !== 'true' && ${optionalIcon}) {
+                    this.setAttribute('data-tried-optional', 'true');
+                    this.src = ${optionalIcon};
+                } else if (this.getAttribute('data-tried-ddg') !== 'true') {
+                    this.setAttribute('data-tried-ddg', 'true');
+                    this.src = 'https://icons.duckduckgo.com/ip3/${hostname}.ico';
+                } else {
+                    this.src='${fallbackSvg}';
+                    this.onerror=null;
+                }
+            ">`;
+          }
         }
 
         // Check if multiple URLs exist
@@ -681,19 +688,71 @@ const UI = {
   },
 
   // Modal Handling
-  openModal(id) {
-    document.getElementById(id).style.display = 'block';
+  openModal(id, tabId = 'general') {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+
+    modal.style.display = 'block';
     document.getElementById('modal-overlay').style.display = 'block';
     STATE.isModalOpen = true;
 
     if (id === 'modal-settings') {
       PageTools.updateSettingsUI();
+      this.switchTab(tabId);
     }
 
     // Populate Datalist for categories
     const dl = document.getElementById('category-list');
     if (dl) {
       dl.innerHTML = Object.keys(Core.getStats()).map(c => `<option value="${c}">`).join('');
+    }
+  },
+
+  switchTab(tabId) {
+    // Hide all tab panes
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+      pane.style.display = 'none';
+    });
+
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    // Show selected tab pane
+    const activePane = document.getElementById(`tab-${tabId}`);
+    if (activePane) {
+      activePane.style.display = 'block';
+    }
+
+    // Add active class to selected tab button
+    const activeBtn = document.querySelector(`.tab-btn[onclick*="${tabId}"]`);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+    }
+
+    // Special logic for About tab
+    if (tabId === 'about') {
+      this.loadAboutContent();
+    }
+  },
+
+  async loadAboutContent() {
+    const content = document.getElementById('about-content');
+    if (!content || content.dataset.loaded === 'true') return;
+
+    try {
+      const response = await fetch('README.md');
+      if (response.ok) {
+        const markdown = await response.text();
+        content.innerHTML = this.markdownToHTML(markdown);
+        content.dataset.loaded = 'true';
+      } else {
+        content.innerHTML = '<p>Unable to load README content.</p>';
+      }
+    } catch (error) {
+      console.error('Error loading README:', error);
+      content.innerHTML = '<p>Error loading README content.</p>';
     }
   },
 
@@ -729,11 +788,18 @@ const UI = {
     document.getElementById('modal-overlay').style.display = 'none';
     STATE.isModalOpen = false;
     STATE.currentLink = null;
-    document.getElementById('tool-form').reset();
-    document.getElementById('edit-id').value = '';
-    document.getElementById('modal-title').textContent = 'Add Tool';
+    const form = document.getElementById('tool-form');
+    if (form) form.reset();
+    const editId = document.getElementById('edit-id');
+    if (editId) editId.value = '';
+    const modalTitle = document.getElementById('modal-title');
+    if (modalTitle) modalTitle.textContent = 'Add Tool';
+    const tabLabel = document.getElementById('tab-add-label');
+    if (tabLabel) tabLabel.textContent = 'Add Tool';
+
     // Clear alternative URLs
-    document.getElementById('alternative-urls-container').innerHTML = '';
+    const altContainer = document.getElementById('alternative-urls-container');
+    if (altContainer) altContainer.innerHTML = '';
   },
 
   togglePin(id, e) {
@@ -792,7 +858,9 @@ const UI = {
     }
 
     document.getElementById('modal-title').textContent = 'Edit Tool';
-    this.openModal('modal-add');
+    const tabLabel = document.getElementById('tab-add-label');
+    if (tabLabel) tabLabel.textContent = 'Edit Tool';
+    this.openModal('modal-settings', 'add');
   },
 
   handleFormSubmit(e) {
@@ -842,33 +910,11 @@ const UI = {
 
   // About Modal Functions
   async openAboutModal() {
-    const modal = document.getElementById('modal-about');
-    const overlay = document.getElementById('modal-overlay');
-    const content = document.getElementById('about-content');
-
-    // Load README content
-    try {
-      const response = await fetch('README.md');
-      if (response.ok) {
-        const markdown = await response.text();
-        content.innerHTML = this.markdownToHTML(markdown);
-      } else {
-        content.innerHTML = '<p>Unable to load README content.</p>';
-      }
-    } catch (error) {
-      console.error('Error loading README:', error);
-      content.innerHTML = '<p>Error loading README content.</p>';
-    }
-
-    modal.style.display = 'block';
-    overlay.style.display = 'block';
-    STATE.isModalOpen = true;
+    this.openModal('modal-settings', 'about');
   },
 
   closeAboutModal() {
-    document.getElementById('modal-about').style.display = 'none';
-    document.getElementById('modal-overlay').style.display = 'none';
-    STATE.isModalOpen = false;
+    this.closeModal();
   },
 
   // Simple Markdown to HTML converter
@@ -1019,6 +1065,13 @@ const PageTools = {
     UI.render();
   },
 
+  toggleHideIcons() {
+    STATE.hideIcons = !STATE.hideIcons;
+    localStorage.setItem('hub_hide_icons', STATE.hideIcons);
+    this.updateSettingsUI();
+    UI.render();
+  },
+
   toggleGlass() {
     STATE.disableGlass = !STATE.disableGlass;
     localStorage.setItem('hub_disable_glass', STATE.disableGlass);
@@ -1079,6 +1132,12 @@ const PageTools = {
     if (hideUrlsBtn) {
       if (STATE.hideUrls) hideUrlsBtn.classList.add('active');
       else hideUrlsBtn.classList.remove('active');
+    }
+
+    const hideIconsBtn = document.getElementById('settings-hide-icons-btn');
+    if (hideIconsBtn) {
+      if (STATE.hideIcons) hideIconsBtn.classList.add('active');
+      else hideIconsBtn.classList.remove('active');
     }
 
     const glassBtn = document.getElementById('settings-glass-btn');

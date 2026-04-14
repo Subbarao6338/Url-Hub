@@ -47,7 +47,7 @@
             </button>
           </div>
           <!-- Page Tools merged here -->
-          <button id="desktop-add-tool" class="icon-btn desktop-only" onclick="UI.openModal('modal-add')" title="Add Tool">
+          <button id="desktop-add-tool" class="icon-btn desktop-only" onclick="UI.openModal('modal-settings', 'add')" title="Add Tool">
             <span class="material-icons">add</span>
           </button>
           <!-- Settings Toggle -->
@@ -76,86 +76,128 @@
 
   <!-- Settings Modal -->
   <div id="modal-settings" class="modal" style="display:none;">
-    <h2>Settings</h2>
+    <div class="modal-tabs">
+      <button class="tab-btn active" onclick="UI.switchTab('general')">
+        <span class="material-icons">settings</span> General
+      </button>
+      <button class="tab-btn" onclick="UI.switchTab('add')">
+        <span class="material-icons">add_box</span> <span id="tab-add-label">Add Tool</span>
+      </button>
+      <button class="tab-btn" onclick="UI.switchTab('about')">
+        <span class="material-icons">info</span> About
+      </button>
+    </div>
 
-    <div class="settings-section">
-      <h3>Appearance</h3>
-      <div class="pill-group">
-        <button class="pill" onclick="PageTools.toggleDarkMode()" id="settings-theme-btn">
-          <span class="material-icons" id="settings-theme-icon">dark_mode</span>
-          <span id="settings-theme-text">Dark Mode</span>
-        </button>
-        <button class="pill" onclick="PageTools.toggleCompact()" id="settings-compact-btn">
-          <span class="material-icons">view_module</span>
-          <span>Compact View</span>
-        </button>
-        <button class="pill" onclick="PageTools.toggleHideUrls()" id="settings-hide-urls-btn">
-          <span class="material-icons">link_off</span>
-          <span>Hide URLs</span>
-        </button>
-        <button class="pill" onclick="PageTools.toggleGlass()" id="settings-glass-btn">
-          <span class="material-icons">blur_off</span>
-          <span>Solid Mode</span>
-        </button>
-        <button class="pill" onclick="PageTools.toggleShowStats()" id="settings-stats-btn">
-          <span class="material-icons">analytics</span>
-          <span>Show Counts</span>
-        </button>
-        <button class="pill" onclick="PageTools.toggleAurora()" id="settings-aurora-btn">
-          <span class="material-icons">auto_awesome</span>
-          <span>Aurora BG</span>
-        </button>
+    <!-- General Tab -->
+    <div id="tab-general" class="tab-pane">
+      <div class="settings-section">
+        <h3>Appearance</h3>
+        <div class="pill-group">
+          <button class="pill" onclick="PageTools.toggleDarkMode()" id="settings-theme-btn">
+            <span class="material-icons" id="settings-theme-icon">dark_mode</span>
+            <span id="settings-theme-text">Dark Mode</span>
+          </button>
+          <button class="pill" onclick="PageTools.toggleCompact()" id="settings-compact-btn">
+            <span class="material-icons">view_module</span>
+            <span>Compact View</span>
+          </button>
+          <button class="pill" onclick="PageTools.toggleHideUrls()" id="settings-hide-urls-btn">
+            <span class="material-icons">link_off</span>
+            <span>Hide URLs</span>
+          </button>
+          <button class="pill" onclick="PageTools.toggleHideIcons()" id="settings-hide-icons-btn">
+            <span class="material-icons">hide_image</span>
+            <span>Hide Icons</span>
+          </button>
+          <button class="pill" onclick="PageTools.toggleGlass()" id="settings-glass-btn">
+            <span class="material-icons">blur_off</span>
+            <span>Solid Mode</span>
+          </button>
+          <button class="pill" onclick="PageTools.toggleShowStats()" id="settings-stats-btn">
+            <span class="material-icons">analytics</span>
+            <span>Show Counts</span>
+          </button>
+          <button class="pill" onclick="PageTools.toggleAurora()" id="settings-aurora-btn">
+            <span class="material-icons">auto_awesome</span>
+            <span>Aurora BG</span>
+          </button>
+        </div>
+        <div class="pill-group" id="color-palette" style="margin-top: 15px;">
+          <button class="color-pill" style="background: #6366f1;" data-color="indigo" onclick="PageTools.setColor('indigo')" title="Indigo"></button>
+          <button class="color-pill" style="background: #3b82f6;" data-color="blue" onclick="PageTools.setColor('blue')" title="Blue"></button>
+          <button class="color-pill" style="background: #06b6d4;" data-color="cyan" onclick="PageTools.setColor('cyan')" title="Cyan"></button>
+          <button class="color-pill" style="background: #10b981;" data-color="green" onclick="PageTools.setColor('green')" title="Green"></button>
+          <button class="color-pill" style="background: #eab308;" data-color="yellow" onclick="PageTools.setColor('yellow')" title="Yellow"></button>
+          <button class="color-pill" style="background: #f59e0b;" data-color="orange" onclick="PageTools.setColor('orange')" title="Orange"></button>
+          <button class="color-pill" style="background: #ef4444;" data-color="red" onclick="PageTools.setColor('red')" title="Red"></button>
+          <button class="color-pill" style="background: #ec4899;" data-color="pink" onclick="PageTools.setColor('pink')" title="Pink"></button>
+          <button class="color-pill" style="background: #8b5cf6;" data-color="purple" onclick="PageTools.setColor('purple')" title="Purple"></button>
+          <button class="color-pill" style="background: #7c3aed;" data-color="violet" onclick="PageTools.setColor('violet')" title="Violet"></button>
+          <button class="color-pill" style="background: #84cc16;" data-color="lime" onclick="PageTools.setColor('lime')" title="Lime"></button>
+          <button class="color-pill" style="background: #0ea5e9;" data-color="sky" onclick="PageTools.setColor('sky')" title="Sky"></button>
+          <button class="color-pill" style="background: #f43f5e;" data-color="rose" onclick="PageTools.setColor('rose')" title="Rose"></button>
+          <button class="color-pill" style="background: #475569;" data-color="slate" onclick="PageTools.setColor('slate')" title="Slate"></button>
+          <button class="color-pill" style="background: #000000;" data-color="black" onclick="PageTools.setColor('black')" title="Black"></button>
+        </div>
       </div>
-      <div class="pill-group" id="color-palette" style="margin-top: 15px;">
-        <button class="color-pill" style="background: #6366f1;" data-color="indigo" onclick="PageTools.setColor('indigo')" title="Indigo"></button>
-        <button class="color-pill" style="background: #3b82f6;" data-color="blue" onclick="PageTools.setColor('blue')" title="Blue"></button>
-        <button class="color-pill" style="background: #06b6d4;" data-color="cyan" onclick="PageTools.setColor('cyan')" title="Cyan"></button>
-        <button class="color-pill" style="background: #10b981;" data-color="green" onclick="PageTools.setColor('green')" title="Green"></button>
-        <button class="color-pill" style="background: #eab308;" data-color="yellow" onclick="PageTools.setColor('yellow')" title="Yellow"></button>
-        <button class="color-pill" style="background: #f59e0b;" data-color="orange" onclick="PageTools.setColor('orange')" title="Orange"></button>
-        <button class="color-pill" style="background: #ef4444;" data-color="red" onclick="PageTools.setColor('red')" title="Red"></button>
-        <button class="color-pill" style="background: #ec4899;" data-color="pink" onclick="PageTools.setColor('pink')" title="Pink"></button>
-        <button class="color-pill" style="background: #8b5cf6;" data-color="purple" onclick="PageTools.setColor('purple')" title="Purple"></button>
-        <button class="color-pill" style="background: #7c3aed;" data-color="violet" onclick="PageTools.setColor('violet')" title="Violet"></button>
-        <button class="color-pill" style="background: #84cc16;" data-color="lime" onclick="PageTools.setColor('lime')" title="Lime"></button>
-        <button class="color-pill" style="background: #0ea5e9;" data-color="sky" onclick="PageTools.setColor('sky')" title="Sky"></button>
-        <button class="color-pill" style="background: #f43f5e;" data-color="rose" onclick="PageTools.setColor('rose')" title="Rose"></button>
-        <button class="color-pill" style="background: #475569;" data-color="slate" onclick="PageTools.setColor('slate')" title="Slate"></button>
-        <button class="color-pill" style="background: #000000;" data-color="black" onclick="PageTools.setColor('black')" title="Black"></button>
+
+      <div class="settings-section">
+        <h3>Data Management</h3>
+        <div class="pill-group">
+          <button class="pill" onclick="Tools.exportData()">
+            <span class="material-icons">download</span> Export Backup
+          </button>
+          <label class="pill" style="cursor: pointer;">
+            <span class="material-icons">upload</span> Import Backup
+            <input type="file" accept="application/json" onchange="Tools.importData(this)" style="display:none;">
+          </label>
+          <button class="pill" style="color: #ef4444;" onclick="Tools.resetData()">
+            <span class="material-icons">refresh</span> Reset Dashboard
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="settings-section">
-      <h3>Management</h3>
-      <div class="pill-group">
-        <button class="pill" onclick="UI.openModal('modal-add')">
-          <span class="material-icons">add</span> Add Tool
-        </button>
-      </div>
+    <!-- Add/Edit Tab -->
+    <div id="tab-add" class="tab-pane" style="display:none;">
+      <h2 id="modal-title" style="margin-top: 0;">Add Tool</h2>
+      <form id="tool-form" onsubmit="UI.handleFormSubmit(event)">
+        <input type="hidden" id="edit-id">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="tool-title" required placeholder="My Tool">
+        </div>
+        <div class="form-group">
+          <label>Primary URL</label>
+          <input type="url" id="tool-url" required placeholder="https://example.com">
+        </div>
+        <div class="form-group">
+          <label>Alternative URLs (Optional) <button type="button" class="btn-small" onclick="UI.addUrlField()"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">add</span> Add
+              URL</button></label>
+          <div id="alternative-urls-container">
+            <!-- Dynamic URL fields will be added here -->
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Icon (URL or Emoji) - Optional</label>
+          <input type="text" id="tool-icon" placeholder="e.g. 🚀 or https://...">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" id="tool-category" list="category-list" required placeholder="Utilities">
+          <datalist id="category-list"></datalist>
+        </div>
+
+        <div class="form-actions" style="margin-top: 1.5rem;">
+          <button type="submit" class="btn-primary" style="width: 100%;">Save Tool</button>
+        </div>
+      </form>
     </div>
 
-    <div class="settings-section">
-      <h3>Data</h3>
-      <div class="pill-group">
-        <button class="pill" onclick="Tools.exportData()">
-          <span class="material-icons">download</span> Export
-        </button>
-        <label class="pill" style="cursor: pointer;">
-          <span class="material-icons">upload</span> Import
-          <input type="file" accept="application/json" onchange="Tools.importData(this)" style="display:none;">
-        </label>
-        <button class="pill" style="color: #ef4444;" onclick="Tools.resetData()">
-          <span class="material-icons">refresh</span> Reset
-        </button>
-      </div>
-    </div>
-
-    <div class="settings-section">
-      <h3>Information</h3>
-      <div class="pill-group">
-        <button class="pill" onclick="UI.openAboutModal()">
-          <span class="material-icons">info</span> About URL Hub
-        </button>
+    <!-- About Tab -->
+    <div id="tab-about" class="tab-pane" style="display:none;">
+      <div class="about-content" id="about-content">
+        <!-- README content will be injected here -->
       </div>
     </div>
 
@@ -178,55 +220,6 @@
     </div>
   </div>
 
-  <!-- Add/Edit Modal -->
-  <div id="modal-add" class="modal" style="display:none;">
-    <h2 id="modal-title">Add Tool</h2>
-    <form id="tool-form" onsubmit="UI.handleFormSubmit(event)">
-      <input type="hidden" id="edit-id">
-      <div class="form-group">
-        <label>Title</label>
-        <input type="text" id="tool-title" required placeholder="My Tool">
-      </div>
-      <div class="form-group">
-        <label>Primary URL</label>
-        <input type="url" id="tool-url" required placeholder="https://example.com">
-      </div>
-      <div class="form-group">
-        <label>Alternative URLs (Optional) <button type="button" class="btn-small" onclick="UI.addUrlField()"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">add</span> Add
-            URL</button></label>
-        <div id="alternative-urls-container">
-          <!-- Dynamic URL fields will be added here -->
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Icon (URL or Emoji) - Optional</label>
-        <input type="text" id="tool-icon" placeholder="e.g. 🚀 or https://...">
-      </div>
-      <div class="form-group">
-        <label>Category</label>
-        <input type="text" id="tool-category" list="category-list" required placeholder="Utilities">
-        <datalist id="category-list"></datalist>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" onclick="UI.closeModal()">Cancel</button>
-        <button type="submit" class="btn-primary">Save</button>
-      </div>
-    </form>
-  </div>
-
-  <!-- About Modal -->
-  <div id="modal-about" class="modal" style="display:none;">
-    <div class="modal-header">
-      <h2><span class="material-icons">info</span> Description </h2>
-      <button class="modal-close" onclick="UI.closeAboutModal()" title="Close">
-        <span class="material-icons">close</span>
-      </button>
-    </div>
-    <div class="about-content" id="about-content">
-      <!-- README content will be injected here -->
-    </div>
-  </div>
 
   <!-- Iframe viewer -->
   <div id="site-viewer" style="display:none;">
