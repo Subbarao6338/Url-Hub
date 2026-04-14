@@ -1149,7 +1149,7 @@ body.no-aurora::after {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: var(--sidebar-bg);
+  background: var(--surface-solid);
   backdrop-filter: blur(20px);
   width: 90%;
   max-width: 480px;
