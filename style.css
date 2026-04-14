@@ -178,10 +178,21 @@ body::after {
 
 /* Sidebar Removed */
 
-/* Global Tooltip moved/removed (cleanup if needed, but keeping for now if used elsewhere) */
+/* Global Tooltip */
 .global-tooltip {
   display: none;
-  /* Disable for now as sidebar is gone */
+  position: fixed;
+  background: #0f172a;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+  animation: PRESET_POP_IN 0.2s ease;
 }
 
 [data-theme="dark"] .global-tooltip {
@@ -270,9 +281,31 @@ body::after {
 .search-container.active #search {
   width: 200px;
   opacity: 1;
-  padding: 8px 16px 8px 0;
-  /* Right padding */
+  padding: 8px 36px 8px 0;
+  /* Extra right padding for clear button */
   pointer-events: auto;
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+}
+
+.search-container.active .search-clear-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
+.search-clear-btn:hover {
+  color: var(--danger);
 }
 
 #search::placeholder {
@@ -917,6 +950,47 @@ body::after {
   background: #fee2e2 !important;
   color: #ef4444;
   border-color: #fecaca !important;
+}
+
+.copy-success {
+  border-color: var(--accent-green) !important;
+  color: var(--accent-green) !important;
+  background: rgba(16, 185, 129, 0.1) !important;
+}
+
+.card[data-long-press="true"] {
+  transform: scale(0.95);
+  transition: transform 0.2s;
+}
+
+#back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 44px;
+  height: 44px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  transition: all 0.3s;
+}
+
+#back-to-top:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+
+#back-to-top.visible {
+  display: flex;
+  animation: PRESET_POP_IN 0.3s ease;
 }
 
 /* FAB Container & Speed Dial */

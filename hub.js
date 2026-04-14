@@ -60,6 +60,22 @@ const Utils = {
     }
   },
 
+  // Copy to clipboard with visual feedback
+  async copyToClipboard(text, btn) {
+    try {
+      await navigator.clipboard.writeText(text);
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅';
+      btn.classList.add('copy-success');
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove('copy-success');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  },
+
   // Try opening URL with fallback support
   tryUrlWithFallback(urls, linkTitle) {
     if (!urls || urls.length === 0) return;
@@ -222,8 +238,9 @@ const UI = {
 
     document.getElementById('search-toggle').addEventListener('click', (e) => {
       e.stopPropagation();
-      searchContainer.classList.toggle('active');
-      if (searchContainer.classList.contains('active')) {
+      const isActive = searchContainer.classList.toggle('active');
+      document.body.classList.toggle('search-active', isActive);
+      if (isActive) {
         searchInput.focus();
       }
     });
@@ -234,12 +251,21 @@ const UI = {
         // Only close if input is empty
         if (searchInput.value === '') {
           searchContainer.classList.remove('active');
+          document.body.classList.remove('search-active');
         }
       }
     });
 
     document.getElementById('search').addEventListener('input', (e) => {
       STATE.searchQuery = e.target.value.toLowerCase();
+      this.render();
+    });
+
+    document.getElementById('search-clear').addEventListener('click', () => {
+      const searchInput = document.getElementById('search');
+      searchInput.value = '';
+      STATE.searchQuery = '';
+      searchInput.focus();
       this.render();
     });
 
@@ -265,11 +291,96 @@ const UI = {
       }
     });
 
+    // Global Keyboard Listeners
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closeModal();
+        this.closeFab();
+        this.closeAboutModal();
+
+        // Close search if active and empty
+        const searchInput = document.getElementById('search');
+        const searchContainer = document.getElementById('search-container');
+        if (searchContainer.classList.contains('active')) {
+          if (searchInput.value === '') {
+            searchContainer.classList.remove('active');
+            document.body.classList.remove('search-active');
+          } else {
+            searchInput.value = '';
+            STATE.searchQuery = '';
+            this.render();
+          }
+        }
+      }
+    });
+
     this.setupTooltips();
+    this.initBackToTop();
+  },
+
+  initBackToTop() {
+    const btn = document.getElementById('back-to-top');
+    const container = document.getElementById('content');
+
+    container.addEventListener('scroll', () => {
+      if (container.scrollTop > 300) {
+        btn.classList.add('visible');
+      } else {
+        btn.classList.remove('visible');
+      }
+    });
+
+    btn.addEventListener('click', () => {
+      container.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   },
 
   setupTooltips() {
-    // Placeholder for tooltip initialization logic
+    const tooltip = document.createElement('div');
+    tooltip.className = 'global-tooltip';
+    document.body.appendChild(tooltip);
+    let activeTarget = null;
+
+    const restoreTitle = (el) => {
+      if (el && el.hasAttribute('data-title')) {
+        el.setAttribute('title', el.getAttribute('data-title'));
+        el.removeAttribute('data-title');
+      }
+    };
+
+    document.addEventListener('mouseover', (e) => {
+      const target = e.target.closest('[title]');
+      if (target && !target.classList.contains('fab-item')) {
+        if (activeTarget && activeTarget !== target) {
+          restoreTitle(activeTarget);
+        }
+
+        activeTarget = target;
+        const text = target.getAttribute('title');
+        target.setAttribute('data-title', text);
+        target.removeAttribute('title');
+
+        tooltip.textContent = text;
+        tooltip.style.display = 'block';
+
+        const rect = target.getBoundingClientRect();
+        tooltip.style.top = (rect.top - tooltip.offsetHeight - 8) + 'px';
+        tooltip.style.left = (rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)) + 'px';
+      }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+      const target = e.target.closest('[data-title]');
+      if (target && activeTarget === target) {
+        restoreTitle(target);
+        activeTarget = null;
+        tooltip.style.display = 'none';
+      }
+    });
+
+    window.addEventListener('scroll', () => {
+      tooltip.style.display = 'none';
+    }, true);
   },
 
 
@@ -468,6 +579,7 @@ const UI = {
           <div class="card-url">${Utils.getHostname(link.url)}${fallbackBadge}</div>
 
           <div class="card-actions" onclick="event.stopPropagation()">
+             <button onclick="Utils.copyToClipboard('${link.url}', this)" title="Copy URL">📋</button>
              <button onclick="UI.openEdit('${link.id}')" title="Edit">✏️</button>
              <button class="btn-delete" onclick="Core.deleteLink('${link.id}')" title="Delete">🗑️</button>
           </div>
@@ -653,15 +765,19 @@ const UI = {
     html = html.replace(/`([^`]+)`/gim, '<code>$1</code>');
 
     // Convert unordered lists
-    html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
-    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    html = html.replace(/^\s*[\-\*]\s+(.*)$/gim, '<ul><li>$1</li></ul>');
 
     // Convert numbered lists
-    html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+    html = html.replace(/^\s*\d+\.\s+(.*)$/gim, '<ol><li>$1</li></ol>');
+
+    // Merge adjacent lists
+    html = html.replace(/<\/ul>\n<ul>/gim, '');
+    html = html.replace(/<\/ol>\n<ol>/gim, '');
 
     // Convert paragraphs (lines separated by blank lines)
     html = html.split('\n\n').map(para => {
-      if (!para.match(/^<[h|u|o|p|l|i]/)) {
+      const trimmed = para.trim();
+      if (!trimmed.match(/^<(h\d|ul|ol|li|pre|img|p)/i)) {
         return '<p>' + para.replace(/\n/g, ' ') + '</p>';
       }
       return para;
