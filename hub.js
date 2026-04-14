@@ -37,7 +37,7 @@ const CAT_ICONS = {
   "Storage": "cloud",
   "Hosting": "dns",
 
-  "Google": "google",
+  "Google": "language",
   "Search": "search",
 
   "Social": "forum",
@@ -522,7 +522,14 @@ const UI = {
       const header = document.createElement('div');
       header.className = 'category-header';
       const catIcon = CAT_ICONS[cat] || 'folder';
-      header.innerHTML = `<div class="category-title"><span class="material-icons">${catIcon}</span> ${cat} <span style="font-size:0.8em;opacity:0.5;font-weight:400;margin-left:8px">${grouped[cat].length}</span></div>`;
+      header.innerHTML = `
+        <div class="category-title">
+          <span class="material-icons">${catIcon}</span>
+          ${cat}
+          <span class="count" style="font-size:0.8rem;opacity:0.5;font-weight:400;margin-left:8px;background:rgba(0,0,0,0.05);padding:2px 8px;border-radius:10px;">${grouped[cat].length}</span>
+        </div>
+        <span class="material-icons expand-icon">expand_more</span>
+      `;
       header.onclick = () => section.classList.toggle('collapsed');
 
       // Grid
