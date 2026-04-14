@@ -4,6 +4,7 @@
 
 A personal dashboard to organize and access your favorite websites.
 
+
 ## Features
 
 - **Categorized View**: Links are automatically grouped by categories (e.g., specific categories defined in `links.json`).
@@ -14,6 +15,7 @@ A personal dashboard to organize and access your favorite websites.
 - **Import/Export**: Backup your links to a JSON file and restore them later.
 - **Privacy Focused**: No external tracking; everything runs locally.
 
+
 ## Getting Started
 
 1. **Open the Dashboard**: Simply open `index.html` in your web browser.
@@ -22,12 +24,14 @@ A personal dashboard to organize and access your favorite websites.
    - Click the **Add Link** button (if available in UI) or use the edit/delete buttons on cards to manage your tools.
    - Toggle the theme using the settings/theme button.
 
+
 ## File Structure
 
 - `index.html`: The main entry point for the application.
 - `hub.js`: Contains all the logic for the dashboard, including state management and UI rendering.
 - `style.css`: Styles for the application.
 - `links.json`: The default list of links used to populate the dashboard if no local data is found.
+
 
 ## Customization
 
@@ -46,6 +50,7 @@ Modify the `links.json` file with the following structure:
   }
 ]
 ```
+
 
 ## Settings Options
 
