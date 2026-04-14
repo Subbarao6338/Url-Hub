@@ -235,7 +235,7 @@ body::after {
   border: 1px solid var(--border);
   font-size: 1.2rem;
   cursor: pointer;
-  color: var(--on-surface);
+  color: var(--primary);
   width: 40px;
   height: 40px;
   border-radius: 10px;
@@ -854,6 +854,7 @@ body::after {
 .card-actions button {
   background: var(--surface);
   border: 1px solid var(--border);
+  color: var(--primary);
   width: 32px;
   height: 32px;
   border-radius: 8px;
@@ -873,8 +874,14 @@ body::after {
 
 .btn-delete:hover {
   background: #fee2e2 !important;
-  color: #ef4444;
+  color: #ef4444 !important;
   border-color: #fecaca !important;
+}
+
+.pin-btn.active {
+  color: white !important;
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
 }
 
 .copy-success {

@@ -58,6 +58,9 @@ const CAT_ICONS = {
 const Utils = {
   getHostname(urlStr) {
     try {
+      if (!urlStr.includes('://')) {
+        urlStr = 'http://' + urlStr;
+      }
       return new URL(urlStr).hostname;
     } catch (e) {
       console.warn("Invalid URL:", urlStr);
@@ -244,6 +247,8 @@ const Core = {
   deleteLink(id) {
     if (confirm("Are you sure you want to delete this tool?")) {
       STATE.links = STATE.links.filter(l => l.id !== id);
+      STATE.pinnedIds = STATE.pinnedIds.filter(pid => pid !== id);
+      localStorage.setItem('hub_pinned_v1', JSON.stringify(STATE.pinnedIds));
       this.saveData();
     }
   },
@@ -260,10 +265,14 @@ const Core = {
 // ============= UI MANAGER =============
 const UI = {
   _tooltipInitialized: false,
+  _eventsInitialized: false,
 
   init() {
     this.renderBreadcrumb();
     this.render();
+
+    if (this._eventsInitialized) return;
+    this._eventsInitialized = true;
 
     // Event Listeners
     // Search Toggle
@@ -519,10 +528,11 @@ const UI = {
       const matchesSearch = !STATE.searchQuery ||
         l.title.toLowerCase().includes(STATE.searchQuery) ||
         l.category.toLowerCase().includes(STATE.searchQuery) ||
-        l.url.toLowerCase().includes(STATE.searchQuery);
+        (l.urls || [l.url]).some(u => u.toLowerCase().includes(STATE.searchQuery));
 
       let matchesCat = false;
-      if (STATE.activeCategory === 'All') matchesCat = true;
+      if (STATE.searchQuery) matchesCat = true; // Global search
+      else if (STATE.activeCategory === 'All') matchesCat = true;
       else if (STATE.activeCategory === 'Pinned') matchesCat = STATE.pinnedIds.includes(l.id);
       else matchesCat = l.category === STATE.activeCategory;
 
@@ -544,6 +554,8 @@ const UI = {
 
     // Category Emoji Map for Fallback
     // Used global CAT_ICONS instead
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+    const encodedColor = encodeURIComponent(primaryColor);
 
     cats.forEach(cat => {
       const section = document.createElement('div');
@@ -636,7 +648,7 @@ const UI = {
           // URL (User provided or Auto Favicon)
           const src = userIcon || `https://www.google.com/s2/favicons?domain=${Utils.getHostname(link.url)}&sz=64`;
           const fallback = CAT_ICONS[cat] || "link";
-          const fallbackSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%236366f1'><text y='.9em' font-size='80' font-family='Material Icons'>${fallback}</text></svg>`;
+          const fallbackSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='${encodedColor}'><text y='.9em' font-size='80' font-family='Material Icons'>${fallback}</text></svg>`;
 
           // Optional Icon Logic
           const optionalIcon = link.optional_icon ? `'${link.optional_icon}'` : 'null';
@@ -662,13 +674,13 @@ const UI = {
           <div class="card-header">
             ${imgHtml}
             <div class="card-title">${this.highlightText(link.title, STATE.searchQuery)}</div>
-            <button class="pin-btn ${isPinned ? 'active' : ''}" onclick="UI.togglePin('${link.id}', event)" title="${isPinned ? 'Unpin' : 'Pin to Top'}">
-              <span class="material-icons">${isPinned ? 'push_pin' : 'push_pin'}</span>
-            </button>
           </div>
           <div class="card-url">${Utils.getHostname(link.url)}${fallbackBadge}</div>
 
           <div class="card-actions" onclick="event.stopPropagation()">
+             <button class="pin-btn ${isPinned ? 'active' : ''}" onclick="UI.togglePin('${link.id}', event)" title="${isPinned ? 'Unpin' : 'Pin to Top'}">
+               <span class="material-icons" style="font-size:1.2rem">${isPinned ? 'push_pin' : 'push_pin'}</span>
+             </button>
              <button onclick="UI.shareLink('${link.id}')" title="Share Tool">
                <span class="material-icons" style="font-size:1.2rem">share</span>
              </button>
