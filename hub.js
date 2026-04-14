@@ -12,45 +12,45 @@ const STATE = {
 };
 
 const CAT_ICONS = {
-  "All": "🏠",
-  "Government Services": "🏛️",
-  "Privacy & Security": "🔐",
-  "Network": "🌐",
+  "All": "home",
+  "Government Services": "account_balance",
+  "Privacy & Security": "security",
+  "Network": "lan",
 
-  "AI": "🧠",
-  "Tools": "🧰",
-  "Utilities": "⚙️",
+  "AI": "psychology",
+  "Tools": "construction",
+  "Utilities": "settings",
 
-  "Productivity": "🚀",
-  "Personal": "👤",
+  "Productivity": "rocket_launch",
+  "Personal": "person",
 
-  "Media": "🎥",
-  "Streaming": "📺",
-  "Manga / Anime": "🍥",
-  "Music": "🎵",
-  "Games": "🎮",
+  "Media": "movie",
+  "Streaming": "live_tv",
+  "Manga / Anime": "auto_awesome",
+  "Music": "music_note",
+  "Games": "sports_esports",
 
-  "Shopping": "🛒",
-  "Banking / Finance": "💰",
+  "Shopping": "shopping_cart",
+  "Banking / Finance": "payments",
 
-  "Email": "✉️",
-  "Storage": "☁️",
-  "Hosting": "🛰️",
+  "Email": "email",
+  "Storage": "cloud",
+  "Hosting": "dns",
 
-  "Google": "🟢",
-  "Search": "🔎",
+  "Google": "google",
+  "Search": "search",
 
-  "Social": "💬",
-  "News": "🗞️",
-  "Jobs": "🧑‍💼",
+  "Social": "forum",
+  "News": "newspaper",
+  "Jobs": "work",
 
-  "Android": "🤖",
-  "Linux": "🐧",
-  "Windows": "🪟",
-  "Coding": "👨‍💻",
+  "Android": "android",
+  "Linux": "terminal",
+  "Windows": "window",
+  "Coding": "code",
 
-  "Travel": "✈️",
-  "Web apps": "🕸️"
+  "Travel": "flight",
+  "Web apps": "language"
 };
 
 const Utils = {
@@ -262,9 +262,13 @@ const UI = {
     document.getElementById('search-toggle').addEventListener('click', (e) => {
       e.stopPropagation();
       const isActive = searchContainer.classList.toggle('active');
+      const toggleBtn = document.getElementById('search-toggle');
       document.body.classList.toggle('search-active', isActive);
       if (isActive) {
         searchInput.focus();
+        toggleBtn.innerHTML = '<span class="material-icons">close</span>';
+      } else {
+        toggleBtn.innerHTML = '<span class="material-icons">search</span>';
       }
     });
 
@@ -410,39 +414,60 @@ const UI = {
 
   renderBreadcrumb() {
     const nav = document.getElementById('breadcrumb-nav');
+    const mainNav = document.getElementById('main-category-nav');
     const stats = Core.getStats();
 
     // Get all unique categories
     const definedCats = Object.keys(CAT_ICONS).filter(c => c !== 'All');
     const existingCats = Object.keys(stats);
     const allCats = [...new Set([...definedCats, ...existingCats])].sort((a, b) => a.localeCompare(b));
-    // Ensure 'All' is first or handled separately
 
-    // Breadcrumb HTML
+    // 1. Breadcrumb / Dropdown UI
+    const activeIcon = CAT_ICONS[STATE.activeCategory] || 'folder';
     let html = `
       <div style="position:relative">
          <span class="breadcrumb-active breadcrumb-item" onclick="UI.toggleDropdown(event)">
-            ${CAT_ICONS[STATE.activeCategory] || '📂'} ${STATE.activeCategory} <span style="font-size:0.8em;opacity:0.6">▼</span>
+            <span class="material-icons">${activeIcon}</span> ${STATE.activeCategory} <span class="material-icons" style="font-size:1.2rem;opacity:0.6">expand_more</span>
          </span>
 
          <div class="category-dropdown ${STATE.isDropdownOpen ? 'active' : ''}">
-             <div class="dropdown-item" onclick="UI.setCategory('All')">
-                <span>🏠 All Tools</span>
+             <div class="pill ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All')">
+                <span class="material-icons">home</span>
+                <span>All Tools</span>
                 <span class="count">${STATE.links.length}</span>
              </div>
              ${allCats.map(cat => {
       const count = stats[cat] || 0;
+      const icon = CAT_ICONS[cat] || 'folder';
       return `
-                 <div class="dropdown-item" onclick="UI.setCategory('${cat}')">
-                    <span>${CAT_ICONS[cat] || '📦'} ${cat}</span>
+                 <div class="pill ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}')">
+                    <span class="material-icons">${icon}</span>
+                    <span>${cat}</span>
                     <span class="count">${count}</span>
                  </div>`;
     }).join('')}
          </div>
       </div>
     `;
-
     nav.innerHTML = html;
+
+    // 2. Main UI Horizontal Pill Nav
+    if (mainNav) {
+      let mainHtml = `
+        <div class="pill ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All')">
+          <span class="material-icons">home</span> <span>All</span>
+        </div>
+        ${allCats.map(cat => {
+        const icon = CAT_ICONS[cat] || 'folder';
+        return `
+            <div class="pill ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}')">
+              <span class="material-icons">${icon}</span> <span>${cat}</span>
+            </div>
+          `;
+      }).join('')}
+      `;
+      mainNav.innerHTML = mainHtml;
+    }
   },
 
   toggleDropdown(e) {
@@ -496,8 +521,8 @@ const UI = {
       // Header
       const header = document.createElement('div');
       header.className = 'category-header';
-      const catIcon = CAT_ICONS[cat] || '📦';
-      header.innerHTML = `<div class="category-title">${catIcon} ${cat} <span style="font-size:0.8em;opacity:0.5;font-weight:400;margin-left:8px">${grouped[cat].length}</span></div>`;
+      const catIcon = CAT_ICONS[cat] || 'folder';
+      header.innerHTML = `<div class="category-title"><span class="material-icons">${catIcon}</span> ${cat} <span style="font-size:0.8em;opacity:0.5;font-weight:400;margin-left:8px">${grouped[cat].length}</span></div>`;
       header.onclick = () => section.classList.toggle('collapsed');
 
       // Grid
@@ -572,8 +597,8 @@ const UI = {
         } else {
           // URL (User provided or Auto Favicon)
           const src = userIcon || `https://www.google.com/s2/favicons?domain=${Utils.getHostname(link.url)}&sz=64`;
-          const fallback = CAT_ICONS[cat] || "🔗";
-          const fallbackSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>${fallback}</text></svg>`;
+          const fallback = CAT_ICONS[cat] || "link";
+          const fallbackSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%236366f1'><text y='.9em' font-size='80' font-family='Material Icons'>${fallback}</text></svg>`;
 
           // Optional Icon Logic
           const optionalIcon = link.optional_icon ? `'${link.optional_icon}'` : 'null';
@@ -602,9 +627,15 @@ const UI = {
           <div class="card-url">${Utils.getHostname(link.url)}${fallbackBadge}</div>
 
           <div class="card-actions" onclick="event.stopPropagation()">
-             <button onclick="Utils.copyToClipboard('${link.url}', this)" title="Copy URL">📋</button>
-             <button onclick="UI.openEdit('${link.id}')" title="Edit">✏️</button>
-             <button class="btn-delete" onclick="Core.deleteLink('${link.id}')" title="Delete">🗑️</button>
+             <button onclick="Utils.copyToClipboard('${link.url}', this)" title="Copy URL">
+               <span class="material-icons" style="font-size:1.2rem">content_copy</span>
+             </button>
+             <button onclick="UI.openEdit('${link.id}')" title="Edit">
+               <span class="material-icons" style="font-size:1.2rem">edit</span>
+             </button>
+             <button class="btn-delete" onclick="Core.deleteLink('${link.id}')" title="Delete">
+               <span class="material-icons" style="font-size:1.2rem">delete</span>
+             </button>
           </div>
         `;
         grid.appendChild(card);
@@ -733,7 +764,9 @@ const UI = {
     wrapper.className = 'url-field-wrapper';
     wrapper.innerHTML = `
       <input type="url" class="alt-url-input" placeholder="https://alternative-url.com" value="${value}">
-      <button type="button" class="btn-remove" onclick="this.parentElement.remove()">✕</button>
+      <button type="button" class="btn-remove" onclick="this.parentElement.remove()">
+        <span class="material-icons">close</span>
+      </button>
     `;
     container.appendChild(wrapper);
   },

@@ -23,7 +23,11 @@
     <main class="main-content">
       <header class="top-bar">
         <div class="logo-container">
-          <img src="urlhub.png" alt="URL Hub Logo" class="app-logo">
+          <svg class="app-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="40" rx="10" fill="var(--primary)"/>
+            <path d="M12 20C12 15.5817 15.5817 12 20 12C24.4183 12 28 15.5817 28 20C28 24.4183 24.4183 28 20 28C15.5817 28 12 24.4183 12 20Z" stroke="white" stroke-width="2.5"/>
+            <path d="M20 16V24M16 20H24" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
           <h1 class="page-title">URL Hub</h1>
           <nav id="breadcrumb-nav" class="breadcrumb-nav">
             <!-- Breadcrumb injected here -->
@@ -31,9 +35,13 @@
         </div>
         <div class="top-actions">
           <div class="search-container" id="search-container">
-            <button id="search-toggle" class="icon-btn" title="Search">🔍</button>
+            <button id="search-toggle" class="icon-btn" title="Search">
+              <span class="material-icons">search</span>
+            </button>
             <input type="search" id="search" placeholder="Search tools..." />
-            <button id="search-clear" class="search-clear-btn" title="Clear Search">✕</button>
+            <button id="search-clear" class="search-clear-btn" title="Clear Search">
+              <span class="material-icons">close</span>
+            </button>
           </div>
           <!-- Page Tools merged here -->
           <!-- Settings Toggle -->
@@ -44,10 +52,16 @@
         </div>
       </header>
 
+      <nav id="main-category-nav" class="main-category-nav">
+        <!-- Horizontal pills injected here -->
+      </nav>
+
       <div id="content" class="tools-container">
         <!-- Content injected here -->
       </div>
-      <button id="back-to-top" title="Back to Top">↑</button>
+      <button id="back-to-top" title="Back to Top">
+        <span class="material-icons">arrow_upward</span>
+      </button>
     </main>
   </div>
 
@@ -126,7 +140,9 @@
       <!-- URLs injected here -->
     </div>
     <div class="form-actions">
-      <button type="button" id="btn-copy-all" class="btn-primary" style="display:none;" onclick="Utils.copyAllUrls()">Copy All</button>
+      <button type="button" id="btn-copy-all" class="btn-primary" style="display:none;" onclick="Utils.copyAllUrls()">
+        <span class="material-icons">content_copy</span> Copy All
+      </button>
       <button type="button" onclick="UI.closeModal()">Cancel</button>
     </div>
   </div>
@@ -145,7 +161,7 @@
         <input type="url" id="tool-url" required placeholder="https://example.com">
       </div>
       <div class="form-group">
-        <label>Alternative URLs (Optional) <button type="button" class="btn-small" onclick="UI.addUrlField()">+ Add
+        <label>Alternative URLs (Optional) <button type="button" class="btn-small" onclick="UI.addUrlField()"><span class="material-icons" style="font-size: 1rem; vertical-align: middle;">add</span> Add
             URL</button></label>
         <div id="alternative-urls-container">
           <!-- Dynamic URL fields will be added here -->
