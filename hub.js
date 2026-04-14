@@ -164,6 +164,7 @@ const Core = {
   saveData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE.links));
     UI.render();
+    UI.renderBreadcrumb();
   },
 
   async migrateFromJSON() {
@@ -335,9 +336,11 @@ const UI = {
         e.preventDefault();
         const searchContainer = document.getElementById('search-container');
         const searchInput = document.getElementById('search');
+        const toggleBtn = document.getElementById('search-toggle');
         searchContainer.classList.add('active');
         document.body.classList.add('search-active');
         searchInput.focus();
+        toggleBtn.innerHTML = '<span class="material-icons">close</span>';
       }
     });
 
@@ -526,7 +529,7 @@ const UI = {
         <div class="category-title">
           <span class="material-icons">${catIcon}</span>
           ${cat}
-          <span class="count" style="font-size:0.8rem;opacity:0.5;font-weight:400;margin-left:8px;background:rgba(0,0,0,0.05);padding:2px 8px;border-radius:10px;">${grouped[cat].length}</span>
+          <span class="count">${grouped[cat].length}</span>
         </div>
         <span class="material-icons expand-icon">expand_more</span>
       `;
@@ -780,7 +783,6 @@ const UI = {
 
   // About Modal Functions
   async openAboutModal() {
-    this.closeFab();
     const modal = document.getElementById('modal-about');
     const overlay = document.getElementById('modal-overlay');
     const content = document.getElementById('about-content');
@@ -925,6 +927,11 @@ const PageTools = {
 
   applyColor() {
     document.documentElement.setAttribute('data-color', STATE.accentColor);
+    // Update theme-color meta tag
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+    if (primaryColor) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', primaryColor);
+    }
   },
 
   updateSettingsUI() {
