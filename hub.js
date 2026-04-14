@@ -2,9 +2,10 @@
 const STORAGE_KEY = "url_hub_links_v1";
 const STATE = {
   links: [],
+  pinnedIds: JSON.parse(localStorage.getItem('hub_pinned_v1') || '[]'),
   activeCategory: 'All', // 'All' or specific category name
   searchQuery: '',
-  isDarkMode: localStorage.getItem('hub_theme') === 'dark',
+  isDarkMode: localStorage.getItem('hub_theme') === 'dark' || (localStorage.getItem('hub_theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches),
   accentColor: localStorage.getItem('hub_accent_color') || 'indigo',
   isDropdownOpen: false,
   isModalOpen: false,
@@ -13,7 +14,8 @@ const STATE = {
 
 const CAT_ICONS = {
   "All": "home",
-  "Government Services": "account_balance",
+  "Pinned": "push_pin",
+  "Govt.": "account_balance",
   "Privacy & Security": "security",
   "Network": "lan",
 
@@ -145,10 +147,17 @@ const Core = {
     if (saved) {
       try {
         STATE.links = JSON.parse(saved);
-        // Ensure IDs exist
+        // Ensure IDs exist and migrate category name
         let changed = false;
         STATE.links.forEach(l => {
-          if (!l.id) { l.id = Date.now() + Math.random().toString(36).substr(2, 9); changed = true; }
+          if (!l.id) {
+            l.id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+            changed = true;
+          }
+          if (l.category === "Government Services") {
+            l.category = "Govt.";
+            changed = true;
+          }
         });
         if (changed) this.saveData();
       } catch (e) {
@@ -197,11 +206,11 @@ const Core = {
       }
 
       STATE.links = raw.map(item => {
-        let category = item.category || "Others";
+        let category = item.category === "Government Services" ? "Govt." : (item.category || "Others");
         // Support both single url and multiple urls
         let urls = item.urls || [item.url];
         return {
-          id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
+          id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
           title: item.title,
           url: item.url, // Keep primary URL for backward compatibility
           urls: urls, // Store all URLs for fallback
@@ -219,8 +228,7 @@ const Core = {
 
   // CRUD
   addLink(link) {
-    // Generate a more robust unique ID
-    const id = Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+    const id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
     STATE.links.unshift({ ...link, id });
     this.saveData();
   },
@@ -251,6 +259,8 @@ const Core = {
 
 // ============= UI MANAGER =============
 const UI = {
+  _tooltipInitialized: false,
+
   init() {
     this.renderBreadcrumb();
     this.render();
@@ -344,7 +354,10 @@ const UI = {
       }
     });
 
-    this.setupTooltips();
+    if (!this._tooltipInitialized) {
+      this.setupTooltips();
+      this._tooltipInitialized = true;
+    }
     this.initBackToTop();
   },
 
@@ -420,12 +433,10 @@ const UI = {
     const mainNav = document.getElementById('main-category-nav');
     const stats = Core.getStats();
 
-    // Get all unique categories
-    const definedCats = Object.keys(CAT_ICONS).filter(c => c !== 'All');
+    const definedCats = Object.keys(CAT_ICONS).filter(c => c !== 'All' && c !== 'Pinned');
     const existingCats = Object.keys(stats);
     const allCats = [...new Set([...definedCats, ...existingCats])].sort((a, b) => a.localeCompare(b));
 
-    // 1. Breadcrumb / Dropdown UI
     const activeIcon = CAT_ICONS[STATE.activeCategory] || 'folder';
     let html = `
       <div style="position:relative">
@@ -438,6 +449,11 @@ const UI = {
                 <span class="material-icons">home</span>
                 <span>All Tools</span>
                 <span class="count">${STATE.links.length}</span>
+             </div>
+             <div class="pill ${STATE.activeCategory === 'Pinned' ? 'active' : ''}" onclick="UI.setCategory('Pinned')">
+                <span class="material-icons">push_pin</span>
+                <span>Pinned</span>
+                <span class="count">${STATE.pinnedIds.length}</span>
              </div>
              ${allCats.map(cat => {
       const count = stats[cat] || 0;
@@ -454,11 +470,13 @@ const UI = {
     `;
     nav.innerHTML = html;
 
-    // 2. Main UI Horizontal Pill Nav
     if (mainNav) {
       let mainHtml = `
         <div class="pill ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All')">
           <span class="material-icons">home</span> <span>All</span>
+        </div>
+        <div class="pill ${STATE.activeCategory === 'Pinned' ? 'active' : ''}" onclick="UI.setCategory('Pinned')">
+          <span class="material-icons">push_pin</span> <span>Pinned</span>
         </div>
         ${allCats.map(cat => {
         const icon = CAT_ICONS[cat] || 'folder';
@@ -486,6 +504,12 @@ const UI = {
     this.render();
   },
 
+  highlightText(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  },
+
   render() {
     const container = document.getElementById('content');
     container.innerHTML = '';
@@ -494,9 +518,13 @@ const UI = {
     let filtered = STATE.links.filter(l => {
       const matchesSearch = !STATE.searchQuery ||
         l.title.toLowerCase().includes(STATE.searchQuery) ||
+        l.category.toLowerCase().includes(STATE.searchQuery) ||
         l.url.toLowerCase().includes(STATE.searchQuery);
 
-      const matchesCat = STATE.activeCategory === 'All' || l.category === STATE.activeCategory;
+      let matchesCat = false;
+      if (STATE.activeCategory === 'All') matchesCat = true;
+      else if (STATE.activeCategory === 'Pinned') matchesCat = STATE.pinnedIds.includes(l.id);
+      else matchesCat = l.category === STATE.activeCategory;
 
       return matchesSearch && matchesCat;
     });
@@ -629,14 +657,21 @@ const UI = {
         const hasMultipleUrls = urls.length > 1;
         const fallbackBadge = hasMultipleUrls ? `<span class="fallback-badge" title="${urls.length} URLs available: ${urls.join(', ')}">${urls.length} URLs</span>` : '';
 
+        const isPinned = STATE.pinnedIds.includes(link.id);
         card.innerHTML = `
           <div class="card-header">
             ${imgHtml}
-            <div class="card-title">${link.title}</div>
+            <div class="card-title">${this.highlightText(link.title, STATE.searchQuery)}</div>
+            <button class="pin-btn ${isPinned ? 'active' : ''}" onclick="UI.togglePin('${link.id}', event)" title="${isPinned ? 'Unpin' : 'Pin to Top'}">
+              <span class="material-icons">${isPinned ? 'push_pin' : 'push_pin'}</span>
+            </button>
           </div>
           <div class="card-url">${Utils.getHostname(link.url)}${fallbackBadge}</div>
 
           <div class="card-actions" onclick="event.stopPropagation()">
+             <button onclick="UI.shareLink('${link.id}')" title="Share Tool">
+               <span class="material-icons" style="font-size:1.2rem">share</span>
+             </button>
              <button onclick="Utils.copyToClipboard('${link.url}', this)" title="Copy URL">
                <span class="material-icons" style="font-size:1.2rem">content_copy</span>
              </button>
@@ -711,6 +746,42 @@ const UI = {
     document.getElementById('modal-title').textContent = 'Add Tool';
     // Clear alternative URLs
     document.getElementById('alternative-urls-container').innerHTML = '';
+  },
+
+  togglePin(id, e) {
+    if (e) e.stopPropagation();
+    const index = STATE.pinnedIds.indexOf(id);
+    if (index > -1) {
+      STATE.pinnedIds.splice(index, 1);
+    } else {
+      STATE.pinnedIds.push(id);
+    }
+    localStorage.setItem('hub_pinned_v1', JSON.stringify(STATE.pinnedIds));
+    this.render();
+    this.renderBreadcrumb();
+  },
+
+  async shareLink(id) {
+    const link = STATE.links.find(l => l.id === id);
+    if (!link) return;
+
+    const shareData = {
+      title: link.title,
+      text: `Check out ${link.title} on URL Hub!`,
+      url: link.url
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback to copy link
+        await navigator.clipboard.writeText(`${link.title}: ${link.url}`);
+        alert('Link details copied to clipboard!');
+      }
+    } catch (err) {
+      console.error('Error sharing:', err);
+    }
   },
 
   openEdit(id) {

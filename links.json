@@ -249,7 +249,7 @@
   {
     "title": "Aadhaar (UIDAI)",
     "url": "https://myaadhaar.uidai.gov.in/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://myaadhaar.uidai.gov.in/"
     ]
@@ -257,7 +257,7 @@
   {
     "title": "PAN Card (UTIITSL/NSDL)",
     "url": "https://www.pan.utiitsl.com/PAN/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://www.pan.utiitsl.com/PAN/"
     ]
@@ -265,7 +265,7 @@
   {
     "title": "BIS Care (Product Verification)",
     "url": "https://www.manakonline.in/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://www.manakonline.in/"
     ]
@@ -273,7 +273,7 @@
   {
     "title": "Vehicle Search (Parivahan)",
     "url": "https://vahan.parivahan.gov.in/nrservices/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://vahan.parivahan.gov.in/nrservices/"
     ]
@@ -281,7 +281,7 @@
   {
     "title": "EPFO Member Unified Portal",
     "url": "https://unifiedportal-mem.epfindia.gov.in/memberinterface/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://unifiedportal-mem.epfindia.gov.in/memberinterface/"
     ]
@@ -289,7 +289,7 @@
   {
     "title": "Income Tax e-Filing",
     "url": "https://www.incometax.gov.in/iec/foportal/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://www.incometax.gov.in/iec/foportal/"
     ]
@@ -297,7 +297,7 @@
   {
     "title": "DigiLocker",
     "url": "https://www.digilocker.gov.in/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://www.digilocker.gov.in/"
     ]
@@ -305,7 +305,7 @@
   {
     "title": "Voters' Services Portal (ECI)",
     "url": "https://voters.eci.gov.in/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://voters.eci.gov.in/"
     ]
@@ -313,7 +313,7 @@
   {
     "title": "Andhra Pradesh Mee Seva (AP Seva)",
     "url": "https://ap.meeseva.gov.in/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://ap.meeseva.gov.in/"
     ]
@@ -321,7 +321,7 @@
   {
     "title": "Passport Seva",
     "url": "https://www.passportindia.gov.in/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://www.passportindia.gov.in/"
     ]
@@ -329,7 +329,7 @@
   {
     "title": "UMANG",
     "url": "https://web.umang.gov.in/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://web.umang.gov.in/"
     ]
@@ -2137,7 +2137,7 @@
   {
     "title": "Sanchar Saathi",
     "url": "https://www.sancharsaathi.gov.in/",
-    "category": "Government Services",
+    "category": "Govt.",
     "urls": [
       "https://www.sancharsaathi.gov.in/",
       "https://sancharsaathi.gov.in/",

@@ -17,9 +17,9 @@
   --surface: rgba(255, 255, 255, 0.7);
   --surface-hover: rgba(255, 255, 255, 0.85);
   --surface-solid: rgba(255, 255, 255, 0.95);
-  --on-surface: #1e293b;
-  --text-muted: #64748b;
-  --border: rgba(226, 232, 240, 0.8);
+  --on-surface: rgba(var(--primary-rgb, 15, 23, 42), 0.9);
+  --text-muted: rgba(var(--primary-rgb, 15, 23, 42), 0.6);
+  --border: rgba(var(--primary-rgb, 15, 23, 42), 0.1);
 
   --sidebar-bg: rgba(255, 255, 255, 0.5);
   --glass-blur: 12px;
@@ -66,6 +66,7 @@
 [data-color="teal"]   { --primary-rgb: 20, 184, 166; }
 [data-color="yellow"] { --primary-rgb: 234, 179, 8; }
 [data-color="amber"]  { --primary-rgb: 245, 158, 11; }
+[data-color="black"]  { --primary-rgb: 0, 0, 0; }
 
 :root {
   --primary: rgb(var(--primary-rgb, 99, 102, 241));
@@ -81,14 +82,14 @@
     radial-gradient(at 0% 100%, rgba(var(--primary-rgb, 99, 102, 241), 0.15) 0px, transparent 50%),
     #020617;
 
-  --surface: rgba(30, 41, 59, 0.4);
-  --surface-hover: rgba(30, 41, 59, 0.6);
-  --surface-solid: rgba(30, 41, 59, 0.95);
-  --on-surface: #f1f5f9;
-  --text-muted: #94a3b8;
-  --border: rgba(51, 65, 85, 0.4);
+  --surface: rgba(var(--primary-rgb), 0.1);
+  --surface-hover: rgba(var(--primary-rgb), 0.2);
+  --surface-solid: rgba(15, 23, 42, 0.95);
+  --on-surface: rgba(255, 255, 255, 0.95);
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --border: rgba(255, 255, 255, 0.1);
 
-  --sidebar-bg: rgba(15, 23, 42, 0.6);
+  --sidebar-bg: rgba(var(--primary-rgb), 0.1);
 
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
@@ -758,7 +759,7 @@ body::after {
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  background: white;
+  background: var(--surface-solid);
   padding: 10px;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
@@ -768,10 +769,11 @@ body::after {
 
 .card:hover .card-icon {
   transform: scale(1.1) rotate(5deg);
+  border-color: var(--primary);
 }
 
 [data-theme="dark"] .card-icon {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(var(--primary-rgb), 0.2);
 }
 
 .card-title {
@@ -864,7 +866,8 @@ body::after {
 }
 
 .card-actions button:hover {
-  background: white;
+  background: var(--surface-hover);
+  border-color: var(--primary);
   transform: scale(1.1);
 }
 
