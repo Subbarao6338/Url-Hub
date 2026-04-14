@@ -5,7 +5,9 @@ const STATE = {
   activeCategory: 'All', // 'All' or specific category name
   searchQuery: '',
   isDarkMode: localStorage.getItem('hub_theme') === 'dark',
-  isDropdownOpen: false
+  isDropdownOpen: false,
+  isModalOpen: false,
+  currentLink: null
 };
 
 const CAT_ICONS = {
@@ -66,6 +68,26 @@ const Utils = {
       await navigator.clipboard.writeText(text);
       const originalText = btn.innerHTML;
       btn.innerHTML = '✅';
+      btn.classList.add('copy-success');
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove('copy-success');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  },
+
+  // Copy all URLs of a tool to clipboard
+  async copyAllUrls() {
+    if (!STATE.currentLink) return;
+    const urls = STATE.currentLink.urls || [STATE.currentLink.url];
+    const text = urls.join('\n');
+    const btn = document.getElementById('btn-copy-all');
+    try {
+      await navigator.clipboard.writeText(text);
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅ Copied All';
       btn.classList.add('copy-success');
       setTimeout(() => {
         btn.innerHTML = originalText;
@@ -305,12 +327,23 @@ const UI = {
           if (searchInput.value === '') {
             searchContainer.classList.remove('active');
             document.body.classList.remove('search-active');
+            searchInput.blur();
           } else {
             searchInput.value = '';
             STATE.searchQuery = '';
             this.render();
           }
         }
+      }
+
+      // Search focus shortcut
+      if (e.key === '/' && !STATE.isModalOpen && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        const searchContainer = document.getElementById('search-container');
+        const searchInput = document.getElementById('search');
+        searchContainer.classList.add('active');
+        document.body.classList.add('search-active');
+        searchInput.focus();
       }
     });
 
@@ -598,6 +631,7 @@ const UI = {
     this.closeFab();
     document.getElementById(id).style.display = 'block';
     document.getElementById('modal-overlay').style.display = 'block';
+    STATE.isModalOpen = true;
     // Populate Datalist for categories
     const dl = document.getElementById('category-list');
     dl.innerHTML = Object.keys(Core.getStats()).map(c => `<option value="${c}">`).join('');
@@ -607,9 +641,17 @@ const UI = {
     const modal = document.getElementById('modal-url-selection');
     const list = document.getElementById('url-list');
     const overlay = document.getElementById('modal-overlay');
+    const copyAllBtn = document.getElementById('btn-copy-all');
+
+    STATE.currentLink = link;
 
     // Populate List
     const urls = link.urls || [link.url];
+    if (urls.length > 1) {
+      copyAllBtn.style.display = 'block';
+    } else {
+      copyAllBtn.style.display = 'none';
+    }
     list.innerHTML = urls.map(url => `
       <a href="${url}" target="_blank" class="url-btn" onclick="UI.closeModal()">
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px;">${url}</span>
@@ -619,12 +661,14 @@ const UI = {
 
     modal.style.display = 'block';
     overlay.style.display = 'block';
-    STATE.isModalOpen = true; // Use existing state flag if applicable or just manage display
+    STATE.isModalOpen = true;
   },
 
   closeModal() {
     document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
     document.getElementById('modal-overlay').style.display = 'none';
+    STATE.isModalOpen = false;
+    STATE.currentLink = null;
     document.getElementById('tool-form').reset();
     document.getElementById('edit-id').value = '';
     document.getElementById('modal-title').textContent = 'Add Tool';
@@ -735,11 +779,13 @@ const UI = {
 
     modal.style.display = 'block';
     overlay.style.display = 'block';
+    STATE.isModalOpen = true;
   },
 
   closeAboutModal() {
     document.getElementById('modal-about').style.display = 'none';
     document.getElementById('modal-overlay').style.display = 'none';
+    STATE.isModalOpen = false;
   },
 
   // Simple Markdown to HTML converter
@@ -756,6 +802,9 @@ const UI = {
 
     // Convert bold
     html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+
+    // Convert links [text](url)
+    html = html.replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank" style="color: var(--primary); text-decoration: none;">$1</a>');
 
     // Convert code blocks
     html = html.replace(/```json\n([\s\S]*?)```/gim, '<pre><code>$1</code></pre>');
@@ -852,9 +901,10 @@ const PageTools = {
     // "Zap Ads" logic from original tools
     const selectors = ['iframe', '[class*="ad"]', '[id*="ad"]', '[class*="popup"]', '[class*="overlay"]'];
     let count = 0;
+    const protectedIds = ['site-viewer', 'modal-overlay'];
     selectors.forEach(sel => {
       document.querySelectorAll(sel).forEach(el => {
-        if (el.id !== 'site-viewer') { el.remove(); count++; }
+        if (!protectedIds.includes(el.id)) { el.remove(); count++; }
       });
     });
     alert(`Cleaned ${count} elements.`);
