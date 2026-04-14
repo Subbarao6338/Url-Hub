@@ -1,18 +1,49 @@
 // ============= CONFIG & STATE =============
-const STORAGE_KEY = "url_hub_links_v1";
+const PROFILES = {
+  'Default': { links: 'url_links.json', cat: 'url_cat.json', icon: 'home' },
+  'Private': { links: 'necs_links.json', cat: 'necs_cat.json', icon: 'lock' },
+  'Personal': { links: 'combined', icon: 'person' }
+};
+
+const getProfileKey = (key) => {
+  const profile = localStorage.getItem('hub_current_profile') || localStorage.getItem('hub_startup_profile') || 'Default';
+  if (key === 'current_profile' || key === 'startup_profile') return `hub_${key}`;
+  return `hub_${profile}_${key}`;
+};
+
+const Storage = {
+  get(key, defaultValue = null) {
+    const val = localStorage.getItem(getProfileKey(key));
+    if (val === null) return defaultValue;
+    return val;
+  },
+  set(key, value) {
+    localStorage.setItem(getProfileKey(key), value);
+  },
+  getJson(key, defaultValue = []) {
+    const val = this.get(key);
+    if (!val) return defaultValue;
+    try { return JSON.parse(val); } catch (e) { return defaultValue; }
+  },
+  setJson(key, value) {
+    this.set(key, JSON.stringify(value));
+  }
+};
+
 const STATE = {
+  currentProfile: localStorage.getItem('hub_current_profile') || localStorage.getItem('hub_startup_profile') || 'Default',
   links: [],
-  pinnedIds: JSON.parse(localStorage.getItem('hub_pinned_v1') || '[]'),
+  pinnedIds: Storage.getJson('pinned_v1', []),
   activeCategory: 'All', // 'All' or specific category name
   searchQuery: '',
-  isDarkMode: localStorage.getItem('hub_theme') === 'dark' || (localStorage.getItem('hub_theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches),
-  isCompact: localStorage.getItem('hub_compact') === 'true',
-  hideUrls: localStorage.getItem('hub_hide_urls') === 'true',
-  hideIcons: localStorage.getItem('hub_hide_icons') === 'true',
-  disableGlass: localStorage.getItem('hub_disable_glass') === 'true',
-  showStats: localStorage.getItem('hub_show_stats') !== 'false',
-  enableAurora: localStorage.getItem('hub_enable_aurora') !== 'false',
-  accentColor: localStorage.getItem('hub_accent_color') || 'indigo',
+  isDarkMode: Storage.get('theme') === 'dark' || (Storage.get('theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches),
+  isCompact: Storage.get('compact') === 'true',
+  hideUrls: Storage.get('hide_urls') === 'true',
+  hideIcons: Storage.get('hide_icons') === 'true',
+  disableGlass: Storage.get('disable_glass') === 'true',
+  showStats: Storage.get('show_stats') !== 'false',
+  enableAurora: Storage.get('enable_aurora') !== 'false',
+  accentColor: Storage.get('accent_color') || 'indigo',
   isDropdownOpen: false,
   isModalOpen: false,
   currentLink: null,
@@ -114,10 +145,22 @@ const Core = {
 
   async loadCategories() {
     try {
-      const res = await fetch('data/categories.json');
-      if (res.ok) {
-        CAT_ICONS = await res.json();
+      const profileCfg = PROFILES[STATE.currentProfile];
+      let categories = {};
+
+      if (STATE.currentProfile === 'Personal') {
+        const [cat1, cat2] = await Promise.all([
+          fetch('data/' + PROFILES['Default'].cat).then(r => r.json()),
+          fetch('data/' + PROFILES['Private'].cat).then(r => r.json())
+        ]);
+        categories = { ...cat1, ...cat2 };
+      } else {
+        const res = await fetch('data/' + profileCfg.cat);
+        if (res.ok) {
+          categories = await res.json();
+        }
       }
+      CAT_ICONS = categories;
     } catch (e) {
       console.error("Failed to load categories", e);
       // Fallback or empty object
@@ -126,10 +169,10 @@ const Core = {
   },
 
   async loadData() {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = Storage.getJson('links_v1', null);
     if (saved) {
       try {
-        STATE.links = JSON.parse(saved);
+        STATE.links = saved;
         // Ensure IDs exist and migrate category name
         let changed = false;
         STATE.links.forEach(l => {
@@ -154,26 +197,42 @@ const Core = {
   },
 
   saveData() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE.links));
+    Storage.setJson('links_v1', STATE.links);
     UI.render();
     UI.renderBreadcrumb();
   },
 
   async migrateFromJSON() {
     try {
-      // Try fetching the external file first
       let raw = [];
-      try {
-        const res = await fetch(`data/links.json?t=${new Date().getTime()}`);
-        if (res.ok) raw = await res.json();
-      } catch (fetchErr) {
-        console.warn("Could not fetch data/links.json", fetchErr);
-        // alert("Failed to fetch data/links.json: " + fetchErr.message);
+      const profileCfg = PROFILES[STATE.currentProfile];
+
+      if (STATE.currentProfile === 'Personal') {
+        const [data1, data2] = await Promise.all([
+          fetch(`data/${PROFILES['Default'].links}?t=${new Date().getTime()}`).then(r => r.ok ? r.json() : []),
+          fetch(`data/${PROFILES['Private'].links}?t=${new Date().getTime()}`).then(r => r.ok ? r.json() : [])
+        ]);
+        raw = [...data1, ...data2];
+        // Deduplicate by URL
+        const seen = new Set();
+        raw = raw.filter(item => {
+          const val = item.url;
+          if (seen.has(val)) return false;
+          seen.add(val);
+          return true;
+        });
+      } else {
+        try {
+          const res = await fetch(`data/${profileCfg.links}?t=${new Date().getTime()}`);
+          if (res.ok) raw = await res.json();
+        } catch (fetchErr) {
+          console.warn(`Could not fetch data/${profileCfg.links}`, fetchErr);
+        }
       }
 
       try {
-        if (!raw || raw.length === 0) {
-          // Fallback to embedded
+        if ((!raw || raw.length === 0) && STATE.currentProfile === 'Default') {
+          // Fallback to embedded (only for default)
           const dataEl = document.getElementById("data");
           if (dataEl && dataEl.textContent.trim()) {
             raw = JSON.parse(dataEl.textContent);
@@ -184,7 +243,11 @@ const Core = {
       }
 
       if (!Array.isArray(raw) || raw.length === 0) {
-        alert("No links found in links.json or it is invalid JSON.");
+        if (STATE.currentProfile !== 'Private') {
+          alert(`No links found for ${STATE.currentProfile} profile.`);
+        }
+        STATE.links = [];
+        this.saveData();
         return;
       }
 
@@ -202,7 +265,9 @@ const Core = {
         };
       });
       this.saveData();
-      alert("Links successfully updated from server!");
+      if (STATE.currentProfile !== 'Personal') {
+        alert(`${STATE.currentProfile} links successfully updated from server!`);
+      }
     } catch (e) {
       console.error("Migration failed", e);
       alert("Critical error loading data: " + e.message);
@@ -228,7 +293,7 @@ const Core = {
     if (confirm("Are you sure you want to delete this tool?")) {
       STATE.links = STATE.links.filter(l => l.id !== id);
       STATE.pinnedIds = STATE.pinnedIds.filter(pid => pid !== id);
-      localStorage.setItem('hub_pinned_v1', JSON.stringify(STATE.pinnedIds));
+      Storage.setJson('pinned_v1', STATE.pinnedIds);
       this.saveData();
     }
   },
@@ -239,6 +304,12 @@ const Core = {
       stats[l.category] = (stats[l.category] || 0) + 1;
     });
     return stats;
+  },
+
+  switchProfile(profileName) {
+    if (!PROFILES[profileName]) return;
+    localStorage.setItem('hub_current_profile', profileName);
+    location.reload();
   }
 };
 
@@ -250,6 +321,7 @@ const UI = {
   init() {
     this.renderBreadcrumb();
     this.render();
+    this.updateLogo();
 
     if (this._eventsInitialized) return;
     this._eventsInitialized = true;
@@ -345,6 +417,73 @@ const UI = {
       this._tooltipInitialized = true;
     }
     this.initBackToTop();
+    this.setupLogoLongPress();
+  },
+
+  setupLogoLongPress() {
+    const logoContainer = document.querySelector('.logo-container');
+    if (!logoContainer) return;
+
+    let pressTimer;
+    const startPress = (e) => {
+      pressTimer = setTimeout(() => {
+        this.openProfileModal();
+      }, 700);
+    };
+
+    const cancelPress = () => {
+      clearTimeout(pressTimer);
+    };
+
+    logoContainer.addEventListener('mousedown', startPress);
+    logoContainer.addEventListener('mouseup', cancelPress);
+    logoContainer.addEventListener('mouseleave', cancelPress);
+    logoContainer.addEventListener('touchstart', startPress, { passive: true });
+    logoContainer.addEventListener('touchend', cancelPress);
+  },
+
+  openProfileModal() {
+    const modal = document.getElementById('modal-profile-selection');
+    if (!modal) return;
+    modal.style.display = 'block';
+    document.getElementById('modal-overlay').style.display = 'block';
+    STATE.isModalOpen = true;
+  },
+
+  updateLogo() {
+    const logoContainer = document.querySelector('.logo-container');
+    if (!logoContainer) return;
+
+    const icon = PROFILES[STATE.currentProfile].icon;
+    const logoEl = logoContainer.querySelector('.app-logo');
+
+    // Replace SVG with Material Icon for Private/Personal or update Default
+    if (STATE.currentProfile === 'Default') {
+      // Keep original SVG but ensure it's visible
+      if (logoEl.tagName === 'SPAN') {
+        logoContainer.innerHTML = `
+          <svg class="app-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="4"></circle>
+            <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"></line>
+            <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"></line>
+            <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"></line>
+            <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"></line>
+          </svg>
+          <h1 class="page-title">URL Hub</h1>
+          <nav id="breadcrumb-nav" class="breadcrumb-nav"></nav>
+        `;
+        // Need to re-render breadcrumb as we replaced innerHTML
+        this.renderBreadcrumb();
+      }
+    } else {
+      logoContainer.innerHTML = `
+        <span class="material-icons app-logo" style="font-size: 40px; color: var(--primary); filter: drop-shadow(0 0 8px var(--primary-glow));">${icon}</span>
+        <h1 class="page-title">URL Hub <small style="font-size: 0.6em; opacity: 0.7; vertical-align: middle;">(${STATE.currentProfile})</small></h1>
+        <nav id="breadcrumb-nav" class="breadcrumb-nav"></nav>
+      `;
+      this.renderBreadcrumb();
+    }
   },
 
   initBackToTop() {
@@ -454,7 +593,7 @@ const UI = {
          </div>
       </div>
     `;
-    nav.innerHTML = html;
+    if (nav) nav.innerHTML = html;
 
     if (mainNav) {
       let mainHtml = `
@@ -841,7 +980,7 @@ const UI = {
     } else {
       STATE.pinnedIds.push(id);
     }
-    localStorage.setItem('hub_pinned_v1', JSON.stringify(STATE.pinnedIds));
+    Storage.setJson('pinned_v1', STATE.pinnedIds);
     this.render();
     this.renderBreadcrumb();
   },
@@ -1126,7 +1265,7 @@ const Tools = {
 
   resetData() {
     if (confirm("This will reset your dashboard to the default list from links.json. Any local changes will be lost. Continue?")) {
-      localStorage.removeItem(STORAGE_KEY);
+      Storage.setJson('links_v1', null);
       location.reload();
     }
   }
@@ -1143,14 +1282,14 @@ const PageTools = {
 
   toggleDarkMode() {
     STATE.isDarkMode = !STATE.isDarkMode;
-    localStorage.setItem('hub_theme', STATE.isDarkMode ? 'dark' : 'light');
+    Storage.set('theme', STATE.isDarkMode ? 'dark' : 'light');
     this.applyTheme();
     this.updateSettingsUI();
   },
 
   setColor(color) {
     STATE.accentColor = color;
-    localStorage.setItem('hub_accent_color', color);
+    Storage.set('accent_color', color);
     this.applyColor();
     this.updateSettingsUI();
   },
@@ -1172,7 +1311,7 @@ const PageTools = {
 
   toggleCompact() {
     STATE.isCompact = !STATE.isCompact;
-    localStorage.setItem('hub_compact', STATE.isCompact);
+    Storage.set('compact', STATE.isCompact);
     this.applyCompact();
     this.updateSettingsUI();
     UI.render();
@@ -1188,21 +1327,21 @@ const PageTools = {
 
   toggleHideUrls() {
     STATE.hideUrls = !STATE.hideUrls;
-    localStorage.setItem('hub_hide_urls', STATE.hideUrls);
+    Storage.set('hide_urls', STATE.hideUrls);
     this.updateSettingsUI();
     UI.render();
   },
 
   toggleHideIcons() {
     STATE.hideIcons = !STATE.hideIcons;
-    localStorage.setItem('hub_hide_icons', STATE.hideIcons);
+    Storage.set('hide_icons', STATE.hideIcons);
     this.updateSettingsUI();
     UI.render();
   },
 
   toggleGlass() {
     STATE.disableGlass = !STATE.disableGlass;
-    localStorage.setItem('hub_disable_glass', STATE.disableGlass);
+    Storage.set('disable_glass', STATE.disableGlass);
     this.applyGlass();
     this.updateSettingsUI();
   },
@@ -1214,7 +1353,7 @@ const PageTools = {
 
   toggleShowStats() {
     STATE.showStats = !STATE.showStats;
-    localStorage.setItem('hub_show_stats', STATE.showStats);
+    Storage.set('show_stats', STATE.showStats);
     this.updateSettingsUI();
     UI.renderBreadcrumb();
     UI.render();
@@ -1222,7 +1361,7 @@ const PageTools = {
 
   toggleAurora() {
     STATE.enableAurora = !STATE.enableAurora;
-    localStorage.setItem('hub_enable_aurora', STATE.enableAurora);
+    Storage.set('enable_aurora', STATE.enableAurora);
     this.applyAurora();
     this.updateSettingsUI();
   },
@@ -1230,6 +1369,11 @@ const PageTools = {
   applyAurora() {
     if (STATE.enableAurora) document.body.classList.remove('no-aurora');
     else document.body.classList.add('no-aurora');
+  },
+
+  setStartupProfile(profileName) {
+    localStorage.setItem('hub_startup_profile', profileName);
+    this.updateSettingsUI();
   },
 
   updateSettingsUI() {
@@ -1295,6 +1439,12 @@ const PageTools = {
         pill.classList.remove('active');
       }
     });
+
+    // Update startup profile select
+    const startupSelect = document.getElementById('startup-profile-select');
+    if (startupSelect) {
+      startupSelect.value = localStorage.getItem('hub_startup_profile') || 'Default';
+    }
   }
 };
 

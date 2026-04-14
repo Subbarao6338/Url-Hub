@@ -142,6 +142,18 @@
       </div>
 
       <div class="settings-section">
+        <h3>Profiles</h3>
+        <div class="form-group" style="margin-top: 10px;">
+          <label>Default Startup Profile</label>
+          <select id="startup-profile-select" onchange="PageTools.setStartupProfile(this.value)" style="width: 100%; padding: 12px; border-radius: 12px; background: var(--surface); color: var(--on-surface); border: 1px solid var(--border); font-family: inherit;">
+            <option value="Default">Default</option>
+            <option value="Private">Private</option>
+            <option value="Personal">Personal</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="settings-section">
         <h3>Data Management</h3>
         <div class="pill-group">
           <button class="pill" onclick="Tools.exportData()" aria-label="Export Data Backup">
@@ -203,6 +215,28 @@
 
     <div class="form-actions">
       <button type="button" onclick="UI.closeModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- Profile Selection Modal -->
+  <div id="modal-profile-selection" class="modal" style="display:none;">
+    <h2 style="margin-top: 0;">Select Profile</h2>
+    <div class="pill-group" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+      <button class="pill" onclick="Core.switchProfile('Default')" style="justify-content: flex-start; width: 100%;">
+        <span class="material-icons">home</span>
+        <span>Default Profile</span>
+      </button>
+      <button class="pill" onclick="Core.switchProfile('Private')" style="justify-content: flex-start; width: 100%;">
+        <span class="material-icons">lock</span>
+        <span>Private Profile</span>
+      </button>
+      <button class="pill" onclick="Core.switchProfile('Personal')" style="justify-content: flex-start; width: 100%;">
+        <span class="material-icons">person</span>
+        <span>Personal Profile</span>
+      </button>
+    </div>
+    <div class="form-actions" style="margin-top: 2rem;">
+      <button type="button" onclick="UI.closeModal()">Cancel</button>
     </div>
   </div>
 
