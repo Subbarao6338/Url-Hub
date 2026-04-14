@@ -1315,116 +1315,99 @@ body.no-aurora::after {
   white-space: nowrap;
 }
 
-/* About Modal Styles */
-#modal-about {
-  max-width: 700px;
-  max-height: 85vh;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
-
-#modal-about .modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
-}
-
-#modal-about .modal-header h2 {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-#modal-about .modal-close {
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--text-muted);
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  padding: 0;
-}
-
-#modal-about .modal-close .material-icons {
-  font-size: 24px;
-}
-
-#modal-about .modal-close:hover {
-  background: var(--surface-hover);
-  color: var(--on-surface);
-}
-
-#modal-about .about-content {
+/* About Content Styles */
+.about-content {
   line-height: 1.7;
   color: var(--on-surface);
 }
 
-#modal-about .about-content h1 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
+.about-content h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
   color: var(--primary);
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-#modal-about .about-content h2 {
-  font-size: 1.4rem;
-  margin-top: 2rem;
+.about-content h2 {
+  font-size: 1.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  color: var(--on-surface);
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.about-content h3 {
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
   margin-bottom: 1rem;
   color: var(--on-surface);
   font-weight: 600;
 }
 
-#modal-about .about-content ul,
-#modal-about .about-content ol {
+.about-content ul,
+.about-content ol {
   margin-left: 1.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-#modal-about .about-content li {
-  margin-bottom: 0.5rem;
+.about-content li {
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
 }
 
-#modal-about .about-content p {
-  margin-bottom: 1rem;
+.about-content p {
+  margin-bottom: 1.25rem;
 }
 
-#modal-about .about-content code {
-  background: var(--surface);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: 'Courier New', monospace;
+.about-content code {
+  background: rgba(var(--primary-rgb), 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  font-family: 'Outfit', monospace;
   font-size: 0.9em;
   color: var(--primary);
+  border: 1px solid rgba(var(--primary-rgb), 0.2);
 }
 
-#modal-about .about-content pre {
+.about-content pre {
   background: var(--surface);
-  padding: 1rem;
-  border-radius: 8px;
+  padding: 1.25rem;
+  border-radius: 12px;
   overflow-x: auto;
-  margin-bottom: 1rem;
+  margin: 1.5rem 0;
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
-#modal-about .about-content pre code {
+.about-content pre code {
   background: transparent;
   padding: 0;
   color: var(--on-surface);
+  border: none;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
-#modal-about .about-content strong {
-  font-weight: 600;
+.about-content strong {
+  font-weight: 700;
   color: var(--on-surface);
+}
+
+.about-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+/* Modal sizing utility */
+.modal.modal-large {
+  max-width: 800px;
 }
 
 /* Responsive */

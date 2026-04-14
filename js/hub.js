@@ -752,6 +752,16 @@ const UI = {
       activeBtn.classList.add('active');
     }
 
+    // Handle modal sizing
+    const settingsModal = document.getElementById('modal-settings');
+    if (settingsModal) {
+      if (tabId === 'about') {
+        settingsModal.classList.add('modal-large');
+      } else {
+        settingsModal.classList.remove('modal-large');
+      }
+    }
+
     // Special logic for About tab
     if (tabId === 'about') {
       this.loadAboutContent();
@@ -940,47 +950,142 @@ const UI = {
 
   // Simple Markdown to HTML converter
   markdownToHTML(markdown) {
-    let html = markdown;
+    const lines = markdown.split('\n');
+    let html = '';
+    let currentList = null;
+    let inCodeBlock = false;
+    let codeContent = '';
+    let paragraphBuffer = [];
 
-    // Convert images (must be before links to avoid conflicts)
-    html = html.replace(/!\[(.*?)\]\((.*?)\)/gim, '<img src="$2" alt="$1" style="max-width: 100%; height: auto; border-radius: 12px; margin: 1rem 0; box-shadow: var(--shadow-md);">');
+    const escapeHTML = (str) => {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      })[m]);
+    };
 
-    // Convert headings
-    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-
-    // Convert bold
-    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
-
-    // Convert links [text](url)
-    html = html.replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank" style="color: var(--primary); text-decoration: none;">$1</a>');
-
-    // Convert code blocks
-    html = html.replace(/```json\n([\s\S]*?)```/gim, '<pre><code>$1</code></pre>');
-    html = html.replace(/```([\s\S]*?)```/gim, '<pre><code>$1</code></pre>');
-
-    // Convert inline code
-    html = html.replace(/`([^`]+)`/gim, '<code>$1</code>');
-
-    // Convert unordered lists
-    html = html.replace(/^\s*[\-\*]\s+(.*)$/gim, '<ul><li>$1</li></ul>');
-
-    // Convert numbered lists
-    html = html.replace(/^\s*\d+\.\s+(.*)$/gim, '<ol><li>$1</li></ol>');
-
-    // Merge adjacent lists
-    html = html.replace(/<\/ul>\n<ul>/gim, '');
-    html = html.replace(/<\/ol>\n<ol>/gim, '');
-
-    // Convert paragraphs (lines separated by blank lines)
-    html = html.split('\n\n').map(para => {
-      const trimmed = para.trim();
-      if (!trimmed.match(/^<(h\d|ul|ol|li|pre|img|p)/i)) {
-        return '<p>' + para.replace(/\n/g, ' ') + '</p>';
+    const sanitizeUrl = (url) => {
+      // Remove whitespace and handle potential entity bypasses
+      const decoded = url.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/\s/g, '').toLowerCase();
+      if (decoded.startsWith('javascript:') || decoded.startsWith('data:') || decoded.startsWith('vbscript:')) {
+        return '#';
       }
-      return para;
-    }).join('\n');
+      return url;
+    };
+
+    const parseInline = (text) => {
+      let escaped = escapeHTML(text);
+
+      // Support bold: **text**
+      escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      // Support images: ![alt](url)
+      escaped = escaped.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
+        return `<img src="${sanitizeUrl(url)}" alt="${alt}">`;
+      });
+
+      // Support links: [text](url)
+      escaped = escaped.replace(/\[(.*?)\]\((.*?)\)/g, (match, label, url) => {
+        return `<a href="${sanitizeUrl(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+      });
+
+      // Support inline code: `code`
+      escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+      return escaped;
+    };
+
+    const flushParagraph = () => {
+      if (paragraphBuffer.length > 0) {
+        const content = parseInline(paragraphBuffer.join(' '));
+        if (content.startsWith('<img')) {
+          html += content + '\n';
+        } else {
+          html += `<p>${content}</p>\n`;
+        }
+        paragraphBuffer = [];
+      }
+    };
+
+    const flushList = () => {
+      if (currentList) {
+        html += `</${currentList}>\n`;
+        currentList = null;
+      }
+    };
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const trimmedLine = line.trim();
+
+      // Code blocks
+      if (trimmedLine.startsWith('```')) {
+        flushParagraph();
+        flushList();
+        if (inCodeBlock) {
+          html += `<pre><code>${escapeHTML(codeContent.trim())}</code></pre>\n`;
+          codeContent = '';
+          inCodeBlock = false;
+        } else {
+          inCodeBlock = true;
+        }
+        continue;
+      }
+
+      if (inCodeBlock) {
+        codeContent += line + '\n';
+        continue;
+      }
+
+      // Headings
+      const hMatch = trimmedLine.match(/^(#{1,3})\s+(.*)$/);
+      if (hMatch) {
+        flushParagraph();
+        flushList();
+        const level = hMatch[1].length;
+        html += `<h${level}>${parseInline(hMatch[2])}</h${level}>\n`;
+        continue;
+      }
+
+      // Lists
+      const ulMatch = line.match(/^(\s*)[\-\*]\s+(.*)$/);
+      const olMatch = line.match(/^(\s*)\d+\.\s+(.*)$/);
+      if (ulMatch || olMatch) {
+        flushParagraph();
+        const listType = ulMatch ? 'ul' : 'ol';
+        const content = ulMatch ? ulMatch[2] : olMatch[2];
+
+        if (currentList && currentList !== listType) {
+          flushList();
+        }
+        if (!currentList) {
+          html += `<${listType}>\n`;
+          currentList = listType;
+        }
+        html += `  <li>${parseInline(content)}</li>\n`;
+        continue;
+      }
+
+      // Blank lines
+      if (!trimmedLine) {
+        flushParagraph();
+        flushList();
+        continue;
+      }
+
+      // Paragraph content
+      flushList();
+      paragraphBuffer.push(trimmedLine);
+    }
+
+    flushParagraph();
+    flushList();
+    if (inCodeBlock && codeContent) {
+      html += `<pre><code>${escapeHTML(codeContent.trim())}</code></pre>\n`;
+    }
 
     return html;
   }
