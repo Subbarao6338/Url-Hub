@@ -527,8 +527,13 @@ body.no-aurora::after {
   font-size: 1rem;
   font-weight: 500;
   color: var(--text-muted);
-  position: relative;
   z-index: 2500;
+}
+
+.breadcrumb-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .breadcrumb-separator {
@@ -574,39 +579,50 @@ body.no-aurora::after {
 /* Category Dropdown */
 .category-dropdown {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 12px);
   left: 0;
-  /* More opaque background for better readability */
   background: var(--surface-solid);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(var(--primary-rgb), 0.1);
   padding: 1rem;
   min-width: 320px;
-  z-index: 2500;
+  max-width: calc(100vw - 2rem);
+  z-index: 3005;
   display: none;
   grid-template-columns: 1fr;
   gap: 8px;
-  max-height: 60vh;
+  max-height: 70vh;
   overflow-y: auto;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  /* Scrollbar styles for the dropdown */
+  /* Scrollbar styles */
   scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
+  scrollbar-color: rgba(var(--primary-rgb), 0.2) transparent;
+}
+
+.category-dropdown::-webkit-scrollbar {
+  width: 5px;
+}
+
+.category-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary-rgb), 0.2);
+  border-radius: 10px;
 }
 
 [data-theme="dark"] .category-dropdown {
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(15, 23, 42, 0.98);
 }
 
 /* Desktop: 2-column layout */
 @media (min-width: 641px) {
   .category-dropdown {
-    min-width: 600px;
+    min-width: 540px;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+    padding: 1.25rem;
   }
 
   .category-dropdown .pill:first-child {
@@ -619,12 +635,12 @@ body.no-aurora::after {
   .category-dropdown {
     min-width: unset;
     width: 94vw;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 3vw;
+    top: var(--dropdown-top, 130px);
+    padding: 0.85rem;
     position: fixed;
-    /* Center on screen for mobile */
-    top: 130px;
-    padding: 10px;
+    border-radius: 1.25rem;
+    --dropdown-x: 0;
   }
 }
 
@@ -636,35 +652,25 @@ body.no-aurora::after {
 }
 
 .category-dropdown.active {
-  display: grid;
-  animation: PRESET_POP_IN 0.2s ease forwards;
+  display: grid !important;
+  animation: PRESET_POP_IN 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 @keyframes PRESET_POP_IN {
   from {
     opacity: 0;
-    transform: translateY(-5px) translateX(0);
+    transform: translateY(-12px) translateX(var(--dropdown-x, 0)) scale(0.96);
   }
-
-  /* Adjusted for mobile centering issues if needed, but fixed positioning overrides transform usually. For standard flow: */
   to {
     opacity: 1;
-    transform: translateY(0) translateX(0);
+    transform: translateY(0) translateX(var(--dropdown-x, 0)) scale(1);
   }
 }
 
 /* Mobile animation fix */
 @media (max-width: 768px) {
-  @keyframes PRESET_POP_IN {
-    from {
-      opacity: 0;
-      transform: translateY(-5px) translateX(-50%);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0) translateX(-50%);
-    }
+  .category-dropdown {
+    --dropdown-x: 0;
   }
 }
 
