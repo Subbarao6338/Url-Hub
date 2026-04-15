@@ -765,6 +765,7 @@ const UI = {
     if (!nav) return;
 
     const stats = Core.getStats();
+    const totalBookmarks = Object.values(stats).reduce((a, b) => a + b, 0);
     const definedCats = Object.keys(CAT_ICONS).filter(c => c !== 'All' && c !== 'Pinned' && c !== 'Toolbox');
     const existingCats = Object.keys(stats);
     const allCats = [...new Set([...definedCats, ...existingCats])].sort((a, b) => a.localeCompare(b));
@@ -779,7 +780,7 @@ const UI = {
              <div class="pill ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All', 'bookmarks')" aria-label="Show All Bookmarks">
                 ${Utils.renderIcon('home')}
                 <span>All Bookmarks</span>
-                ${STATE.showStats ? `<span class="count">${STATE.links.length}</span>` : ''}
+                ${STATE.showStats ? `<span class="count">${totalBookmarks}</span>` : ''}
              </div>
              <div class="pill ${STATE.activeCategory === 'Pinned' ? 'active' : ''}" onclick="UI.setCategory('Pinned', 'bookmarks')" aria-label="Show Pinned Bookmarks">
                 ${Utils.renderIcon('push_pin')}
@@ -825,6 +826,7 @@ const UI = {
     const nav = document.getElementById('toolbox-breadcrumb');
     if (!nav || typeof Toolbox === 'undefined' || typeof TOOLS === 'undefined') return;
 
+    const toolboxStats = Toolbox.getStats();
     const toolboxCats = [...new Set(TOOLS.map(t => t.category))].sort();
     const activeIcon = Toolbox.getCategoryIcon(STATE.activeToolboxCategory);
 
@@ -842,13 +844,16 @@ const UI = {
              <div class="pill ${STATE.activeToolboxCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All', 'toolbox')" aria-label="Show All Tools">
                 ${Utils.renderIcon('home')}
                 <span>All Tools</span>
+                ${STATE.showStats ? `<span class="count">${TOOLS.length}</span>` : ''}
              </div>
              ${toolboxCats.map(cat => {
                const icon = Toolbox.getCategoryIcon(cat);
+               const count = toolboxStats[cat] || 0;
                return `
                  <div class="pill ${STATE.activeToolboxCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}', 'toolbox')" aria-label="Category: ${cat}">
                     ${Utils.renderIcon(icon)}
                     <span>${cat}</span>
+                    ${STATE.showStats ? `<span class="count">${count}</span>` : ''}
                  </div>`;
              }).join('')}
          </div>

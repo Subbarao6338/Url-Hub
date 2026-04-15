@@ -16,6 +16,14 @@ const TOOLS = [
 
 const Toolbox = {
     // --- UI Logic ---
+    getStats() {
+        const stats = {};
+        TOOLS.forEach(t => {
+            stats[t.category] = (stats[t.category] || 0) + 1;
+        });
+        return stats;
+    },
+
     open(toolId) {
         UI.setView('tool', toolId);
     },
