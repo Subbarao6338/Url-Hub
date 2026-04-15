@@ -214,6 +214,7 @@ body.no-aurora::after {
   gap: 1.5rem;
   padding: 0 1rem;
   z-index: 1500;
+  overflow: visible;
 }
 
 .tab-group {
@@ -227,6 +228,7 @@ body.no-aurora::after {
   border-radius: 20px;
   border: 1px solid var(--border);
   transition: all 0.3s ease;
+  overflow: visible;
 }
 
 .tab-item {
@@ -511,6 +513,8 @@ body.no-aurora::after {
   letter-spacing: -0.03em;
   color: var(--on-surface);
   pointer-events: auto;
+  line-height: 1;
+  margin: 0;
 }
 
 /* Breadcrumb Styles */
@@ -550,6 +554,15 @@ body.no-aurora::after {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.tab-item.active .breadcrumb-item,
+.tab-item.active .breadcrumb-active {
+  color: white;
+}
+
+.tab-item.active .breadcrumb-nav {
+  border-left-color: rgba(255, 255, 255, 0.4);
 }
 
 /* Category Dropdown */
@@ -1522,7 +1535,7 @@ body.no-aurora::after {
     flex-direction: row;
     gap: 0.75rem;
     padding: 0.5rem 1rem;
-    overflow-x: auto;
+    overflow-x: visible;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
   }
