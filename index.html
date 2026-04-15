@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>URL Hub</title>
-  <meta name="description" content="A personal dashboard to organize and access your favorite websites.">
+  <title>N Box</title>
+  <meta name="description" content="N Box - A personal dashboard to organize and access your favorite websites and tools.">
   <meta name="theme-color" content="#6366f1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="URL Hub">
+  <meta name="apple-mobile-web-app-title" content="N Box">
   <link rel="apple-touch-icon" href="assets/favicon.svg">
   <link rel="icon" href="assets/favicon.svg">
   <link rel="manifest" href="manifest.json">
@@ -22,44 +22,46 @@
     <!-- Main Content -->
     <main class="main-content">
       <header class="top-bar">
-        <div class="logo-container">
-          <svg class="app-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10"></circle>
-            <circle cx="12" cy="12" r="4"></circle>
-            <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"></line>
-            <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"></line>
-            <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"></line>
-            <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"></line>
-          </svg>
-          <h1 class="page-title">URL Hub</h1>
-          <nav id="breadcrumb-nav" class="breadcrumb-nav">
-            <!-- Breadcrumb injected here -->
-          </nav>
+        <div class="logo-container" onclick="UI.setView('bookmarks')">
+          <span class="material-icons app-logo">inbox</span>
+          <h1 class="page-title">N Box</h1>
         </div>
         <div class="top-actions">
           <div class="search-container" id="search-container">
             <button id="search-toggle" class="icon-btn" title="Search" aria-label="Toggle Search">
               <span class="material-icons">search</span>
             </button>
-            <input type="search" id="search" placeholder="Search tools or cat:Category... [/]" aria-label="Search tools" />
+            <input type="search" id="search" placeholder="Search Bookmarks or Toolbox... [/]" aria-label="Search everything" />
             <button id="search-clear" class="search-clear-btn" title="Clear Search" aria-label="Clear Search">
               <span class="material-icons">close</span>
             </button>
           </div>
-          <!-- Page Tools merged here -->
-          <button id="toolbox-toggle" class="icon-btn" title="Toolbox" aria-label="Open Toolbox">
-            <span class="material-icons">handyman</span>
-          </button>
-          <button id="desktop-add-tool" class="icon-btn desktop-only" onclick="UI.openModal('modal-settings', 'add')" title="Add Tool" aria-label="Add Tool">
-            <span class="material-icons">add</span>
-          </button>
           <!-- Settings Toggle -->
           <button id="settings-toggle" class="icon-btn" onclick="UI.openModal('modal-settings')" title="Settings" aria-label="Open Settings">
             <span class="material-icons">settings</span>
           </button>
-
         </div>
       </header>
+
+      <nav class="tab-bar">
+        <div class="tab-group" id="group-bookmarks">
+          <div id="tab-bookmarks" class="tab-item active" title="Bookmarks (Long press for Profiles)">
+            <span class="material-icons">bookmarks</span>
+            <span class="tab-name">Bookmarks</span>
+            <nav id="bookmarks-breadcrumb" class="breadcrumb-nav"></nav>
+          </div>
+          <button id="add-bookmark-btn" class="icon-btn" onclick="UI.openModal('modal-settings', 'add')" title="Add Bookmark" aria-label="Add Bookmark">
+            <span class="material-icons">add</span>
+          </button>
+        </div>
+        <div class="tab-group" id="group-toolbox">
+          <div id="tab-toolbox" class="tab-item" title="Toolbox">
+            <span class="material-icons">handyman</span>
+            <span class="tab-name">Toolbox</span>
+            <nav id="toolbox-breadcrumb" class="breadcrumb-nav"></nav>
+          </div>
+        </div>
+      </nav>
 
       <nav id="main-category-nav" class="main-category-nav">
         <!-- Horizontal pills injected here -->
@@ -81,17 +83,23 @@
   <div id="modal-settings" class="modal" style="display:none;">
     <div class="modal-tabs">
       <button class="tab-btn active" onclick="UI.switchTab('general')">
-        <span class="material-icons">settings</span> General
+        <span class="material-icons">settings</span> Global
       </button>
-      <button class="tab-btn" onclick="UI.switchTab('add')">
-        <span class="material-icons">add_box</span> <span id="tab-add-label">Add Tool</span>
+      <button class="tab-btn" onclick="UI.switchTab('bookmarks')">
+        <span class="material-icons">bookmarks</span> Bookmarks
+      </button>
+      <button class="tab-btn" onclick="UI.switchTab('toolbox')">
+        <span class="material-icons">handyman</span> Toolbox
+      </button>
+      <button class="tab-btn" onclick="UI.switchTab('add')" id="tab-add-btn">
+        <span class="material-icons">add_box</span> <span id="tab-add-label">Add Bookmark</span>
       </button>
       <button class="tab-btn" onclick="UI.switchTab('about')">
         <span class="material-icons">info</span> About
       </button>
     </div>
 
-    <!-- General Tab -->
+    <!-- Global Tab -->
     <div id="tab-general" class="tab-pane">
       <div class="settings-section">
         <h3>Appearance</h3>
@@ -161,14 +169,41 @@
       </div>
     </div>
 
+    <!-- Bookmarks Settings Tab -->
+    <div id="tab-bookmarks-settings" class="tab-pane" style="display:none;">
+      <div class="settings-section">
+        <h3>Bookmarks Data</h3>
+        <div class="pill-group">
+          <button class="pill" onclick="Tools.exportData()" aria-label="Export Data Backup">
+            <span class="material-icons">download</span> Export Backup
+          </button>
+          <label class="pill" style="cursor: pointer;" aria-label="Import Data Backup">
+            <span class="material-icons">upload</span> Import Backup
+            <input type="file" accept="application/json" onchange="Tools.importData(this)" style="display:none;">
+          </label>
+          <button class="pill" style="color: #ef4444;" onclick="Tools.resetData()" aria-label="Reset Bookmarks to Default">
+            <span class="material-icons">refresh</span> Reset Bookmarks
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbox Settings Tab -->
+    <div id="tab-toolbox-settings" class="tab-pane" style="display:none;">
+      <div class="settings-section">
+        <h3>Toolbox Configuration</h3>
+        <p>Offline utilities settings will appear here.</p>
+      </div>
+    </div>
+
     <!-- Add/Edit Tab -->
     <div id="tab-add" class="tab-pane" style="display:none;">
-      <h2 id="modal-title" style="margin-top: 0;">Add Tool</h2>
+      <h2 id="modal-title" style="margin-top: 0;">Add Bookmark</h2>
       <form id="tool-form" onsubmit="UI.handleFormSubmit(event)">
         <input type="hidden" id="edit-id">
         <div class="form-group">
           <label>Title</label>
-          <input type="text" id="tool-title" required placeholder="My Tool">
+          <input type="text" id="tool-title" required placeholder="My Bookmark">
         </div>
         <div class="form-group">
           <label>Primary URL</label>
@@ -192,7 +227,7 @@
         </div>
 
         <div class="form-actions" style="margin-top: 1.5rem;">
-          <button type="submit" class="btn-primary" style="width: 100%;">Save Tool</button>
+          <button type="submit" class="btn-primary" style="width: 100%;">Save Bookmark</button>
         </div>
       </form>
     </div>

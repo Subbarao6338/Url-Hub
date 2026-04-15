@@ -32,9 +32,11 @@ const Storage = {
 
 const STATE = {
   currentProfile: localStorage.getItem('hub_current_profile') || localStorage.getItem('hub_startup_profile') || 'Default',
+  currentTab: 'bookmarks', // 'bookmarks' or 'toolbox'
   links: [],
   pinnedIds: Storage.getJson('pinned_v1', []),
-  activeCategory: 'All', // 'All' or specific category name
+  activeCategory: 'All', // 'All' for bookmarks
+  activeToolboxCategory: 'All', // 'All' for toolbox
   searchQuery: '',
   isDarkMode: Storage.get('theme') === 'dark' || (Storage.get('theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches),
   isCompact: Storage.get('compact') === 'true',
@@ -338,7 +340,7 @@ const Core = {
   },
 
   deleteLink(id) {
-    if (confirm("Are you sure you want to delete this tool?")) {
+    if (confirm("Are you sure you want to delete this bookmark?")) {
       STATE.links = STATE.links.filter(l => l.id !== id);
       STATE.pinnedIds = STATE.pinnedIds.filter(pid => pid !== id);
       Storage.setJson('pinned_v1', STATE.pinnedIds);
@@ -367,36 +369,42 @@ const UI = {
   _eventsInitialized: false,
 
   setView(view, toolId = null) {
-    STATE.currentView = view;
+    // Handle main tab switches
+    if (view === 'bookmarks' || view === 'toolbox') {
+      STATE.currentTab = view;
+      STATE.currentView = view; // For backward compatibility if needed
+      this.updateTabUI();
+    } else {
+      STATE.currentView = view;
+    }
+
     STATE.activeToolId = toolId;
     this.render();
     this.renderBreadcrumb();
 
-    // Close dropdowns and search on view change
+    // Close dropdowns on view change
     STATE.isDropdownOpen = false;
-    const searchContainer = document.getElementById('search-container');
-    const searchInput = document.getElementById('search');
-    if (searchContainer && searchInput) {
-      searchContainer.classList.remove('active');
-      document.body.classList.remove('search-active');
-      searchInput.value = '';
-      STATE.searchQuery = '';
-    }
 
     // Hide/Show main nav based on view
     const mainNav = document.getElementById('main-category-nav');
     if (mainNav) {
-      mainNav.style.display = view === 'hub' ? 'flex' : 'none';
+      // mainNav is for bookmarks horizontal pills, only show in bookmarks view
+      mainNav.style.display = (STATE.currentTab === 'bookmarks' && STATE.currentView === 'bookmarks') ? 'flex' : 'none';
     }
+  },
 
-    // Update search visibility
-    const topActions = document.querySelector('.top-actions');
-    if (topActions) {
-       const searchBox = document.getElementById('search-container');
-       if (searchBox) {
-         searchBox.style.display = view === 'hub' ? 'flex' : 'none';
-       }
-    }
+  updateTabUI() {
+    const tabs = ['bookmarks', 'toolbox'];
+    tabs.forEach(tab => {
+      const el = document.getElementById(`tab-${tab}`);
+      if (el) {
+        if (STATE.currentTab === tab) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      }
+    });
   },
 
   init() {
@@ -407,23 +415,26 @@ const UI = {
     if (this._eventsInitialized) return;
     this._eventsInitialized = true;
 
-    // Logo click listener (Back to Hub)
+    // Logo click listener (Back to Bookmarks)
     const logoContainer = document.querySelector('.logo-container');
     if (logoContainer) {
       logoContainer.addEventListener('click', (e) => {
         // Prevent triggering during long press
         if (e.detail === 1) {
-           this.setView('hub');
+           this.setView('bookmarks');
         }
       });
     }
 
-    // Toolbox Toggle
-    const toolboxBtn = document.getElementById('toolbox-toggle');
-    if (toolboxBtn) {
-      toolboxBtn.addEventListener('click', () => {
-        this.setView('toolbox');
-      });
+    // Tab Listeners
+    const bookmarksTab = document.getElementById('tab-bookmarks');
+    if (bookmarksTab) {
+      bookmarksTab.addEventListener('click', () => this.setView('bookmarks'));
+    }
+
+    const toolboxTab = document.getElementById('tab-toolbox');
+    if (toolboxTab) {
+      toolboxTab.addEventListener('click', () => this.setView('toolbox'));
     }
 
     // Event Listeners
@@ -521,8 +532,8 @@ const UI = {
   },
 
   setupLogoLongPress() {
-    const logoContainer = document.querySelector('.logo-container');
-    if (!logoContainer) return;
+    const bookmarksTab = document.getElementById('tab-bookmarks');
+    if (!bookmarksTab) return;
 
     let pressTimer;
     let startX, startY;
@@ -531,9 +542,6 @@ const UI = {
       // Restrict to left click for mouse events
       if (e.type === 'mousedown' && e.button !== 0) return;
 
-      // Only trigger if clicking on the logo or title
-      if (!e.target.closest('.app-logo') && !e.target.closest('.page-title')) return;
-
       clearTimeout(pressTimer);
 
       if (e.type === 'touchstart') {
@@ -541,13 +549,17 @@ const UI = {
         startY = e.touches[0].clientY;
       }
 
+      bookmarksTab.classList.add('long-press');
+
       pressTimer = setTimeout(() => {
+        bookmarksTab.classList.remove('long-press');
         this.openProfileModal();
-      }, 500);
+      }, 600);
     };
 
     const cancelPress = () => {
       clearTimeout(pressTimer);
+      bookmarksTab.classList.remove('long-press');
     };
 
     const handleMove = (e) => {
@@ -561,19 +573,17 @@ const UI = {
       }
     };
 
-    logoContainer.addEventListener('mousedown', startPress);
-    logoContainer.addEventListener('mouseup', cancelPress);
-    logoContainer.addEventListener('mouseleave', cancelPress);
-    logoContainer.addEventListener('touchstart', startPress, { passive: true });
-    logoContainer.addEventListener('touchend', cancelPress);
-    logoContainer.addEventListener('touchmove', handleMove, { passive: true });
-    logoContainer.addEventListener('touchcancel', cancelPress);
+    bookmarksTab.addEventListener('mousedown', startPress);
+    bookmarksTab.addEventListener('mouseup', cancelPress);
+    bookmarksTab.addEventListener('mouseleave', cancelPress);
+    bookmarksTab.addEventListener('touchstart', startPress, { passive: true });
+    bookmarksTab.addEventListener('touchend', cancelPress);
+    bookmarksTab.addEventListener('touchmove', handleMove, { passive: true });
+    bookmarksTab.addEventListener('touchcancel', cancelPress);
 
-    // Prevent default context menu on logo/title to allow long press
-    logoContainer.addEventListener('contextmenu', (e) => {
-      if (e.target.closest('.app-logo') || e.target.closest('.page-title')) {
-        e.preventDefault();
-      }
+    // Prevent default context menu on bookmarks tab to allow long press
+    bookmarksTab.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
     });
   },
 
@@ -610,42 +620,21 @@ const UI = {
     if (!logoContainer) return;
 
     const icon = PROFILES[STATE.currentProfile].icon;
-    const logoEl = logoContainer.querySelector('.app-logo');
+    // For N Box, we want a consistent logo but maybe profile-aware
+    // The user asked for "N Box" name and "new website logo".
+    // I already set 'inbox' as a placeholder logo in HTML.
 
-    // Replace SVG with Material Icon for Private/Personal or update Default
-    if (STATE.currentProfile === 'Default') {
-      // Keep original SVG but ensure it's visible
-      if (logoEl && logoEl.tagName === 'SPAN') {
-        logoContainer.innerHTML = `
-          <svg class="app-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10"></circle>
-            <circle cx="12" cy="12" r="4"></circle>
-            <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"></line>
-            <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"></line>
-            <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"></line>
-            <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"></line>
-          </svg>
-          <h1 class="page-title">URL Hub</h1>
-          <nav id="breadcrumb-nav" class="breadcrumb-nav"></nav>
-        `;
-        // Need to re-render breadcrumb as we replaced innerHTML
-        this.renderBreadcrumb();
+    const logoEl = logoContainer.querySelector('.app-logo');
+    if (logoEl) {
+      if (STATE.currentProfile === 'Default') {
+        logoEl.textContent = 'inbox';
+      } else {
+        logoEl.textContent = icon;
       }
-    } else {
-      logoContainer.innerHTML = `
-        ${Utils.renderIcon(icon, 'app-logo')}
-        <h1 class="page-title">URL Hub</h1>
-        <nav id="breadcrumb-nav" class="breadcrumb-nav"></nav>
-      `;
-      // Apply style to the span logo
-      const newLogo = logoContainer.querySelector('.app-logo');
-      if (newLogo && newLogo.tagName === 'SPAN') {
-        newLogo.style.fontSize = '40px';
-        newLogo.style.color = 'var(--primary)';
-        newLogo.style.filter = 'drop-shadow(0 0 8px var(--primary-glow))';
-      }
-      this.renderBreadcrumb();
     }
+
+    const titleEl = logoContainer.querySelector('.page-title');
+    if (titleEl) titleEl.textContent = 'N Box';
   },
 
   initBackToTop() {
@@ -724,79 +713,113 @@ const UI = {
 
 
   renderBreadcrumb() {
-    const nav = document.getElementById('breadcrumb-nav');
-    if (nav) {
-      nav.style.display = STATE.currentView === 'hub' ? 'flex' : 'none';
-    }
-    const mainNav = document.getElementById('main-category-nav');
-    const stats = Core.getStats();
+    this.renderBookmarksBreadcrumb();
+    this.renderToolboxBreadcrumb();
+  },
 
+  renderBookmarksBreadcrumb() {
+    const nav = document.getElementById('bookmarks-breadcrumb');
+    if (!nav) return;
+
+    const stats = Core.getStats();
     const definedCats = Object.keys(CAT_ICONS).filter(c => c !== 'All' && c !== 'Pinned');
     const existingCats = Object.keys(stats);
     const allCats = [...new Set([...definedCats, ...existingCats])].sort((a, b) => a.localeCompare(b));
 
     const activeIcon = CAT_ICONS[STATE.activeCategory] || 'folder';
-    let html = `
+    nav.innerHTML = `
       <div style="position:relative">
-         <span class="breadcrumb-active breadcrumb-item" onclick="UI.toggleDropdown(event)">
+         <span class="breadcrumb-active breadcrumb-item" onclick="UI.toggleDropdown(event, 'bookmarks')">
             ${Utils.renderIcon(activeIcon)} ${STATE.activeCategory} <span class="material-icons" style="font-size:1.2rem;opacity:0.6">expand_more</span>
          </span>
-
-         <div class="category-dropdown ${STATE.isDropdownOpen ? 'active' : ''}">
-             <div class="pill ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All')" aria-label="Show All Tools">
+         <div class="category-dropdown ${STATE.isDropdownOpen === 'bookmarks' ? 'active' : ''}">
+             <div class="pill ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All', 'bookmarks')" aria-label="Show All Bookmarks">
                 ${Utils.renderIcon('home')}
-                <span>All Tools</span>
+                <span>All Bookmarks</span>
                 ${STATE.showStats ? `<span class="count">${STATE.links.length}</span>` : ''}
              </div>
-             <div class="pill ${STATE.activeCategory === 'Pinned' ? 'active' : ''}" onclick="UI.setCategory('Pinned')" aria-label="Show Pinned Tools">
+             <div class="pill ${STATE.activeCategory === 'Pinned' ? 'active' : ''}" onclick="UI.setCategory('Pinned', 'bookmarks')" aria-label="Show Pinned Bookmarks">
                 ${Utils.renderIcon('push_pin')}
                 <span>Pinned</span>
                 ${STATE.showStats ? `<span class="count">${STATE.pinnedIds.length}</span>` : ''}
              </div>
              ${allCats.map(cat => {
-      const count = stats[cat] || 0;
-      const icon = CAT_ICONS[cat] || 'folder';
-      return `
-                 <div class="pill ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}')" aria-label="Category: ${cat}">
+               const count = stats[cat] || 0;
+               const icon = CAT_ICONS[cat] || 'folder';
+               return `
+                 <div class="pill ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}', 'bookmarks')" aria-label="Category: ${cat}">
                     ${Utils.renderIcon(icon)}
                     <span>${cat}</span>
                     ${STATE.showStats ? `<span class="count">${count}</span>` : ''}
                  </div>`;
-    }).join('')}
+             }).join('')}
          </div>
       </div>
     `;
-    if (nav) nav.innerHTML = html;
 
-    if (mainNav) {
-      let mainHtml = `
-        <div class="pill ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All')" aria-label="Show All Tools">
+    const mainNav = document.getElementById('main-category-nav');
+    if (mainNav && STATE.currentTab === 'bookmarks') {
+      mainNav.innerHTML = `
+        <div class="pill ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All', 'bookmarks')" aria-label="Show All Bookmarks">
           ${Utils.renderIcon('home')} <span>All</span>
         </div>
-        <div class="pill ${STATE.activeCategory === 'Pinned' ? 'active' : ''}" onclick="UI.setCategory('Pinned')" aria-label="Show Pinned Tools">
+        <div class="pill ${STATE.activeCategory === 'Pinned' ? 'active' : ''}" onclick="UI.setCategory('Pinned', 'bookmarks')" aria-label="Show Pinned Bookmarks">
           ${Utils.renderIcon('push_pin')} <span>Pinned</span>
         </div>
         ${allCats.map(cat => {
-        const icon = CAT_ICONS[cat] || 'folder';
-        return `
-            <div class="pill ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}')" aria-label="Category: ${cat}">
+          const icon = CAT_ICONS[cat] || 'folder';
+          return `
+            <div class="pill ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}', 'bookmarks')" aria-label="Category: ${cat}">
               ${Utils.renderIcon(icon)} <span>${cat}</span>
             </div>
           `;
-      }).join('')}
+        }).join('')}
       `;
-      mainNav.innerHTML = mainHtml;
     }
   },
 
-  toggleDropdown(e) {
+  renderToolboxBreadcrumb() {
+    const nav = document.getElementById('toolbox-breadcrumb');
+    if (!nav || typeof Toolbox === 'undefined') return;
+
+    const toolboxCats = [...new Set(TOOLS.map(t => t.category))].sort();
+    const activeIcon = Toolbox.getCategoryIcon(STATE.activeToolboxCategory);
+
+    nav.innerHTML = `
+      <div style="position:relative">
+         <span class="breadcrumb-active breadcrumb-item" onclick="UI.toggleDropdown(event, 'toolbox')">
+            ${Utils.renderIcon(activeIcon)} ${STATE.activeToolboxCategory} <span class="material-icons" style="font-size:1.2rem;opacity:0.6">expand_more</span>
+         </span>
+         <div class="category-dropdown ${STATE.isDropdownOpen === 'toolbox' ? 'active' : ''}">
+             <div class="pill ${STATE.activeToolboxCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All', 'toolbox')" aria-label="Show All Tools">
+                ${Utils.renderIcon('home')}
+                <span>All Tools</span>
+             </div>
+             ${toolboxCats.map(cat => {
+               const icon = Toolbox.getCategoryIcon(cat);
+               return `
+                 <div class="pill ${STATE.activeToolboxCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}', 'toolbox')" aria-label="Category: ${cat}">
+                    ${Utils.renderIcon(icon)}
+                    <span>${cat}</span>
+                 </div>`;
+             }).join('')}
+         </div>
+      </div>
+    `;
+  },
+
+  toggleDropdown(e, type) {
     e.stopPropagation();
-    STATE.isDropdownOpen = !STATE.isDropdownOpen;
+    STATE.isDropdownOpen = STATE.isDropdownOpen === type ? false : type;
     this.renderBreadcrumb();
   },
 
-  setCategory(cat) {
-    STATE.activeCategory = cat;
+  setCategory(cat, type) {
+    if (type === 'bookmarks') {
+      STATE.activeCategory = cat;
+    } else {
+      STATE.activeToolboxCategory = cat;
+    }
     STATE.isDropdownOpen = false;
     this.renderBreadcrumb();
     this.render();
@@ -816,15 +839,17 @@ const UI = {
     const container = document.getElementById('content');
     if (!container) return;
 
-    // Dispatch based on view
-    if (STATE.currentView === 'toolbox') {
-      if (typeof Toolbox !== 'undefined') Toolbox.renderHome(container);
-      return;
-    } else if (STATE.currentView === 'tool' && STATE.activeToolId) {
-      if (typeof Toolbox !== 'undefined') Toolbox.renderTool(container, STATE.activeToolId);
+    // Dispatch based on tab and view
+    if (STATE.currentTab === 'toolbox') {
+      if (STATE.activeToolId) {
+        if (typeof Toolbox !== 'undefined') Toolbox.renderTool(container, STATE.activeToolId);
+      } else {
+        if (typeof Toolbox !== 'undefined') Toolbox.renderHome(container);
+      }
       return;
     }
 
+    // Default to bookmarks tab
     this.renderHub(container);
   },
 
@@ -841,16 +866,10 @@ const UI = {
       let matchesCat = false;
 
       if (STATE.searchQuery) {
-        if (STATE.searchQuery.startsWith('cat:')) {
-          const targetCat = STATE.searchQuery.replace('cat:', '').trim().toLowerCase();
-          matchesSearch = l.category.toLowerCase() === targetCat;
-          matchesCat = true; // category match is implied by the search prefix
-        } else {
-          matchesSearch = l.title.toLowerCase().includes(STATE.searchQuery) ||
-            l.category.toLowerCase().includes(STATE.searchQuery) ||
-            (l.urls || [l.url]).some(u => u.toLowerCase().includes(STATE.searchQuery));
-          matchesCat = true; // Global search overrides active category
-        }
+        matchesSearch = l.title.toLowerCase().includes(STATE.searchQuery) ||
+          l.category.toLowerCase().includes(STATE.searchQuery) ||
+          (l.urls || [l.url]).some(u => u.toLowerCase().includes(STATE.searchQuery));
+        matchesCat = true; // Global search overrides active category
       } else {
         if (STATE.activeCategory === 'All') matchesCat = true;
         else if (STATE.activeCategory === 'Pinned') matchesCat = STATE.pinnedIds.includes(l.id);
@@ -1062,7 +1081,10 @@ const UI = {
     // Populate Datalist for categories
     const dl = document.getElementById('category-list');
     if (dl) {
-      dl.innerHTML = Object.keys(Core.getStats()).map(c => `<option value="${c}">`).join('');
+      const bookmarkStats = Core.getStats();
+      const toolboxCats = typeof TOOLS !== 'undefined' ? [...new Set(TOOLS.map(t => t.category))] : [];
+      const allCats = [...new Set([...Object.keys(bookmarkStats), ...toolboxCats])].sort();
+      dl.innerHTML = allCats.map(c => `<option value="${c}">`).join('');
     }
   },
 
@@ -1077,14 +1099,20 @@ const UI = {
       btn.classList.remove('active');
     });
 
+    // Handle mapping of tab names to pane IDs if needed
+    let paneId = tabId;
+    if (tabId === 'bookmarks' || tabId === 'toolbox') {
+      paneId = `${tabId}-settings`;
+    }
+
     // Show selected tab pane
-    const activePane = document.getElementById(`tab-${tabId}`);
+    const activePane = document.getElementById(`tab-${paneId}`);
     if (activePane) {
       activePane.style.display = 'block';
     }
 
     // Add active class to selected tab button
-    const activeBtn = document.querySelector(`.tab-btn[onclick*="${tabId}"]`);
+    const activeBtn = document.querySelector(`.tab-btn[onclick*="'${tabId}'"]`);
     if (activeBtn) {
       activeBtn.classList.add('active');
     }
@@ -1161,9 +1189,9 @@ const UI = {
     const editId = document.getElementById('edit-id');
     if (editId) editId.value = '';
     const modalTitle = document.getElementById('modal-title');
-    if (modalTitle) modalTitle.textContent = 'Add Tool';
+    if (modalTitle) modalTitle.textContent = 'Add Bookmark';
     const tabLabel = document.getElementById('tab-add-label');
-    if (tabLabel) tabLabel.textContent = 'Add Tool';
+    if (tabLabel) tabLabel.textContent = 'Add Bookmark';
 
     // Clear alternative URLs
     const altContainer = document.getElementById('alternative-urls-container');
@@ -1189,7 +1217,7 @@ const UI = {
 
     const shareData = {
       title: link.title,
-      text: `Check out ${link.title} on URL Hub!`,
+      text: `Check out ${link.title} on Bookmarks!`,
       url: link.url
     };
 
@@ -1225,9 +1253,9 @@ const UI = {
       this.addUrlField(urls[i]);
     }
 
-    document.getElementById('modal-title').textContent = 'Edit Tool';
+    document.getElementById('modal-title').textContent = 'Edit Bookmark';
     const tabLabel = document.getElementById('tab-add-label');
-    if (tabLabel) tabLabel.textContent = 'Edit Tool';
+    if (tabLabel) tabLabel.textContent = 'Edit Bookmark';
     this.openModal('modal-settings', 'add');
   },
 
