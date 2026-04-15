@@ -231,8 +231,20 @@
     </div>
   </div>
 
+  <!-- Toolbox Modal -->
+  <div id="modal-toolbox" class="modal" style="display:none;">
+    <h2 id="toolbox-title" style="margin-top: 0;">Toolbox</h2>
+    <div id="toolbox-content">
+      <!-- Tool UI injected here -->
+    </div>
+    <div class="form-actions" style="margin-top: 2rem;">
+      <button type="button" onclick="Toolbox.close()">Close</button>
+    </div>
+  </div>
+
 
   <script src="js/hub.js"></script>
+  <script src="js/toolbox.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
