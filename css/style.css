@@ -227,8 +227,8 @@ body.no-aurora::after {
 }
 
 [data-theme="dark"] .global-tooltip {
-  background: #f8fafc;
-  color: #0f172a;
+  background: #0f172a;
+  color: white;
 }
 
 .sidebar-header {
@@ -763,12 +763,6 @@ body.no-aurora::after {
 
 .card:hover::after {
   left: 150%;
-}
-
-.card:hover::after {
-  top: 0;
-  bottom: 0;
-  width: 6px;
 }
 
 .card-header {
@@ -1537,7 +1531,7 @@ body.no-aurora::after {
   .sidebar.collapsed .sidebar-header h1,
   .sidebar.collapsed .sidebar-search,
   .sidebar.collapsed .category-btn .text,
-  .sidebar.collapsed .category-btn .category-count {
+  .sidebar.collapsed .category-count {
     display: flex;
     opacity: 1;
   }
@@ -1628,6 +1622,105 @@ body.no-glass[data-theme="dark"] {
   --surface-hover: #334155;
   --surface-solid: #0f172a;
   --sidebar-bg: #0f172a;
+}
+
+/* Toolbox Styles */
+.tool-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tool-result {
+  padding: 1.5rem;
+  background: rgba(var(--primary-rgb), 0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.result-card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.result-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.result-item .label {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.result-item .val {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.copy-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.copy-box code {
+  flex: 1;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copy-box button {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  transition: background 0.2s;
+}
+
+.copy-box button:hover {
+  background: rgba(var(--primary-rgb), 0.1);
+}
+
+.checkbox-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
 }
 
 /* Profile Selection Styles */

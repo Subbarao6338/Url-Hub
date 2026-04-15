@@ -2235,5 +2235,69 @@
       "https://replit.com/"
     ],
     "category": "Coding"
+  },
+  {
+    "title": "Telugu Panchangam",
+    "url": "internal://panchangam",
+    "isInternal": true,
+    "toolId": "panchangam",
+    "category": "Toolbox",
+    "icon": "📅"
+  },
+  {
+    "title": "Password Generator",
+    "url": "internal://password-gen",
+    "isInternal": true,
+    "toolId": "password-gen",
+    "category": "Toolbox",
+    "icon": "key"
+  },
+  {
+    "title": "Unit Converter",
+    "url": "internal://unit-converter",
+    "isInternal": true,
+    "toolId": "unit-converter",
+    "category": "Toolbox",
+    "icon": "straighten"
+  },
+  {
+    "title": "JSON Formatter",
+    "url": "internal://json-formatter",
+    "isInternal": true,
+    "toolId": "json-formatter",
+    "category": "Toolbox",
+    "icon": "settings_ethernet"
+  },
+  {
+    "title": "Base64 Converter",
+    "url": "internal://base64-converter",
+    "isInternal": true,
+    "toolId": "base64-converter",
+    "category": "Toolbox",
+    "icon": "sync_alt"
+  },
+  {
+    "title": "Text Utilities",
+    "url": "internal://text-utils",
+    "isInternal": true,
+    "toolId": "text-utils",
+    "category": "Toolbox",
+    "icon": "text_fields"
+  },
+  {
+    "title": "Age Calculator",
+    "url": "internal://age-calculator",
+    "isInternal": true,
+    "toolId": "age-calculator",
+    "category": "Toolbox",
+    "icon": "cake"
+  },
+  {
+    "title": "BMI Calculator",
+    "url": "internal://bmi-calculator",
+    "isInternal": true,
+    "toolId": "bmi-calculator",
+    "category": "Toolbox",
+    "icon": "monitor_weight"
   }
 ]

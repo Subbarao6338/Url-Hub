@@ -306,7 +306,9 @@ const Core = {
           urls: urls, // Store all URLs for fallback
           icon: item.icon || "",
           optional_icon: item.optional_icon || "",
-          category: category
+          category: category,
+          isInternal: item.isInternal || false,
+          toolId: item.toolId || null
         };
       });
       this.saveData();
@@ -874,25 +876,33 @@ const UI = {
           }
 
           e.preventDefault();
+
+          // Internal Toolbox Tool support
+          if (link.isInternal && typeof Toolbox !== 'undefined') {
+            Toolbox.open(link.toolId);
+            return;
+          }
+
           const urls = link.urls || [link.url];
           Utils.tryUrlWithFallback(urls, link.title);
         };
         card.style.cursor = 'pointer';
 
         // Icon Logic:
-        // 1. User defined Icon (if emoji or URL)
+        // 1. User defined Icon (if emoji, Material Icon ligature or URL)
         // 2. Google Favicon
         // 3. Category Fallback Emoji
 
         let imgHtml = '';
         if (!STATE.hideIcons) {
-          // Check if user icon is an emoji (simple check: short and no 'http')
           const userIcon = link.icon || "";
           const isEmoji = userIcon && !userIcon.includes('/') && userIcon.length < 5;
+          const isMaterialIcon = userIcon && /^[a-z0-9_]+$/.test(userIcon) && !userIcon.includes('.') && !isEmoji;
 
           if (isEmoji) {
-            // User provided an emoji
             imgHtml = `<div class="card-icon" style="display:grid;place-items:center;font-size:24px;background:var(--bg)">${userIcon}</div>`;
+          } else if (isMaterialIcon) {
+            imgHtml = `<div class="card-icon" style="display:grid;place-items:center;background:var(--bg)">${Utils.renderIcon(userIcon)}</div>`;
           } else {
             // URL (User provided or Auto Favicon)
             const hostname = Utils.getHostname(link.url);
@@ -900,7 +910,6 @@ const UI = {
             const fallback = CAT_ICONS[cat] || "link";
             const fallbackSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='${STATE.encodedColor}'><text y='.9em' font-size='80' font-family='Material Icons'>${fallback}</text></svg>`;
 
-            // Optional Icon Logic
             const optionalIcon = link.optional_icon ? `'${link.optional_icon}'` : 'null';
 
             imgHtml = `<img src="${src}" class="card-icon" loading="lazy" onerror="
@@ -924,7 +933,11 @@ const UI = {
         const fallbackBadge = hasMultipleUrls ? `<span class="fallback-badge" title="${urls.length} URLs available: ${urls.join(', ')}">${urls.length} URLs</span>` : '';
 
         const isPinned = STATE.pinnedIds.includes(link.id);
-        const urlHtml = STATE.hideUrls ? '' : `<div class="card-url">${Utils.getHostname(link.url)}${fallbackBadge}</div>`;
+        let urlHtml = STATE.hideUrls ? '' : `<div class="card-url">${Utils.getHostname(link.url)}${fallbackBadge}</div>`;
+
+        if (link.isInternal) {
+          urlHtml = STATE.hideUrls ? '' : `<div class="card-url" style="color: var(--primary); font-weight: 500;">Offline Tool</div>`;
+        }
 
         card.innerHTML = `
           <div class="card-header">
@@ -940,9 +953,10 @@ const UI = {
              <button onclick="UI.shareLink('${link.id}')" title="Share Tool">
                <span class="material-icons" style="font-size:1.2rem">share</span>
              </button>
+             ${link.isInternal ? '' : `
              <button onclick="Utils.copyToClipboard('${link.url}', this)" title="Copy URL">
                <span class="material-icons" style="font-size:1.2rem">content_copy</span>
-             </button>
+             </button>`}
              <button onclick="UI.openEdit('${link.id}')" title="Edit">
                <span class="material-icons" style="font-size:1.2rem">edit</span>
              </button>

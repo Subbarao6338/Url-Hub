@@ -1,9 +1,10 @@
-const CACHE_NAME = 'url-hub-v7';
+const CACHE_NAME = 'url-hub-v8';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './css/style.css',
   './js/hub.js',
+  './js/toolbox.js',
   './data/url_links.json',
   './data/url_cat.json',
   './data/necs_links.json',
