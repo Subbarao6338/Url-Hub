@@ -466,9 +466,11 @@ const UI = {
       }
 
       // Close dropdown if clicking outside
-      if (!e.target.closest('.breadcrumb-nav')) {
-        STATE.isDropdownOpen = false;
-        this.renderBreadcrumb();
+      if (!e.target.closest('.breadcrumb-nav') && !e.target.closest('.category-dropdown')) {
+        if (STATE.isDropdownOpen) {
+          STATE.isDropdownOpen = false;
+          this.renderBreadcrumb();
+        }
       }
     });
 
@@ -673,7 +675,7 @@ const UI = {
 
     document.addEventListener('mouseover', (e) => {
       const target = e.target.closest('[title]');
-      if (target && !target.classList.contains('fab-item')) {
+      if (target && !target.classList.contains('fab-item') && !target.classList.contains('tab-item')) {
         if (activeTarget && activeTarget !== target) {
           restoreTitle(activeTarget);
         }
@@ -897,6 +899,15 @@ const UI = {
     }
 
     const fragment = document.createDocumentFragment();
+
+    // Header for Bookmarks Page
+    const hubHeader = document.createElement('div');
+    hubHeader.className = 'toolbox-page-header';
+    hubHeader.innerHTML = `
+        <h2>Bookmarks</h2>
+        <p>Access your favorite links and resources.</p>
+    `;
+    fragment.appendChild(hubHeader);
 
     cats.forEach(cat => {
       const section = document.createElement('div');
@@ -1659,6 +1670,12 @@ const PageTools = {
     if (statsBtn) {
       if (STATE.showStats) statsBtn.classList.add('active');
       else statsBtn.classList.remove('active');
+    }
+
+    const toolboxStatsBtn = document.getElementById('toolbox-stats-btn');
+    if (toolboxStatsBtn) {
+      if (STATE.showStats) toolboxStatsBtn.classList.add('active');
+      else toolboxStatsBtn.classList.remove('active');
     }
 
     const auroraBtn = document.getElementById('settings-aurora-btn');
