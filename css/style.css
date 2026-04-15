@@ -1683,6 +1683,6 @@ body.no-glass[data-theme="dark"] {
   transition: transform 0.3s ease, color 0.3s ease, filter 0.3s ease;
 }
 
-.logo-container:active .app-logo {
+.app-logo:active {
   transform: scale(0.9);
 }

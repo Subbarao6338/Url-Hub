@@ -426,6 +426,12 @@ const UI = {
 
     let pressTimer;
     const startPress = (e) => {
+      // Restrict to left click for mouse events
+      if (e.type === 'mousedown' && e.button !== 0) return;
+
+      // Only trigger if clicking on the logo itself
+      if (!e.target.closest('.app-logo')) return;
+
       pressTimer = setTimeout(() => {
         this.openProfileModal();
       }, 700);
@@ -440,6 +446,8 @@ const UI = {
     logoContainer.addEventListener('mouseleave', cancelPress);
     logoContainer.addEventListener('touchstart', startPress, { passive: true });
     logoContainer.addEventListener('touchend', cancelPress);
+    logoContainer.addEventListener('touchmove', cancelPress);
+    logoContainer.addEventListener('touchcancel', cancelPress);
   },
 
   openProfileModal() {
