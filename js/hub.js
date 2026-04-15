@@ -444,7 +444,27 @@ const UI = {
 
   openProfileModal() {
     const modal = document.getElementById('modal-profile-selection');
-    if (!modal) return;
+    const container = document.getElementById('profile-list');
+    if (!modal || !container) return;
+
+    const startupProfile = localStorage.getItem('hub_startup_profile') || 'Default';
+
+    container.innerHTML = Object.keys(PROFILES).map(name => {
+      const cfg = PROFILES[name];
+      const isStartup = name === startupProfile;
+      return `
+        <div class="profile-item-row">
+          <button class="pill ${STATE.currentProfile === name ? 'active' : ''}" onclick="Core.switchProfile('${name}')" style="justify-content: flex-start; flex: 1;">
+            <span class="material-icons">${cfg.icon}</span>
+            <span>${name} Profile</span>
+          </button>
+          <button class="startup-toggle ${isStartup ? 'active' : ''}" onclick="PageTools.setStartupProfile('${name}')" title="${isStartup ? 'Default Startup Profile' : 'Set as Default Startup Profile'}">
+            <span class="material-icons">${isStartup ? 'star' : 'star_border'}</span>
+          </button>
+        </div>
+      `;
+    }).join('');
+
     modal.style.display = 'block';
     document.getElementById('modal-overlay').style.display = 'block';
     STATE.isModalOpen = true;
@@ -479,7 +499,7 @@ const UI = {
     } else {
       logoContainer.innerHTML = `
         <span class="material-icons app-logo" style="font-size: 40px; color: var(--primary); filter: drop-shadow(0 0 8px var(--primary-glow));">${icon}</span>
-        <h1 class="page-title">URL Hub <small style="font-size: 0.6em; opacity: 0.7; vertical-align: middle;">(${STATE.currentProfile})</small></h1>
+        <h1 class="page-title">URL Hub</h1>
         <nav id="breadcrumb-nav" class="breadcrumb-nav"></nav>
       `;
       this.renderBreadcrumb();
@@ -1373,7 +1393,7 @@ const PageTools = {
 
   setStartupProfile(profileName) {
     localStorage.setItem('hub_startup_profile', profileName);
-    this.updateSettingsUI();
+    UI.openProfileModal(); // Refresh the profile modal UI
   },
 
   updateSettingsUI() {
@@ -1440,11 +1460,6 @@ const PageTools = {
       }
     });
 
-    // Update startup profile select
-    const startupSelect = document.getElementById('startup-profile-select');
-    if (startupSelect) {
-      startupSelect.value = localStorage.getItem('hub_startup_profile') || 'Default';
-    }
   }
 };
 
