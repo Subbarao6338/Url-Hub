@@ -369,6 +369,9 @@ const UI = {
   _eventsInitialized: false,
 
   setView(view, toolId = null) {
+    // Close dropdowns on view change
+    STATE.isDropdownOpen = false;
+
     // Handle main tab switches
     if (view === 'bookmarks' || view === 'toolbox') {
       STATE.currentTab = view;
@@ -385,9 +388,6 @@ const UI = {
     STATE.activeToolId = toolId;
     this.render();
     this.renderBreadcrumb();
-
-    // Close dropdowns on view change
-    STATE.isDropdownOpen = false;
 
     // Hide/Show main nav based on view
     const mainNav = document.getElementById('main-category-nav');
@@ -448,9 +448,16 @@ const UI = {
 
     document.getElementById('search-toggle').addEventListener('click', (e) => {
       e.stopPropagation();
+
       const isActive = searchContainer.classList.toggle('active');
       document.body.classList.toggle('search-active', isActive);
+
       if (isActive) {
+        // Close dropdown if opening search
+        if (STATE.isDropdownOpen) {
+          STATE.isDropdownOpen = false;
+          this.renderBreadcrumb();
+        }
         searchInput.focus();
       }
     });
@@ -499,6 +506,10 @@ const UI = {
     // Global Keyboard Listeners
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+        if (STATE.isDropdownOpen) {
+          STATE.isDropdownOpen = false;
+          this.renderBreadcrumb();
+        }
         this.closeModal();
         this.closeAboutModal();
 
@@ -658,6 +669,21 @@ const UI = {
     btn.addEventListener('click', () => {
       container.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    // Close dropdown on scroll
+    container.addEventListener('scroll', () => {
+      if (STATE.isDropdownOpen) {
+        STATE.isDropdownOpen = false;
+        this.renderBreadcrumb();
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      if (STATE.isDropdownOpen) {
+        STATE.isDropdownOpen = false;
+        this.renderBreadcrumb();
+      }
+    }, { passive: true });
   },
 
   setupTooltips() {
@@ -734,7 +760,7 @@ const UI = {
 
     const activeIcon = CAT_ICONS[STATE.activeCategory] || 'folder';
     nav.innerHTML = `
-      <div style="position:relative">
+      <div class="breadcrumb-wrapper">
          <span class="breadcrumb-active breadcrumb-item" onclick="UI.toggleDropdown(event, 'bookmarks')">
             ${Utils.renderIcon(activeIcon)} ${STATE.activeCategory} <span class="material-icons" style="font-size:1.2rem;opacity:0.6">expand_more</span>
          </span>
@@ -797,7 +823,7 @@ const UI = {
     }
 
     nav.innerHTML = `
-      <div style="position:relative; display: flex; align-items: center;">
+      <div class="breadcrumb-wrapper" style="display: flex; align-items: center;">
          <span class="breadcrumb-item ${!activeTool ? 'breadcrumb-active' : ''}" onclick="UI.toggleDropdown(event, 'toolbox')">
             ${Utils.renderIcon(activeIcon)} ${STATE.activeToolboxCategory} <span class="material-icons" style="font-size:1.2rem;opacity:0.6">expand_more</span>
          </span>
@@ -827,7 +853,28 @@ const UI = {
 
   toggleDropdown(e, type) {
     e.stopPropagation();
-    STATE.isDropdownOpen = STATE.isDropdownOpen === type ? false : type;
+    const wasOpen = STATE.isDropdownOpen;
+
+    // Toggle current or switch to new
+    STATE.isDropdownOpen = wasOpen === type ? false : type;
+
+    if (STATE.isDropdownOpen) {
+      const trigger = e.currentTarget;
+      const rect = trigger.getBoundingClientRect();
+
+      // On mobile we use fixed positioning, so we need the exact top
+      document.documentElement.style.setProperty('--dropdown-top', `${Math.round(rect.bottom + 12)}px`);
+
+      // Accessibility: Focus first active pill or first pill in dropdown
+      setTimeout(() => {
+        const dropdown = trigger.parentElement.querySelector('.category-dropdown');
+        if (dropdown) {
+          const firstPill = dropdown.querySelector('.pill.active') || dropdown.querySelector('.pill');
+          if (firstPill) firstPill.focus();
+        }
+      }, 50);
+    }
+
     this.renderBreadcrumb();
   },
 
@@ -1095,6 +1142,12 @@ const UI = {
   openModal(id, tabId = 'general') {
     const modal = document.getElementById(id);
     if (!modal) return;
+
+    // Close any open dropdowns when a modal opens
+    if (STATE.isDropdownOpen) {
+      STATE.isDropdownOpen = false;
+      this.renderBreadcrumb();
+    }
 
     modal.style.display = 'block';
     document.getElementById('modal-overlay').style.display = 'block';
