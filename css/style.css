@@ -487,18 +487,22 @@ body.no-aurora::after {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-right: auto;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
+  flex-shrink: 0;
 }
 
 .app-logo {
-  width: 40px;
-  height: 40px;
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
   color: var(--primary);
   filter: drop-shadow(0 0 8px var(--primary-glow));
   pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .page-title {
@@ -506,7 +510,6 @@ body.no-aurora::after {
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--on-surface);
-  margin-right: 1rem;
   pointer-events: auto;
 }
 
@@ -519,6 +522,7 @@ body.no-aurora::after {
   font-weight: 500;
   color: var(--text-muted);
   position: relative;
+  z-index: 2500;
 }
 
 .breadcrumb-separator {
@@ -551,9 +555,8 @@ body.no-aurora::after {
 /* Category Dropdown */
 .category-dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   left: 0;
-  margin-top: 8px;
   /* More opaque background for better readability */
   background: var(--surface-solid);
   backdrop-filter: blur(20px);
@@ -601,7 +604,7 @@ body.no-aurora::after {
     transform: translateX(-50%);
     position: fixed;
     /* Center on screen for mobile */
-    top: 80px;
+    top: 130px;
     padding: 10px;
   }
 }
@@ -688,7 +691,6 @@ body.no-aurora::after {
   display: flex;
   gap: 12px;
   align-items: center;
-  flex: 1;
   justify-content: flex-end;
 }
 
@@ -815,9 +817,9 @@ body.no-aurora::after {
 }
 
 .card:hover {
-  transform: translateY(-10px) scale(1.03);
+  transform: translateY(-8px) scale(1.02);
   background: var(--surface-hover);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1), 0 0 30px var(--primary-glow);
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.15), 0 0 20px var(--primary-glow);
   border-color: var(--primary);
 }
 
@@ -1518,17 +1520,11 @@ body.no-aurora::after {
 
   .tab-bar {
     flex-direction: row;
-    overflow-x: auto;
     gap: 0.75rem;
     padding: 0.5rem 1rem;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    overflow-x: auto;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-  }
-
-  .tab-bar::-webkit-scrollbar {
-    display: none;
   }
 
   .tab-group {
@@ -1887,10 +1883,11 @@ body.no-glass[data-theme="dark"] {
   transform: scale(0.9);
 }
 
-/* Toolbox Specific Styles */
+/* View Headers (Bookmarks & Toolbox) */
 .toolbox-page-header {
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
     text-align: center;
+    padding: 1rem 0;
 }
 
 .toolbox-page-header h2 {
@@ -1898,11 +1895,15 @@ body.no-glass[data-theme="dark"] {
     font-weight: 800;
     color: var(--primary);
     margin-bottom: 0.5rem;
+    letter-spacing: -0.04em;
+    text-transform: capitalize;
 }
 
 .toolbox-page-header p {
     color: var(--text-muted);
     font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .tool-view-header {

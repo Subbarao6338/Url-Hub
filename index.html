@@ -152,21 +152,6 @@
         </div>
       </div>
 
-      <div class="settings-section">
-        <h3>Data Management</h3>
-        <div class="pill-group">
-          <button class="pill" onclick="Tools.exportData()" aria-label="Export Data Backup">
-            <span class="material-icons">download</span> Export Backup
-          </button>
-          <label class="pill" style="cursor: pointer;" aria-label="Import Data Backup">
-            <span class="material-icons">upload</span> Import Backup
-            <input type="file" accept="application/json" onchange="Tools.importData(this)" style="display:none;">
-          </label>
-          <button class="pill" style="color: #ef4444;" onclick="Tools.resetData()" aria-label="Reset Dashboard to Default">
-            <span class="material-icons">refresh</span> Reset Dashboard
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- Bookmarks Settings Tab -->
@@ -192,7 +177,15 @@
     <div id="tab-toolbox-settings" class="tab-pane" style="display:none;">
       <div class="settings-section">
         <h3>Toolbox Configuration</h3>
-        <p>Offline utilities settings will appear here.</p>
+        <div class="pill-group">
+          <button class="pill" onclick="PageTools.toggleShowStats()" id="toolbox-stats-btn" aria-label="Toggle Show Counts">
+            <span class="material-icons">analytics</span>
+            <span>Show Tool Counts</span>
+          </button>
+          <button class="pill" style="color: #ef4444;" onclick="Tools.resetData()" aria-label="Reset Toolbox to Default">
+            <span class="material-icons">refresh</span> Reset Toolbox
+          </button>
+        </div>
       </div>
     </div>
 
