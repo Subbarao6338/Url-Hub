@@ -815,9 +815,10 @@ body.no-aurora::after {
 }
 
 .card:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-10px) scale(1.03);
   background: var(--surface-hover);
-  box-shadow: var(--shadow-lg), 0 0 20px var(--primary-glow);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1), 0 0 30px var(--primary-glow);
+  border-color: var(--primary);
 }
 
 /* Mirror shine effect on hover */
@@ -874,6 +875,8 @@ body.no-aurora::after {
   letter-spacing: -0.01em;
   overflow-wrap: break-word;
   word-break: break-word;
+  color: var(--on-surface);
+  line-height: 1.3;
 }
 
 .card-url {
@@ -1514,13 +1517,23 @@ body.no-aurora::after {
   }
 
   .tab-bar {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0 0.5rem;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab-bar::-webkit-scrollbar {
+    display: none;
   }
 
   .tab-group {
-    width: 100%;
+    width: auto;
+    flex-shrink: 0;
   }
 
   .tab-item {
@@ -1567,13 +1580,15 @@ body.no-aurora::after {
   /* Search Bar - Full Width Overlay on Mobile */
   .search-container.active {
     position: absolute;
-    left: 10px;
-    right: 10px;
+    left: 8px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10;
+    z-index: 2500;
     width: auto;
     max-width: none;
+    background: var(--surface-solid);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 
   .search-container.active #search {

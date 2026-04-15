@@ -374,6 +374,10 @@ const UI = {
       STATE.currentTab = view;
       STATE.currentView = view; // For backward compatibility if needed
       this.updateTabUI();
+    } else if (view === 'tool') {
+      STATE.currentTab = 'toolbox';
+      STATE.currentView = view;
+      this.updateTabUI();
     } else {
       STATE.currentView = view;
     }
