@@ -205,6 +205,84 @@ body.no-aurora::after {
   height: 100%;
   max-width: 1400px;
   margin: 0 auto;
+  gap: 1rem;
+}
+
+/* Tab Bar Styles */
+.tab-bar {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0 1rem;
+  z-index: 1500;
+}
+
+.tab-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--sidebar-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: all 0.2s;
+  color: var(--text-muted);
+  font-weight: 600;
+  user-select: none;
+  position: relative;
+}
+
+.tab-item .material-icons {
+  font-size: 20px;
+}
+
+.tab-item:hover {
+  background: var(--surface-hover);
+  color: var(--on-surface);
+}
+
+.tab-item.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.tab-item.long-press {
+  transform: scale(0.95);
+  background: var(--primary-glow);
+}
+
+#group-bookmarks {
+  flex: 1;
+}
+
+#group-toolbox {
+  flex: 1;
+}
+
+.tab-item.active .breadcrumb-nav {
+  display: flex !important;
+}
+
+.breadcrumb-nav {
+  margin-left: 8px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.tab-item:not(.active) .breadcrumb-nav {
+  display: none !important;
 }
 
 /* Sidebar Removed */
@@ -372,8 +450,7 @@ body.no-aurora::after {
   height: 100%;
   overflow: hidden;
   position: relative;
-  gap: 1.5rem;
-  /* Gap between top-bar and tools */
+  gap: 1rem;
 }
 
 .mobile-only {
@@ -391,7 +468,7 @@ body.no-aurora::after {
 }
 
 .top-bar {
-  height: 72px;
+  height: 64px;
   padding: 0 2rem;
   display: flex;
   align-items: center;
@@ -400,11 +477,9 @@ body.no-aurora::after {
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--border);
-  /* Full border */
   position: relative;
   z-index: 2000;
-  border-radius: 28px;
-  /* Material Expressive */
+  border-radius: 24px;
   box-shadow: var(--shadow-md);
 }
 
@@ -1419,25 +1494,37 @@ body.no-aurora::after {
 @media (max-width: 768px) {
   body {
     padding: 0;
-    /* Remove outer padding for full width on mobile */
   }
 
   .app-layout {
     max-width: 100%;
     border-radius: 0;
+    gap: 0.5rem;
   }
 
   /* Top Bar Adjustments */
   .top-bar {
     padding: 0 1rem;
     height: 60px;
-    /* Slightly shorter */
     border-radius: 0;
-    /* Full width */
     margin: 0;
     width: 100%;
     position: sticky;
     top: 0;
+  }
+
+  .tab-bar {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+  }
+
+  .tab-group {
+    width: 100%;
+  }
+
+  .tab-item {
+    flex: 1;
   }
 
   .page-title {

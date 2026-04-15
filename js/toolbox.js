@@ -26,8 +26,26 @@ const Toolbox = {
 
     renderHome(container) {
         container.innerHTML = '';
+
+        // Filter Logic
+        let filtered = TOOLS.filter(t => {
+            let matchesSearch = !STATE.searchQuery;
+            let matchesCat = false;
+
+            if (STATE.searchQuery) {
+                matchesSearch = t.title.toLowerCase().includes(STATE.searchQuery) ||
+                               t.category.toLowerCase().includes(STATE.searchQuery);
+                matchesCat = true;
+            } else {
+                if (STATE.activeToolboxCategory === 'All') matchesCat = true;
+                else matchesCat = t.category === STATE.activeToolboxCategory;
+            }
+
+            return matchesSearch && matchesCat;
+        });
+
         const grouped = {};
-        TOOLS.forEach(t => {
+        filtered.forEach(t => {
             (grouped[t.category] ||= []).push(t);
         });
 
@@ -42,35 +60,48 @@ const Toolbox = {
         `;
         fragment.appendChild(toolboxHeader);
 
-        Object.keys(grouped).sort().forEach(cat => {
-            const section = document.createElement('div');
-            section.className = 'category-section';
+        if (filtered.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.style.textAlign = 'center';
+            noResults.style.color = '#888';
+            noResults.style.marginTop = '3rem';
+            noResults.textContent = 'No tools found';
+            fragment.appendChild(noResults);
+        } else {
+            Object.keys(grouped).sort().forEach(cat => {
+                const section = document.createElement('div');
+                section.className = 'category-section';
 
-            const catIcon = this.getCategoryIcon(cat);
+                const catIcon = this.getCategoryIcon(cat);
 
-            section.innerHTML = `
-                <div class="category-header">
-                    <div class="category-title">
-                        <span class="material-icons">${catIcon}</span>
-                        ${cat}
-                    </div>
-                </div>
-                <div class="category-grid">
-                    ${grouped[cat].map(tool => `
-                        <div class="card" onclick="UI.setView('tool', '${tool.id}')">
-                            <div class="card-header">
-                                <div class="card-icon" style="display:grid;place-items:center;background:var(--bg)">
-                                    <span class="material-icons">${tool.icon}</span>
-                                </div>
-                                <div class="card-title">${tool.title}</div>
-                            </div>
-                            <div class="card-url" style="color: var(--primary); font-weight: 500;">Internal Tool</div>
+                section.innerHTML = `
+                    <div class="category-header">
+                        <div class="category-title">
+                            <span class="material-icons">${catIcon}</span>
+                            ${cat}
+                            ${STATE.showStats ? `<span class="count">${grouped[cat].length}</span>` : ''}
                         </div>
-                    `).join('')}
-                </div>
-            `;
-            fragment.appendChild(section);
-        });
+                        <span class="material-icons expand-icon">expand_more</span>
+                    </div>
+                    <div class="category-grid">
+                        ${grouped[cat].map(tool => `
+                            <div class="card" onclick="UI.setView('tool', '${tool.id}')">
+                                <div class="card-header">
+                                    <div class="card-icon" style="display:grid;place-items:center;background:var(--bg)">
+                                        <span class="material-icons">${tool.icon}</span>
+                                    </div>
+                                    <div class="card-title">${UI.highlightText(tool.title, STATE.searchQuery)}</div>
+                                </div>
+                                <div class="card-url" style="color: var(--primary); font-weight: 500;">Internal Tool</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                const header = section.querySelector('.category-header');
+                header.onclick = () => section.classList.toggle('collapsed');
+                fragment.appendChild(section);
+            });
+        }
         container.appendChild(fragment);
     },
 
