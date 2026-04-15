@@ -4,14 +4,52 @@
  */
 
 const TOOLS = [
-    { id: 'panchangam', title: 'Telugu Panchangam', icon: 'auto_awesome', category: 'Astrology' },
-    { id: 'password-gen', title: 'Password Generator', icon: 'lock', category: 'Utilities' },
-    { id: 'unit-converter', title: 'Unit Converter', icon: 'straighten', category: 'Converters' },
-    { id: 'json-formatter', title: 'JSON Formatter', icon: 'code', category: 'Developer Tools' },
-    { id: 'base64-converter', title: 'Base64 Converter', icon: 'transform', category: 'Converters' },
-    { id: 'text-utils', title: 'Text Utilities', icon: 'font_download', category: 'Utilities' },
-    { id: 'age-calculator', title: 'Age Calculator', icon: 'cake', category: 'Utilities' },
-    { id: 'bmi-calculator', title: 'BMI Calculator', icon: 'monitor_weight', category: 'Utilities' }
+    // Favorites
+    { id: 'history', title: 'History', icon: 'history', category: 'Favorites' },
+    { id: 'saved', title: 'Saved', icon: 'bookmark', category: 'Favorites' },
+    { id: 'notes', title: 'Notes', icon: 'description', category: 'Favorites' },
+
+    // Utilities
+    { id: 'ai-summary', title: 'AI Summary', icon: 'auto_fix_high', category: 'Utilities' },
+    { id: 'calculator', title: 'Calculator', icon: 'calculate', category: 'Utilities' },
+    { id: 'translate', title: 'Translate', icon: 'translate', category: 'Utilities' },
+    { id: 'qr-gen', title: 'QR Gen', icon: 'qr_code_2', category: 'Utilities' },
+    { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Utilities' },
+    { id: 'unit-converter', title: 'Converter', icon: 'balance', category: 'Utilities' },
+    { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Utilities' },
+    { id: 'morse', title: 'Morse', icon: 'timeline', category: 'Utilities' },
+    { id: 'bmi-calculator', title: 'BMI', icon: 'person', category: 'Utilities' },
+    { id: 'age-calculator', title: 'Age', icon: 'calendar_today', category: 'Utilities' },
+    { id: 'color-picker', title: 'Color', icon: 'palette', category: 'Utilities' },
+    { id: 'panchangam', title: 'Telugu Panchangam', icon: 'auto_awesome', category: 'Utilities' },
+    { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Utilities' },
+    { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Utilities' },
+
+    // Advanced
+    { id: 'omni-hub', title: 'Omni Hub', icon: 'public', category: 'Advanced' },
+    { id: 'network-tools', title: 'Network', icon: 'timeline', category: 'Advanced' },
+    { id: 'cookies', title: 'Cookies', icon: 'cookie', category: 'Advanced' },
+    { id: 'translator', title: 'Translator', icon: 'language', category: 'Advanced' },
+
+    // Page Tools
+    { id: 'inspect', title: 'Inspect', icon: 'search', category: 'Page Tools' },
+    { id: 'reader', title: 'Reader', icon: 'article', category: 'Page Tools' },
+    { id: 'text-utils', title: 'Text Tools', icon: 'title', category: 'Page Tools' },
+    { id: 'json-formatter', title: 'JSON', icon: 'code', category: 'Page Tools' },
+    { id: 'base64-converter', title: 'Base64 Converter', icon: 'transform', category: 'Page Tools' },
+    { id: 'url-tool', title: 'URL Tool', icon: 'link', category: 'Page Tools' },
+    { id: 'word-counter', title: 'Word Counter', icon: 'format_list_numbered', category: 'Page Tools' },
+    { id: 'case-converter', title: 'Case Converter', icon: 'format_size', category: 'Page Tools' },
+
+    // System
+    { id: 'device-info', title: 'Device', icon: 'memory', category: 'System' },
+    { id: 'security-info', title: 'Security', icon: 'verified_user', category: 'System' },
+
+    // Developer
+    { id: 'user-scripts', title: 'User Scripts', icon: 'add', category: 'Developer' },
+    { id: 'markdown-preview', title: 'Markdown', icon: 'article', category: 'Developer' },
+    { id: 'diff-viewer', title: 'Diff Viewer', icon: 'difference', category: 'Developer' },
+
 ];
 
 const Toolbox = {
@@ -75,6 +113,21 @@ const Toolbox = {
             noResults.style.marginTop = '3rem';
             noResults.textContent = 'No tools found';
             fragment.appendChild(noResults);
+        } else if (!STATE.groupToolbox) {
+            const grid = document.createElement('div');
+            grid.className = 'category-grid';
+            grid.style.padding = '0 10px';
+            grid.innerHTML = filtered.map(tool => `
+                <div class="card" onclick="UI.setView('tool', '${tool.id}')">
+                    <div class="card-header">
+                        <div class="card-icon" style="display:grid;place-items:center;background:var(--bg)">
+                            <span class="material-icons">${tool.icon}</span>
+                        </div>
+                        <div class="card-title">${UI.highlightText(tool.title, STATE.searchQuery)}</div>
+                    </div>
+                </div>
+            `).join('');
+            fragment.appendChild(grid);
         } else {
             Object.keys(grouped).sort().forEach(cat => {
                 const section = document.createElement('div');
@@ -100,7 +153,6 @@ const Toolbox = {
                                     </div>
                                     <div class="card-title">${UI.highlightText(tool.title, STATE.searchQuery)}</div>
                                 </div>
-                                <div class="card-url" style="color: var(--primary); font-weight: 500;">Internal Tool</div>
                             </div>
                         `).join('')}
                     </div>
@@ -115,16 +167,28 @@ const Toolbox = {
 
     getCategoryIcon(cat) {
         const icons = {
-            'Astrology': 'nightlight_round',
+            'Favorites': 'star',
             'Utilities': 'construction',
-            'Converters': 'sync_alt',
-            'Developer Tools': 'terminal'
+            'Advanced': 'settings_suggest',
+            'Page Tools': 'auto_stories',
+            'System': 'settings_input_component',
+            'Developer': 'terminal',
         };
         return icons[cat] || 'folder';
     },
 
     renderTool(container, toolId) {
+        const tool = TOOLS.find(t => t.id === toolId);
         container.innerHTML = `
+            <div class="tool-view-header">
+                <button class="icon-btn" onclick="Toolbox.close()" title="Back to Toolbox">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="material-icons" style="font-size: 2rem; color: var(--primary);">${tool ? tool.icon : 'construction'}</span>
+                    <h2 style="margin: 0; font-size: 1.75rem;">${tool ? tool.title : 'Tool'}</h2>
+                </div>
+            </div>
             <div id="toolbox-content-inner" class="tool-container-inner"></div>
         `;
 
@@ -155,9 +219,36 @@ const Toolbox = {
             case 'bmi-calculator':
                 this.renderBmiCalculator(innerContainer);
                 break;
+            case 'lorem-ipsum':
+                this.renderLoremIpsum(innerContainer);
+                break;
+            case 'word-counter':
+                this.renderWordCounter(innerContainer);
+                break;
+            case 'case-converter':
+                this.renderCaseConverter(innerContainer);
+                break;
             default:
-                innerContainer.innerHTML = '<p>Tool not found.</p>';
+                this.renderPlaceholder(innerContainer, toolId);
         }
+    },
+
+    renderPlaceholder(container, toolId) {
+        const tool = TOOLS.find(t => t.id === toolId);
+        container.innerHTML = `
+            <div style="text-align: center; padding: 3rem 1rem;">
+                <span class="material-icons" style="font-size: 4rem; color: var(--primary); opacity: 0.5;">
+                    ${tool ? tool.icon : 'construction'}
+                </span>
+                <h2 style="margin-top: 1.5rem;">${tool ? tool.title : 'Tool'}</h2>
+                <p style="color: #888; max-width: 300px; margin: 1rem auto;">
+                    This tool is currently under development and will be available in a future update.
+                </p>
+                <button class="btn-primary" onclick="Toolbox.close()" style="margin-top: 2rem;">
+                    Back to Toolbox
+                </button>
+            </div>
+        `;
     },
 
     // --- Password Generator ---
@@ -477,6 +568,103 @@ const Toolbox = {
         valEl.style.color = color;
         document.getElementById('bmi-cat').textContent = cat;
         document.getElementById('bmi-result-container').style.display = 'block';
+    },
+
+    // --- Lorem Ipsum Generator ---
+    renderLoremIpsum(container) {
+        container.innerHTML = `
+            <div class="tool-form">
+                <div class="form-group">
+                    <label>Paragraphs: <span id="lorem-count-val">3</span></label>
+                    <input type="range" id="lorem-count" min="1" max="10" value="3" oninput="document.getElementById('lorem-count-val').textContent = this.value">
+                </div>
+                <button class="btn-primary" style="width:100%;" onclick="Toolbox.generateLorem()">Generate Lorem Ipsum</button>
+                <div id="lorem-result-container" class="tool-result" style="display:none; margin-top:1.5rem;">
+                    <div class="copy-box" style="flex-direction: column; align-items: flex-end;">
+                        <div id="lorem-result" style="width:100%; font-size: 0.95rem; line-height: 1.6; max-height: 400px; overflow-y: auto;"></div>
+                        <button onclick="Utils.copyToClipboard(document.getElementById('lorem-result').innerText, this)" title="Copy" style="margin-top: 10px;">
+                            <span class="material-icons">content_copy</span> Copy All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    generateLorem() {
+        const count = parseInt(document.getElementById('lorem-count').value);
+        const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+        let result = "";
+        for (let i = 0; i < count; i++) {
+            result += `<p style="margin-bottom: 1rem;">${text}</p>`;
+        }
+
+        document.getElementById('lorem-result').innerHTML = result;
+        document.getElementById('lorem-result-container').style.display = 'block';
+    },
+
+    // --- Word Counter ---
+    renderWordCounter(container) {
+        container.innerHTML = `
+            <div class="tool-form">
+                <div class="form-group">
+                    <label>Input Text</label>
+                    <textarea id="word-input" rows="8" oninput="Toolbox.runWordCounter()"></textarea>
+                </div>
+                <div id="word-result" class="result-grid" style="margin-top: 1rem;">
+                    <div class="result-item"><span class="label">Words:</span> <span class="val" id="wc-words">0</span></div>
+                    <div class="result-item"><span class="label">Characters:</span> <span class="val" id="wc-chars">0</span></div>
+                    <div class="result-item"><span class="label">Sentences:</span> <span class="val" id="wc-sent">0</span></div>
+                    <div class="result-item"><span class="label">Lines:</span> <span class="val" id="wc-lines">0</span></div>
+                </div>
+            </div>
+        `;
+    },
+
+    runWordCounter() {
+        const text = document.getElementById('word-input').value;
+        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+        const chars = text.length;
+        const sentences = text.split(/[.!?]+/).filter(Boolean).length;
+        const lines = text ? text.split('\n').length : 0;
+
+        document.getElementById('wc-words').textContent = words;
+        document.getElementById('wc-chars').textContent = chars;
+        document.getElementById('wc-sent').textContent = sentences;
+        document.getElementById('wc-lines').textContent = lines;
+    },
+
+    // --- Case Converter ---
+    renderCaseConverter(container) {
+        container.innerHTML = `
+            <div class="tool-form">
+                <div class="form-group">
+                    <label>Input Text</label>
+                    <textarea id="case-input" rows="6"></textarea>
+                </div>
+                <div class="pill-group">
+                    <button class="pill" onclick="Toolbox.convertCase('upper')">UPPERCASE</button>
+                    <button class="pill" onclick="Toolbox.convertCase('lower')">lowercase</button>
+                    <button class="pill" onclick="Toolbox.convertCase('sentence')">Sentence case</button>
+                    <button class="pill" onclick="Toolbox.convertCase('capital')">Capitalize Case</button>
+                    <button class="pill" onclick="Toolbox.convertCase('snake')">snake_case</button>
+                    <button class="pill" onclick="Toolbox.convertCase('kebab')">kebab-case</button>
+                </div>
+            </div>
+        `;
+    },
+
+    convertCase(type) {
+        const el = document.getElementById('case-input');
+        let text = el.value;
+        if (type === 'upper') text = text.toUpperCase();
+        if (type === 'lower') text = text.toLowerCase();
+        if (type === 'sentence') text = text.toLowerCase().replace(/(^\s*\w|[\.\!\?]\s*\w)/g, c => c.toUpperCase());
+        if (type === 'capital') text = text.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+        if (type === 'snake') text = text.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g).map(x => x.toLowerCase()).join('_');
+        if (type === 'kebab') text = text.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g).map(x => x.toLowerCase()).join('-');
+        el.value = text;
     },
 
     // --- Telugu Panchangam Tool ---

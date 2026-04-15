@@ -101,6 +101,7 @@
 
     <!-- Global Tab -->
     <div id="tab-general" class="tab-pane">
+      <h2 class="settings-header">Global Settings</h2>
       <div class="settings-section">
         <h3>Appearance</h3>
         <div class="pill-group">
@@ -133,6 +134,16 @@
             <span>Aurora BG</span>
           </button>
         </div>
+        <div class="pill-group" style="margin-top: 10px;">
+          <button class="pill" onclick="PageTools.toggleReducedMotion()" id="settings-motion-btn" aria-label="Toggle Reduced Motion">
+            <span class="material-icons">motion_photos_off</span>
+            <span>Reduced Motion</span>
+          </button>
+          <button class="pill" onclick="PageTools.toggleAutoFocus()" id="settings-focus-btn" aria-label="Toggle Auto-focus Search">
+            <span class="material-icons">center_focus_strong</span>
+            <span>Auto-focus Search</span>
+          </button>
+        </div>
         <div class="pill-group" id="color-palette" style="margin-top: 15px;">
           <button class="color-pill" style="background: #6366f1;" data-color="indigo" onclick="PageTools.setColor('indigo')" title="Indigo"></button>
           <button class="color-pill" style="background: #3b82f6;" data-color="blue" onclick="PageTools.setColor('blue')" title="Blue"></button>
@@ -156,6 +167,20 @@
 
     <!-- Bookmarks Settings Tab -->
     <div id="tab-bookmarks-settings" class="tab-pane" style="display:none;">
+      <h2 class="settings-header">Bookmarks Settings</h2>
+      <div class="settings-section">
+        <h3>Behavior</h3>
+        <div class="pill-group">
+          <button class="pill" onclick="PageTools.toggleNewTab()" id="settings-newtab-btn" aria-label="Toggle Open in New Tab">
+            <span class="material-icons">open_in_new</span>
+            <span>Open in New Tab</span>
+          </button>
+          <button class="pill" onclick="PageTools.toggleConfirmDelete()" id="settings-confirm-btn" aria-label="Toggle Confirm Deletion">
+            <span class="material-icons">delete_sweep</span>
+            <span>Confirm Deletion</span>
+          </button>
+        </div>
+      </div>
       <div class="settings-section">
         <h3>Bookmarks Data</h3>
         <div class="pill-group">
@@ -175,12 +200,17 @@
 
     <!-- Toolbox Settings Tab -->
     <div id="tab-toolbox-settings" class="tab-pane" style="display:none;">
+      <h2 class="settings-header">Toolbox Settings</h2>
       <div class="settings-section">
         <h3>Toolbox Configuration</h3>
         <div class="pill-group">
           <button class="pill" onclick="PageTools.toggleShowStats()" id="toolbox-stats-btn" aria-label="Toggle Show Counts">
             <span class="material-icons">analytics</span>
             <span>Show Tool Counts</span>
+          </button>
+          <button class="pill" onclick="PageTools.toggleToolboxGroups()" id="toolbox-groups-btn" aria-label="Toggle Group by Category">
+            <span class="material-icons">reorder</span>
+            <span>Group by Category</span>
           </button>
           <button class="pill" style="color: #ef4444;" onclick="Tools.resetData()" aria-label="Reset Toolbox to Default">
             <span class="material-icons">refresh</span> Reset Toolbox
