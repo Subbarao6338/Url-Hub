@@ -1624,3 +1624,22 @@ body.no-glass[data-theme="dark"] {
   --surface-solid: #0f172a;
   --sidebar-bg: #0f172a;
 }
+
+/* Profile Selection Styles */
+#modal-profile-selection .pill {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#modal-profile-selection .pill:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateX(5px);
+}
+
+.app-logo {
+  transition: transform 0.3s ease, color 0.3s ease, filter 0.3s ease;
+}
+
+.logo-container:active .app-logo {
+  transform: scale(0.9);
+}
