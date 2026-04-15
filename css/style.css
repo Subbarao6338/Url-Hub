@@ -1626,14 +1626,57 @@ body.no-glass[data-theme="dark"] {
 }
 
 /* Profile Selection Styles */
-#modal-profile-selection .pill {
+.profile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 1.5rem;
+}
+
+.profile-item-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-item-row .pill {
+  margin: 0;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#modal-profile-selection .pill:hover {
+.profile-item-row .pill:hover {
   background: var(--primary);
   color: white;
   transform: translateX(5px);
+}
+
+.startup-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.startup-toggle:hover {
+  background: var(--surface-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: scale(1.1);
+}
+
+.startup-toggle.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px var(--primary-glow);
 }
 
 .app-logo {
