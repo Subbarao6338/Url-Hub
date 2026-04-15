@@ -239,15 +239,43 @@ const Core = {
           fetch(`data/${PROFILES['Default'].links}`).then(r => r.ok ? r.json() : []).catch(() => []),
           fetch(`data/${PROFILES['Private'].links}`).then(r => r.ok ? r.json() : []).catch(() => [])
         ]);
-        raw = [...data1, ...data2];
-        // Deduplicate by URL
-        const seen = new Set();
-        raw = raw.filter(item => {
-          const val = item.url || (item.urls && item.urls[0]);
-          if (!val || seen.has(val)) return false;
-          seen.add(val);
-          return true;
+        const combined = [...data1, ...data2];
+        const seen = new Map();
+        const deduplicated = [];
+
+        combined.forEach(item => {
+          const url = item.url || (item.urls && item.urls[0]);
+          if (!url) return;
+
+          const normalized = url.toLowerCase().replace(/\/+$/, '');
+          if (seen.has(normalized)) {
+            const existing = seen.get(normalized);
+            const existingUrls = existing.urls || (existing.url ? [existing.url] : []);
+            const newItemUrls = item.urls || (item.url ? [item.url] : []);
+
+            const combinedUrls = [...existingUrls, ...newItemUrls];
+            const uniqueUrls = [];
+            const seenUrls = new Set();
+            combinedUrls.forEach(u => {
+              if (!u) return;
+              const n = u.toLowerCase().replace(/\/+$/, '');
+              if (!seenUrls.has(n)) {
+                seenUrls.add(n);
+                uniqueUrls.push(u);
+              }
+            });
+            existing.urls = uniqueUrls;
+            if (!existing.url && uniqueUrls.length > 0) existing.url = uniqueUrls[0];
+
+            if (!existing.icon && item.icon) existing.icon = item.icon;
+            if (!existing.optional_icon && item.optional_icon) existing.optional_icon = item.optional_icon;
+          } else {
+            const newItem = { ...item };
+            seen.set(normalized, newItem);
+            deduplicated.push(newItem);
+          }
         });
+        raw = deduplicated;
       } else {
         try {
           const res = await fetch(`data/${profileCfg.links}`);
