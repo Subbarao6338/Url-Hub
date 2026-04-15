@@ -351,6 +351,7 @@ const Core = {
   getStats() {
     const stats = {};
     STATE.links.forEach(l => {
+      if (l.category === 'Toolbox' || l.isInternal) return;
       stats[l.category] = (stats[l.category] || 0) + 1;
     });
     return stats;
@@ -398,6 +399,15 @@ const UI = {
   },
 
   updateTabUI() {
+    const searchInput = document.getElementById('search');
+    if (searchInput) {
+      if (STATE.currentTab === 'bookmarks') {
+        searchInput.placeholder = "Search Bookmarks... [/]";
+      } else {
+        searchInput.placeholder = "Search Toolbox... [/]";
+      }
+    }
+
     const tabs = ['bookmarks', 'toolbox'];
     tabs.forEach(tab => {
       const el = document.getElementById(`tab-${tab}`);
@@ -412,6 +422,7 @@ const UI = {
   },
 
   init() {
+    this.updateTabUI();
     this.renderBreadcrumb();
     this.render();
     this.updateLogo();
@@ -754,7 +765,7 @@ const UI = {
     if (!nav) return;
 
     const stats = Core.getStats();
-    const definedCats = Object.keys(CAT_ICONS).filter(c => c !== 'All' && c !== 'Pinned');
+    const definedCats = Object.keys(CAT_ICONS).filter(c => c !== 'All' && c !== 'Pinned' && c !== 'Toolbox');
     const existingCats = Object.keys(stats);
     const allCats = [...new Set([...definedCats, ...existingCats])].sort((a, b) => a.localeCompare(b));
 
@@ -865,6 +876,14 @@ const UI = {
       // On mobile we use fixed positioning, so we need the exact top
       document.documentElement.style.setProperty('--dropdown-top', `${Math.round(rect.bottom + 12)}px`);
 
+      // Handle mobile alignment due to containing block issues (backdrop-filter)
+      if (window.innerWidth <= 768) {
+        const tabGroup = trigger.closest('.tab-group');
+        const cbLeft = tabGroup ? tabGroup.getBoundingClientRect().left : 0;
+        const targetLeft = window.innerWidth * 0.03; // 3vw
+        document.documentElement.style.setProperty('--dropdown-left', `${targetLeft - cbLeft}px`);
+      }
+
       // Accessibility: Focus first active pill or first pill in dropdown
       setTimeout(() => {
         const dropdown = trigger.parentElement.querySelector('.category-dropdown');
@@ -927,6 +946,9 @@ const UI = {
 
     // Filter Logic
     let filtered = STATE.links.filter(l => {
+      // Exclude Toolbox from Bookmarks Hub
+      if (l.category === 'Toolbox' || l.isInternal) return false;
+
       let matchesSearch = !STATE.searchQuery;
       let matchesCat = false;
 
