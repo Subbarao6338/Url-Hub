@@ -23,6 +23,14 @@ function App() {
     else document.body.classList.remove('search-active');
   }, [searchActive]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab && ['bookmarks', 'toolbox', 'projects'].includes(tab)) {
+      setCurrentTab(tab);
+    }
+  }, []);
+
   // Additional Settings
   const [isCompact, setIsCompact] = useState(localStorage.getItem('hub_compact') === 'true');
   const [hideUrls, setHideUrls] = useState(localStorage.getItem('hub_hide_urls') === 'true');
@@ -186,6 +194,7 @@ function App() {
           setTab={setCurrentTab}
           onAddClick={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
           onBookmarksLongPress={() => setIsProfileOpen(true)}
+          onSettingsClick={() => setIsSettingsOpen(true)}
         />
 
         <div id="content" className={`tools-container ${isCompact ? 'compact' : ''}`}>

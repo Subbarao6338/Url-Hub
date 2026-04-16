@@ -4,6 +4,7 @@ import Calculator from './tools/Calculator';
 import QrGen from './tools/QrGen';
 import PasswordGenerator from './tools/PasswordGenerator';
 import UnitConverter from './tools/UnitConverter';
+import CurrencyConverter from './tools/CurrencyConverter';
 import Stopwatch from './tools/Stopwatch';
 import Notes from './tools/Notes';
 import Translate from './tools/Translate';
@@ -42,7 +43,8 @@ const TOOLS = [
     { id: 'color-picker', title: 'Color', icon: 'palette', category: 'Productivity', component: ColorPicker },
     { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Productivity', component: TimestampConverter },
     { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Utilities', component: PasswordGenerator },
-    { id: 'unit-converter', title: 'Converter', icon: 'balance', category: 'Utilities', component: UnitConverter },
+    { id: 'unit-converter', title: 'Unit Converter', icon: 'balance', category: 'Utilities', component: UnitConverter },
+    { id: 'currency-converter', title: 'Currency', icon: 'payments', category: 'Utilities', component: CurrencyConverter },
     { id: 'panchangam', title: 'Panchangam', icon: 'auto_awesome', category: 'Utilities', component: TeluguPanchangam },
     { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Utilities', component: LoremIpsum },
     { id: 'text-utils', title: 'Text Tools', icon: 'title', category: 'Utilities', component: TextUtils },
@@ -73,10 +75,38 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
 
   const togglePin = (e, id) => {
     e.stopPropagation();
+    let newPinned;
     if (pinnedTools.includes(id)) {
-      setPinnedTools(pinnedTools.filter(t => t !== id));
+      newPinned = pinnedTools.filter(t => t !== id);
     } else {
-      setPinnedTools([...pinnedTools, id]);
+      newPinned = [id, ...pinnedTools];
+    }
+    setPinnedTools(newPinned);
+    localStorage.setItem('hub_pinned_tools', JSON.stringify(newPinned));
+  };
+
+  const [recentTools, setRecentTools] = useState(JSON.parse(localStorage.getItem('hub_recent_tools') || '[]'));
+
+  const openTool = (id) => {
+    setActiveToolId(id);
+    const newRecents = [id, ...recentTools.filter(t => t !== id)].slice(0, 4);
+    setRecentTools(newRecents);
+    localStorage.setItem('hub_recent_tools', JSON.stringify(newRecents));
+  };
+
+  const handleShare = async (e, tool) => {
+    e.stopPropagation();
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `N Box - ${tool.title}`,
+          text: `Check out the ${tool.title} tool on N Box dashboard!`,
+          url: window.location.origin + window.location.pathname + `?tab=toolbox&tool=${tool.id}`
+        });
+      } catch (err) { console.error("Share failed:", err); }
+    } else {
+      navigator.clipboard.writeText(window.location.origin + window.location.pathname + `?tab=toolbox&tool=${tool.id}`);
+      alert("Tool link copied to clipboard!");
     }
   };
 
@@ -162,15 +192,72 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
         <p>Collection of useful offline utilities.</p>
       </div>
 
+      {activeCategory === 'All' && !searchQuery && (
+        <div style={{ padding: '0 10px', marginBottom: '2rem' }}>
+          {(pinnedTools.length > 0 || recentTools.length > 0) && (
+            <div className="toolbox-special-sections" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              {pinnedTools.length > 0 && (
+                <div className="special-section">
+                  <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', opacity: 0.6, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span className="material-icons" style={{ fontSize: '1.2rem' }}>push_pin</span> Pinned
+                  </h3>
+                  <div style={{ display: 'grid', gap: '12px' }}>
+                    {pinnedTools.map(id => {
+                      const tool = TOOLS.find(t => t.id === id);
+                      if (!tool) return null;
+                      return (
+                        <div key={id} className="card" style={{ padding: '12px 16px', minHeight: 'unset', animation: 'none' }} onClick={() => openTool(tool.id)}>
+                          <div className="card-header" style={{ marginBottom: 0, gap: '12px' }}>
+                            <span className="material-icons" style={{ color: 'var(--primary)' }}>{tool.icon}</span>
+                            <span style={{ fontWeight: 600 }}>{tool.title}</span>
+                          </div>
+                          <div className="card-actions">
+                            <button className="pin-btn active" onClick={(e) => togglePin(e, tool.id)}><span className="material-icons">push_pin</span></button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {recentTools.length > 0 && (
+                <div className="special-section">
+                  <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', opacity: 0.6, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span className="material-icons" style={{ fontSize: '1.2rem' }}>history</span> Recent
+                  </h3>
+                  <div style={{ display: 'grid', gap: '12px' }}>
+                    {recentTools.filter(id => !pinnedTools.includes(id)).map(id => {
+                      const tool = TOOLS.find(t => t.id === id);
+                      if (!tool) return null;
+                      return (
+                        <div key={id} className="card" style={{ padding: '12px 16px', minHeight: 'unset', animation: 'none' }} onClick={() => openTool(tool.id)}>
+                          <div className="card-header" style={{ marginBottom: 0, gap: '12px' }}>
+                            <span className="material-icons" style={{ color: 'var(--text-muted)' }}>{tool.icon}</span>
+                            <span style={{ fontWeight: 600 }}>{tool.title}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {filteredTools.length === 0 ? (
         <div style={{textAlign:'center', color:'#888', marginTop:'3rem'}}>No tools found</div>
       ) : !groupToolbox ? (
         <div className="category-grid" style={{padding: '0 10px'}}>
            {filteredTools.map((tool, idx) => (
-              <div key={tool.id} className="card" style={{'--delay': idx}} onClick={() => setActiveToolId(tool.id)}>
+              <div key={tool.id} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
                  <div className="card-actions">
                       <button className={`pin-btn ${pinnedTools.includes(tool.id) ? 'active' : ''}`} onClick={(e) => togglePin(e, tool.id)} title="Pin Tool">
                           <span className="material-icons">push_pin</span>
+                      </button>
+                      <button onClick={(e) => handleShare(e, tool)} title="Share Tool">
+                          <span className="material-icons">share</span>
                       </button>
                  </div>
                  <div className="card-header">
@@ -195,10 +282,13 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
             </div>
             <div className="category-grid">
               {grouped[cat].map((tool, idx) => (
-                <div key={tool.id} className="card" style={{'--delay': idx}} onClick={() => setActiveToolId(tool.id)}>
+                <div key={tool.id} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
                    <div className="card-actions">
                         <button className={`pin-btn ${pinnedTools.includes(tool.id) ? 'active' : ''}`} onClick={(e) => togglePin(e, tool.id)} title="Pin Tool">
                             <span className="material-icons">push_pin</span>
+                        </button>
+                        <button onClick={(e) => handleShare(e, tool)} title="Share Tool">
+                            <span className="material-icons">share</span>
                         </button>
                    </div>
                    <div className="card-header">

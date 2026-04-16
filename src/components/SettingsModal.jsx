@@ -8,12 +8,24 @@ const markdownToHTML = (markdown) => {
   let codeContent = '';
   let inList = false;
 
+  const parseInline = (text) => {
+    return text
+      .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/__(.*?)__/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/_(.*?)_/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/!\[(.*?)\]\((.*?)\)/g, "<img alt='$1' src='$2' />")
+      .replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' target='_blank' rel='noopener noreferrer'>$1</a>");
+  };
+
   for (let line of lines) {
     const trimmedLine = line.trim();
 
     if (trimmedLine.startsWith('```')) {
       if (inCodeBlock) {
-        html += `<pre><code>${codeContent.trim()}</code></pre>`;
+        html += `<pre><code>${codeContent}</code></pre>`;
         codeContent = '';
         inCodeBlock = false;
       } else {
@@ -23,40 +35,28 @@ const markdownToHTML = (markdown) => {
     }
 
     if (inCodeBlock) {
-      codeContent += line + '\n';
+      codeContent += line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '\n';
       continue;
     }
 
     if (trimmedLine.startsWith('# ')) {
       if (inList) { html += '</ul>'; inList = false; }
-      html += `<h1>${trimmedLine.substring(2)}</h1>`;
+      html += `<h1>${parseInline(trimmedLine.substring(2))}</h1>`;
     } else if (trimmedLine.startsWith('## ')) {
       if (inList) { html += '</ul>'; inList = false; }
-      html += `<h2>${trimmedLine.substring(3)}</h2>`;
+      html += `<h2>${parseInline(trimmedLine.substring(3))}</h2>`;
     } else if (trimmedLine.startsWith('### ')) {
       if (inList) { html += '</ul>'; inList = false; }
-      html += `<h3>${trimmedLine.substring(4)}</h3>`;
+      html += `<h3>${parseInline(trimmedLine.substring(4))}</h3>`;
     } else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
       if (!inList) { html += '<ul>'; inList = true; }
-      let parsedLine = trimmedLine.substring(2)
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
-        .replace(/!\[(.*?)\]\((.*?)\)/g, "<img alt='$1' src='$2' />")
-        .replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' target='_blank'>$1</a>");
-      html += `<li>${parsedLine}</li>`;
+      html += `<li>${parseInline(trimmedLine.substring(2))}</li>`;
     } else if (trimmedLine === '') {
       if (inList) { html += '</ul>'; inList = false; }
-      html += '<br/>';
+      html += '<div class="md-spacer"></div>';
     } else {
       if (inList) { html += '</ul>'; inList = false; }
-      let parsedLine = line
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
-        .replace(/!\[(.*?)\]\((.*?)\)/g, "<img alt='$1' src='$2' />")
-        .replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' target='_blank'>$1</a>");
-      html += `<p>${parsedLine}</p>`;
+      html += `<p>${parseInline(line)}</p>`;
     }
   }
   if (inList) html += '</ul>';
@@ -155,7 +155,7 @@ const SettingsModal = ({
                 onClick={() => setIsDarkMode(!isDarkMode)}
               >
                 <span className="material-icons">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
-                <span>{isDarkMode ? 'Light' : 'Dark'} Mode</span>
+                <span>Theme: {isDarkMode ? 'Dark' : 'Light'}</span>
               </button>
               <button className={`pill ${disableGlass ? 'active' : ''}`} onClick={() => setDisableGlass(!disableGlass)}>
                 <span className="material-icons">{disableGlass ? 'blur_on' : 'blur_off'}</span>
@@ -295,7 +295,7 @@ const SettingsModal = ({
       )}
 
       {activeTab === 'about' && (
-        <AboutTab />
+        <AboutTab onClose={onClose} />
       )}
 
       <div className="form-actions">
@@ -317,6 +317,10 @@ const AboutTab = () => {
   return (
     <div className="tab-pane">
       <div className="about-content" dangerouslySetInnerHTML={{ __html: content }} />
+      <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.5, fontSize: '0.8rem' }}>
+        <p>N Box &bull; Version 1.2.0</p>
+        <p>&copy; {new Date().getFullYear()} N Box Team</p>
+      </div>
     </div>
   );
 };

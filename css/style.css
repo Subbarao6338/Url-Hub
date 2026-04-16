@@ -1561,13 +1561,13 @@ body.no-aurora::after {
     left: 0;
     right: 0;
     background: var(--surface-solid);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border-top: 1px solid var(--border);
-    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
     z-index: 4000;
-    gap: 8px;
-    justify-content: space-around;
+    gap: 12px;
+    justify-content: space-between;
     border-radius: 0;
     margin: 0;
   }

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 const Stopwatch = () => {
   const [time, setTime] = useState(0);
   const [isActive, setIsActive] = useState(false);
+  const [laps, setLaps] = useState([]);
   const intervalRef = useRef(null);
 
   useEffect(() => {
@@ -24,6 +25,11 @@ const Stopwatch = () => {
   const resetStopwatch = () => {
     setIsActive(false);
     setTime(0);
+    setLaps([]);
+  };
+
+  const addLap = () => {
+    setLaps([{ id: Date.now(), time }, ...laps]);
   };
 
   const formatTime = (time) => {
@@ -54,6 +60,11 @@ const Stopwatch = () => {
         >
           {isActive ? 'Pause' : (time > 0 ? 'Resume' : 'Start')}
         </button>
+        {isActive && (
+          <button className="pill" style={{ minWidth: '100px' }} onClick={addLap}>
+            Lap
+          </button>
+        )}
         <button
           className="pill"
           style={{ minWidth: '120px', border: '1px solid rgba(var(--primary-rgb), 0.2)' }}
@@ -62,6 +73,23 @@ const Stopwatch = () => {
           Reset
         </button>
       </div>
+
+      {laps.length > 0 && (
+        <div style={{ marginTop: '2rem', maxWidth: '300px', margin: '2rem auto 0' }}>
+          <h3>Laps</h3>
+          <div style={{ maxHeight: '200px', overflowY: 'auto', border: '1px solid var(--border)', borderRadius: '12px', marginTop: '10px' }}>
+            {laps.map((lap, index) => {
+              const { h, m, s, ms } = formatTime(lap.time);
+              return (
+                <div key={lap.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 15px', borderBottom: index < laps.length - 1 ? '1px solid var(--border)' : 'none' }}>
+                  <span style={{ opacity: 0.5 }}>#{laps.length - index}</span>
+                  <span style={{ fontFamily: 'monospace' }}>{h}:{m}:{s}.{ms}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
