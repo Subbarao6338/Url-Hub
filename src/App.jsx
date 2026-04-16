@@ -19,6 +19,11 @@ function App() {
   const [accentColor, setAccentColor] = useState(localStorage.getItem('hub_accent_color') || 'indigo');
   const [pinnedIds, setPinnedIds] = useState(JSON.parse(localStorage.getItem('hub_pinned_v1') || '[]'));
 
+  useEffect(() => {
+    if (searchActive) document.body.classList.add('search-active');
+    else document.body.classList.remove('search-active');
+  }, [searchActive]);
+
   // Additional Settings
   const [isCompact, setIsCompact] = useState(localStorage.getItem('hub_compact') === 'true');
   const [hideUrls, setHideUrls] = useState(localStorage.getItem('hub_hide_urls') === 'true');

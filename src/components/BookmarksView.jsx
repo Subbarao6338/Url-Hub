@@ -178,11 +178,12 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
 
 const BookmarkCard = ({ link, idx, openInNewTab, pinnedIds, onPin, onEdit, onDelete, handleShare, handleCopy, isCopied, onLongPress, categoryIcon, hideIcons, hideUrls, searchQuery }) => {
   const [pressTimer, setPressTimer] = useState(null);
-  const [isLongPress, setIsLongPress] = useState(false);
+  const isLongPress = React.useRef(false);
 
   const startPress = () => {
+    isLongPress.current = false;
     const timer = setTimeout(() => {
-      setIsLongPress(true);
+      isLongPress.current = true;
       if (link.urls && link.urls.length > 1) {
         onLongPress();
       }
@@ -198,8 +199,8 @@ const BookmarkCard = ({ link, idx, openInNewTab, pinnedIds, onPin, onEdit, onDel
   };
 
   const handleClick = (e) => {
-    if (isLongPress) {
-      setIsLongPress(false);
+    if (isLongPress.current) {
+      isLongPress.current = false;
       return;
     }
     window.open(link.url, openInNewTab ? '_blank' : '_self');

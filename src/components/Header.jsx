@@ -4,9 +4,12 @@ const Header = ({ currentProfile, profiles, currentTab, setView, onSettingsClick
   const profile = profiles.find(p => p.name === currentProfile) || { icon: 'inbox' };
 
   const [longPressTimer, setLongPressTimer] = React.useState(null);
+  const isLongPress = React.useRef(false);
 
   const startLongPress = () => {
+    isLongPress.current = false;
     const timer = setTimeout(() => {
+      isLongPress.current = true;
       onLogoLongPress();
     }, 500);
     setLongPressTimer(timer);
@@ -19,11 +22,19 @@ const Header = ({ currentProfile, profiles, currentTab, setView, onSettingsClick
     }
   };
 
+  const handleClick = () => {
+    if (isLongPress.current) {
+      isLongPress.current = false;
+      return;
+    }
+    setView('bookmarks');
+  };
+
   return (
     <header className="top-bar">
       <div
         className="logo-container"
-        onClick={() => setView('bookmarks')}
+        onClick={handleClick}
         onMouseDown={startLongPress}
         onMouseUp={cancelLongPress}
         onMouseLeave={cancelLongPress}
