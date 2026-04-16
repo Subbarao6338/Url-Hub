@@ -3,19 +3,23 @@ import sqlite3
 import os
 import uuid
 
-DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'hub.db')
+# Use environment variable for DB_PATH if available (from api/index.py)
+IS_VERCEL = os.environ.get('VERCEL') == '1'
+if IS_VERCEL:
+    DEFAULT_DB_PATH = '/tmp/hub.db'
+else:
+    DEFAULT_DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'hub.db')
 
-def migrate():
-    if not os.path.exists(DB_PATH):
+def migrate(db_path=None):
+    actual_db_path = db_path or DEFAULT_DB_PATH
+    if not os.path.exists(actual_db_path):
         # Try relative to current working directory if not found relative to script
         cwd_db_path = os.path.join('data', 'hub.db')
         if os.path.exists(cwd_db_path):
             actual_db_path = cwd_db_path
         else:
-            print(f"Database not found at {DB_PATH} or {cwd_db_path}. Please ensure it is initialized.")
+            print(f"Database not found at {actual_db_path}. Please ensure it is initialized.")
             return
-    else:
-        actual_db_path = DB_PATH
 
     conn = sqlite3.connect(actual_db_path)
     cursor = conn.cursor()

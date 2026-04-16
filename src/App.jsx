@@ -48,9 +48,14 @@ function App() {
 
   useEffect(() => {
     fetch('/api/profiles')
-      .then(res => res.json())
-      .then(setProfiles)
-      .catch(err => console.error("Failed to fetch profiles:", err));
+      .then(res => res.ok ? res.json() : [])
+      .then(data => {
+        if (Array.isArray(data)) setProfiles(data);
+      })
+      .catch(err => {
+        console.error("Failed to fetch profiles:", err);
+        setProfiles([]);
+      });
   }, []);
 
   useEffect(() => {
@@ -129,7 +134,7 @@ function App() {
   useEffect(() => { localStorage.setItem('hub_open_newtab', openInNewTab); }, [openInNewTab]);
   useEffect(() => { localStorage.setItem('hub_open_projects_internally', openProjectsInternally); }, [openProjectsInternally]);
 
-  const currentProfile = profiles.find(p => p.name === currentProfileName) || profiles[0];
+  const currentProfile = Array.isArray(profiles) ? (profiles.find(p => p.name === currentProfileName) || profiles[0]) : null;
 
   const handleSearchToggle = () => setSearchActive(!searchActive);
   const handleSearchClear = () => {

@@ -5,20 +5,54 @@ import sqlite3
 import os
 import json
 import uuid
+import sys
+import shutil
+
+# Add the project root to sys.path so we can import from scripts
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 app = FastAPI()
 
-DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'hub.db')
+# Handle read-only filesystem on Vercel
+IS_VERCEL = os.environ.get('VERCEL') == '1'
+if IS_VERCEL:
+    DB_PATH = '/tmp/hub.db'
+    ORIG_DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'hub.db')
+else:
+    DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'hub.db')
 
 def get_db_connection():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        return conn
+    except sqlite3.Error as e:
+        print(f"Database connection error: {e}")
+        raise HTTPException(status_code=500, detail=f"Database connection failed: {str(e)}")
+
+# Track initialization to avoid redundant slow checks
+_db_initialized = False
 
 def init_db():
-    db_existed = os.path.exists(DB_PATH)
-    if not os.path.exists(os.path.dirname(DB_PATH)):
-        os.makedirs(os.path.dirname(DB_PATH))
+    global _db_initialized
+    if _db_initialized:
+        return
+
+    if IS_VERCEL and not os.path.exists(DB_PATH):
+        # Try to copy existing DB from data/ if it exists
+        if os.path.exists(ORIG_DB_PATH):
+            try:
+                shutil.copy(ORIG_DB_PATH, DB_PATH)
+                print(f"Copied database from {ORIG_DB_PATH} to {DB_PATH}")
+            except Exception as e:
+                print(f"Failed to copy database: {e}")
+
+    db_dir = os.path.dirname(DB_PATH)
+    if db_dir and not os.path.exists(db_dir):
+        try:
+            os.makedirs(db_dir, exist_ok=True)
+        except Exception as e:
+            print(f"Failed to create DB directory {db_dir}: {e}")
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -86,16 +120,15 @@ def init_db():
         print("Database is empty. Attempting migration...")
         try:
             from scripts.migrate import migrate
-            # We need to change directory to root to let migrate script find data files
-            # or ensure migrate works with relative paths from where uvicorn is run.
-            # scripts/migrate.py uses 'data/...' paths.
-            migrate()
+            # Pass the DB_PATH to ensure it uses the correct one (especially on Vercel)
+            migrate(db_path=DB_PATH)
         except ImportError:
             print("Migration script not found.")
         except Exception as e:
             print(f"Migration failed: {e}")
 
     conn.close()
+    _db_initialized = True
 
 # Pydantic Models
 class LinkBase(BaseModel):
@@ -147,7 +180,19 @@ class Profile(BaseModel):
 
 @app.on_event("startup")
 def startup_event():
-    init_db()
+    try:
+        init_db()
+    except Exception as e:
+        print(f"Application startup failed: {e}")
+
+@app.middleware("http")
+async def ensure_db_middleware(request, call_next):
+    if request.url.path.startswith("/api") and request.url.path != "/api/hello":
+        try:
+            init_db()
+        except Exception as e:
+            print(f"Lazy DB init failed: {e}")
+    return await call_next(request)
 
 @app.get("/api/hello")
 def hello():
