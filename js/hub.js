@@ -45,6 +45,11 @@ const STATE = {
   disableGlass: Storage.get('disable_glass') === 'true',
   showStats: Storage.get('show_stats') !== 'false',
   enableAurora: Storage.get('enable_aurora') !== 'false',
+  reducedMotion: Storage.get('reduced_motion') === 'true',
+  autoFocusSearch: Storage.get('auto_focus_search') === 'true',
+  openInNewTab: Storage.get('open_newtab') !== 'false',
+  confirmDelete: Storage.get('confirm_delete') !== 'false',
+  groupToolbox: Storage.get('group_toolbox') !== 'false',
   accentColor: Storage.get('accent_color') || 'indigo',
   isDropdownOpen: false,
   isModalOpen: false,
@@ -110,7 +115,8 @@ const Utils = {
 
     // Try primary URL first
     const primaryUrl = urls[0];
-    const win = window.open(primaryUrl, '_blank', 'noopener,noreferrer');
+    const target = STATE.openInNewTab ? '_blank' : '_self';
+    const win = window.open(primaryUrl, target, 'noopener,noreferrer');
 
     // If there are fallback URLs and window didn't open, try fallbacks
     if (urls.length > 1 && (!win || win.closed || typeof win.closed === 'undefined')) {
@@ -120,7 +126,8 @@ const Utils = {
         if (tried < urls.length) {
           const fallbackUrl = urls[tried];
           console.log(`Trying fallback URL ${tried} for ${linkTitle}: ${fallbackUrl}`);
-          const fallbackWin = window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
+          const target = STATE.openInNewTab ? '_blank' : '_self';
+          const fallbackWin = window.open(fallbackUrl, target, 'noopener,noreferrer');
           tried++;
 
           // If this also fails and we have more URLs, continue
@@ -340,7 +347,7 @@ const Core = {
   },
 
   deleteLink(id) {
-    if (confirm("Are you sure you want to delete this bookmark?")) {
+    if (!STATE.confirmDelete || confirm("Are you sure you want to delete this bookmark?")) {
       STATE.links = STATE.links.filter(l => l.id !== id);
       STATE.pinnedIds = STATE.pinnedIds.filter(pid => pid !== id);
       Storage.setJson('pinned_v1', STATE.pinnedIds);
@@ -390,11 +397,22 @@ const UI = {
     this.render();
     this.renderBreadcrumb();
 
+    // Auto-focus search if enabled
+    if (STATE.autoFocusSearch && (view === 'bookmarks' || view === 'toolbox')) {
+        setTimeout(() => {
+            const search = document.getElementById('search');
+            if (search) search.focus();
+        }, 100);
+    }
+
     // Hide/Show main nav based on view
     const mainNav = document.getElementById('main-category-nav');
     if (mainNav) {
       // mainNav is for bookmarks horizontal pills, only show in bookmarks view
-      mainNav.style.display = (STATE.currentTab === 'bookmarks' && STATE.currentView === 'bookmarks') ? 'flex' : 'none';
+      // But we want it visible in toolbox as well if not inside a specific tool
+      const isHubView = (STATE.currentTab === 'bookmarks' && STATE.currentView === 'bookmarks') ||
+                        (STATE.currentTab === 'toolbox');
+      mainNav.style.display = isHubView ? 'flex' : 'none';
     }
   },
 
@@ -802,23 +820,40 @@ const UI = {
     `;
 
     const mainNav = document.getElementById('main-category-nav');
-    if (mainNav && STATE.currentTab === 'bookmarks') {
-      mainNav.innerHTML = `
-        <div class="pill ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All', 'bookmarks')" aria-label="Show All Bookmarks">
-          ${Utils.renderIcon('home')} <span>All</span>
-        </div>
-        <div class="pill ${STATE.activeCategory === 'Pinned' ? 'active' : ''}" onclick="UI.setCategory('Pinned', 'bookmarks')" aria-label="Show Pinned Bookmarks">
-          ${Utils.renderIcon('push_pin')} <span>Pinned</span>
-        </div>
-        ${allCats.map(cat => {
-          const icon = CAT_ICONS[cat] || 'folder';
-          return `
-            <div class="pill ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}', 'bookmarks')" aria-label="Category: ${cat}">
-              ${Utils.renderIcon(icon)} <span>${cat}</span>
-            </div>
-          `;
-        }).join('')}
-      `;
+    if (mainNav) {
+      if (STATE.currentTab === 'bookmarks') {
+        mainNav.innerHTML = `
+          <div class="pill ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All', 'bookmarks')" aria-label="Show All Bookmarks">
+            ${Utils.renderIcon('home')} <span>All</span>
+          </div>
+          <div class="pill ${STATE.activeCategory === 'Pinned' ? 'active' : ''}" onclick="UI.setCategory('Pinned', 'bookmarks')" aria-label="Show Pinned Bookmarks">
+            ${Utils.renderIcon('push_pin')} <span>Pinned</span>
+          </div>
+          ${allCats.map(cat => {
+            const icon = CAT_ICONS[cat] || 'folder';
+            return `
+              <div class="pill ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}', 'bookmarks')" aria-label="Category: ${cat}">
+                ${Utils.renderIcon(icon)} <span>${cat}</span>
+              </div>
+            `;
+          }).join('')}
+        `;
+      } else if (STATE.currentTab === 'toolbox' && typeof TOOLS !== 'undefined') {
+        const toolboxCats = [...new Set(TOOLS.map(t => t.category))].sort();
+        mainNav.innerHTML = `
+          <div class="pill ${STATE.activeToolboxCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All', 'toolbox')" aria-label="Show All Tools">
+            ${Utils.renderIcon('home')} <span>All</span>
+          </div>
+          ${toolboxCats.map(cat => {
+            const icon = Toolbox.getCategoryIcon(cat);
+            return `
+              <div class="pill ${STATE.activeToolboxCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}', 'toolbox')" aria-label="Category: ${cat}">
+                ${Utils.renderIcon(icon)} <span>${cat}</span>
+              </div>
+            `;
+          }).join('')}
+        `;
+      }
     }
   },
 
@@ -1123,9 +1158,6 @@ const UI = {
         const isPinned = STATE.pinnedIds.includes(link.id);
         let urlHtml = STATE.hideUrls ? '' : `<div class="card-url">${Utils.getHostname(link.url)}${fallbackBadge}</div>`;
 
-        if (link.isInternal) {
-          urlHtml = STATE.hideUrls ? '' : `<div class="card-url" style="color: var(--primary); font-weight: 500;">Offline Tool</div>`;
-        }
 
         card.innerHTML = `
           <div class="card-header">
@@ -1617,6 +1649,7 @@ const PageTools = {
     this.applyCompact();
     this.applyGlass();
     this.applyAurora();
+    this.applyReducedMotion();
   },
 
   toggleDarkMode() {
@@ -1710,6 +1743,43 @@ const PageTools = {
     else document.body.classList.add('no-aurora');
   },
 
+  toggleReducedMotion() {
+    STATE.reducedMotion = !STATE.reducedMotion;
+    Storage.set('reduced_motion', STATE.reducedMotion);
+    this.applyReducedMotion();
+    this.updateSettingsUI();
+  },
+
+  applyReducedMotion() {
+    if (STATE.reducedMotion) document.body.classList.add('reduced-motion');
+    else document.body.classList.remove('reduced-motion');
+  },
+
+  toggleAutoFocus() {
+    STATE.autoFocusSearch = !STATE.autoFocusSearch;
+    Storage.set('auto_focus_search', STATE.autoFocusSearch);
+    this.updateSettingsUI();
+  },
+
+  toggleNewTab() {
+    STATE.openInNewTab = !STATE.openInNewTab;
+    Storage.set('open_newtab', STATE.openInNewTab);
+    this.updateSettingsUI();
+  },
+
+  toggleConfirmDelete() {
+    STATE.confirmDelete = !STATE.confirmDelete;
+    Storage.set('confirm_delete', STATE.confirmDelete);
+    this.updateSettingsUI();
+  },
+
+  toggleToolboxGroups() {
+    STATE.groupToolbox = !STATE.groupToolbox;
+    Storage.set('group_toolbox', STATE.groupToolbox);
+    this.updateSettingsUI();
+    UI.render();
+  },
+
   setStartupProfile(profileName) {
     localStorage.setItem('hub_startup_profile', profileName);
     UI.openProfileModal(); // Refresh the profile modal UI
@@ -1774,6 +1844,36 @@ const PageTools = {
     if (auroraBtn) {
       if (STATE.enableAurora) auroraBtn.classList.add('active');
       else auroraBtn.classList.remove('active');
+    }
+
+    const motionBtn = document.getElementById('settings-motion-btn');
+    if (motionBtn) {
+      if (STATE.reducedMotion) motionBtn.classList.add('active');
+      else motionBtn.classList.remove('active');
+    }
+
+    const focusBtn = document.getElementById('settings-focus-btn');
+    if (focusBtn) {
+      if (STATE.autoFocusSearch) focusBtn.classList.add('active');
+      else focusBtn.classList.remove('active');
+    }
+
+    const newtabBtn = document.getElementById('settings-newtab-btn');
+    if (newtabBtn) {
+      if (STATE.openInNewTab) newtabBtn.classList.add('active');
+      else newtabBtn.classList.remove('active');
+    }
+
+    const confirmBtn = document.getElementById('settings-confirm-btn');
+    if (confirmBtn) {
+      if (STATE.confirmDelete) confirmBtn.classList.add('active');
+      else confirmBtn.classList.remove('active');
+    }
+
+    const groupsBtn = document.getElementById('toolbox-groups-btn');
+    if (groupsBtn) {
+      if (STATE.groupToolbox) groupsBtn.classList.add('active');
+      else groupsBtn.classList.remove('active');
     }
 
     // Update color pills

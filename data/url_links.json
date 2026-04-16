@@ -2237,12 +2237,60 @@
     "category": "Coding"
   },
   {
-    "title": "Telugu Panchangam",
-    "url": "internal://panchangam",
+    "title": "History",
+    "url": "internal://history",
     "isInternal": true,
-    "toolId": "panchangam",
+    "toolId": "history",
     "category": "Toolbox",
-    "icon": "📅"
+    "icon": "history"
+  },
+  {
+    "title": "Saved",
+    "url": "internal://saved",
+    "isInternal": true,
+    "toolId": "saved",
+    "category": "Toolbox",
+    "icon": "bookmark"
+  },
+  {
+    "title": "Notes",
+    "url": "internal://notes",
+    "isInternal": true,
+    "toolId": "notes",
+    "category": "Toolbox",
+    "icon": "description"
+  },
+  {
+    "title": "AI Summary",
+    "url": "internal://ai-summary",
+    "isInternal": true,
+    "toolId": "ai-summary",
+    "category": "Toolbox",
+    "icon": "auto_fix_high"
+  },
+  {
+    "title": "Calculator",
+    "url": "internal://calculator",
+    "isInternal": true,
+    "toolId": "calculator",
+    "category": "Toolbox",
+    "icon": "calculate"
+  },
+  {
+    "title": "Translate",
+    "url": "internal://translate",
+    "isInternal": true,
+    "toolId": "translate",
+    "category": "Toolbox",
+    "icon": "translate"
+  },
+  {
+    "title": "QR Gen",
+    "url": "internal://qr-gen",
+    "isInternal": true,
+    "toolId": "qr-gen",
+    "category": "Toolbox",
+    "icon": "qr_code_2"
   },
   {
     "title": "Password Generator",
@@ -2250,7 +2298,7 @@
     "isInternal": true,
     "toolId": "password-gen",
     "category": "Toolbox",
-    "icon": "key"
+    "icon": "vpn_key"
   },
   {
     "title": "Unit Converter",
@@ -2258,39 +2306,23 @@
     "isInternal": true,
     "toolId": "unit-converter",
     "category": "Toolbox",
-    "icon": "straighten"
+    "icon": "balance"
   },
   {
-    "title": "JSON Formatter",
-    "url": "internal://json-formatter",
+    "title": "Stopwatch",
+    "url": "internal://stopwatch",
     "isInternal": true,
-    "toolId": "json-formatter",
+    "toolId": "stopwatch",
     "category": "Toolbox",
-    "icon": "settings_ethernet"
+    "icon": "timer"
   },
   {
-    "title": "Base64 Converter",
-    "url": "internal://base64-converter",
+    "title": "Morse",
+    "url": "internal://morse",
     "isInternal": true,
-    "toolId": "base64-converter",
+    "toolId": "morse",
     "category": "Toolbox",
-    "icon": "sync_alt"
-  },
-  {
-    "title": "Text Utilities",
-    "url": "internal://text-utils",
-    "isInternal": true,
-    "toolId": "text-utils",
-    "category": "Toolbox",
-    "icon": "text_fields"
-  },
-  {
-    "title": "Age Calculator",
-    "url": "internal://age-calculator",
-    "isInternal": true,
-    "toolId": "age-calculator",
-    "category": "Toolbox",
-    "icon": "cake"
+    "icon": "timeline"
   },
   {
     "title": "BMI Calculator",
@@ -2298,6 +2330,126 @@
     "isInternal": true,
     "toolId": "bmi-calculator",
     "category": "Toolbox",
-    "icon": "monitor_weight"
+    "icon": "person"
+  },
+  {
+    "title": "Age Calculator",
+    "url": "internal://age-calculator",
+    "isInternal": true,
+    "toolId": "age-calculator",
+    "category": "Toolbox",
+    "icon": "calendar_today"
+  },
+  {
+    "title": "Color Picker",
+    "url": "internal://color-picker",
+    "isInternal": true,
+    "toolId": "color-picker",
+    "category": "Toolbox",
+    "icon": "palette"
+  },
+  {
+    "title": "Telugu Panchangam",
+    "url": "internal://panchangam",
+    "isInternal": true,
+    "toolId": "panchangam",
+    "category": "Toolbox",
+    "icon": "auto_awesome"
+  },
+  {
+    "title": "Omni Hub",
+    "url": "internal://omni-hub",
+    "isInternal": true,
+    "toolId": "omni-hub",
+    "category": "Toolbox",
+    "icon": "public"
+  },
+  {
+    "title": "Network Tools",
+    "url": "internal://network-tools",
+    "isInternal": true,
+    "toolId": "network-tools",
+    "category": "Toolbox",
+    "icon": "timeline"
+  },
+  {
+    "title": "Cookies",
+    "url": "internal://cookies",
+    "isInternal": true,
+    "toolId": "cookies",
+    "category": "Toolbox",
+    "icon": "cookie"
+  },
+  {
+    "title": "Translator",
+    "url": "internal://translator",
+    "isInternal": true,
+    "toolId": "translator",
+    "category": "Toolbox",
+    "icon": "language"
+  },
+  {
+    "title": "Inspect",
+    "url": "internal://inspect",
+    "isInternal": true,
+    "toolId": "inspect",
+    "category": "Toolbox",
+    "icon": "search"
+  },
+  {
+    "title": "Reader",
+    "url": "internal://reader",
+    "isInternal": true,
+    "toolId": "reader",
+    "category": "Toolbox",
+    "icon": "article"
+  },
+  {
+    "title": "Text Utilities",
+    "url": "internal://text-utils",
+    "isInternal": true,
+    "toolId": "text-utils",
+    "category": "Toolbox",
+    "icon": "title"
+  },
+  {
+    "title": "JSON Formatter",
+    "url": "internal://json-formatter",
+    "isInternal": true,
+    "toolId": "json-formatter",
+    "category": "Toolbox",
+    "icon": "code"
+  },
+  {
+    "title": "Base64 Converter",
+    "url": "internal://base64-converter",
+    "isInternal": true,
+    "toolId": "base64-converter",
+    "category": "Toolbox",
+    "icon": "transform"
+  },
+  {
+    "title": "Device Info",
+    "url": "internal://device-info",
+    "isInternal": true,
+    "toolId": "device-info",
+    "category": "Toolbox",
+    "icon": "memory"
+  },
+  {
+    "title": "Security Info",
+    "url": "internal://security-info",
+    "isInternal": true,
+    "toolId": "security-info",
+    "category": "Toolbox",
+    "icon": "verified_user"
+  },
+  {
+    "title": "User Scripts",
+    "url": "internal://user-scripts",
+    "isInternal": true,
+    "toolId": "user-scripts",
+    "category": "Toolbox",
+    "icon": "add"
   }
 ]
