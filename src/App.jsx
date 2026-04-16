@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Analytics } from '@vercel/analytics/react';
 import Header from './components/Header';
 import TabBar from './components/TabBar';
 import BookmarksView from './components/BookmarksView';
@@ -273,8 +272,8 @@ function App() {
       >
         <span className="material-icons">person</span> Switch Profile
       </button>
+      
       <Analytics />
-      <SpeedInsights />
     </div>
   );
 }
