@@ -71,3 +71,21 @@ The application provides several customization options via the Settings modal:
 - **Export Backup**: Downloads your current link collection as a JSON file.
 - **Import Backup**: Restores your collection from a previously exported JSON file.
 - **Reset Dashboard**: Clears all local changes and restores the default set of links from `data/url_links.json`.
+
+
+## Deployment on Vercel
+
+This project is ready to be deployed on [Vercel](https://vercel.com).
+
+1. **Install Vercel CLI**: `npm i -g vercel`
+2. **Deploy**: Run `vercel` in the root directory.
+
+### Technology Stack & Integration
+
+- **Frontend (React)**: The project includes a **ReactJS** scaffold using **Vite** and **Bootstrap**.
+    - Source code is in `src/`.
+    - Main entry point is `index-react.html` (for Vite) or you can migrate the legacy `index.html` logic.
+- **Backend (Python)**: A backend using **FastAPI** is provided in the `api/` directory. Vercel automatically treats files in this directory as Serverless Functions.
+- **Database (SQLite)**:
+    - **Persistence Warning**: SQLite files on Vercel are **read-only** in production. Any changes made to the `.db` file during a request will be lost when the serverless function spins down.
+    - **Recommended**: For persistent data, use **Vercel Postgres**, **Supabase**, or **Turso** (SQLite-compatible hosted database).
