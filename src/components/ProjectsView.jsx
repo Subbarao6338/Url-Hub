@@ -10,12 +10,13 @@ const ProjectsView = ({ searchQuery, openInternally }) => {
     fetch('/api/projects')
       .then(res => res.json())
       .then(data => {
-        setProjects(data);
+        setProjects(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(err => {
         console.error("Failed to fetch projects:", err);
         setLoading(false);
+        setProjects([]);
       });
   }, []);
 

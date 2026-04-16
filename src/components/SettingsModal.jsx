@@ -129,6 +129,15 @@ const SettingsModal = ({
         <button className={`tab-btn ${activeTab === 'general' ? 'active' : ''}`} onClick={() => setActiveTab('general')}>
           <span className="material-icons">settings</span> Global
         </button>
+        <button className={`tab-btn ${activeTab === 'bookmarks' ? 'active' : ''}`} onClick={() => setActiveTab('bookmarks')}>
+          <span className="material-icons">bookmarks</span> Bookmarks
+        </button>
+        <button className={`tab-btn ${activeTab === 'projects' ? 'active' : ''}`} onClick={() => setActiveTab('projects')}>
+          <span className="material-icons">rocket_launch</span> Projects
+        </button>
+        <button className={`tab-btn ${activeTab === 'toolbox' ? 'active' : ''}`} onClick={() => setActiveTab('toolbox')}>
+          <span className="material-icons">handyman</span> Toolbox
+        </button>
         <button className={`tab-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>
           <span className="material-icons">info</span> About
         </button>
@@ -147,26 +156,6 @@ const SettingsModal = ({
                 <span className="material-icons">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
                 <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
               </button>
-              <button className={`pill ${isCompact ? 'active' : ''}`} onClick={() => setIsCompact(!isCompact)}>
-                <span className="material-icons">view_module</span>
-                <span>Compact View</span>
-              </button>
-              <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
-                <span className="material-icons">link_off</span>
-                <span>Hide URLs</span>
-              </button>
-              <button className={`pill ${hideIcons ? 'active' : ''}`} onClick={() => setHideIcons(!hideIcons)}>
-                <span className="material-icons">hide_image</span>
-                <span>Hide Icons</span>
-              </button>
-              <button className={`pill ${showStats ? 'active' : ''}`} onClick={() => setShowStats(!showStats)}>
-                <span className="material-icons">analytics</span>
-                <span>Show Counts</span>
-              </button>
-              <button className={`pill ${autoFocusSearch ? 'active' : ''}`} onClick={() => setAutoFocusSearch(!autoFocusSearch)}>
-                <span className="material-icons">center_focus_strong</span>
-                <span>Auto-focus Search</span>
-              </button>
               <button className={`pill ${disableGlass ? 'active' : ''}`} onClick={() => setDisableGlass(!disableGlass)}>
                 <span className="material-icons">blur_off</span>
                 <span>Solid Mode</span>
@@ -178,6 +167,10 @@ const SettingsModal = ({
               <button className={`pill ${reducedMotion ? 'active' : ''}`} onClick={() => setReducedMotion(!reducedMotion)}>
                 <span className="material-icons">motion_photos_off</span>
                 <span>Reduced Motion</span>
+              </button>
+              <button className={`pill ${autoFocusSearch ? 'active' : ''}`} onClick={() => setAutoFocusSearch(!autoFocusSearch)}>
+                <span className="material-icons">center_focus_strong</span>
+                <span>Auto-focus Search</span>
               </button>
             </div>
             <div className="pill-group" style={{marginTop: '15px'}}>
@@ -199,18 +192,6 @@ const SettingsModal = ({
                 <span className="material-icons">open_in_new</span>
                 <span>Open in New Tab</span>
               </button>
-              <button className={`pill ${openProjectsInternally ? 'active' : ''}`} onClick={() => setOpenProjectsInternally(!openProjectsInternally)}>
-                <span className="material-icons">tab</span>
-                <span>Open Projects Internally</span>
-              </button>
-              <button className={`pill ${confirmDelete ? 'active' : ''}`} onClick={() => setConfirmDelete(!confirmDelete)}>
-                <span className="material-icons">delete_sweep</span>
-                <span>Confirm Deletion</span>
-              </button>
-              <button className={`pill ${groupToolbox ? 'active' : ''}`} onClick={() => setGroupToolbox(!groupToolbox)}>
-                <span className="material-icons">reorder</span>
-                <span>Group Toolbox</span>
-              </button>
             </div>
           </div>
           <div className="settings-section">
@@ -225,6 +206,76 @@ const SettingsModal = ({
               </label>
               <button className="pill" style={{color: '#ef4444'}} onClick={resetData}>
                 <span className="material-icons">refresh</span> Reset Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'bookmarks' && (
+        <div className="tab-pane">
+          <h2 className="settings-header">Bookmarks Settings</h2>
+          <div className="settings-section">
+            <h3>Display</h3>
+            <div className="pill-group">
+              <button className={`pill ${isCompact ? 'active' : ''}`} onClick={() => setIsCompact(!isCompact)}>
+                <span className="material-icons">view_module</span>
+                <span>Compact View</span>
+              </button>
+              <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
+                <span className="material-icons">link_off</span>
+                <span>Hide URLs</span>
+              </button>
+              <button className={`pill ${hideIcons ? 'active' : ''}`} onClick={() => setHideIcons(!hideIcons)}>
+                <span className="material-icons">hide_image</span>
+                <span>Hide Icons</span>
+              </button>
+              <button className={`pill ${showStats ? 'active' : ''}`} onClick={() => setShowStats(!showStats)}>
+                <span className="material-icons">analytics</span>
+                <span>Show Counts</span>
+              </button>
+            </div>
+          </div>
+          <div className="settings-section">
+            <h3>Interaction</h3>
+            <div className="pill-group">
+              <button className={`pill ${confirmDelete ? 'active' : ''}`} onClick={() => setConfirmDelete(!confirmDelete)}>
+                <span className="material-icons">delete_sweep</span>
+                <span>Confirm Deletion</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'projects' && (
+        <div className="tab-pane">
+          <h2 className="settings-header">Projects Settings</h2>
+          <div className="settings-section">
+            <h3>Behavior</h3>
+            <div className="pill-group">
+              <button className={`pill ${openProjectsInternally ? 'active' : ''}`} onClick={() => setOpenProjectsInternally(!openProjectsInternally)}>
+                <span className="material-icons">tab</span>
+                <span>Open Projects Internally</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'toolbox' && (
+        <div className="tab-pane">
+          <h2 className="settings-header">Toolbox Settings</h2>
+          <div className="settings-section">
+            <h3>Organization</h3>
+            <div className="pill-group">
+              <button className={`pill ${groupToolbox ? 'active' : ''}`} onClick={() => setGroupToolbox(!groupToolbox)}>
+                <span className="material-icons">reorder</span>
+                <span>Group Toolbox</span>
+              </button>
+              <button className={`pill ${showStats ? 'active' : ''}`} onClick={() => setShowStats(!showStats)}>
+                <span className="material-icons">analytics</span>
+                <span>Show Counts</span>
               </button>
             </div>
           </div>
