@@ -98,6 +98,9 @@
       <button class="tab-btn" onclick="UI.switchTab('toolbox')">
         <span class="material-icons">handyman</span> Toolbox
       </button>
+      <button class="tab-btn" onclick="UI.switchTab('projects')">
+        <span class="material-icons">rocket_launch</span> Projects
+      </button>
       <button class="tab-btn" onclick="UI.switchTab('add')" id="tab-add-btn">
         <span class="material-icons">add_box</span> <span id="tab-add-label">Add Bookmark</span>
       </button>
@@ -221,6 +224,20 @@
           </button>
           <button class="pill" style="color: #ef4444;" onclick="Tools.resetData()" aria-label="Reset Toolbox to Default">
             <span class="material-icons">refresh</span> Reset Toolbox
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects Settings Tab -->
+    <div id="tab-projects-settings" class="tab-pane" style="display:none;">
+      <h2 class="settings-header">Projects Settings</h2>
+      <div class="settings-section">
+        <h3>Project Configuration</h3>
+        <div class="pill-group">
+          <button class="pill" onclick="PageTools.toggleProjectsInternal()" id="projects-internal-btn" aria-label="Toggle Open Projects Internally">
+            <span class="material-icons">tab</span>
+            <span>Open Internally (Iframe)</span>
           </button>
         </div>
       </div>

@@ -37,6 +37,7 @@ const STATE = {
   pinnedIds: Storage.getJson('pinned_v1', []),
   activeCategory: 'All', // 'All' for bookmarks
   activeToolboxCategory: 'All', // 'All' for toolbox
+  activeProjectCategory: 'All',
   searchQuery: '',
   isDarkMode: Storage.get('theme') === 'dark' || (Storage.get('theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches),
   isCompact: Storage.get('compact') === 'true',
@@ -50,10 +51,12 @@ const STATE = {
   openInNewTab: Storage.get('open_newtab') !== 'false',
   confirmDelete: Storage.get('confirm_delete') !== 'false',
   groupToolbox: Storage.get('group_toolbox') !== 'false',
+  openProjectsInternally: Storage.get('open_projects_internally') === 'true',
   accentColor: Storage.get('accent_color') || 'indigo',
   isDropdownOpen: false,
   isModalOpen: false,
   currentLink: null,
+  activeProjectId: null,
   primaryColor: '',
   encodedColor: ''
 };
@@ -389,20 +392,28 @@ const UI = {
       STATE.currentTab = 'toolbox';
       STATE.currentView = view;
       this.updateTabUI();
+    } else if (view === 'project') {
+      STATE.currentTab = 'projects';
+      STATE.currentView = view;
+      this.updateTabUI();
     } else {
       STATE.currentView = view;
     }
 
-    STATE.activeToolId = toolId;
+    if (view === 'tool') STATE.activeToolId = toolId;
+    if (view === 'project') STATE.activeProjectId = toolId;
     this.render();
     this.renderBreadcrumb();
 
     // Auto-focus search if enabled
     if (STATE.autoFocusSearch && (view === 'bookmarks' || view === 'toolbox' || view === 'projects')) {
-        setTimeout(() => {
-            const search = document.getElementById('search');
-            if (search) search.focus();
-        }, 100);
+        // Only auto-focus on desktop to avoid keyboard popping up on mobile
+        if (window.innerWidth > 768) {
+            setTimeout(() => {
+                const search = document.getElementById('search');
+                if (search) search.focus();
+            }, 100);
+        }
     }
 
     // Hide/Show main nav based on view
@@ -862,16 +873,57 @@ const UI = {
             `;
           }).join('')}
         `;
+      } else if (STATE.currentTab === 'projects' && STATE.projects) {
+        const projectCats = [...new Set(STATE.projects.map(p => p.category))].sort();
+        mainNav.innerHTML = `
+          <div class="pill ${STATE.activeProjectCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All', 'projects')" aria-label="Show All Projects">
+            ${Utils.renderIcon('home')} <span>All</span>
+          </div>
+          ${projectCats.map(cat => {
+            return `
+              <div class="pill ${STATE.activeProjectCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}', 'projects')" aria-label="Category: ${cat}">
+                ${Utils.renderIcon('folder')} <span>${cat}</span>
+              </div>
+            `;
+          }).join('')}
+        `;
       }
     }
   },
 
   renderProjectsBreadcrumb() {
     const nav = document.getElementById('projects-breadcrumb');
-    if (!nav) return;
+    if (!nav || !STATE.projects) return;
+
+    const stats = {};
+    STATE.projects.forEach(p => {
+      stats[p.category] = (stats[p.category] || 0) + 1;
+    });
+
+    const totalProjects = STATE.projects.length;
+    const allCats = [...new Set(STATE.projects.map(p => p.category))].sort();
+
     nav.innerHTML = `
-      <div class="breadcrumb-item">
-        <span class="label">All Projects</span>
+      <div class="breadcrumb-wrapper">
+         <span class="breadcrumb-active breadcrumb-item" onclick="UI.toggleDropdown(event, 'projects')">
+            <span class="material-icons">folder</span> ${STATE.activeProjectCategory} <span class="material-icons" style="font-size:1.2rem;opacity:0.6">expand_more</span>
+         </span>
+         <div class="category-dropdown ${STATE.isDropdownOpen === 'projects' ? 'active' : ''}">
+             <div class="pill ${STATE.activeProjectCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All', 'projects')" aria-label="Show All Projects">
+                ${Utils.renderIcon('home')}
+                <span>All Projects</span>
+                ${STATE.showStats ? `<span class="count">${totalProjects}</span>` : ''}
+             </div>
+             ${allCats.map(cat => {
+               const count = stats[cat] || 0;
+               return `
+                 <div class="pill ${STATE.activeProjectCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}', 'projects')" aria-label="Category: ${cat}">
+                    ${Utils.renderIcon('folder')}
+                    <span>${cat}</span>
+                    ${STATE.showStats ? `<span class="count">${count}</span>` : ''}
+                 </div>`;
+             }).join('')}
+         </div>
       </div>
     `;
   },
@@ -959,6 +1011,8 @@ const UI = {
   setCategory(cat, type) {
     if (type === 'bookmarks') {
       STATE.activeCategory = cat;
+    } else if (type === 'projects') {
+      STATE.activeProjectCategory = cat;
     } else {
       STATE.activeToolboxCategory = cat;
       STATE.activeToolId = null; // Clear active tool when changing category
@@ -993,7 +1047,11 @@ const UI = {
     }
 
     if (STATE.currentTab === 'projects') {
-      this.renderProjects(container);
+      if (STATE.currentView === 'project' && STATE.activeProjectId) {
+        this.renderProjectDetail(container, STATE.activeProjectId);
+      } else {
+        this.renderProjects(container);
+      }
       return;
     }
 
@@ -1016,14 +1074,79 @@ const UI = {
       return;
     }
 
-    container.innerHTML = `
-      <div class="toolbox-page-header">
-        <h2>My ReactJS Projects</h2>
-        <p>A collection of my recent ReactJS developments and experiments.</p>
-      </div>
-      <div class="category-grid" style="padding: 0 10px;">
-        ${STATE.projects.length === 0 ? '<p style="text-align:center; grid-column: 1/-1;">No projects found.</p>' : STATE.projects.map(p => `
-          <div class="card" onclick="window.open('${p.url}', '_blank')">
+    const filtered = STATE.projects.filter(p => {
+      let matchesSearch = !STATE.searchQuery;
+      let matchesCat = false;
+
+      if (STATE.searchQuery) {
+        matchesSearch = p.title.toLowerCase().includes(STATE.searchQuery) ||
+          p.description.toLowerCase().includes(STATE.searchQuery) ||
+          p.category.toLowerCase().includes(STATE.searchQuery);
+        matchesCat = true;
+      } else {
+        if (STATE.activeProjectCategory === 'All') matchesCat = true;
+        else matchesCat = p.category === STATE.activeProjectCategory;
+      }
+      return matchesSearch && matchesCat;
+    });
+
+    const grouped = {};
+    filtered.forEach(p => {
+      (grouped[p.category] ||= []).push(p);
+    });
+
+    const cats = Object.keys(grouped).sort();
+
+    const fragment = document.createDocumentFragment();
+
+    const header = document.createElement('div');
+    header.className = 'toolbox-page-header';
+    header.innerHTML = `
+      <h2>My Projects</h2>
+      <p>A collection of my recent developments and experiments.</p>
+    `;
+    fragment.appendChild(header);
+
+    if (cats.length === 0) {
+      const empty = document.createElement('div');
+      empty.style.textAlign = 'center';
+      empty.style.color = '#888';
+      empty.style.marginTop = '3rem';
+      empty.textContent = 'No projects found';
+      fragment.appendChild(empty);
+    } else {
+      cats.forEach(cat => {
+        const section = document.createElement('div');
+        section.className = 'category-section';
+
+        const catHeader = document.createElement('div');
+        catHeader.className = 'category-header';
+        catHeader.innerHTML = `
+          <div class="category-title">
+            <span class="material-icons">folder</span>
+            ${cat}
+            ${STATE.showStats ? `<span class="count">${grouped[cat].length}</span>` : ''}
+          </div>
+          <span class="material-icons expand-icon">expand_more</span>
+        `;
+        catHeader.onclick = () => section.classList.toggle('collapsed');
+
+        const grid = document.createElement('div');
+        grid.className = 'category-grid';
+
+        grouped[cat].forEach((p, idx) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.style.setProperty('--delay', idx);
+          card.onclick = () => {
+            if (STATE.openProjectsInternally) {
+              UI.setView('project', p.id);
+            } else {
+              window.open(p.url, '_blank');
+            }
+          };
+
+          card.innerHTML = `
             <div class="card-header">
               <div class="card-icon" style="display:grid;place-items:center;background:var(--bg)">
                 <span class="material-icons">${p.icon || 'code'}</span>
@@ -1031,8 +1154,39 @@ const UI = {
               <div class="card-title">${UI.highlightText(p.title, STATE.searchQuery)}</div>
             </div>
             <p style="padding: 0 1rem 1rem; font-size: 0.9rem; opacity: 0.7;">${p.description}</p>
+          `;
+          grid.appendChild(card);
+        });
+
+        section.appendChild(catHeader);
+        section.appendChild(grid);
+        fragment.appendChild(section);
+      });
+    }
+
+    container.innerHTML = '';
+    container.appendChild(fragment);
+  },
+
+  renderProjectDetail(container, projectId) {
+    const project = STATE.projects.find(p => p.id === projectId);
+    if (!project) {
+      container.innerHTML = `<div style="text-align:center; padding:3rem; opacity:0.5;">Project not found.</div>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="tool-view-header">
+          <button class="icon-btn" onclick="UI.setView('projects')" title="Back to Projects">
+              <span class="material-icons">arrow_back</span>
+          </button>
+          <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="material-icons" style="font-size: 2rem; color: var(--primary);">${project.icon || 'rocket_launch'}</span>
+              <h2 style="margin: 0; font-size: 1.75rem;">${project.title}</h2>
           </div>
-        `).join('')}
+      </div>
+      <div class="tool-container-inner" style="height: calc(100% - 100px); max-width: none;">
+          <iframe src="${project.url}" style="width: 100%; height: 100%; border: none; border-radius: 16px; background: white; box-shadow: var(--shadow-lg);"></iframe>
       </div>
     `;
   },
@@ -1300,7 +1454,7 @@ const UI = {
 
     // Handle mapping of tab names to pane IDs if needed
     let paneId = tabId;
-    if (tabId === 'bookmarks' || tabId === 'toolbox') {
+    if (tabId === 'bookmarks' || tabId === 'toolbox' || tabId === 'projects') {
       paneId = `${tabId}-settings`;
     }
 
@@ -1749,6 +1903,12 @@ const PageTools = {
     UI.render();
   },
 
+  toggleProjectsInternal() {
+    STATE.openProjectsInternally = !STATE.openProjectsInternally;
+    Storage.set('open_projects_internally', STATE.openProjectsInternally);
+    this.updateSettingsUI();
+  },
+
   applyCompact() {
     const container = document.getElementById('content');
     if (container) {
@@ -1934,6 +2094,12 @@ const PageTools = {
     if (groupsBtn) {
       if (STATE.groupToolbox) groupsBtn.classList.add('active');
       else groupsBtn.classList.remove('active');
+    }
+
+    const projectsInternalBtn = document.getElementById('projects-internal-btn');
+    if (projectsInternalBtn) {
+      if (STATE.openProjectsInternally) projectsInternalBtn.classList.add('active');
+      else projectsInternalBtn.classList.remove('active');
     }
 
     // Update color pills
