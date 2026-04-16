@@ -129,7 +129,11 @@ function App() {
   useEffect(() => { localStorage.setItem('hub_open_newtab', openInNewTab); }, [openInNewTab]);
   useEffect(() => { localStorage.setItem('hub_open_projects_internally', openProjectsInternally); }, [openProjectsInternally]);
 
-  const currentProfile = Array.isArray(profiles) ? (profiles.find(p => p.name === currentProfileName) || profiles[0]) : null;
+  const currentProfile = Array.isArray(profiles) && profiles.length > 0
+    ? (profiles.find(p => p.name.trim() === (currentProfileName?.trim() || 'Default')) ||
+       profiles.find(p => p.name.trim() === 'Default') ||
+       profiles[0])
+    : null;
 
   const handleSearchToggle = () => setSearchActive(!searchActive);
   const handleSearchClear = () => {
