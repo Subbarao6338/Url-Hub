@@ -91,9 +91,11 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
   const cats = Object.keys(grouped).sort();
 
   const stats = {};
+  const visibleCategories = {};
   links.forEach(l => {
     if (l.is_internal) return;
     stats[l.category] = (stats[l.category] || 0) + 1;
+    visibleCategories[l.category] = categories[l.category] || 'folder';
   });
   const totalCount = Object.values(stats).reduce((a, b) => a + b, 0);
   const pinnedCount = links.filter(l => pinnedIds.includes(l.id)).length;
@@ -123,7 +125,7 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
       )}
 
       <CategoryNav
-        categories={categories}
+        categories={visibleCategories}
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
         showStats={showStats}

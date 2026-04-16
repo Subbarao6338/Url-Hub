@@ -148,17 +148,18 @@ const SettingsModal = ({
           <h2 className="settings-header">Global Settings</h2>
           <div className="settings-section">
             <h3>Appearance</h3>
+            <p className="settings-desc">Customize the look and feel of your dashboard.</p>
             <div className="pill-group">
               <button
                 className={`pill ${isDarkMode ? 'active' : ''}`}
                 onClick={() => setIsDarkMode(!isDarkMode)}
               >
                 <span className="material-icons">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
-                <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+                <span>{isDarkMode ? 'Light' : 'Dark'} Mode</span>
               </button>
               <button className={`pill ${disableGlass ? 'active' : ''}`} onClick={() => setDisableGlass(!disableGlass)}>
-                <span className="material-icons">blur_off</span>
-                <span>Solid Mode</span>
+                <span className="material-icons">{disableGlass ? 'blur_on' : 'blur_off'}</span>
+                <span>{disableGlass ? 'Enable' : 'Disable'} Glass</span>
               </button>
               <button className={`pill ${enableAurora ? 'active' : ''}`} onClick={() => setEnableAurora(!enableAurora)}>
                 <span className="material-icons">auto_awesome</span>
@@ -167,10 +168,6 @@ const SettingsModal = ({
               <button className={`pill ${reducedMotion ? 'active' : ''}`} onClick={() => setReducedMotion(!reducedMotion)}>
                 <span className="material-icons">motion_photos_off</span>
                 <span>Reduced Motion</span>
-              </button>
-              <button className={`pill ${autoFocusSearch ? 'active' : ''}`} onClick={() => setAutoFocusSearch(!autoFocusSearch)}>
-                <span className="material-icons">center_focus_strong</span>
-                <span>Auto-focus Search</span>
               </button>
             </div>
             <div className="pill-group" style={{marginTop: '15px'}}>
@@ -186,8 +183,13 @@ const SettingsModal = ({
             </div>
           </div>
           <div className="settings-section">
-            <h3>Behavior</h3>
+            <h3>Navigation</h3>
+            <p className="settings-desc">Configure how you interact with search and links.</p>
             <div className="pill-group">
+              <button className={`pill ${autoFocusSearch ? 'active' : ''}`} onClick={() => setAutoFocusSearch(!autoFocusSearch)}>
+                <span className="material-icons">center_focus_strong</span>
+                <span>Auto-focus Search</span>
+              </button>
               <button className={`pill ${openInNewTab ? 'active' : ''}`} onClick={() => setOpenInNewTab(!openInNewTab)}>
                 <span className="material-icons">open_in_new</span>
                 <span>Open in New Tab</span>
@@ -205,7 +207,16 @@ const SettingsModal = ({
                 <input type="file" accept="application/json" onChange={handleImport} style={{ display: 'none' }} />
               </label>
               <button className="pill" style={{color: '#ef4444'}} onClick={resetData}>
-                <span className="material-icons">refresh</span> Reset Dashboard
+                <span className="material-icons">refresh</span> Reset Local Data
+              </button>
+              <button className="pill" style={{color: '#ef4444'}} onClick={() => {
+                if (window.confirm("This will clear all links and categories from the database and re-run migration. Are you sure?")) {
+                  fetch('/api/debug/reset-db', { method: 'POST' })
+                    .then(res => res.ok ? alert("Database reset successfully") : alert("Failed to reset database"))
+                    .then(() => window.location.reload());
+                }
+              }}>
+                <span className="material-icons">storage</span> Reset Database
               </button>
             </div>
           </div>
@@ -216,11 +227,12 @@ const SettingsModal = ({
         <div className="tab-pane">
           <h2 className="settings-header">Bookmarks Settings</h2>
           <div className="settings-section">
-            <h3>Display</h3>
+            <h3>Layout & Visibility</h3>
+            <p className="settings-desc">Control how bookmarks are displayed in the grid.</p>
             <div className="pill-group">
               <button className={`pill ${isCompact ? 'active' : ''}`} onClick={() => setIsCompact(!isCompact)}>
                 <span className="material-icons">view_module</span>
-                <span>Compact View</span>
+                <span>Compact Mode</span>
               </button>
               <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
                 <span className="material-icons">link_off</span>
@@ -232,12 +244,12 @@ const SettingsModal = ({
               </button>
               <button className={`pill ${showStats ? 'active' : ''}`} onClick={() => setShowStats(!showStats)}>
                 <span className="material-icons">analytics</span>
-                <span>Show Counts</span>
+                <span>Show Stats</span>
               </button>
             </div>
           </div>
           <div className="settings-section">
-            <h3>Interaction</h3>
+            <h3>Management</h3>
             <div className="pill-group">
               <button className={`pill ${confirmDelete ? 'active' : ''}`} onClick={() => setConfirmDelete(!confirmDelete)}>
                 <span className="material-icons">delete_sweep</span>

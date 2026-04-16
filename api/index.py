@@ -215,7 +215,13 @@ def get_links(profile_id: Optional[int] = None):
         # Check if this is the 'Personal' profile
         profile = conn.execute("SELECT name FROM profiles WHERE id = ?", (profile_id,)).fetchone()
         if profile and profile['name'] == 'Personal':
-            links = conn.execute('SELECT * FROM links').fetchall()
+            # For Personal profile, we merge all links and de-duplicate by title and url
+            # We use MAX(is_pinned) to ensure if a link is pinned in any profile, it remains pinned
+            links = conn.execute('''
+                SELECT id, profile_id, title, url, urls, icon, optional_icon, category, is_internal, tool_id, MAX(is_pinned) as is_pinned
+                FROM links
+                GROUP BY title, url
+            ''').fetchall()
         else:
             links = conn.execute('SELECT * FROM links WHERE profile_id = ?', (profile_id,)).fetchall()
     else:
@@ -279,6 +285,26 @@ def delete_link(link_id: str):
     conn.close()
     return {"message": "Link deleted"}
 
+@app.post("/api/debug/reset-db")
+def reset_db():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM links")
+    cursor.execute("DELETE FROM categories")
+    cursor.execute("DELETE FROM projects")
+    conn.commit()
+    conn.close()
+
+    # Re-run migration
+    try:
+        from scripts.migrate import migrate
+        migrate(db_path=DB_PATH)
+    except Exception as e:
+        print(f"Re-migration failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "Database reset and re-migrated successfully"}
+
 # Categories Endpoints
 @app.get("/api/categories", response_model=List[Category])
 def get_categories(profile_id: Optional[int] = None):
@@ -288,8 +314,8 @@ def get_categories(profile_id: Optional[int] = None):
         # Check if this is the 'Personal' profile
         profile = conn.execute("SELECT name FROM profiles WHERE id = ?", (profile_id,)).fetchone()
         if profile and profile['name'] == 'Personal':
-            # For Personal profile, we want unique categories from all profiles
-            categories = conn.execute('SELECT DISTINCT name, icon, ? as profile_id FROM categories', (profile_id,)).fetchall()
+            # For Personal profile, we want unique categories from all profiles, picking one icon for each
+            categories = conn.execute('SELECT name, MIN(icon) as icon, ? as profile_id FROM categories GROUP BY name', (profile_id,)).fetchall()
         else:
             categories = conn.execute('SELECT * FROM categories WHERE profile_id = ?', (profile_id,)).fetchall()
     else:
