@@ -32,6 +32,13 @@ import UrlTool from './tools/UrlTool';
 import SecurityInfo from './tools/SecurityInfo';
 import UserScripts from './tools/UserScripts';
 import DiffViewer from './tools/DiffViewer';
+import AnomalyDetection from './tools/AnomalyDetection';
+import DataQuality from './tools/DataQuality';
+import DataAnonymizer from './tools/DataAnonymizer';
+import Observability from './tools/Observability';
+import DataPortal from './tools/DataPortal';
+import AzureIntegration from './tools/AzureIntegration';
+import SpecializedTools from './tools/SpecializedTools';
 
 const TOOLS = [
     { id: 'notes', title: 'Notes', icon: 'description', category: 'Personal', component: Notes },
@@ -66,6 +73,13 @@ const TOOLS = [
     { id: 'user-scripts', title: 'User Scripts', icon: 'add', category: 'Dev Tools', component: UserScripts },
     { id: 'markdown-preview', title: 'Markdown', icon: 'article', category: 'Dev Tools', component: MarkdownPreview },
     { id: 'diff-viewer', title: 'Diff Viewer', icon: 'difference', category: 'Dev Tools', component: DiffViewer },
+    { id: 'anomaly-detection', title: 'Anomaly Detection', icon: 'notifications_active', category: 'Graviton', component: AnomalyDetection },
+    { id: 'data-quality', title: 'Data Quality', icon: 'verified', category: 'Graviton', component: DataQuality },
+    { id: 'data-anonymizer', title: 'Data Anonymizer', icon: 'security', category: 'Graviton', component: DataAnonymizer },
+    { id: 'observability', title: 'Observability', icon: 'visibility', category: 'Graviton', component: Observability },
+    { id: 'data-portal', title: 'Data Portal', icon: 'dashboard', category: 'Graviton', component: DataPortal },
+    { id: 'azure-integration', title: 'Azure Functions', icon: 'cloud', category: 'Graviton', component: AzureIntegration },
+    { id: 'specialized-tools', title: 'Specialized Tools', icon: 'construction', category: 'Graviton', component: SpecializedTools },
 ];
 
 const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
@@ -383,6 +397,7 @@ const getCategoryIcon = (cat) => {
         'Web Tools': 'public',
         'System': 'settings_input_component',
         'Dev Tools': 'terminal',
+        'Graviton': 'insights',
     };
     return icons[cat] || 'folder';
 };
