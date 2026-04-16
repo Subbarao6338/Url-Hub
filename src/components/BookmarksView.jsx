@@ -7,7 +7,7 @@ const highlightText = (text, query) => {
   return text.replace(regex, '<mark>$1</mark>');
 };
 
-const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinnedIds, refreshTrigger, hideUrls, hideIcons, showStats, openInNewTab }) => {
+const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refreshTrigger, hideUrls, hideIcons, showStats, openInNewTab }) => {
   const [links, setLinks] = useState([]);
   const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
   const [selectedLinkForUrls, setSelectedLinkForUrls] = useState(null);
@@ -76,7 +76,7 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
     }
 
     if (!searchQuery || !searchQuery.toLowerCase().startsWith('cat:')) {
-      if (activeCategory === 'Pinned') matchesCat = pinnedIds.includes(l.id);
+      if (activeCategory === 'Pinned') matchesCat = l.is_pinned;
       else if (activeCategory !== 'All') matchesCat = l.category === activeCategory;
     }
 
@@ -98,7 +98,7 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
     visibleCategories[l.category] = categories[l.category] || 'folder';
   });
   const totalCount = Object.values(stats).reduce((a, b) => a + b, 0);
-  const pinnedCount = links.filter(l => pinnedIds.includes(l.id)).length;
+  const pinnedCount = links.filter(l => l.is_pinned).length;
 
   if (loading) return <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>Loading bookmarks...</div>;
 
@@ -161,7 +161,6 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
                   link={link}
                   idx={idx}
                   openInNewTab={openInNewTab}
-                  pinnedIds={pinnedIds}
                   onPin={onPin}
                   onEdit={onEdit}
                   onDelete={onDelete}
@@ -183,7 +182,7 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
   );
 };
 
-const BookmarkCard = ({ link, idx, openInNewTab, pinnedIds, onPin, onEdit, onDelete, handleShare, handleCopy, isCopied, onLongPress, categoryIcon, hideIcons, hideUrls, searchQuery }) => {
+const BookmarkCard = ({ link, idx, openInNewTab, onPin, onEdit, onDelete, handleShare, handleCopy, isCopied, onLongPress, categoryIcon, hideIcons, hideUrls, searchQuery }) => {
   const [pressTimer, setPressTimer] = useState(null);
   const isLongPress = React.useRef(false);
 
@@ -242,7 +241,7 @@ const BookmarkCard = ({ link, idx, openInNewTab, pinnedIds, onPin, onEdit, onDel
         </div>
       )}
       <div className="card-actions" onClick={e => e.stopPropagation()}>
-        <button className={`pin-btn ${pinnedIds.includes(link.id) ? 'active' : ''}`} onClick={() => onPin(link.id)} title={pinnedIds.includes(link.id) ? 'Unpin' : 'Pin to Top'}>
+        <button className={`pin-btn ${link.is_pinned ? 'active' : ''}`} onClick={() => onPin(link)} title={link.is_pinned ? 'Unpin' : 'Pin to Top'}>
           <span className="material-icons">push_pin</span>
         </button>
         <button onClick={() => handleShare(link)} title="Share Bookmark">

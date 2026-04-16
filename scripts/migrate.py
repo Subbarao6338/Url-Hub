@@ -66,7 +66,7 @@ def migrate(db_path=None):
                 tool_id = item.get('toolId') or item.get('tool_id')
 
                 cursor.execute('''
-                    INSERT INTO links (id, profile_id, title, url, urls, icon, optional_icon, category, is_internal, tool_id)
+                    INSERT OR IGNORE INTO links (id, profile_id, title, url, urls, icon, optional_icon, category, is_internal, tool_id)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (link_id, profile_id, title, url, urls, icon, optional_icon, category, is_internal, tool_id))
         print(f"Migrated links from {filename} to {profile_name} profile.")

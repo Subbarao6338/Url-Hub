@@ -17,7 +17,6 @@ function App() {
   const [searchActive, setSearchActive] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('hub_theme') === 'dark');
   const [accentColor, setAccentColor] = useState(localStorage.getItem('hub_accent_color') || 'indigo');
-  const [pinnedIds, setPinnedIds] = useState(JSON.parse(localStorage.getItem('hub_pinned_v1') || '[]'));
 
   useEffect(() => {
     if (searchActive) document.body.classList.add('search-active');
@@ -90,10 +89,6 @@ function App() {
   }, [accentColor]);
 
   useEffect(() => {
-    localStorage.setItem('hub_pinned_v1', JSON.stringify(pinnedIds));
-  }, [pinnedIds]);
-
-  useEffect(() => {
     localStorage.setItem('hub_current_profile', currentProfileName);
   }, [currentProfileName]);
 
@@ -142,12 +137,19 @@ function App() {
     setSearchActive(false);
   };
 
-  const togglePin = (id) => {
-    if (pinnedIds.includes(id)) {
-      setPinnedIds(pinnedIds.filter(pid => pid !== id));
-    } else {
-      setPinnedIds([...pinnedIds, id]);
-    }
+  const togglePin = (link) => {
+    const newPinnedStatus = !link.is_pinned;
+    fetch(`/api/links/${link.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_pinned: newPinnedStatus })
+    })
+    .then(res => {
+      if (res.ok) {
+        setRefreshTrigger(prev => prev + 1);
+      }
+    })
+    .catch(err => console.error("Failed to toggle pin:", err));
   };
 
   const deleteLink = (id) => {
@@ -187,7 +189,6 @@ function App() {
             <BookmarksView
               profileId={currentProfile.id}
               searchQuery={searchQuery}
-              pinnedIds={pinnedIds}
               onPin={togglePin}
               onDelete={deleteLink}
               onEdit={(link) => { setEditingLink(link); setIsBookmarkOpen(true); }}

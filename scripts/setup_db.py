@@ -64,6 +64,9 @@ def setup_db():
     cursor.execute("INSERT OR IGNORE INTO profiles (name, icon) VALUES ('Private', 'lock')")
     cursor.execute("INSERT OR IGNORE INTO profiles (name, icon) VALUES ('Personal', 'person')")
 
+    # Add unique constraint to links if it doesn't exist
+    cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_links_unique ON links(profile_id, title, url)')
+
     conn.commit()
 
     # Get profile IDs
@@ -91,7 +94,7 @@ def setup_db():
                 tool_id = item.get('toolId') or item.get('tool_id')
 
                 cursor.execute('''
-                    INSERT INTO links (id, profile_id, title, url, urls, icon, optional_icon, category, is_internal, tool_id)
+                    INSERT OR IGNORE INTO links (id, profile_id, title, url, urls, icon, optional_icon, category, is_internal, tool_id)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (link_id, profile_id, title, url, urls, icon, optional_icon, category, is_internal, tool_id))
 

@@ -107,6 +107,17 @@ def init_db():
         )
     ''')
 
+    # Deduplicate before adding unique index
+    cursor.execute('''
+        DELETE FROM links
+        WHERE id NOT IN (
+            SELECT MIN(id)
+            FROM links
+            GROUP BY profile_id, title, url
+        )
+    ''')
+    cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_links_unique ON links(profile_id, title, url)')
+
     # Insert default profiles if not exist
     cursor.execute("INSERT OR IGNORE INTO profiles (name, icon) VALUES ('Default', 'home')")
     cursor.execute("INSERT OR IGNORE INTO profiles (name, icon) VALUES ('Private', 'lock')")
@@ -202,7 +213,7 @@ def hello():
 @app.get("/api/profiles", response_model=List[Profile])
 def get_profiles():
     conn = get_db_connection()
-    profiles = conn.execute('SELECT * FROM profiles').fetchall()
+    profiles = conn.execute('SELECT * FROM profiles ORDER BY id ASC').fetchall()
     conn.close()
     return [dict(p) for p in profiles]
 
@@ -221,11 +232,12 @@ def get_links(profile_id: Optional[int] = None):
                 SELECT id, profile_id, title, url, urls, icon, optional_icon, category, is_internal, tool_id, MAX(is_pinned) as is_pinned
                 FROM links
                 GROUP BY title, url
+                ORDER BY is_pinned DESC, title COLLATE NOCASE ASC
             ''').fetchall()
         else:
-            links = conn.execute('SELECT * FROM links WHERE profile_id = ?', (profile_id,)).fetchall()
+            links = conn.execute('SELECT * FROM links WHERE profile_id = ? ORDER BY is_pinned DESC, title COLLATE NOCASE ASC', (profile_id,)).fetchall()
     else:
-        links = conn.execute('SELECT * FROM links').fetchall()
+        links = conn.execute('SELECT * FROM links ORDER BY is_pinned DESC, title COLLATE NOCASE ASC').fetchall()
     conn.close()
 
     res = []
@@ -315,11 +327,11 @@ def get_categories(profile_id: Optional[int] = None):
         profile = conn.execute("SELECT name FROM profiles WHERE id = ?", (profile_id,)).fetchone()
         if profile and profile['name'] == 'Personal':
             # For Personal profile, we want unique categories from all profiles, picking one icon for each
-            categories = conn.execute('SELECT name, MIN(icon) as icon, ? as profile_id FROM categories GROUP BY name', (profile_id,)).fetchall()
+            categories = conn.execute('SELECT name, MIN(icon) as icon, ? as profile_id FROM categories GROUP BY name ORDER BY name ASC', (profile_id,)).fetchall()
         else:
-            categories = conn.execute('SELECT * FROM categories WHERE profile_id = ?', (profile_id,)).fetchall()
+            categories = conn.execute('SELECT * FROM categories WHERE profile_id = ? ORDER BY name ASC', (profile_id,)).fetchall()
     else:
-        categories = conn.execute('SELECT * FROM categories').fetchall()
+        categories = conn.execute('SELECT * FROM categories ORDER BY name ASC').fetchall()
     conn.close()
     return [dict(c) for c in categories]
 
