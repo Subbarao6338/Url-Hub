@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Base64Converter = () => {
+const Base64Converter = ({ onResultChange }) => {
   const [input, setInput] = useState('');
+
+  useEffect(() => {
+    if (input) {
+      onResultChange({
+        text: input,
+        filename: 'base64_result.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [input, onResultChange]);
 
   const encode = () => {
     try { setInput(btoa(input)); } catch(e) { alert('Error encoding'); }

@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const UserScripts = () => {
+const UserScripts = ({ onResultChange }) => {
   const [script, setScript] = useState("console.log('Hello from Hub');");
+
+  useEffect(() => {
+    if (script) {
+      onResultChange({
+        text: script,
+        filename: 'script.js'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [script, onResultChange]);
 
   const runScript = () => {
     try {

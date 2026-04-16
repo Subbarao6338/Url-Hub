@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const ColorPicker = () => {
+const ColorPicker = ({ onResultChange }) => {
   const [color, setColor] = useState('#6366f1');
+
+  useEffect(() => {
+    onResultChange({
+      text: `HEX: ${color.toUpperCase()}\nRGB: ${getRgb(color)}`,
+      filename: 'color.txt'
+    });
+  }, [color, onResultChange]);
 
   const updateColor = (hex) => {
     setColor(hex);

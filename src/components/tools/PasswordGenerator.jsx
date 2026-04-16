@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const PasswordGenerator = () => {
+const PasswordGenerator = ({ onResultChange }) => {
   const [length, setLength] = useState(16);
   const [useUpper, setUseUpper] = useState(true);
   const [useNumbers, setUseNumbers] = useState(true);
   const [useSymbols, setUseSymbols] = useState(true);
   const [password, setPassword] = useState('');
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (password) {
+      onResultChange({
+        text: password,
+        filename: 'password.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [password, onResultChange]);
 
   const generatePassword = () => {
     let charset = "abcdefghijklmnopqrstuvwxyz";

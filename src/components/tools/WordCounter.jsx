@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const WordCounter = () => {
+const WordCounter = ({ onResultChange }) => {
   const [input, setInput] = useState('');
+
+  useEffect(() => {
+    const stats = getStats();
+    onResultChange({
+      text: `Words: ${stats.words}\nCharacters: ${stats.chars}\nSentences: ${stats.sent}\nParagraphs: ${stats.para}\n\nContent:\n${input}`,
+      filename: 'word_count.txt'
+    });
+  }, [input, onResultChange]);
 
   const countWords = (text) => {
     setInput(text);

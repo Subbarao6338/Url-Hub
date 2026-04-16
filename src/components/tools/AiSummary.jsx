@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const AiSummary = () => {
+const AiSummary = ({ onResultChange }) => {
   const [input, setInput] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (result) {
+      // Remove HTML tags for plain text result
+      const plainText = result.replace(/<[^>]*>/g, '').trim();
+      onResultChange({
+        text: plainText,
+        filename: 'summary.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [result, onResultChange]);
 
   const mockAiSummary = () => {
     if (!input.trim()) return;

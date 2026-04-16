@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const PomodoroTimer = () => {
+const PomodoroTimer = ({ onResultChange }) => {
   const [timeLeft, setTimeLeft] = useState(25 * 60);
+
+  useEffect(() => {
+    onResultChange({
+      text: `Pomodoro Status: ${modes[mode].label} - ${formatTime(timeLeft)}`,
+      filename: 'pomodoro_status.txt'
+    });
+  }, [timeLeft, mode, onResultChange]);
   const [isActive, setIsActive] = useState(false);
   const [mode, setMode] = useState('work'); // 'work', 'shortBreak', 'longBreak'
   const timerRef = useRef(null);

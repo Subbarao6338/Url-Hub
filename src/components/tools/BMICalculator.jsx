@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const BMICalculator = () => {
+const BMICalculator = ({ onResultChange }) => {
   const [weight, setWeight] = useState('');
   const [height, setHeight] = useState('');
   const [result, setResult] = useState(null);
+
+  useEffect(() => {
+    if (result) {
+      onResultChange({
+        text: `BMI Result: ${result.bmi} (${result.label})\nWeight: ${weight} kg\nHeight: ${height} cm`,
+        filename: 'bmi_result.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [result, onResultChange, weight, height]);
 
   const calculateBmi = () => {
     const w = parseFloat(weight);

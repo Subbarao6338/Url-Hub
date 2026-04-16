@@ -70,6 +70,8 @@ const TOOLS = [
 
 const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
   const [activeToolId, setActiveToolId] = useState(null);
+  const [currentResult, setCurrentResult] = useState(null);
+  const [copySuccess, setCopySuccess] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
   const [collapsedCategories, setCollapsedCategories] = useState({});
 
@@ -108,6 +110,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
 
   const openTool = (id) => {
     setActiveToolId(id);
+    setCurrentResult(null);
     const newRecents = [id, ...recentTools.filter(t => t !== id)].slice(0, 4);
     setRecentTools(newRecents);
     localStorage.setItem('hub_recent_tools', JSON.stringify(newRecents));
@@ -170,21 +173,57 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
     return text.replace(regex, '<mark>$1</mark>');
   };
 
+  const handleCopyResult = () => {
+    if (!currentResult?.text) return;
+    navigator.clipboard.writeText(currentResult.text).then(() => {
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    });
+  };
+
+  const handleDownloadResult = () => {
+    if (!currentResult) return;
+    const { text, blob, filename } = currentResult;
+    const finalBlob = blob || new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(finalBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'result.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   if (activeToolId) {
     const tool = TOOLS.find(t => t.id === activeToolId);
     return (
       <div className="tool-view">
         <div className="tool-view-header">
-          <button className="icon-btn" onClick={() => setActiveToolId(null)} title="Back to Toolbox">
-            <span className="material-icons">arrow_back</span>
-          </button>
           <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-            <span className="material-icons" style={{fontSize: '2rem', color: 'var(--primary)'}}>{tool.icon}</span>
-            <h2 style={{margin: 0, fontSize: '1.75rem'}}>{tool.title}</h2>
+            <button className="icon-btn" onClick={() => setActiveToolId(null)} title="Back to Toolbox">
+              <span className="material-icons">arrow_back</span>
+            </button>
+            <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+              <span className="material-icons" style={{fontSize: '2rem', color: 'var(--primary)'}}>{tool.icon}</span>
+              <h2 style={{margin: 0, fontSize: '1.75rem'}}>{tool.title}</h2>
+            </div>
+          </div>
+          <div style={{display: 'flex', gap: '10px'}}>
+            {currentResult?.text && (
+              <button className={`icon-btn ${copySuccess ? 'copy-success' : ''}`} onClick={handleCopyResult} title="Copy Result">
+                <span className="material-icons">{copySuccess ? 'check' : 'content_copy'}</span>
+              </button>
+            )}
+            {currentResult && (
+              <button className="icon-btn" onClick={handleDownloadResult} title="Download Result">
+                <span className="material-icons">download</span>
+              </button>
+            )}
           </div>
         </div>
         <div className="tool-container-inner">
-          {tool.component ? <tool.component /> : <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>This tool is under development.</div>}
+          {tool.component ? <tool.component onResultChange={setCurrentResult} /> : <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>This tool is under development.</div>}
         </div>
       </div>
     );

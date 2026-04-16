@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const MarkdownPreview = () => {
+const MarkdownPreview = ({ onResultChange }) => {
   const [input, setInput] = useState('# Markdown Title\n\n**Bold** and *italic* text.');
   const [html, setHtml] = useState('');
 
@@ -9,7 +9,12 @@ const MarkdownPreview = () => {
                  .replace(/^## (.*$)/gim, '<h2>$1</h2>')
                  .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
                  .replace(/\*(.*)\*/gim, '<i>$1</i>'));
-  }, [input]);
+    onResultChange({
+      text: input,
+      blob: new Blob([html], { type: 'text/html' }),
+      filename: 'preview.html'
+    });
+  }, [input, html, onResultChange]);
 
   return (
     <div className="tool-form" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>

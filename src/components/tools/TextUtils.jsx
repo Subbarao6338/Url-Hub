@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const TextUtils = () => {
+const TextUtils = ({ onResultChange }) => {
   const [input, setInput] = useState('');
+
+  useEffect(() => {
+    if (input) {
+      onResultChange({
+        text: input,
+        filename: 'text_result.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [input, onResultChange]);
 
   const modifyText = (type) => {
     let val = input;
@@ -22,7 +33,6 @@ const TextUtils = () => {
         <button className="pill" onClick={() => modifyText('cap')}>Capitalize</button>
         <button className="pill" onClick={() => modifyText('trim')}>Trim</button>
         <button className="pill" onClick={() => modifyText('clean')}>Clean Space</button>
-        <button className="pill" onClick={() => navigator.clipboard.writeText(input)}>Copy</button>
       </div>
     </div>
   );

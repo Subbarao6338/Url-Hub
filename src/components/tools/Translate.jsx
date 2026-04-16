@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Translate = () => {
+const Translate = ({ onResultChange }) => {
   const [input, setInput] = useState('');
   const [to, setTo] = useState('te');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (result) {
+      onResultChange({
+        text: result,
+        filename: 'translation.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [result, onResultChange]);
 
   const mockTranslate = () => {
     if (!input.trim()) return;

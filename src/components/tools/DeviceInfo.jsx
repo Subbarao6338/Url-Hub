@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const DeviceInfo = () => {
+const DeviceInfo = ({ onResultChange }) => {
   const info = [
     { l: 'Platform', v: navigator.platform },
     { l: 'Language', v: navigator.language },
@@ -8,6 +8,14 @@ const DeviceInfo = () => {
     { l: 'Pixel Ratio', v: window.devicePixelRatio },
     { l: 'Cookies Enabled', v: navigator.cookieEnabled ? 'Yes' : 'No' }
   ];
+
+  useEffect(() => {
+    onResultChange({
+      text: info.map(i => `${i.l}: ${i.v}`).join('\n') + `\nUser Agent: ${navigator.userAgent}`,
+      filename: 'device_info.txt'
+    });
+  }, [onResultChange]);
+
   return (
     <div className="tool-form">
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>

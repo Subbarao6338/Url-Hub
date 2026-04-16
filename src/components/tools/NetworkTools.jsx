@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const NetworkTools = () => {
+const NetworkTools = ({ onResultChange }) => {
   const isOnline = navigator.onLine;
+
+  useEffect(() => {
+    onResultChange({
+      text: `Status: ${isOnline ? 'ONLINE' : 'OFFLINE'}\nPlatform: ${navigator.platform}\nMax Touch Points: ${navigator.maxTouchPoints}`,
+      filename: 'network_info.txt'
+    });
+  }, [isOnline, onResultChange]);
   return (
     <div className="tool-form">
       <div className="tool-result" style={{ textAlign: 'center', padding: '2rem' }}>

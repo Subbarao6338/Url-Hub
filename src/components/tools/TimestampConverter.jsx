@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-const TimestampConverter = () => {
+const TimestampConverter = ({ onResultChange }) => {
   const [unix, setUnix] = useState(Math.floor(Date.now() / 1000));
+
+  useEffect(() => {
+    onResultChange({
+      text: `Unix: ${unix}\nLocal: ${local}\nISO: ${iso}`,
+      filename: 'timestamp.txt'
+    });
+  }, [unix, local, iso, onResultChange]);
   const [local, setLocal] = useState('');
   const [iso, setIso] = useState('');
 

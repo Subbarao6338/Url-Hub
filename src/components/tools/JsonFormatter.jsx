@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const JsonFormatter = () => {
+const JsonFormatter = ({ onResultChange }) => {
   const [input, setInput] = useState('');
+
+  useEffect(() => {
+    if (input) {
+      onResultChange({
+        text: input,
+        filename: 'formatted.json'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [input, onResultChange]);
 
   const format = () => {
     try { setInput(JSON.stringify(JSON.parse(input), null, 4)); } catch(e) { alert("Invalid JSON"); }

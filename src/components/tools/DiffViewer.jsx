@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const DiffViewer = () => {
+const DiffViewer = ({ onResultChange }) => {
   const [s1, setS1] = useState('');
   const [s2, setS2] = useState('');
   const [result, setResult] = useState(null);
@@ -8,6 +8,17 @@ const DiffViewer = () => {
   const runDiff = () => {
     setResult(s1 === s2 ? "Texts are identical." : "Texts are different.");
   };
+
+  useEffect(() => {
+    if (result) {
+      onResultChange({
+        text: `Result: ${result}\n\n--- TEXT 1 ---\n${s1}\n\n--- TEXT 2 ---\n${s2}`,
+        filename: 'diff_result.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [result, s1, s2, onResultChange]);
 
   return (
     <div className="tool-form">

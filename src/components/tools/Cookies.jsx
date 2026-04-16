@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Cookies = () => {
+const Cookies = ({ onResultChange }) => {
   const [cookies, setCookies] = useState(document.cookie.split(';').filter(Boolean));
+
+  useEffect(() => {
+    onResultChange({
+      text: cookies.join('\n'),
+      filename: 'cookies.txt'
+    });
+  }, [cookies, onResultChange]);
 
   const clearCookies = () => {
     document.cookie.split(';').forEach(c => {

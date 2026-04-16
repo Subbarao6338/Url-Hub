@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const OmniHub = () => {
+const OmniHub = ({ onResultChange }) => {
   const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    if (query) {
+      onResultChange({
+        text: `Search Query: ${query}`,
+        filename: 'search_query.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [query, onResultChange]);
   const engines = {
     'google': 'https://google.com/search?q=',
     'duck': 'https://duckduckgo.com/?q=',

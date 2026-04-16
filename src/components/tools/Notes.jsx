@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
-const Notes = () => {
+const Notes = ({ onResultChange }) => {
   const [notes, setNotes] = useState(localStorage.getItem('hub_tool_notes') || '');
 
   useEffect(() => {
     localStorage.setItem('hub_tool_notes', notes);
-  }, [notes]);
+    if (notes) {
+      onResultChange({
+        text: notes,
+        filename: 'notes.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [notes, onResultChange]);
 
   return (
     <div className="tool-form" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>

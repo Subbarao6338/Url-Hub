@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
-const SecurityInfo = () => {
+const SecurityInfo = ({ onResultChange }) => {
   const [camera, setCamera] = useState('Checking...');
 
   useEffect(() => {
     navigator.permissions?.query({name:'camera'}).then(res => setCamera(res.state.toUpperCase()));
   }, []);
+
+  useEffect(() => {
+    onResultChange({
+      text: `Secure Context: ${window.isSecureContext ? 'YES' : 'NO'}\nHTTPS: ${window.location.protocol === 'https:' ? 'YES' : 'NO'}\nCamera Permission: ${camera}`,
+      filename: 'security_info.txt'
+    });
+  }, [camera, onResultChange]);
 
   return (
     <div className="tool-form">

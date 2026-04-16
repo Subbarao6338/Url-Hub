@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const CurrencyConverter = () => {
+const CurrencyConverter = ({ onResultChange }) => {
   const [amount, setAmount] = useState(1);
   const [fromCurrency, setFromCurrency] = useState('USD');
   const [toCurrency, setToCurrency] = useState('EUR');
@@ -26,6 +26,13 @@ const CurrencyConverter = () => {
   const handleRateChange = (currency, value) => {
     setRates(prev => ({ ...prev, [currency]: parseFloat(value) || 0 }));
   };
+
+  useEffect(() => {
+    onResultChange({
+      text: `${amount} ${fromCurrency} = ${convert()} ${toCurrency}`,
+      filename: 'currency_result.txt'
+    });
+  }, [amount, fromCurrency, toCurrency, rates, onResultChange]);
 
   return (
     <div className="tool-form">

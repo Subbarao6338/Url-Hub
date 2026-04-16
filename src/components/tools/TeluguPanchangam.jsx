@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const TeluguPanchangam = () => {
+const TeluguPanchangam = ({ onResultChange }) => {
   const now = new Date();
   const [date, setDate] = useState(now.toISOString().split('T')[0]);
   const [time, setTime] = useState(now.toTimeString().split(' ')[0].substring(0, 5));
@@ -67,6 +67,17 @@ const TeluguPanchangam = () => {
       vara: ["Sunday (Aditya)", "Monday (Somu)", "Tuesday (Mangala)", "Wednesday (Budha)", "Thursday (Guru)", "Friday (Sukra)", "Saturday (Sani)"][(Math.floor(jdSelectedLocal + 0.5) + 1) % 7]
     });
   };
+
+  useEffect(() => {
+    if (results) {
+      onResultChange({
+        text: `Panchangam for ${date} ${time}:\nTithi: ${results.tithi}\nNakshatra: ${results.nakshatra} (Pada ${results.pada})\nRasi: ${results.rasi}\nVara: ${results.vara}`,
+        filename: `panchangam_${date}.txt`
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [results, date, time, onResultChange]);
 
   return (
     <div className="tool-form">

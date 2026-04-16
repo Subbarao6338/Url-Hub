@@ -1,7 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const Stopwatch = () => {
+const Stopwatch = ({ onResultChange }) => {
   const [time, setTime] = useState(0);
+
+  useEffect(() => {
+    const { h, m, s, ms } = formatTime(time);
+    let lapText = laps.map((lap, i) => {
+      const lt = formatTime(lap.time);
+      return `Lap ${laps.length - i}: ${lt.h}:${lt.m}:${lt.s}.${lt.ms}`;
+    }).join('\n');
+
+    onResultChange({
+      text: `Current Time: ${h}:${m}:${s}.${ms}\n\nLaps:\n${lapText}`,
+      filename: 'stopwatch_result.txt'
+    });
+  }, [time, laps, onResultChange]);
   const [isActive, setIsActive] = useState(false);
   const [laps, setLaps] = useState([]);
   const intervalRef = useRef(null);

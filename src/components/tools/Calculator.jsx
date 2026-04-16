@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const Calculator = () => {
+const Calculator = ({ onResultChange }) => {
   const [display, setDisplay] = useState('0');
   const [expr, setExpr] = useState('');
+
+  useEffect(() => {
+    if (display !== '0' && display !== 'Error') {
+      onResultChange({
+        text: display,
+        filename: 'calculation.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [display, onResultChange]);
 
   const handleInput = (val) => {
     if (val === 'C') {

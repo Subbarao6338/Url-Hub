@@ -1,9 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const QrGen = () => {
+const QrGen = ({ onResultChange }) => {
   const [input, setInput] = useState('');
 
   const qrUrl = input ? `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(input)}` : null;
+
+  useEffect(() => {
+    if (qrUrl) {
+      fetch(qrUrl)
+        .then(res => res.blob())
+        .then(blob => {
+          onResultChange({
+            text: input,
+            blob: blob,
+            filename: 'qrcode.png'
+          });
+        });
+    } else {
+      onResultChange(null);
+    }
+  }, [qrUrl, input, onResultChange]);
 
   return (
     <div className="tool-form">

@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const AgeCalculator = () => {
+const AgeCalculator = ({ onResultChange }) => {
   const [dob, setDob] = useState('');
   const [result, setResult] = useState(null);
+
+  useEffect(() => {
+    if (result) {
+      onResultChange({
+        text: `Age: ${result.years} years, ${result.months} months, ${result.days} days`,
+        filename: 'age_result.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [result, onResultChange]);
 
   const calculateAge = (dateStr) => {
     setDob(dateStr);

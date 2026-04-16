@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const UnitConverter = () => {
+const UnitConverter = ({ onResultChange }) => {
   const [value, setValue] = useState(1);
   const [fromUnit, setFromUnit] = useState('km');
   const [toUnit, setToUnit] = useState('m');
@@ -24,6 +24,13 @@ const UnitConverter = () => {
     }
     setResult(typeof res === 'number' ? parseFloat(res.toFixed(4)) : res);
   };
+
+  useEffect(() => {
+    onResultChange({
+      text: `${value} ${fromUnit} = ${result} ${toUnit}`,
+      filename: 'unit_conversion.txt'
+    });
+  }, [value, fromUnit, toUnit, result, onResultChange]);
 
   return (
     <div className="tool-form">

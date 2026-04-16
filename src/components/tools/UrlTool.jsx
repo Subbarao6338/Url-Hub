@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const UrlTool = () => {
+const UrlTool = ({ onResultChange }) => {
   const [urlInput, setUrlInput] = useState(window.location.href);
   const [result, setResult] = useState(null);
+
+  useEffect(() => {
+    if (result) {
+      const text = typeof result === 'string' ? result : `Protocol: ${result.protocol}\nHostname: ${result.hostname}\nPath: ${result.pathname}\nSearch: ${result.search}`;
+      onResultChange({
+        text: text,
+        filename: 'url_info.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [result, onResultChange]);
 
   const parseUrl = () => {
     try {

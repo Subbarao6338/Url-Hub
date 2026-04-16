@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const WordRankCalculator = () => {
+const WordRankCalculator = ({ onResultChange }) => {
   const [word, setWord] = useState('');
   const [result, setResult] = useState(null);
+
+  useEffect(() => {
+    if (result) {
+      onResultChange({
+        text: `Word: ${word.toUpperCase()}\nRank: ${result}`,
+        filename: 'word_rank.txt'
+      });
+    } else {
+      onResultChange(null);
+    }
+  }, [result, word, onResultChange]);
 
   const factorial = (n) => {
     let res = 1n;
