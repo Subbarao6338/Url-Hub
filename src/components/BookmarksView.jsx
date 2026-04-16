@@ -34,19 +34,24 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!profileId) return;
     setLoading(true);
     Promise.all([
       fetch(`/api/links?profile_id=${profileId}`).then(res => res.json()),
       fetch(`/api/categories?profile_id=${profileId}`).then(res => res.json())
     ]).then(([linksData, catsData]) => {
-      setLinks(linksData);
+      setLinks(Array.isArray(linksData) ? linksData : []);
       const catsMap = {};
-      catsData.forEach(c => catsMap[c.name] = c.icon);
+      if (Array.isArray(catsData)) {
+        catsData.forEach(c => catsMap[c.name] = c.icon);
+      }
       setCategories(catsMap);
       setLoading(false);
     }).catch(err => {
       console.error("Failed to fetch bookmarks:", err);
       setLoading(false);
+      setLinks([]);
+      setCategories({});
     });
   }, [profileId, refreshTrigger]);
 

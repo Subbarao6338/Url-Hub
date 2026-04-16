@@ -221,6 +221,7 @@ body.no-aurora::after {
   z-index: 1500;
   overflow: visible;
   align-items: stretch;
+  justify-content: center;
 }
 
 .tab-group {
@@ -273,11 +274,9 @@ body.no-aurora::after {
 }
 
 #group-bookmarks {
-  flex: 1;
 }
 
 #group-toolbox {
-  flex: 1;
 }
 
 .tab-item.active .breadcrumb-nav {

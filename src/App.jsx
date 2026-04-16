@@ -12,7 +12,7 @@ import BookmarkModal from './components/BookmarkModal';
 function App() {
   const [currentProfileName, setCurrentProfileName] = useState(localStorage.getItem('hub_current_profile') || localStorage.getItem('hub_startup_profile') || 'Default');
   const [profiles, setProfiles] = useState([]);
-  const [currentTab, setCurrentTab] = useState('bookmarks');
+  const [currentTab, setCurrentTab] = useState('toolbox');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActive, setSearchActive] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('hub_theme') === 'dark');
@@ -168,13 +168,13 @@ function App() {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           onSearchClear={handleSearchClear}
-          onLogoLongPress={() => setIsProfileOpen(true)}
         />
 
         <TabBar
           currentTab={currentTab}
           setTab={setCurrentTab}
           onAddClick={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
+          onBookmarksLongPress={() => setIsProfileOpen(true)}
         />
 
         <div id="content" className={`tools-container ${isCompact ? 'compact' : ''}`}>
@@ -271,14 +271,6 @@ function App() {
         />
       )}
 
-      <button
-        className="pill"
-        style={{position: 'fixed', bottom: '20px', left: '20px', zIndex: 1000}}
-        onClick={() => setIsProfileOpen(true)}
-      >
-        <span className="material-icons">person</span> Switch Profile
-      </button>
-      
       <Analytics />
     </div>
   );

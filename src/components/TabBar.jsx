@@ -1,6 +1,33 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 
-const TabBar = ({ currentTab, setTab, onAddClick }) => {
+const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress }) => {
+  const [pressTimer, setPressTimer] = useState(null);
+  const isLongPress = useRef(false);
+
+  const startPress = () => {
+    isLongPress.current = false;
+    const timer = setTimeout(() => {
+      isLongPress.current = true;
+      if (onBookmarksLongPress) onBookmarksLongPress();
+    }, 500);
+    setPressTimer(timer);
+  };
+
+  const cancelPress = () => {
+    if (pressTimer) {
+      clearTimeout(pressTimer);
+      setPressTimer(null);
+    }
+  };
+
+  const handleBookmarksClick = () => {
+    if (isLongPress.current) {
+      isLongPress.current = false;
+      return;
+    }
+    setTab('bookmarks');
+  };
+
   return (
     <nav className="tab-bar">
       <div className="tab-group" id="group-toolbox">
@@ -18,7 +45,13 @@ const TabBar = ({ currentTab, setTab, onAddClick }) => {
         <div
           id="tab-bookmarks"
           className={`tab-item ${currentTab === 'bookmarks' ? 'active' : ''}`}
-          onClick={() => setTab('bookmarks')}
+          onClick={handleBookmarksClick}
+          onMouseDown={startPress}
+          onMouseUp={cancelPress}
+          onMouseLeave={cancelPress}
+          onTouchStart={startPress}
+          onTouchEnd={cancelPress}
+          onContextMenu={(e) => e.preventDefault()}
           title="Bookmarks"
         >
           <span className="material-icons">bookmarks</span>
