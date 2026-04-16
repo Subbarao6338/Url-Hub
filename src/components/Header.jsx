@@ -1,11 +1,36 @@
 import React from 'react';
 
-const Header = ({ currentProfile, profiles, setView, onSettingsClick, onSearchToggle, searchActive, searchQuery, onSearchChange, onSearchClear }) => {
+const Header = ({ currentProfile, profiles, setView, onSettingsClick, onSearchToggle, searchActive, searchQuery, onSearchChange, onSearchClear, onLogoLongPress }) => {
   const profile = profiles.find(p => p.name === currentProfile) || { icon: 'inbox' };
+
+  const [longPressTimer, setLongPressTimer] = React.useState(null);
+
+  const startLongPress = () => {
+    const timer = setTimeout(() => {
+      onLogoLongPress();
+    }, 500);
+    setLongPressTimer(timer);
+  };
+
+  const cancelLongPress = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  };
 
   return (
     <header className="top-bar">
-      <div className="logo-container" onClick={() => setView('bookmarks')}>
+      <div
+        className="logo-container"
+        onClick={() => setView('bookmarks')}
+        onMouseDown={startLongPress}
+        onMouseUp={cancelLongPress}
+        onMouseLeave={cancelLongPress}
+        onTouchStart={startLongPress}
+        onTouchEnd={cancelLongPress}
+        onContextMenu={(e) => e.preventDefault()}
+      >
         <span className="material-icons app-logo">
           {currentProfile === 'Default' ? 'inbox' : profile.icon}
         </span>

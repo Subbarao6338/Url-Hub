@@ -1,11 +1,122 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const markdownToHTML = (markdown) => {
+  if (!markdown) return '';
+  const lines = markdown.split('\n');
+  let html = '';
+  let inCodeBlock = false;
+  let codeContent = '';
+  let inList = false;
+
+  for (let line of lines) {
+    const trimmedLine = line.trim();
+
+    if (trimmedLine.startsWith('```')) {
+      if (inCodeBlock) {
+        html += `<pre><code>${codeContent.trim()}</code></pre>`;
+        codeContent = '';
+        inCodeBlock = false;
+      } else {
+        inCodeBlock = true;
+      }
+      continue;
+    }
+
+    if (inCodeBlock) {
+      codeContent += line + '\n';
+      continue;
+    }
+
+    if (trimmedLine.startsWith('# ')) {
+      if (inList) { html += '</ul>'; inList = false; }
+      html += `<h1>${trimmedLine.substring(2)}</h1>`;
+    } else if (trimmedLine.startsWith('## ')) {
+      if (inList) { html += '</ul>'; inList = false; }
+      html += `<h2>${trimmedLine.substring(3)}</h2>`;
+    } else if (trimmedLine.startsWith('### ')) {
+      if (inList) { html += '</ul>'; inList = false; }
+      html += `<h3>${trimmedLine.substring(4)}</h3>`;
+    } else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
+      if (!inList) { html += '<ul>'; inList = true; }
+      let parsedLine = trimmedLine.substring(2)
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/!\[(.*?)\]\((.*?)\)/g, "<img alt='$1' src='$2' />")
+        .replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' target='_blank'>$1</a>");
+      html += `<li>${parsedLine}</li>`;
+    } else if (trimmedLine === '') {
+      if (inList) { html += '</ul>'; inList = false; }
+      html += '<br/>';
+    } else {
+      if (inList) { html += '</ul>'; inList = false; }
+      let parsedLine = line
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/!\[(.*?)\]\((.*?)\)/g, "<img alt='$1' src='$2' />")
+        .replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' target='_blank'>$1</a>");
+      html += `<p>${parsedLine}</p>`;
+    }
+  }
+  if (inList) html += '</ul>';
+  return html;
+};
 
 const SettingsModal = ({
   isDarkMode, setIsDarkMode,
   accentColor, setAccentColor,
+  isCompact, setIsCompact,
+  hideUrls, setHideUrls,
+  hideIcons, setHideIcons,
+  showStats, setShowStats,
+  autoFocusSearch, setAutoFocusSearch,
+  openInNewTab, setOpenInNewTab,
+  openProjectsInternally, setOpenProjectsInternally,
+  disableGlass, setDisableGlass,
+  enableAurora, setEnableAurora,
+  reducedMotion, setReducedMotion,
+  confirmDelete, setConfirmDelete,
+  groupToolbox, setGroupToolbox,
   onClose,
   resetData
 }) => {
+  const handleExport = () => {
+    const data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key.startsWith('hub_')) {
+        data[key] = localStorage.getItem(key);
+      }
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `hub_backup_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+  };
+
+  const handleImport = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = JSON.parse(event.target.result);
+        if (window.confirm("Importing will overwrite existing settings. Continue?")) {
+          Object.keys(json).forEach(key => {
+            if (key.startsWith('hub_')) {
+              localStorage.setItem(key, json[key]);
+            }
+          });
+          window.location.reload();
+        }
+      } catch (err) {
+        alert("Invalid backup file.");
+      }
+    };
+    reader.readAsText(file);
+  };
   const [activeTab, setActiveTab] = useState('general');
 
   const colors = [
@@ -36,6 +147,38 @@ const SettingsModal = ({
                 <span className="material-icons">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
                 <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
               </button>
+              <button className={`pill ${isCompact ? 'active' : ''}`} onClick={() => setIsCompact(!isCompact)}>
+                <span className="material-icons">view_module</span>
+                <span>Compact View</span>
+              </button>
+              <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
+                <span className="material-icons">link_off</span>
+                <span>Hide URLs</span>
+              </button>
+              <button className={`pill ${hideIcons ? 'active' : ''}`} onClick={() => setHideIcons(!hideIcons)}>
+                <span className="material-icons">hide_image</span>
+                <span>Hide Icons</span>
+              </button>
+              <button className={`pill ${showStats ? 'active' : ''}`} onClick={() => setShowStats(!showStats)}>
+                <span className="material-icons">analytics</span>
+                <span>Show Counts</span>
+              </button>
+              <button className={`pill ${autoFocusSearch ? 'active' : ''}`} onClick={() => setAutoFocusSearch(!autoFocusSearch)}>
+                <span className="material-icons">center_focus_strong</span>
+                <span>Auto-focus Search</span>
+              </button>
+              <button className={`pill ${disableGlass ? 'active' : ''}`} onClick={() => setDisableGlass(!disableGlass)}>
+                <span className="material-icons">blur_off</span>
+                <span>Solid Mode</span>
+              </button>
+              <button className={`pill ${enableAurora ? 'active' : ''}`} onClick={() => setEnableAurora(!enableAurora)}>
+                <span className="material-icons">auto_awesome</span>
+                <span>Aurora BG</span>
+              </button>
+              <button className={`pill ${reducedMotion ? 'active' : ''}`} onClick={() => setReducedMotion(!reducedMotion)}>
+                <span className="material-icons">motion_photos_off</span>
+                <span>Reduced Motion</span>
+              </button>
             </div>
             <div className="pill-group" style={{marginTop: '15px'}}>
               {colors.map(color => (
@@ -50,10 +193,38 @@ const SettingsModal = ({
             </div>
           </div>
           <div className="settings-section">
-            <h3>Data</h3>
+            <h3>Behavior</h3>
             <div className="pill-group">
+              <button className={`pill ${openInNewTab ? 'active' : ''}`} onClick={() => setOpenInNewTab(!openInNewTab)}>
+                <span className="material-icons">open_in_new</span>
+                <span>Open in New Tab</span>
+              </button>
+              <button className={`pill ${openProjectsInternally ? 'active' : ''}`} onClick={() => setOpenProjectsInternally(!openProjectsInternally)}>
+                <span className="material-icons">tab</span>
+                <span>Open Projects Internally</span>
+              </button>
+              <button className={`pill ${confirmDelete ? 'active' : ''}`} onClick={() => setConfirmDelete(!confirmDelete)}>
+                <span className="material-icons">delete_sweep</span>
+                <span>Confirm Deletion</span>
+              </button>
+              <button className={`pill ${groupToolbox ? 'active' : ''}`} onClick={() => setGroupToolbox(!groupToolbox)}>
+                <span className="material-icons">reorder</span>
+                <span>Group Toolbox</span>
+              </button>
+            </div>
+          </div>
+          <div className="settings-section">
+            <h3>Data Management</h3>
+            <div className="pill-group">
+              <button className="pill" onClick={handleExport}>
+                <span className="material-icons">download</span> Export Backup
+              </button>
+              <label className="pill" style={{ cursor: 'pointer' }}>
+                <span className="material-icons">upload</span> Import Backup
+                <input type="file" accept="application/json" onChange={handleImport} style={{ display: 'none' }} />
+              </label>
               <button className="pill" style={{color: '#ef4444'}} onClick={resetData}>
-                <span className="material-icons">refresh</span> Reset Bookmarks
+                <span className="material-icons">refresh</span> Reset Dashboard
               </button>
             </div>
           </div>
@@ -61,17 +232,28 @@ const SettingsModal = ({
       )}
 
       {activeTab === 'about' && (
-        <div className="tab-pane">
-          <div className="about-content">
-            <h1>N Box</h1>
-            <p>A modern dashboard powered by React and FastAPI.</p>
-          </div>
-        </div>
+        <AboutTab />
       )}
 
       <div className="form-actions">
         <button type="button" onClick={onClose}>Close</button>
       </div>
+    </div>
+  );
+};
+
+const AboutTab = () => {
+  const [content, setContent] = useState('Loading...');
+  useEffect(() => {
+    fetch('/README.md')
+      .then(res => res.text())
+      .then(text => setContent(markdownToHTML(text)))
+      .catch(() => setContent('Failed to load README.md'));
+  }, []);
+
+  return (
+    <div className="tab-pane">
+      <div className="about-content" dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   );
 };

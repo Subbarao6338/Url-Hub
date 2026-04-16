@@ -75,6 +75,7 @@ def init_db():
     # Insert default profiles if not exist
     cursor.execute("INSERT OR IGNORE INTO profiles (name, icon) VALUES ('Default', 'home')")
     cursor.execute("INSERT OR IGNORE INTO profiles (name, icon) VALUES ('Private', 'lock')")
+    cursor.execute("INSERT OR IGNORE INTO profiles (name, icon) VALUES ('Personal', 'person')")
 
     conn.commit()
     conn.close()
@@ -147,8 +148,14 @@ def get_profiles():
 @app.get("/api/links", response_model=List[Link])
 def get_links(profile_id: Optional[int] = None):
     conn = get_db_connection()
+
     if profile_id:
-        links = conn.execute('SELECT * FROM links WHERE profile_id = ?', (profile_id,)).fetchall()
+        # Check if this is the 'Personal' profile
+        profile = conn.execute("SELECT name FROM profiles WHERE id = ?", (profile_id,)).fetchone()
+        if profile and profile['name'] == 'Personal':
+            links = conn.execute('SELECT * FROM links').fetchall()
+        else:
+            links = conn.execute('SELECT * FROM links WHERE profile_id = ?', (profile_id,)).fetchall()
     else:
         links = conn.execute('SELECT * FROM links').fetchall()
     conn.close()
@@ -214,8 +221,15 @@ def delete_link(link_id: str):
 @app.get("/api/categories", response_model=List[Category])
 def get_categories(profile_id: Optional[int] = None):
     conn = get_db_connection()
+
     if profile_id:
-        categories = conn.execute('SELECT * FROM categories WHERE profile_id = ?', (profile_id,)).fetchall()
+        # Check if this is the 'Personal' profile
+        profile = conn.execute("SELECT name FROM profiles WHERE id = ?", (profile_id,)).fetchone()
+        if profile and profile['name'] == 'Personal':
+            # For Personal profile, we want unique categories from all profiles
+            categories = conn.execute('SELECT DISTINCT name, icon, ? as profile_id FROM categories', (profile_id,)).fetchall()
+        else:
+            categories = conn.execute('SELECT * FROM categories WHERE profile_id = ?', (profile_id,)).fetchall()
     else:
         categories = conn.execute('SELECT * FROM categories').fetchall()
     conn.close()
