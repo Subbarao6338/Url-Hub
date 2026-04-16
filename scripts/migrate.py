@@ -1,0 +1,99 @@
+import json
+import sqlite3
+import os
+import uuid
+
+DB_PATH = 'data/hub.db'
+
+def migrate():
+    if not os.path.exists(DB_PATH):
+        print("Database not found. Please ensure it is initialized.")
+        return
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # Get profile IDs
+    cursor.execute("SELECT id, name FROM profiles")
+    profiles = {name: id for id, name in cursor.fetchall()}
+
+    # Helper to migrate links
+    def migrate_links(filename, profile_name):
+        filepath = os.path.join('data', filename)
+        if not os.path.exists(filepath):
+            print(f"File {filepath} not found.")
+            return
+
+        profile_id = profiles.get(profile_name)
+        if not profile_id:
+            print(f"Profile {profile_name} not found in DB.")
+            return
+
+        with open(filepath, 'r') as f:
+            links = json.load(f)
+            for item in links:
+                link_id = str(uuid.uuid4())
+                title = item.get('title')
+                url = item.get('url') or (item.get('urls')[0] if item.get('urls') else '')
+                urls = json.dumps(item.get('urls') or [url])
+                icon = item.get('icon') or ''
+                optional_icon = item.get('optional_icon') or ''
+                category = item.get('category') or 'Others'
+                is_internal = item.get('is_internal', False)
+                tool_id = item.get('toolId') or item.get('tool_id')
+
+                cursor.execute('''
+                    INSERT INTO links (id, profile_id, title, url, urls, icon, optional_icon, category, is_internal, tool_id)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (link_id, profile_id, title, url, urls, icon, optional_icon, category, is_internal, tool_id))
+        print(f"Migrated links from {filename} to {profile_name} profile.")
+
+    # Helper to migrate categories
+    def migrate_categories(filename, profile_name):
+        filepath = os.path.join('data', filename)
+        if not os.path.exists(filepath):
+            print(f"File {filepath} not found.")
+            return
+
+        profile_id = profiles.get(profile_name)
+        if not profile_id:
+            print(f"Profile {profile_name} not found in DB.")
+            return
+
+        with open(filepath, 'r') as f:
+            categories = json.load(f)
+            for name, icon in categories.items():
+                cursor.execute('''
+                    INSERT OR REPLACE INTO categories (profile_id, name, icon)
+                    VALUES (?, ?, ?)
+                ''', (profile_id, name, icon))
+        print(f"Migrated categories from {filename} to {profile_name} profile.")
+
+    # Migrate Projects
+    def migrate_projects():
+        filepath = 'data/projects.json'
+        if not os.path.exists(filepath):
+            print(f"File {filepath} not found.")
+            return
+
+        with open(filepath, 'r') as f:
+            projects = json.load(f)
+            for p in projects:
+                cursor.execute('''
+                    INSERT OR REPLACE INTO projects (id, title, description, url, icon, category)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ''', (p['id'], p['title'], p.get('description', ''), p['url'], p.get('icon', ''), p['category']))
+        print("Migrated projects.")
+
+    migrate_links('url_links.json', 'Default')
+    migrate_categories('url_cat.json', 'Default')
+    migrate_links('necs_links.json', 'Private')
+    migrate_categories('necs_cat.json', 'Private')
+    migrate_projects()
+
+    conn.commit()
+    conn.close()
+    print("Migration complete.")
+
+if __name__ == "__main__":
+    migrate()
