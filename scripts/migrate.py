@@ -39,7 +39,7 @@ def migrate():
                 icon = item.get('icon') or ''
                 optional_icon = item.get('optional_icon') or ''
                 category = item.get('category') or 'Others'
-                is_internal = item.get('is_internal', False)
+                is_internal = item.get('is_internal') or item.get('isInternal', False)
                 tool_id = item.get('toolId') or item.get('tool_id')
 
                 cursor.execute('''

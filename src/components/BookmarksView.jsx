@@ -1,7 +1,34 @@
 import React, { useState, useEffect } from 'react';
 
-const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinnedIds, refreshTrigger }) => {
+const highlightText = (text, query) => {
+  if (!query) return text;
+  const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return text.replace(regex, '<mark>$1</mark>');
+};
+
+const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinnedIds, refreshTrigger, hideUrls, hideIcons, showStats, openInNewTab }) => {
   const [links, setLinks] = useState([]);
+  const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
+  const [selectedLinkForUrls, setSelectedLinkForUrls] = useState(null);
+
+  const handleShare = async (link) => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: link.title, url: link.url });
+      } catch (err) { console.error("Share failed:", err); }
+    } else {
+      navigator.clipboard.writeText(`${link.title}: ${link.url}`);
+      alert("Link copied to clipboard!");
+    }
+  };
+
+  const handleCopy = (e, text) => {
+    navigator.clipboard.writeText(text);
+    const btn = e.currentTarget;
+    const originalIcon = btn.innerHTML;
+    btn.innerHTML = '<span class="material-icons" style="color:var(--accent-green)">check</span>';
+    setTimeout(() => btn.innerHTML = originalIcon, 2000);
+  };
   const [categories, setCategories] = useState({});
   const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
@@ -29,7 +56,8 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
     const matchesSearch = !searchQuery ||
       l.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       l.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      l.url.toLowerCase().includes(searchQuery.toLowerCase());
+      l.url.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (l.urls && l.urls.some(u => u.toLowerCase().includes(searchQuery.toLowerCase())));
 
     let matchesCat = true;
     if (!searchQuery) {
@@ -47,20 +75,51 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
 
   const cats = Object.keys(grouped).sort();
 
+  const stats = {};
+  links.forEach(l => {
+    if (l.is_internal) return;
+    stats[l.category] = (stats[l.category] || 0) + 1;
+  });
+  const totalCount = Object.values(stats).reduce((a, b) => a + b, 0);
+  const pinnedCount = links.filter(l => pinnedIds.includes(l.id)).length;
+
   if (loading) return <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>Loading bookmarks...</div>;
 
   return (
     <>
+      {isUrlModalOpen && selectedLinkForUrls && (
+        <>
+          <div className="modal-overlay" style={{display: 'block'}} onClick={() => setIsUrlModalOpen(false)}></div>
+          <div className="modal" style={{display: 'block'}}>
+            <h2>Select URL</h2>
+            <div className="url-list">
+              {(selectedLinkForUrls.urls || [selectedLinkForUrls.url]).map((url, i) => (
+                <a key={i} href={url} target={openInNewTab ? '_blank' : '_self'} className="url-btn" onClick={() => setIsUrlModalOpen(false)}>
+                  <span>{url}</span>
+                  <span className="url-btn-icon">🔗</span>
+                </a>
+              ))}
+            </div>
+            <div className="form-actions">
+              <button type="button" onClick={() => setIsUrlModalOpen(false)}>Cancel</button>
+            </div>
+          </div>
+        </>
+      )}
+
       <nav className="main-category-nav">
         <div className={`pill ${activeCategory === 'All' ? 'active' : ''}`} onClick={() => setActiveCategory('All')}>
           <span className="material-icons">home</span> <span>All</span>
+          {showStats && <span className="count">{totalCount}</span>}
         </div>
         <div className={`pill ${activeCategory === 'Pinned' ? 'active' : ''}`} onClick={() => setActiveCategory('Pinned')}>
           <span className="material-icons">push_pin</span> <span>Pinned</span>
+          {showStats && <span className="count">{pinnedCount}</span>}
         </div>
-        {Object.keys(categories).sort().map(cat => (
+        {Object.keys(categories).sort().filter(c => c !== 'All' && c !== 'Pinned').map(cat => (
           <div key={cat} className={`pill ${activeCategory === cat ? 'active' : ''}`} onClick={() => setActiveCategory(cat)}>
             <span className="material-icons">{categories[cat] || 'folder'}</span> <span>{cat}</span>
+            {showStats && stats[cat] > 0 && <span className="count">{stats[cat]}</span>}
           </div>
         ))}
       </nav>
@@ -79,35 +138,106 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, pinned
               <div className="category-title">
                 <span className="material-icons">{categories[cat] || 'folder'}</span>
                 {cat}
-                <span className="count">{grouped[cat].length}</span>
+                {showStats && <span className="count">{grouped[cat].length}</span>}
               </div>
               <span className="material-icons expand-icon">expand_more</span>
             </div>
             <div className="category-grid">
               {grouped[cat].map((link, idx) => (
-                <div key={link.id} className="card" style={{'--delay': idx}} onClick={() => window.open(link.url, '_blank')}>
-                  <div className="card-header">
-                    <BookmarkIcon link={link} categoryIcon={categories[cat] || 'link'} />
-                    <div className="card-title">{link.title}</div>
-                  </div>
-                  <div className="card-url">
-                    {new URL(link.url.startsWith('http') ? link.url : 'http://' + link.url).hostname}
-                    {link.urls && link.urls.length > 1 && <span className="fallback-badge">{link.urls.length} URLs</span>}
-                  </div>
-                  <div className="card-actions" onClick={e => e.stopPropagation()}>
-                    <button className={`pin-btn ${pinnedIds.includes(link.id) ? 'active' : ''}`} onClick={() => onPin(link.id)}>
-                      <span className="material-icons">push_pin</span>
-                    </button>
-                    <button onClick={() => onEdit(link)}><span className="material-icons">edit</span></button>
-                    <button className="btn-delete" onClick={() => onDelete(link.id)}><span className="material-icons">delete</span></button>
-                  </div>
-                </div>
+                <BookmarkCard
+                  key={link.id}
+                  link={link}
+                  idx={idx}
+                  openInNewTab={openInNewTab}
+                  pinnedIds={pinnedIds}
+                  onPin={onPin}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  handleShare={handleShare}
+                  handleCopy={handleCopy}
+                  onLongPress={() => { setSelectedLinkForUrls(link); setIsUrlModalOpen(true); }}
+                  categoryIcon={categories[cat]}
+                  hideIcons={hideIcons}
+                  hideUrls={hideUrls}
+                  searchQuery={searchQuery}
+                />
               ))}
             </div>
           </div>
         ))
       )}
     </>
+  );
+};
+
+const BookmarkCard = ({ link, idx, openInNewTab, pinnedIds, onPin, onEdit, onDelete, handleShare, handleCopy, onLongPress, categoryIcon, hideIcons, hideUrls, searchQuery }) => {
+  const [pressTimer, setPressTimer] = useState(null);
+  const [isLongPress, setIsLongPress] = useState(false);
+
+  const startPress = () => {
+    const timer = setTimeout(() => {
+      setIsLongPress(true);
+      if (link.urls && link.urls.length > 1) {
+        onLongPress();
+      }
+    }, 500);
+    setPressTimer(timer);
+  };
+
+  const cancelPress = () => {
+    if (pressTimer) {
+      clearTimeout(pressTimer);
+      setPressTimer(null);
+    }
+  };
+
+  const handleClick = (e) => {
+    if (isLongPress) {
+      setIsLongPress(false);
+      return;
+    }
+    window.open(link.url, openInNewTab ? '_blank' : '_self');
+  };
+
+  return (
+    <div
+      className="card"
+      style={{'--delay': idx}}
+      onClick={handleClick}
+      onMouseDown={startPress}
+      onMouseUp={cancelPress}
+      onMouseLeave={cancelPress}
+      onTouchStart={startPress}
+      onTouchEnd={cancelPress}
+    >
+      <div className="card-header">
+        {!hideIcons && <BookmarkIcon link={link} categoryIcon={categoryIcon || 'link'} />}
+        <div className="card-title" dangerouslySetInnerHTML={{ __html: highlightText(link.title, searchQuery) }} />
+      </div>
+      {!hideUrls && (
+        <div className="card-url">
+          {new URL(link.url.startsWith('http') ? link.url : 'http://' + link.url).hostname}
+          {link.urls && link.urls.length > 1 && <span className="fallback-badge">{link.urls.length} URLs</span>}
+        </div>
+      )}
+      <div className="card-actions" onClick={e => e.stopPropagation()}>
+        <button className={`pin-btn ${pinnedIds.includes(link.id) ? 'active' : ''}`} onClick={() => onPin(link.id)} title={pinnedIds.includes(link.id) ? 'Unpin' : 'Pin to Top'}>
+          <span className="material-icons">push_pin</span>
+        </button>
+        <button onClick={() => handleShare(link)} title="Share Bookmark">
+          <span className="material-icons">share</span>
+        </button>
+        <button onClick={(e) => handleCopy(e, link.url)} title="Copy URL">
+          <span className="material-icons">content_copy</span>
+        </button>
+        <button onClick={() => onEdit(link)} title="Edit">
+          <span className="material-icons">edit</span>
+        </button>
+        <button className="btn-delete" onClick={() => onDelete(link.id)} title="Delete">
+          <span className="material-icons">delete</span>
+        </button>
+      </div>
+    </div>
   );
 };
 

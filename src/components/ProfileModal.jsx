@@ -1,6 +1,14 @@
 import React from 'react';
 
 const ProfileModal = ({ profiles, currentProfile, onSelect, onCancel }) => {
+  const [startupProfile, setStartupProfile] = React.useState(localStorage.getItem('hub_startup_profile') || 'Default');
+
+  const toggleStartup = (e, name) => {
+    e.stopPropagation();
+    localStorage.setItem('hub_startup_profile', name);
+    setStartupProfile(name);
+  };
+
   return (
     <div className="modal" style={{display: 'block'}}>
       <h2 style={{marginTop: 0}}>Select Profile</h2>
@@ -14,6 +22,13 @@ const ProfileModal = ({ profiles, currentProfile, onSelect, onCancel }) => {
             >
               <span className="material-icons">{p.icon}</span>
               <span>{p.name} Profile</span>
+            </button>
+            <button
+              className={`startup-toggle ${startupProfile === p.name ? 'active' : ''}`}
+              onClick={(e) => toggleStartup(e, p.name)}
+              title="Set as Default Startup Profile"
+            >
+              <span className="material-icons">{startupProfile === p.name ? 'star' : 'star_border'}</span>
             </button>
           </div>
         ))}
