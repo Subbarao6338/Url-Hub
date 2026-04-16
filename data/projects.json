@@ -1,0 +1,18 @@
+[
+  {
+    "id": "p1",
+    "title": "React Portfolio",
+    "description": "Modern personal portfolio website with custom components.",
+    "url": "https://github.com",
+    "category": "ReactJS",
+    "icon": "code"
+  },
+  {
+    "id": "p2",
+    "title": "E-commerce App",
+    "description": "Functional shopping cart and product management.",
+    "url": "https://github.com",
+    "category": "ReactJS",
+    "icon": "shopping_cart"
+  }
+]

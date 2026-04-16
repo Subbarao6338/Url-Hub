@@ -32,7 +32,7 @@ const Storage = {
 
 const STATE = {
   currentProfile: localStorage.getItem('hub_current_profile') || localStorage.getItem('hub_startup_profile') || 'Default',
-  currentTab: 'bookmarks', // 'bookmarks' or 'toolbox'
+  currentTab: 'toolbox', // 'toolbox', 'bookmarks', or 'projects'
   links: [],
   pinnedIds: Storage.getJson('pinned_v1', []),
   activeCategory: 'All', // 'All' for bookmarks
@@ -381,7 +381,7 @@ const UI = {
     STATE.isDropdownOpen = false;
 
     // Handle main tab switches
-    if (view === 'bookmarks' || view === 'toolbox') {
+    if (view === 'bookmarks' || view === 'toolbox' || view === 'projects') {
       STATE.currentTab = view;
       STATE.currentView = view; // For backward compatibility if needed
       this.updateTabUI();
@@ -398,7 +398,7 @@ const UI = {
     this.renderBreadcrumb();
 
     // Auto-focus search if enabled
-    if (STATE.autoFocusSearch && (view === 'bookmarks' || view === 'toolbox')) {
+    if (STATE.autoFocusSearch && (view === 'bookmarks' || view === 'toolbox' || view === 'projects')) {
         setTimeout(() => {
             const search = document.getElementById('search');
             if (search) search.focus();
@@ -411,7 +411,8 @@ const UI = {
       // mainNav is for bookmarks horizontal pills, only show in bookmarks view
       // But we want it visible in toolbox as well if not inside a specific tool
       const isHubView = (STATE.currentTab === 'bookmarks' && STATE.currentView === 'bookmarks') ||
-                        (STATE.currentTab === 'toolbox');
+                        (STATE.currentTab === 'toolbox' && STATE.currentView === 'toolbox') ||
+                        (STATE.currentTab === 'projects');
       mainNav.style.display = isHubView ? 'flex' : 'none';
     }
   },
@@ -421,12 +422,14 @@ const UI = {
     if (searchInput) {
       if (STATE.currentTab === 'bookmarks') {
         searchInput.placeholder = "Search Bookmarks... [/]";
+      } else if (STATE.currentTab === 'projects') {
+        searchInput.placeholder = "Search Projects... [/]";
       } else {
         searchInput.placeholder = "Search Toolbox... [/]";
       }
     }
 
-    const tabs = ['bookmarks', 'toolbox'];
+    const tabs = ['bookmarks', 'toolbox', 'projects'];
     tabs.forEach(tab => {
       const el = document.getElementById(`tab-${tab}`);
       if (el) {
@@ -460,14 +463,19 @@ const UI = {
     }
 
     // Tab Listeners
+    const toolboxTab = document.getElementById('tab-toolbox');
+    if (toolboxTab) {
+      toolboxTab.addEventListener('click', () => this.setView('toolbox'));
+    }
+
     const bookmarksTab = document.getElementById('tab-bookmarks');
     if (bookmarksTab) {
       bookmarksTab.addEventListener('click', () => this.setView('bookmarks'));
     }
 
-    const toolboxTab = document.getElementById('tab-toolbox');
-    if (toolboxTab) {
-      toolboxTab.addEventListener('click', () => this.setView('toolbox'));
+    const projectsTab = document.getElementById('tab-projects');
+    if (projectsTab) {
+      projectsTab.addEventListener('click', () => this.setView('projects'));
     }
 
     // Event Listeners
@@ -774,8 +782,9 @@ const UI = {
 
 
   renderBreadcrumb() {
-    this.renderBookmarksBreadcrumb();
     this.renderToolboxBreadcrumb();
+    this.renderBookmarksBreadcrumb();
+    this.renderProjectsBreadcrumb();
   },
 
   renderBookmarksBreadcrumb() {
@@ -855,6 +864,16 @@ const UI = {
         `;
       }
     }
+  },
+
+  renderProjectsBreadcrumb() {
+    const nav = document.getElementById('projects-breadcrumb');
+    if (!nav) return;
+    nav.innerHTML = `
+      <div class="breadcrumb-item">
+        <span class="label">All Projects</span>
+      </div>
+    `;
   },
 
   renderToolboxBreadcrumb() {
@@ -973,8 +992,49 @@ const UI = {
       return;
     }
 
+    if (STATE.currentTab === 'projects') {
+      this.renderProjects(container);
+      return;
+    }
+
     // Default to bookmarks tab
     this.renderHub(container);
+  },
+
+  renderProjects(container) {
+    if (!STATE.projects) {
+      STATE.projects = [];
+      fetch('data/projects.json')
+        .then(res => res.json())
+        .then(data => {
+          STATE.projects = data;
+          if (STATE.currentTab === 'projects') this.render();
+        })
+        .catch(err => console.error("Error loading projects:", err));
+
+      container.innerHTML = `<div style="text-align:center; padding:3rem; opacity:0.5;">Loading projects...</div>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="toolbox-page-header">
+        <h2>My ReactJS Projects</h2>
+        <p>A collection of my recent ReactJS developments and experiments.</p>
+      </div>
+      <div class="category-grid" style="padding: 0 10px;">
+        ${STATE.projects.length === 0 ? '<p style="text-align:center; grid-column: 1/-1;">No projects found.</p>' : STATE.projects.map(p => `
+          <div class="card" onclick="window.open('${p.url}', '_blank')">
+            <div class="card-header">
+              <div class="card-icon" style="display:grid;place-items:center;background:var(--bg)">
+                <span class="material-icons">${p.icon || 'code'}</span>
+              </div>
+              <div class="card-title">${UI.highlightText(p.title, STATE.searchQuery)}</div>
+            </div>
+            <p style="padding: 0 1rem 1rem; font-size: 0.9rem; opacity: 0.7;">${p.description}</p>
+          </div>
+        `).join('')}
+      </div>
+    `;
   },
 
   renderHub(container) {
