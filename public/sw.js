@@ -48,8 +48,27 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
   const isLocal = url.origin === self.location.origin;
+  const isApi = url.pathname.startsWith('/api/');
   const isFont = url.origin.includes('fonts.googleapis.com') || url.origin.includes('fonts.gstatic.com');
-  const isCachable = isLocal || isFont;
+  const isCachable = (isLocal && !isApi) || isFont;
+
+  // Cache API GET requests
+  if (isLocal && isApi) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) => {
+        return cache.match(event.request).then((cachedResponse) => {
+          const fetchPromise = fetch(event.request).then((networkResponse) => {
+            if (networkResponse.ok) {
+              cache.put(event.request, networkResponse.clone());
+            }
+            return networkResponse;
+          }).catch(() => cachedResponse);
+          return cachedResponse || fetchPromise;
+        });
+      })
+    );
+    return;
+  }
 
   // For non-cachable origins (mostly external favicons)
   if (!isCachable) {

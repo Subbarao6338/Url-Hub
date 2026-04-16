@@ -1,6 +1,6 @@
 {
-  "name": "URL Hub",
-  "short_name": "URL Hub",
+  "name": "N Box",
+  "short_name": "N Box",
   "description": "A personal dashboard to organize and access your favorite websites.",
   "start_url": ".",
   "display": "standalone",
