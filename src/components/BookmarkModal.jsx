@@ -6,6 +6,18 @@ const BookmarkModal = ({ link, profileId, onClose, onSave }) => {
   const [urls, setUrls] = useState(link?.urls || []);
   const [icon, setIcon] = useState(link?.icon || '');
   const [category, setCategory] = useState(link?.category || 'Utilities');
+  const [suggestedCategories, setSuggestedCategories] = useState([]);
+
+  useEffect(() => {
+    if (profileId) {
+      fetch(`/api/links/categories?profile_id=${profileId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) setSuggestedCategories(data);
+        })
+        .catch(err => console.error("Failed to fetch suggested categories:", err));
+    }
+  }, [profileId]);
 
   const handleAddUrl = () => {
     setUrls([...urls, '']);
@@ -86,7 +98,19 @@ const BookmarkModal = ({ link, profileId, onClose, onSave }) => {
         </div>
         <div className="form-group">
           <label>Category</label>
-          <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required placeholder="Utilities" />
+          <input
+            type="text"
+            list="category-suggestions"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+            placeholder="Utilities"
+          />
+          <datalist id="category-suggestions">
+            {suggestedCategories.map(cat => (
+              <option key={cat} value={cat} />
+            ))}
+          </datalist>
         </div>
         <div className="form-actions" style={{marginTop: '1.5rem'}}>
           <button type="submit" className="btn-primary" style={{width: '100%'}}>Save Bookmark</button>

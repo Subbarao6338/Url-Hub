@@ -19,6 +19,7 @@ import WordCounter from './tools/WordCounter';
 import JsonFormatter from './tools/JsonFormatter';
 import Base64Converter from './tools/Base64Converter';
 import DeviceInfo from './tools/DeviceInfo';
+import PomodoroTimer from './tools/PomodoroTimer';
 import MarkdownPreview from './tools/MarkdownPreview';
 import TeluguPanchangam from './tools/TeluguPanchangam';
 import AiSummary from './tools/AiSummary';
@@ -33,6 +34,7 @@ import DiffViewer from './tools/DiffViewer';
 
 const TOOLS = [
     { id: 'notes', title: 'Notes', icon: 'description', category: 'Personal', component: Notes },
+    { id: 'pomodoro', title: 'Pomodoro', icon: 'timer', category: 'Productivity', component: PomodoroTimer },
     { id: 'ai-summary', title: 'AI Summary', icon: 'auto_fix_high', category: 'Productivity', component: AiSummary },
     { id: 'calculator', title: 'Calculator', icon: 'calculate', category: 'Productivity', component: Calculator },
     { id: 'qr-gen', title: 'QR Gen', icon: 'qr_code_2', category: 'Productivity', component: QrGen },
@@ -67,6 +69,21 @@ const TOOLS = [
 const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
   const [activeToolId, setActiveToolId] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [collapsedCategories, setCollapsedCategories] = useState({});
+
+  const toggleCategoryCollapse = (cat) => {
+    setCollapsedCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
+  };
+
+  const collapseAll = () => {
+    const newCollapsed = {};
+    cats.forEach(cat => newCollapsed[cat] = true);
+    setCollapsedCategories(newCollapsed);
+  };
+
+  const expandAll = () => {
+    setCollapsedCategories({});
+  };
   const [pinnedTools, setPinnedTools] = useState(JSON.parse(localStorage.getItem('hub_pinned_tools') || '[]'));
 
   useEffect(() => {
@@ -190,6 +207,16 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
       <div className="toolbox-page-header">
         <h2>Toolbox</h2>
         <p>Collection of useful offline utilities.</p>
+        {groupToolbox && cats.length > 0 && (
+          <div className="pill-group" style={{justifyContent: 'center', marginTop: '1rem'}}>
+            <button className="pill" onClick={collapseAll} style={{padding: '8px 16px', fontSize: '0.8rem'}}>
+              <span className="material-icons" style={{fontSize: '1.1rem'}}>unfold_less</span> Collapse All
+            </button>
+            <button className="pill" onClick={expandAll} style={{padding: '8px 16px', fontSize: '0.8rem'}}>
+              <span className="material-icons" style={{fontSize: '1.1rem'}}>unfold_more</span> Expand All
+            </button>
+          </div>
+        )}
       </div>
 
       {activeCategory === 'All' && !searchQuery && (
@@ -271,8 +298,8 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
         </div>
       ) : (
         cats.map(cat => (
-          <div key={cat} className="category-section">
-            <div className="category-header">
+          <div key={cat} className={`category-section ${collapsedCategories[cat] ? 'collapsed' : ''}`}>
+            <div className="category-header" onClick={() => toggleCategoryCollapse(cat)}>
               <div className="category-title">
                 <span className="material-icons">{getCategoryIcon(cat)}</span>
                 {cat}

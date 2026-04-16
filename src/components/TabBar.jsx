@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettingsClick }) => {
+const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettingsClick, showProjectsTab }) => {
   const [pressTimer, setPressTimer] = useState(null);
   const isLongPress = useRef(false);
 
@@ -61,17 +61,19 @@ const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettin
           <span className="material-icons">add</span>
         </button>
       </div>
-      <div className="tab-group" id="group-projects">
-        <div
-          id="tab-projects"
-          className={`tab-item ${currentTab === 'projects' ? 'active' : ''}`}
-          onClick={() => setTab('projects')}
-          title="Projects"
-        >
-          <span className="material-icons">rocket_launch</span>
-          <span className="tab-name">Projects</span>
+      {showProjectsTab && (
+        <div className="tab-group" id="group-projects">
+          <div
+            id="tab-projects"
+            className={`tab-item ${currentTab === 'projects' ? 'active' : ''}`}
+            onClick={() => setTab('projects')}
+            title="Projects"
+          >
+            <span className="material-icons">rocket_launch</span>
+            <span className="tab-name">Projects</span>
+          </div>
         </div>
-      </div>
+      )}
       <div className="tab-group mobile-only" id="group-settings">
         <div
           className="tab-item"

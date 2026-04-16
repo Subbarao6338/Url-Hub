@@ -2033,3 +2033,27 @@ body.no-glass[data-theme="dark"] {
         gap: 1rem;
     }
 }
+
+/* Disable Hover Effects */
+body.no-hover-effects .card {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  animation: none;
+}
+
+body.no-hover-effects .card:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+  border-color: rgba(var(--primary-rgb), 0.2);
+}
+
+body.no-hover-effects .card::after {
+  display: none;
+}
+
+body.no-hover-effects .card-icon {
+  transform: none !important;
+}
+
+body.no-hover-effects .pill:hover {
+  transform: none;
+}

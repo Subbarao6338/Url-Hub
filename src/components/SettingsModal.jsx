@@ -64,6 +64,10 @@ const markdownToHTML = (markdown) => {
 };
 
 const SettingsModal = ({
+  appName, setAppName,
+  startupTab, setStartupTab,
+  showProjectsTab, setShowProjectsTab,
+  enableHoverEffects, setEnableHoverEffects,
   isDarkMode, setIsDarkMode,
   accentColor, setAccentColor,
   isCompact, setIsCompact,
@@ -147,6 +151,33 @@ const SettingsModal = ({
         <div className="tab-pane">
           <h2 className="settings-header">Global Settings</h2>
           <div className="settings-section">
+            <h3>Customization</h3>
+            <div className="form-group" style={{marginBottom: '1rem'}}>
+              <label>App Name</label>
+              <input
+                type="text"
+                value={appName}
+                onChange={(e) => setAppName(e.target.value)}
+                placeholder="N Box"
+                style={{maxWidth: '300px'}}
+              />
+            </div>
+            <div className="form-group">
+              <label>Startup Tab</label>
+              <div className="pill-group">
+                {['toolbox', 'bookmarks', 'projects'].map(tab => (
+                  <button
+                    key={tab}
+                    className={`pill ${startupTab === tab ? 'active' : ''}`}
+                    onClick={() => setStartupTab(tab)}
+                  >
+                    <span>{tab.charAt(0).toUpperCase() + tab.slice(1)}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="settings-section">
             <h3>Appearance</h3>
             <p className="settings-desc">Customize the look and feel of your dashboard.</p>
             <div className="pill-group">
@@ -168,6 +199,10 @@ const SettingsModal = ({
               <button className={`pill ${reducedMotion ? 'active' : ''}`} onClick={() => setReducedMotion(!reducedMotion)}>
                 <span className="material-icons">motion_photos_off</span>
                 <span>Reduced Motion</span>
+              </button>
+              <button className={`pill ${enableHoverEffects ? 'active' : ''}`} onClick={() => setEnableHoverEffects(!enableHoverEffects)}>
+                <span className="material-icons">auto_fix_high</span>
+                <span>Hover Effects</span>
               </button>
             </div>
             <div className="pill-group" style={{marginTop: '15px'}}>
@@ -193,6 +228,10 @@ const SettingsModal = ({
               <button className={`pill ${openInNewTab ? 'active' : ''}`} onClick={() => setOpenInNewTab(!openInNewTab)}>
                 <span className="material-icons">open_in_new</span>
                 <span>Open in New Tab</span>
+              </button>
+              <button className={`pill ${showProjectsTab ? 'active' : ''}`} onClick={() => setShowProjectsTab(!showProjectsTab)}>
+                <span className="material-icons">{showProjectsTab ? 'visibility' : 'visibility_off'}</span>
+                <span>Show Projects</span>
               </button>
             </div>
           </div>

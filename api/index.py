@@ -247,6 +247,16 @@ def get_links(profile_id: Optional[int] = None):
         res.append(d)
     return res
 
+@app.get("/api/links/categories", response_model=List[str])
+def get_link_categories(profile_id: Optional[int] = None):
+    conn = get_db_connection()
+    if profile_id:
+        categories = conn.execute('SELECT DISTINCT category FROM links WHERE profile_id = ? ORDER BY category ASC', (profile_id,)).fetchall()
+    else:
+        categories = conn.execute('SELECT DISTINCT category FROM links ORDER BY category ASC').fetchall()
+    conn.close()
+    return [c['category'] for c in categories]
+
 @app.post("/api/links", response_model=Link)
 def create_link(link: LinkCreate):
     conn = get_db_connection()

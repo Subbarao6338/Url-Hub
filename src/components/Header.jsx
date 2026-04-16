@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Header = ({ currentProfile, profiles, currentTab, setView, onSettingsClick, onSearchToggle, searchActive, searchQuery, onSearchChange, onSearchClear }) => {
+const Header = ({ appName, currentProfile, profiles, currentTab, setView, onSettingsClick, onSearchToggle, searchActive, searchQuery, onSearchChange, onSearchClear }) => {
   const profile = profiles.find(p => p.name === currentProfile) || { icon: 'inbox' };
 
   return (
@@ -12,7 +12,7 @@ const Header = ({ currentProfile, profiles, currentTab, setView, onSettingsClick
         <span className="material-icons app-logo">
           {currentProfile === 'Default' ? 'inbox' : (profile.icon || 'person')}
         </span>
-        <h1 className="page-title">N Box</h1>
+        <h1 className="page-title">{appName || 'N Box'}</h1>
       </div>
       <div className="top-actions">
         <div className={`search-container ${searchActive ? 'active' : ''}`}>

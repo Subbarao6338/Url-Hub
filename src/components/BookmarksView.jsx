@@ -32,6 +32,21 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
   const [categories, setCategories] = useState({});
   const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
+  const [collapsedCategories, setCollapsedCategories] = useState({});
+
+  const toggleCategoryCollapse = (cat) => {
+    setCollapsedCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
+  };
+
+  const collapseAll = () => {
+    const newCollapsed = {};
+    cats.forEach(cat => newCollapsed[cat] = true);
+    setCollapsedCategories(newCollapsed);
+  };
+
+  const expandAll = () => {
+    setCollapsedCategories({});
+  };
 
   useEffect(() => {
     if (!profileId) return;
@@ -102,6 +117,12 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
 
   if (loading) return <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>Loading bookmarks...</div>;
 
+  const copyAllUrls = () => {
+    const allUrls = selectedLinkForUrls.urls || [selectedLinkForUrls.url];
+    navigator.clipboard.writeText(allUrls.join('\n'));
+    alert("All URLs copied to clipboard!");
+  };
+
   return (
     <>
       {isUrlModalOpen && selectedLinkForUrls && (
@@ -117,7 +138,10 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
                 </a>
               ))}
             </div>
-            <div className="form-actions">
+            <div className="form-actions" style={{justifyContent: 'space-between', alignItems: 'center'}}>
+              <button type="button" className="btn-small" onClick={copyAllUrls} style={{margin: 0}}>
+                <span className="material-icons" style={{fontSize: '1rem', verticalAlign: 'middle'}}>content_copy</span> Copy All
+              </button>
               <button type="button" onClick={() => setIsUrlModalOpen(false)}>Cancel</button>
             </div>
           </div>
@@ -139,14 +163,24 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
       <div className="toolbox-page-header">
         <h2>Bookmarks</h2>
         <p>Access your favorite links and resources.</p>
+        {cats.length > 0 && (
+          <div className="pill-group" style={{justifyContent: 'center', marginTop: '1rem'}}>
+            <button className="pill" onClick={collapseAll} style={{padding: '8px 16px', fontSize: '0.8rem'}}>
+              <span className="material-icons" style={{fontSize: '1.1rem'}}>unfold_less</span> Collapse All
+            </button>
+            <button className="pill" onClick={expandAll} style={{padding: '8px 16px', fontSize: '0.8rem'}}>
+              <span className="material-icons" style={{fontSize: '1.1rem'}}>unfold_more</span> Expand All
+            </button>
+          </div>
+        )}
       </div>
 
       {cats.length === 0 ? (
         <div style={{textAlign:'center', color:'#888', marginTop:'3rem'}}>No bookmarks found</div>
       ) : (
         cats.map(cat => (
-          <div key={cat} className="category-section">
-            <div className="category-header">
+          <div key={cat} className={`category-section ${collapsedCategories[cat] ? 'collapsed' : ''}`}>
+            <div className="category-header" onClick={() => toggleCategoryCollapse(cat)}>
               <div className="category-title">
                 <span className="material-icons">{categories[cat] || 'folder'}</span>
                 {cat}

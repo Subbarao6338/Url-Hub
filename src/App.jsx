@@ -10,9 +10,10 @@ import ProfileModal from './components/ProfileModal';
 import BookmarkModal from './components/BookmarkModal';
 
 function App() {
+  const [appName, setAppName] = useState(localStorage.getItem('hub_app_name') || 'N Box');
   const [currentProfileName, setCurrentProfileName] = useState(localStorage.getItem('hub_current_profile') || localStorage.getItem('hub_startup_profile') || 'Default');
   const [profiles, setProfiles] = useState([]);
-  const [currentTab, setCurrentTab] = useState('toolbox');
+  const [currentTab, setCurrentTab] = useState(localStorage.getItem('hub_startup_tab') || 'toolbox');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActive, setSearchActive] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('hub_theme') === 'dark');
@@ -31,6 +32,28 @@ function App() {
     }
   }, []);
 
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      const container = document.querySelector('.tools-container');
+      if (container) {
+        setShowBackToTop(container.scrollTop > 300);
+      }
+    };
+    const container = document.querySelector('.tools-container');
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+    }
+    return () => container?.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    const container = document.querySelector('.tools-container');
+    if (container) {
+      container.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   // Additional Settings
   const [isCompact, setIsCompact] = useState(localStorage.getItem('hub_compact') === 'true');
   const [hideUrls, setHideUrls] = useState(localStorage.getItem('hub_hide_urls') === 'true');
@@ -39,6 +62,8 @@ function App() {
   const [autoFocusSearch, setAutoFocusSearch] = useState(localStorage.getItem('hub_auto_focus_search') === 'true');
   const [openInNewTab, setOpenInNewTab] = useState(localStorage.getItem('hub_open_newtab') !== 'false');
   const [openProjectsInternally, setOpenProjectsInternally] = useState(localStorage.getItem('hub_open_projects_internally') === 'true');
+  const [startupTab, setStartupTab] = useState(localStorage.getItem('hub_startup_tab') || 'toolbox');
+  const [showProjectsTab, setShowProjectsTab] = useState(localStorage.getItem('hub_show_projects_tab') !== 'false');
 
   // Visual Settings
   const [disableGlass, setDisableGlass] = useState(localStorage.getItem('hub_disable_glass') === 'true');
@@ -46,6 +71,7 @@ function App() {
   const [reducedMotion, setReducedMotion] = useState(localStorage.getItem('hub_reduced_motion') === 'true');
   const [confirmDelete, setConfirmDelete] = useState(localStorage.getItem('hub_confirm_delete') !== 'false');
   const [groupToolbox, setGroupToolbox] = useState(localStorage.getItem('hub_group_toolbox') !== 'false');
+  const [enableHoverEffects, setEnableHoverEffects] = useState(localStorage.getItem('hub_enable_hover_effects') !== 'false');
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -88,8 +114,17 @@ function App() {
     localStorage.setItem('hub_reduced_motion', reducedMotion);
   }, [reducedMotion]);
 
+  useEffect(() => {
+    if (enableHoverEffects) document.body.classList.remove('no-hover-effects');
+    else document.body.classList.add('no-hover-effects');
+    localStorage.setItem('hub_enable_hover_effects', enableHoverEffects);
+  }, [enableHoverEffects]);
+
   useEffect(() => { localStorage.setItem('hub_confirm_delete', confirmDelete); }, [confirmDelete]);
   useEffect(() => { localStorage.setItem('hub_group_toolbox', groupToolbox); }, [groupToolbox]);
+  useEffect(() => { localStorage.setItem('hub_app_name', appName); }, [appName]);
+  useEffect(() => { localStorage.setItem('hub_startup_tab', startupTab); }, [startupTab]);
+  useEffect(() => { localStorage.setItem('hub_show_projects_tab', showProjectsTab); }, [showProjectsTab]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-color', accentColor);
@@ -177,6 +212,7 @@ function App() {
     <div className="app-layout">
       <main className="main-content">
         <Header
+          appName={appName}
           currentProfile={currentProfileName}
           profiles={profiles}
           currentTab={currentTab}
@@ -195,6 +231,7 @@ function App() {
           onAddClick={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
           onBookmarksLongPress={() => setIsProfileOpen(true)}
           onSettingsClick={() => setIsSettingsOpen(true)}
+          showProjectsTab={showProjectsTab}
         />
 
         <div id="content" className={`tools-container ${isCompact ? 'compact' : ''}`}>
@@ -212,7 +249,7 @@ function App() {
               openInNewTab={openInNewTab}
             />
           )}
-          {currentTab === 'projects' && (
+          {currentTab === 'projects' && showProjectsTab && (
             <ProjectsView
               searchQuery={searchQuery}
               openInternally={openProjectsInternally}
@@ -226,6 +263,15 @@ function App() {
             />
           )}
         </div>
+
+        <button
+          id="back-to-top"
+          className={showBackToTop ? 'visible' : ''}
+          onClick={scrollToTop}
+          title="Back to Top"
+        >
+          <span className="material-icons">arrow_upward</span>
+        </button>
       </main>
 
       {(isSettingsOpen || isProfileOpen || isBookmarkOpen) && (
@@ -234,6 +280,14 @@ function App() {
 
       {isSettingsOpen && (
         <SettingsModal
+          appName={appName}
+          setAppName={setAppName}
+          startupTab={startupTab}
+          setStartupTab={setStartupTab}
+          showProjectsTab={showProjectsTab}
+          setShowProjectsTab={setShowProjectsTab}
+          enableHoverEffects={enableHoverEffects}
+          setEnableHoverEffects={setEnableHoverEffects}
           isDarkMode={isDarkMode}
           setIsDarkMode={setIsDarkMode}
           accentColor={accentColor}
