@@ -16,6 +16,7 @@ import TimestampConverter from './tools/TimestampConverter';
 import LoremIpsum from './tools/LoremIpsum';
 import TextUtils from './tools/TextUtils';
 import WordCounter from './tools/WordCounter';
+import WordRankCalculator from './tools/WordRankCalculator';
 import JsonFormatter from './tools/JsonFormatter';
 import Base64Converter from './tools/Base64Converter';
 import DeviceInfo from './tools/DeviceInfo';
@@ -51,6 +52,7 @@ const TOOLS = [
     { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Utilities', component: LoremIpsum },
     { id: 'text-utils', title: 'Text Tools', icon: 'title', category: 'Utilities', component: TextUtils },
     { id: 'word-counter', title: 'Word Counter', icon: 'format_list_numbered', category: 'Utilities', component: WordCounter },
+    { id: 'word-rank', title: 'Word Rank', icon: 'sort_by_alpha', category: 'Utilities', component: WordRankCalculator },
     { id: 'omni-hub', title: 'Omni Hub', icon: 'public', category: 'Web Tools', component: OmniHub },
     { id: 'network-tools', title: 'Network', icon: 'timeline', category: 'Web Tools', component: NetworkTools },
     { id: 'cookies', title: 'Cookies', icon: 'cookie', category: 'Web Tools', component: Cookies },
