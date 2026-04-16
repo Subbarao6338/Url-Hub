@@ -248,14 +248,14 @@ const SettingsModal = ({
               <button className="pill" style={{color: '#ef4444'}} onClick={resetData}>
                 <span className="material-icons">refresh</span> Reset Local Data
               </button>
-              <button className="pill" style={{color: '#ef4444'}} onClick={() => {
-                if (window.confirm("This will clear all links and categories from the database and re-run migration. Are you sure?")) {
-                  fetch('/api/debug/reset-db', { method: 'POST' })
-                    .then(res => res.ok ? alert("Database reset successfully") : alert("Failed to reset database"))
+              <button className="pill" style={{color: 'var(--accent)'}} onClick={() => {
+                if (window.confirm("This will refresh the database with latest entries from source files. Existing links will NOT be deleted. Continue?")) {
+                  fetch('/api/refresh-db', { method: 'POST' })
+                    .then(res => res.ok ? alert("Database refreshed successfully") : alert("Failed to refresh database"))
                     .then(() => window.location.reload());
                 }
               }}>
-                <span className="material-icons">storage</span> Reset Database
+                <span className="material-icons">storage</span> Refresh Database
               </button>
             </div>
           </div>

@@ -339,6 +339,7 @@ function App() {
         <BookmarkModal
           link={editingLink}
           profileId={currentProfile?.id}
+          profiles={profiles}
           onClose={() => setIsBookmarkOpen(false)}
           onSave={() => setRefreshTrigger(prev => prev + 1)}
         />

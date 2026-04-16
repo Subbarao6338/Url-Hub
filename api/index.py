@@ -307,25 +307,17 @@ def delete_link(link_id: str):
     conn.close()
     return {"message": "Link deleted"}
 
-@app.post("/api/debug/reset-db")
-def reset_db():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM links")
-    cursor.execute("DELETE FROM categories")
-    cursor.execute("DELETE FROM projects")
-    conn.commit()
-    conn.close()
-
-    # Re-run migration
+@app.post("/api/refresh-db")
+def refresh_db():
+    # Re-run migration without deleting existing data
     try:
         from scripts.migrate import migrate
         migrate(db_path=DB_PATH)
     except Exception as e:
-        print(f"Re-migration failed: {e}")
+        print(f"Migration failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-    return {"message": "Database reset and re-migrated successfully"}
+    return {"message": "Database refreshed successfully"}
 
 # Categories Endpoints
 @app.get("/api/categories", response_model=List[Category])

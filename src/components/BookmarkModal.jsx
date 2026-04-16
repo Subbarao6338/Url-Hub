@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 
-const BookmarkModal = ({ link, profileId, onClose, onSave }) => {
+const BookmarkModal = ({ link, profileId, profiles, onClose, onSave }) => {
   const [title, setTitle] = useState(link?.title || '');
   const [url, setUrl] = useState(link?.url || '');
   const [urls, setUrls] = useState(link?.urls || []);
   const [icon, setIcon] = useState(link?.icon || '');
   const [category, setCategory] = useState(link?.category || 'Utilities');
+  const [selectedProfileId, setSelectedProfileId] = useState(link?.profile_id || profileId);
   const [suggestedCategories, setSuggestedCategories] = useState([]);
 
   useEffect(() => {
-    if (profileId) {
-      fetch(`/api/links/categories?profile_id=${profileId}`)
+    if (selectedProfileId) {
+      fetch(`/api/links/categories?profile_id=${selectedProfileId}`)
         .then(res => res.json())
         .then(data => {
           if (Array.isArray(data)) setSuggestedCategories(data);
         })
         .catch(err => console.error("Failed to fetch suggested categories:", err));
     }
-  }, [profileId]);
+  }, [selectedProfileId]);
 
   const handleAddUrl = () => {
     setUrls([...urls, '']);
@@ -41,7 +42,7 @@ const BookmarkModal = ({ link, profileId, onClose, onSave }) => {
       urls: [url, ...urls.filter(u => u && u !== url)],
       icon,
       category,
-      profile_id: profileId,
+      profile_id: selectedProfileId,
       is_internal: false,
       is_pinned: link?.is_pinned || false
     };
@@ -66,6 +67,18 @@ const BookmarkModal = ({ link, profileId, onClose, onSave }) => {
     <div className="modal" style={{display: 'block'}}>
       <h2 style={{marginTop: 0}}>{link ? 'Edit Bookmark' : 'Add Bookmark'}</h2>
       <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Profile</label>
+          <select
+            value={selectedProfileId}
+            onChange={(e) => setSelectedProfileId(parseInt(e.target.value))}
+            style={{ width: '100%', padding: '0.6rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text)' }}
+          >
+            {profiles?.map(p => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </select>
+        </div>
         <div className="form-group">
           <label>Title</label>
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required placeholder="My Bookmark" />
