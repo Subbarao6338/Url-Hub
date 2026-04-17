@@ -2036,9 +2036,12 @@ body.no-glass[data-theme="dark"] {
 }
 
 /* Disable Hover Effects */
-body.no-hover-effects .card {
+body.no-hover-effects .card,
+body.reduced-motion .card {
   transition: opacity 0.3s ease, transform 0.3s ease;
   animation: none;
+  opacity: 1;
+  transform: none;
 }
 
 body.no-hover-effects .card:hover {
