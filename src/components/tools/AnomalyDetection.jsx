@@ -1,22 +1,44 @@
 import React, { useState } from 'react';
 
-const AnomalyDetection = () => {
+const AnomalyDetection = ({ onResultChange }) => {
   const [datasource, setDatasource] = useState('local');
   const [sensitivity, setSensitivity] = useState(85);
   const [isDetecting, setIsDetecting] = useState(false);
   const [results, setResults] = useState(null);
+  const [fileName, setFileName] = useState('');
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileName(file.name);
+    }
+  };
 
   const startDetection = () => {
     setIsDetecting(true);
     setResults(null);
+    onResultChange(null);
+
     setTimeout(() => {
-      setResults({
+      const anomalies = Math.floor(Math.random() * 20) + 5;
+      const confidence = (90 + Math.random() * 9).toFixed(1) + '%';
+      const lastRun = new Date().toLocaleString();
+
+      const res = {
         status: 'Complete',
-        anomaliesFound: 12,
-        confidence: '94%',
-        lastRun: new Date().toLocaleString()
-      });
+        anomaliesFound: anomalies,
+        confidence: confidence,
+        lastRun: lastRun,
+        fileName: fileName || 'sample_data.csv'
+      };
+
+      setResults(res);
       setIsDetecting(false);
+
+      onResultChange({
+        text: JSON.stringify(res, null, 2),
+        filename: `anomaly_report_${Date.now()}.json`
+      });
     }, 2000);
   };
 
@@ -35,6 +57,20 @@ const AnomalyDetection = () => {
           <option value="kafka">Apache Kafka Topic</option>
         </select>
       </div>
+
+      {datasource === 'local' && (
+        <div className="form-group" style={{ marginTop: '15px' }}>
+          <label>Upload CSV Data</label>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <input type="file" accept=".csv" onChange={handleFileUpload} style={{ display: 'none' }} id="csv-upload" />
+            <label htmlFor="csv-upload" className="pill" style={{ cursor: 'pointer', margin: 0 }}>
+              <span className="material-icons" style={{ fontSize: '1.2rem' }}>upload_file</span>
+              {fileName ? 'Change File' : 'Choose CSV'}
+            </label>
+            {fileName && <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{fileName}</span>}
+          </div>
+        </div>
+      )}
 
       <div className="form-group" style={{ marginTop: '15px' }}>
         <label>Sensitivity ({sensitivity}%)</label>

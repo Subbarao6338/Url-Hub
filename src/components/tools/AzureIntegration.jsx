@@ -1,8 +1,20 @@
 import React, { useState } from 'react';
 
-const AzureIntegration = () => {
+const AzureIntegration = ({ onResultChange }) => {
   const [activeTab, setActiveTab] = useState('aion');
   const [isRunning, setIsRunning] = useState(false);
+  const [fileName, setFileName] = useState('');
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileName(file.name);
+      onResultChange({
+        text: `Telemetry payload ${file.name} ready for stream processing.`,
+        filename: 'payload_summary.json'
+      });
+    }
+  };
 
   const functions = [
     { name: 'anonymize-stream-processor', status: 'Enabled', trigger: 'EventHub' },
@@ -23,6 +35,17 @@ const AzureIntegration = () => {
 
       {activeTab === 'aion' && (
         <div style={{ display: 'grid', gap: '15px' }}>
+          <div className="form-group">
+            <label>Upload Telemetry Payload</label>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <input type="file" accept=".json,.csv" onChange={handleFileUpload} style={{ display: 'none' }} id="az-upload" />
+              <label htmlFor="az-upload" className="pill" style={{ cursor: 'pointer', margin: 0 }}>
+                <span className="material-icons" style={{ fontSize: '1.2rem' }}>upload_file</span>
+                {fileName ? 'Change Payload' : 'Select Payload'}
+              </label>
+              {fileName && <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{fileName}</span>}
+            </div>
+          </div>
           <div className="tool-result" style={{ textAlign: 'center', padding: '20px' }}>
             <span className="material-icons" style={{ fontSize: '3rem', color: 'var(--primary)' }}>psychology</span>
             <div style={{ fontSize: '1.2rem', fontWeight: 600, marginTop: '10px' }}>AION Engine</div>

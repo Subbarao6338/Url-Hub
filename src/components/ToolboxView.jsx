@@ -88,20 +88,6 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
   const [collapsedCategories, setCollapsedCategories] = useState({});
-
-  const toggleCategoryCollapse = (cat) => {
-    setCollapsedCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
-  };
-
-  const collapseAll = () => {
-    const newCollapsed = {};
-    cats.forEach(cat => newCollapsed[cat] = true);
-    setCollapsedCategories(newCollapsed);
-  };
-
-  const expandAll = () => {
-    setCollapsedCategories({});
-  };
   const [pinnedTools, setPinnedTools] = useState(JSON.parse(localStorage.getItem('hub_pinned_tools') || '[]'));
 
   useEffect(() => {
@@ -175,6 +161,20 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats }) => {
   });
 
   const cats = Object.keys(grouped).sort();
+
+  const toggleCategoryCollapse = (cat) => {
+    setCollapsedCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
+  };
+
+  const collapseAll = () => {
+    const newCollapsed = {};
+    cats.forEach(cat => newCollapsed[cat] = true);
+    setCollapsedCategories(newCollapsed);
+  };
+
+  const expandAll = () => {
+    setCollapsedCategories({});
+  };
 
   const stats = {};
   TOOLS.forEach(t => {

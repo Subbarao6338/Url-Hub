@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
 
-const DataPortal = () => {
+const DataPortal = ({ onResultChange }) => {
   const [activeTab, setActiveTab] = useState('resources');
+  const [fileName, setFileName] = useState('');
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileName(file.name);
+      onResultChange({
+        text: `Config file ${file.name} uploaded for resource management.`,
+        filename: 'portal_config.json'
+      });
+    }
+  };
 
   const resources = [
     { type: 'Kubernetes', name: 'graviton-k8s-cluster', status: 'Running', region: 'East US' },
@@ -56,6 +68,13 @@ const DataPortal = () => {
 
       {activeTab === 'terraform' && (
         <div style={{ background: '#1e1e1e', color: '#d4d4d4', padding: '15px', borderRadius: '8px', fontFamily: 'monospace', fontSize: '0.8rem' }}>
+          <div style={{ marginBottom: '15px', display: 'flex', gap: '10px' }}>
+            <input type="file" accept=".tf,.json" onChange={handleFileUpload} style={{ display: 'none' }} id="tf-upload" />
+            <label htmlFor="tf-upload" className="pill" style={{ cursor: 'pointer', margin: 0, background: '#333', color: '#fff', fontSize: '0.7rem' }}>
+              <span className="material-icons" style={{ fontSize: '1rem' }}>upload_file</span>
+              {fileName ? 'Update Plan' : 'Upload .tf Plan'}
+            </label>
+          </div>
           <div style={{ color: '#569cd6', marginBottom: '5px' }}># Provisioning Log</div>
           <div>$ terraform init</div>
           <div>$ terraform plan -out=tfplan</div>

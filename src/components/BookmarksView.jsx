@@ -34,20 +34,6 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
   const [loading, setLoading] = useState(true);
   const [collapsedCategories, setCollapsedCategories] = useState({});
 
-  const toggleCategoryCollapse = (cat) => {
-    setCollapsedCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
-  };
-
-  const collapseAll = () => {
-    const newCollapsed = {};
-    cats.forEach(cat => newCollapsed[cat] = true);
-    setCollapsedCategories(newCollapsed);
-  };
-
-  const expandAll = () => {
-    setCollapsedCategories({});
-  };
-
   useEffect(() => {
     if (!profileId) return;
     setLoading(true);
@@ -104,6 +90,20 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
   });
 
   const cats = Object.keys(grouped).sort();
+
+  const toggleCategoryCollapse = (cat) => {
+    setCollapsedCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
+  };
+
+  const collapseAll = () => {
+    const newCollapsed = {};
+    cats.forEach(cat => newCollapsed[cat] = true);
+    setCollapsedCategories(newCollapsed);
+  };
+
+  const expandAll = () => {
+    setCollapsedCategories({});
+  };
 
   const stats = {};
   const visibleCategories = {};

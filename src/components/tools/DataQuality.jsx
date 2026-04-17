@@ -1,22 +1,44 @@
 import React, { useState } from 'react';
 
-const DataQuality = () => {
+const DataQuality = ({ onResultChange }) => {
   const [activeTab, setActiveTab] = useState('ge');
   const [isValidating, setIsValidating] = useState(false);
   const [report, setReport] = useState(null);
+  const [fileName, setFileName] = useState('');
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileName(file.name);
+    }
+  };
 
   const runValidation = () => {
     setIsValidating(true);
     setReport(null);
+    onResultChange(null);
+
     setTimeout(() => {
-      setReport({
-        score: 98.2,
-        passed: 45,
-        failed: 1,
+      const score = (95 + Math.random() * 5).toFixed(1);
+      const passed = Math.floor(Math.random() * 50) + 30;
+      const failed = Math.floor(Math.random() * 3);
+
+      const res = {
+        score: score,
+        passed: passed,
+        failed: failed,
         suite: 'Production_Core_v2',
+        fileName: fileName || 'default_dataset.parquet',
         timestamp: new Date().toLocaleString()
-      });
+      };
+
+      setReport(res);
       setIsValidating(false);
+
+      onResultChange({
+        text: JSON.stringify(res, null, 2),
+        filename: `dq_report_${Date.now()}.json`
+      });
     }, 1500);
   };
 
@@ -34,6 +56,17 @@ const DataQuality = () => {
 
       {activeTab === 'ge' && (
         <div>
+          <div className="form-group">
+            <label>Data Asset (Upload)</label>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '15px' }}>
+              <input type="file" onChange={handleFileUpload} style={{ display: 'none' }} id="dq-upload" />
+              <label htmlFor="dq-upload" className="pill" style={{ cursor: 'pointer', margin: 0 }}>
+                <span className="material-icons" style={{ fontSize: '1.2rem' }}>upload_file</span>
+                {fileName ? 'Change File' : 'Select Data File'}
+              </label>
+              {fileName && <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{fileName}</span>}
+            </div>
+          </div>
           <div className="form-group">
             <label>Expectation Suite</label>
             <select style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }}>

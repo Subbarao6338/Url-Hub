@@ -1,18 +1,31 @@
 import React, { useState } from 'react';
 
-const DataAnonymizer = () => {
+const DataAnonymizer = ({ onResultChange }) => {
   const [activeTab, setActiveTab] = useState('masking');
   const [isProcessing, setIsProcessing] = useState(false);
   const [log, setLog] = useState([]);
+  const [fileName, setFileName] = useState('');
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileName(file.name);
+    }
+  };
 
   const processData = (task) => {
     setIsProcessing(true);
+    onResultChange(null);
     setLog(prev => [...prev, `[${new Date().toLocaleTimeString()}] Initializing ${task}...`]);
     setTimeout(() => {
-      setLog(prev => [...prev, `[${new Date().toLocaleTimeString()}] Running SDV models...`]);
+      setLog(prev => [...prev, `[${new Date().toLocaleTimeString()}] Processing ${fileName || 'data stream'}...`]);
       setTimeout(() => {
         setLog(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${task} completed successfully.`]);
         setIsProcessing(false);
+        onResultChange({
+          text: log.join('\n') + `\n[${new Date().toLocaleTimeString()}] ${task} completed successfully.`,
+          filename: `anonymization_log_${Date.now()}.txt`
+        });
       }, 1000);
     }, 800);
   };
@@ -63,7 +76,15 @@ const DataAnonymizer = () => {
         <div style={{ textAlign: 'center', padding: '15px', border: '2px dashed var(--border)', borderRadius: '12px' }}>
           <span className="material-icons" style={{ fontSize: '2.5rem', opacity: 0.3 }}>photo_camera</span>
           <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>Upload images for automated face blurring and object masking.</p>
-          <button className="pill" style={{ marginTop: '5px' }} onClick={() => processData('Image Anonymization')} disabled={isProcessing}>Select Images</button>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
+            <input type="file" accept="image/*" onChange={handleFileUpload} style={{ display: 'none' }} id="img-upload" />
+            <label htmlFor="img-upload" className="pill" style={{ cursor: 'pointer', margin: 0 }}>
+              <span className="material-icons" style={{ fontSize: '1.2rem' }}>add_a_photo</span>
+              {fileName ? 'Change Image' : 'Select Image'}
+            </label>
+            {fileName && <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{fileName}</span>}
+            <button className="btn-primary" onClick={() => processData('Image Anonymization')} disabled={isProcessing || !fileName}>Anonymize Image</button>
+          </div>
         </div>
       )}
 

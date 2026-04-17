@@ -2020,6 +2020,7 @@ body.no-glass[data-theme="dark"] {
     max-width: 800px;
     margin: 0 auto;
     padding: 1rem;
+    padding-bottom: 80px;
 }
 
 @media (max-width: 768px) {

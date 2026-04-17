@@ -1,7 +1,19 @@
 import React, { useState } from 'react';
 
-const Observability = () => {
+const Observability = ({ onResultChange }) => {
   const [activeTab, setActiveTab] = useState('airflow');
+  const [fileName, setFileName] = useState('');
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileName(file.name);
+      onResultChange({
+        text: `Loaded log file: ${file.name}\nSize: ${file.size} bytes`,
+        filename: `log_analysis_${Date.now()}.txt`
+      });
+    }
+  };
 
   const clusters = [
     { name: 'Prod-US-East', status: 'Healthy', lag: '2ms', load: '45%' },
@@ -24,8 +36,15 @@ const Observability = () => {
       {activeTab === 'airflow' && (
         <div style={{ display: 'grid', gap: '10px' }}>
           <div className="form-group">
-            <label>Search Airflow Logs</label>
-            <input type="text" placeholder="DAG ID or Task ID..." style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }} />
+            <label>Upload & Search Logs</label>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '10px' }}>
+              <input type="file" accept=".log,.txt" onChange={handleFileUpload} style={{ display: 'none' }} id="log-upload" />
+              <label htmlFor="log-upload" className="pill" style={{ cursor: 'pointer', margin: 0, padding: '8px 16px' }}>
+                <span className="material-icons" style={{ fontSize: '1rem' }}>upload_file</span>
+                {fileName ? 'Change Log' : 'Upload Log'}
+              </label>
+              <input type="text" placeholder="Search entries..." style={{ flex: 1, padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }} />
+            </div>
           </div>
           <div style={{ maxHeight: '200px', overflowY: 'auto', background: '#1e1e1e', padding: '10px', borderRadius: '8px', fontSize: '0.8rem', color: '#d4d4d4', fontFamily: 'monospace' }}>
             <div>[2024-05-12 10:20:01] INFO - Executing task: data_mask_01</div>
