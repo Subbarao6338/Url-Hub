@@ -16,7 +16,7 @@ function App() {
   const [currentTab, setCurrentTab] = useState(localStorage.getItem('hub_startup_tab') || 'toolbox');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActive, setSearchActive] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('hub_theme') === 'dark');
+  const [theme, setTheme] = useState(localStorage.getItem('hub_theme') || 'light');
   const [accentColor, setAccentColor] = useState(localStorage.getItem('hub_accent_color') || 'indigo');
 
   useEffect(() => {
@@ -92,9 +92,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-    localStorage.setItem('hub_theme', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('hub_theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     if (disableGlass) document.body.classList.add('no-glass');
@@ -288,8 +288,8 @@ function App() {
           setShowProjectsTab={setShowProjectsTab}
           enableHoverEffects={enableHoverEffects}
           setEnableHoverEffects={setEnableHoverEffects}
-          isDarkMode={isDarkMode}
-          setIsDarkMode={setIsDarkMode}
+          theme={theme}
+          setTheme={setTheme}
           accentColor={accentColor}
           setAccentColor={setAccentColor}
           isCompact={isCompact}

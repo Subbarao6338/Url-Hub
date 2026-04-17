@@ -68,7 +68,7 @@ const SettingsModal = ({
   startupTab, setStartupTab,
   showProjectsTab, setShowProjectsTab,
   enableHoverEffects, setEnableHoverEffects,
-  isDarkMode, setIsDarkMode,
+  theme, setTheme,
   accentColor, setAccentColor,
   isCompact, setIsCompact,
   hideUrls, setHideUrls,
@@ -181,12 +181,26 @@ const SettingsModal = ({
             <h3>Appearance</h3>
             <p className="settings-desc">Customize the look and feel of your dashboard.</p>
             <div className="pill-group">
-              <button
-                className={`pill ${isDarkMode ? 'active' : ''}`}
-                onClick={() => setIsDarkMode(!isDarkMode)}
-              >
-                <span className="material-icons">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
-                <span>Theme: {isDarkMode ? 'Dark' : 'Light'}</span>
+              {['light', 'dark', 'forest', 'ocean', 'earth'].map(t => (
+                <button
+                  key={t}
+                  className={`pill ${theme === t ? 'active' : ''}`}
+                  onClick={() => setTheme(t)}
+                >
+                  <span className="material-icons">
+                    {t === 'light' ? 'light_mode' :
+                     t === 'dark' ? 'dark_mode' :
+                     t === 'forest' ? 'forest' :
+                     t === 'ocean' ? 'water' : 'landscape'}
+                  </span>
+                  <span>{t.charAt(0).toUpperCase() + t.slice(1)}</span>
+                </button>
+              ))}
+            </div>
+            <div className="pill-group" style={{marginTop: '15px'}}>
+              <button className={`pill ${isCompact ? 'active' : ''}`} onClick={() => setIsCompact(!isCompact)}>
+                <span className="material-icons">view_module</span>
+                <span>Compact Mode</span>
               </button>
               <button className={`pill ${disableGlass ? 'active' : ''}`} onClick={() => setDisableGlass(!disableGlass)}>
                 <span className="material-icons">{disableGlass ? 'blur_on' : 'blur_off'}</span>
@@ -269,10 +283,6 @@ const SettingsModal = ({
             <h3>Layout & Visibility</h3>
             <p className="settings-desc">Control how bookmarks are displayed in the grid.</p>
             <div className="pill-group">
-              <button className={`pill ${isCompact ? 'active' : ''}`} onClick={() => setIsCompact(!isCompact)}>
-                <span className="material-icons">view_module</span>
-                <span>Compact Mode</span>
-              </button>
               <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
                 <span className="material-icons">link_off</span>
                 <span>Hide URLs</span>
