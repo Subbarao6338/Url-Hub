@@ -1058,7 +1058,7 @@ body.no-aurora::after {
   inset: 0;
   background: rgba(15, 23, 42, 0.4);
   backdrop-filter: blur(4px);
-  z-index: 3000;
+  z-index: 5000;
   animation: fadeIn 0.3s ease;
 }
 
@@ -1087,7 +1087,7 @@ body.no-aurora::after {
   border-radius: var(--radius-xl);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-lg);
-  z-index: 3001;
+  z-index: 5001;
   animation: modalSlide 0.4s cubic-bezier(0.2, 0, 0, 1);
 }
 
@@ -1103,49 +1103,91 @@ body.no-aurora::after {
   }
 }
 
-.modal-tabs {
+.settings-container {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-  scrollbar-width: none;
 }
 
-.modal-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.tab-btn {
-  padding: 8px 16px;
+.settings-collapsible {
+  border: 1px solid var(--border);
   border-radius: 12px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-weight: 600;
+  overflow: hidden;
+  background: var(--surface);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-collapsible.is-open {
+  background: var(--surface-hover);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.1);
+}
+
+.collapsible-header {
+  padding: 12px 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
-  white-space: nowrap;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
 }
 
-.tab-btn:hover {
+.collapsible-header:hover {
   background: var(--surface-hover);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
   color: var(--on-surface);
 }
 
-.tab-btn.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-  box-shadow: 0 4px 12px var(--primary-glow);
+.header-left .material-icons {
+  color: var(--primary);
+  font-size: 1.25rem;
 }
 
-.tab-pane {
-  animation: fadeIn 0.3s ease;
+.toggle-icon {
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+}
+
+.is-open .toggle-icon {
+  transform: rotate(180deg);
+}
+
+.collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.is-open .collapsible-content {
+  max-height: 1000px; /* High enough to contain content */
+}
+
+.collapsible-inner {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  animation: fadeIn 0.4s ease;
+}
+
+.about-content-wrapper {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.about-content-wrapper::-webkit-scrollbar {
+  width: 4px;
+}
+
+.about-content-wrapper::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
 }
 
 .modal h2 {
@@ -1564,7 +1606,7 @@ body.no-aurora::after {
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-top: 1px solid var(--border);
-    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
     z-index: 4000;
     gap: 12px;
     justify-content: space-between;
@@ -1585,8 +1627,8 @@ body.no-aurora::after {
 
   .tab-item {
     flex-direction: column;
-    gap: 4px;
-    padding: 6px 0;
+    gap: 2px;
+    padding: 4px 0;
     flex: 1;
     border-radius: 12px;
     font-size: 0.75rem;
@@ -1753,6 +1795,15 @@ body.no-aurora::after {
   .tools-container {
     padding: 1rem 1rem 5rem 1rem;
     border-radius: 0;
+  }
+
+  .modal {
+    padding: 1.5rem !important;
+    width: 95%;
+  }
+
+  .form-actions {
+    margin-top: 1.5rem;
   }
 }
 /* Compact View Styles */
