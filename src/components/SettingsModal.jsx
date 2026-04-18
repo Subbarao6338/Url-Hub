@@ -86,6 +86,7 @@ const CollapsibleSection = ({ id, title, icon, isOpen, onToggle, children }) => 
 
 const SettingsModal = ({
   appName, setAppName,
+  enableProfiles, setEnableProfiles,
   startupTab, setStartupTab,
   showProjectsTab, setShowProjectsTab,
   enableHoverEffects, setEnableHoverEffects,
@@ -109,7 +110,7 @@ const SettingsModal = ({
   onClose,
   resetData
 }) => {
-  const [openSections, setOpenSections] = useState(['global']);
+  const [openSections, setOpenSections] = useState([]);
 
   const toggleSection = (id) => {
     setOpenSections(prev =>
@@ -303,6 +304,10 @@ const SettingsModal = ({
             </button>
           </div>
           <div className="pill-group">
+            <button className={`pill ${enableProfiles ? 'active' : ''}`} onClick={() => setEnableProfiles(!enableProfiles)}>
+              <span className="material-icons">{enableProfiles ? 'account_circle' : 'no_accounts'}</span>
+              <span>Enable Profiles</span>
+            </button>
             <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
               <span className="material-icons">link_off</span>
               <span>Hide URLs</span>

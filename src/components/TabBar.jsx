@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettingsClick, showProjectsTab }) => {
+const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettingsClick, showProjectsTab, enableProfiles }) => {
   const [pressTimer, setPressTimer] = useState(null);
   const isLongPress = useRef(false);
 
@@ -8,7 +8,7 @@ const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettin
     isLongPress.current = false;
     const timer = setTimeout(() => {
       isLongPress.current = true;
-      if (onBookmarksLongPress) onBookmarksLongPress();
+      if (onBookmarksLongPress && enableProfiles) onBookmarksLongPress();
     }, 500);
     setPressTimer(timer);
   };

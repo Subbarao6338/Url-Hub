@@ -11,6 +11,7 @@ import BookmarkModal from './components/BookmarkModal';
 
 function App() {
   const [appName, setAppName] = useState(localStorage.getItem('hub_app_name') || 'N Box');
+  const [enableProfiles, setEnableProfiles] = useState(localStorage.getItem('hub_enable_profiles') === 'true');
   const [currentProfileName, setCurrentProfileName] = useState(localStorage.getItem('hub_current_profile') || localStorage.getItem('hub_startup_profile') || 'Default');
   const [profiles, setProfiles] = useState([]);
   const [currentTab, setCurrentTab] = useState(localStorage.getItem('hub_startup_tab') || 'toolbox');
@@ -133,6 +134,7 @@ function App() {
   useEffect(() => { localStorage.setItem('hub_startup_tab', startupTab); }, [startupTab]);
   useEffect(() => { localStorage.setItem('hub_show_projects_tab', showProjectsTab); }, [showProjectsTab]);
   useEffect(() => { localStorage.setItem('hub_hide_recent_tools', hideRecentTools); }, [hideRecentTools]);
+  useEffect(() => { localStorage.setItem('hub_enable_profiles', enableProfiles); }, [enableProfiles]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-color', accentColor);
@@ -181,7 +183,7 @@ function App() {
   useEffect(() => { localStorage.setItem('hub_open_projects_internally', openProjectsInternally); }, [openProjectsInternally]);
 
   const currentProfile = Array.isArray(profiles) && profiles.length > 0
-    ? (profiles.find(p => p.name.trim() === (currentProfileName?.trim() || 'Default')) ||
+    ? (profiles.find(p => p.name.trim() === (enableProfiles ? (currentProfileName?.trim() || 'Default') : 'Default')) ||
        profiles.find(p => p.name.trim() === 'Default') ||
        profiles[0])
     : null;
@@ -249,7 +251,7 @@ function App() {
       <main className="main-content">
         <Header
           appName={appName}
-          currentProfile={currentProfileName}
+          currentProfile={enableProfiles ? currentProfileName : 'Default'}
           profiles={profiles}
           currentTab={currentTab}
           setView={(view) => setCurrentTab(view)}
@@ -265,9 +267,10 @@ function App() {
           currentTab={currentTab}
           setTab={setCurrentTab}
           onAddClick={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
-          onBookmarksLongPress={() => setIsProfileOpen(true)}
+          onBookmarksLongPress={() => { if (enableProfiles) setIsProfileOpen(true); }}
           onSettingsClick={() => setIsSettingsOpen(true)}
           showProjectsTab={showProjectsTab}
+          enableProfiles={enableProfiles}
         />
 
         <div id="content" className={`tools-container ${isCompact ? 'compact' : ''}`}>
@@ -321,6 +324,8 @@ function App() {
         <SettingsModal
           appName={appName}
           setAppName={setAppName}
+          enableProfiles={enableProfiles}
+          setEnableProfiles={setEnableProfiles}
           startupTab={startupTab}
           setStartupTab={setStartupTab}
           showProjectsTab={showProjectsTab}
@@ -383,6 +388,7 @@ function App() {
           link={editingLink}
           profileId={currentProfile?.id}
           profiles={profiles}
+          enableProfiles={enableProfiles}
           onClose={() => setIsBookmarkOpen(false)}
           onSave={(savedLink) => {
             setRefreshTrigger(prev => prev + 1);
