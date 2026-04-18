@@ -105,6 +105,7 @@ const SettingsModal = ({
   groupToolbox, setGroupToolbox,
   hideRecentTools, setHideRecentTools,
   clearRecentTools,
+  onAddBookmark,
   onClose,
   resetData
 }) => {
@@ -291,6 +292,13 @@ const SettingsModal = ({
           isOpen={openSections.includes('bookmarks')}
           onToggle={toggleSection}
         >
+          <div className="form-group">
+            <label>Manage Bookmarks</label>
+            <button className="pill" style={{background: 'var(--accent)', color: 'white', border: 'none'}} onClick={() => { onAddBookmark(); onClose(); }}>
+              <span className="material-icons">add_link</span>
+              <span>Add New Bookmark</span>
+            </button>
+          </div>
           <div className="pill-group">
             <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
               <span className="material-icons">link_off</span>

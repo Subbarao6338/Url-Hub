@@ -60,6 +60,20 @@ const BookmarkModal = ({ link, profileId, profiles, onClose, onSave }) => {
         const errData = await res.json().catch(() => ({}));
         throw new Error(errData.detail || "Failed to save bookmark");
       }
+      // Clear Service Worker cache for API requests after mutation
+      if ('caches' in window) {
+        try {
+          const cache = await caches.open('url-hub-v9');
+          const keys = await cache.keys();
+          for (const request of keys) {
+            if (request.url.includes('/api/')) {
+              await cache.delete(request);
+            }
+          }
+        } catch (err) {
+          console.error("Failed to clear cache:", err);
+        }
+      }
       return res.json();
     })
     .then(savedLink => {

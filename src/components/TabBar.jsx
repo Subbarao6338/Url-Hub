@@ -57,9 +57,6 @@ const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettin
           <span className="material-icons">bookmarks</span>
           <span className="tab-name">Bookmarks</span>
         </div>
-        <button className="icon-btn" onClick={onAddClick} title="Add Bookmark">
-          <span className="material-icons">add</span>
-        </button>
       </div>
       {showProjectsTab && (
         <div className="tab-group" id="group-projects">

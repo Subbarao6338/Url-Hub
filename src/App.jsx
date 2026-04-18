@@ -199,8 +199,21 @@ function App() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ is_pinned: newPinnedStatus })
     })
-    .then(res => {
+    .then(async res => {
       if (res.ok) {
+        if ('caches' in window) {
+          try {
+            const cache = await caches.open('url-hub-v9');
+            const keys = await cache.keys();
+            for (const request of keys) {
+              if (request.url.includes('/api/')) {
+                await cache.delete(request);
+              }
+            }
+          } catch (err) {
+            console.error("Failed to clear cache:", err);
+          }
+        }
         setRefreshTrigger(prev => prev + 1);
       }
     })
@@ -210,8 +223,23 @@ function App() {
   const deleteLink = (id) => {
     if (!confirmDelete || window.confirm("Are you sure you want to delete this bookmark?")) {
       fetch(`/api/links/${id}`, { method: 'DELETE' })
-        .then(() => {
-          setRefreshTrigger(prev => prev + 1);
+        .then(async (res) => {
+          if (res.ok) {
+            if ('caches' in window) {
+              try {
+                const cache = await caches.open('url-hub-v9');
+                const keys = await cache.keys();
+                for (const request of keys) {
+                  if (request.url.includes('/api/')) {
+                    await cache.delete(request);
+                  }
+                }
+              } catch (err) {
+                console.error("Failed to clear cache:", err);
+              }
+            }
+            setRefreshTrigger(prev => prev + 1);
+          }
         });
     }
   };
@@ -330,6 +358,7 @@ function App() {
           hideRecentTools={hideRecentTools}
           setHideRecentTools={setHideRecentTools}
           clearRecentTools={clearRecentTools}
+          onAddBookmark={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
           onClose={() => setIsSettingsOpen(false)}
           resetData={() => {
             if (window.confirm("Reset all dashboard data?")) {
