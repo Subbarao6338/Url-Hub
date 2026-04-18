@@ -230,7 +230,7 @@ const SettingsModal = ({
                   light: 'light_mode', dark: 'dark_mode', nature: 'eco', forest: 'forest',
                   ocean: 'water', earth: 'landscape', mountain: 'terrain', desert: 'wb_sunny',
                   sunset: 'wb_twilight', winter: 'ac_unit', autumn: 'park', lavender: 'spa',
-                  spring: 'local_florist', galaxy: 'auto_awesome', blackhole: 'vortex',
+                  spring: 'local_florist', galaxy: 'auto_awesome', blackhole: 'cyclone',
                   midnight: 'nights_stay', aurora: 'waves', blossom: 'filter_vintage',
                   canyon: 'terrain', glacier: 'ac_unit'
                 };
