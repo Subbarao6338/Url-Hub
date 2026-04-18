@@ -63,6 +63,27 @@ const markdownToHTML = (markdown) => {
   return html;
 };
 
+const CollapsibleSection = ({ id, title, icon, isOpen, onToggle, children }) => {
+  return (
+    <div className={`settings-collapsible ${isOpen ? 'is-open' : ''}`}>
+      <div className="collapsible-header" onClick={() => onToggle(id)}>
+        <div className="header-left">
+          <span className="material-icons">{icon}</span>
+          <span>{title}</span>
+        </div>
+        <span className="material-icons toggle-icon">
+          {isOpen ? 'expand_less' : 'expand_more'}
+        </span>
+      </div>
+      <div className="collapsible-content">
+        <div className="collapsible-inner">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const SettingsModal = ({
   appName, setAppName,
   startupTab, setStartupTab,
@@ -87,6 +108,14 @@ const SettingsModal = ({
   onClose,
   resetData
 }) => {
+  const [openSections, setOpenSections] = useState(['global']);
+
+  const toggleSection = (id) => {
+    setOpenSections(prev =>
+      prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
+    );
+  };
+
   const handleExport = () => {
     const data = {};
     for (let i = 0; i < localStorage.length; i++) {
@@ -123,65 +152,74 @@ const SettingsModal = ({
     };
     reader.readAsText(file);
   };
-  const [activeTab, setActiveTab] = useState('general');
 
   const colors = [
     'indigo', 'blue', 'cyan', 'green', 'yellow', 'orange', 'red', 'pink', 'purple', 'violet', 'lime', 'sky', 'rose', 'slate', 'black'
   ];
 
   return (
-    <div className="modal" style={{display: 'block'}}>
-      <div className="modal-tabs">
-        <button className={`tab-btn ${activeTab === 'general' ? 'active' : ''}`} onClick={() => setActiveTab('general')}>
-          <span className="material-icons">settings</span> Global
-        </button>
-        <button className={`tab-btn ${activeTab === 'bookmarks' ? 'active' : ''}`} onClick={() => setActiveTab('bookmarks')}>
-          <span className="material-icons">bookmarks</span> Bookmarks
-        </button>
-        <button className={`tab-btn ${activeTab === 'projects' ? 'active' : ''}`} onClick={() => setActiveTab('projects')}>
-          <span className="material-icons">rocket_launch</span> Projects
-        </button>
-        <button className={`tab-btn ${activeTab === 'toolbox' ? 'active' : ''}`} onClick={() => setActiveTab('toolbox')}>
-          <span className="material-icons">handyman</span> Toolbox
-        </button>
-        <button className={`tab-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>
-          <span className="material-icons">info</span> About
-        </button>
-      </div>
+    <div className="modal" style={{display: 'block', padding: '1.5rem'}}>
+      <h2 style={{marginTop: 0, marginBottom: '1.5rem', fontSize: '1.5rem'}}>Settings</h2>
 
-      {activeTab === 'general' && (
-        <div className="tab-pane">
-          <h2 className="settings-header">Global Settings</h2>
-          <div className="settings-section">
-            <h3>Customization</h3>
-            <div className="form-group" style={{marginBottom: '1rem'}}>
-              <label>App Name</label>
-              <input
-                type="text"
-                value={appName}
-                onChange={(e) => setAppName(e.target.value)}
-                placeholder="N Box"
-                style={{maxWidth: '300px'}}
-              />
-            </div>
-            <div className="form-group">
-              <label>Startup Tab</label>
-              <div className="pill-group">
-                {['toolbox', 'bookmarks', 'projects'].map(tab => (
-                  <button
-                    key={tab}
-                    className={`pill ${startupTab === tab ? 'active' : ''}`}
-                    onClick={() => setStartupTab(tab)}
-                  >
-                    <span>{tab.charAt(0).toUpperCase() + tab.slice(1)}</span>
-                  </button>
-                ))}
-              </div>
+      <div className="settings-container">
+        <CollapsibleSection
+          id="global"
+          title="Global"
+          icon="settings"
+          isOpen={openSections.includes('global')}
+          onToggle={toggleSection}
+        >
+          <div className="form-group">
+            <label>App Name</label>
+            <input
+              type="text"
+              value={appName}
+              onChange={(e) => setAppName(e.target.value)}
+              placeholder="N Box"
+            />
+          </div>
+          <div className="form-group">
+            <label>Startup Tab</label>
+            <div className="pill-group">
+              {['toolbox', 'bookmarks', 'projects'].map(tab => (
+                <button
+                  key={tab}
+                  className={`pill ${startupTab === tab ? 'active' : ''}`}
+                  onClick={() => setStartupTab(tab)}
+                >
+                  <span>{tab.charAt(0).toUpperCase() + tab.slice(1)}</span>
+                </button>
+              ))}
             </div>
           </div>
-          <div className="settings-section">
-            <h3>Appearance</h3>
-            <p className="settings-desc">Customize the look and feel of your dashboard.</p>
+          <div className="form-group">
+            <label>Navigation</label>
+            <div className="pill-group">
+              <button className={`pill ${autoFocusSearch ? 'active' : ''}`} onClick={() => setAutoFocusSearch(!autoFocusSearch)}>
+                <span className="material-icons">center_focus_strong</span>
+                <span>Auto-focus Search</span>
+              </button>
+              <button className={`pill ${openInNewTab ? 'active' : ''}`} onClick={() => setOpenInNewTab(!openInNewTab)}>
+                <span className="material-icons">open_in_new</span>
+                <span>Open in New Tab</span>
+              </button>
+              <button className={`pill ${showProjectsTab ? 'active' : ''}`} onClick={() => setShowProjectsTab(!showProjectsTab)}>
+                <span className="material-icons">{showProjectsTab ? 'visibility' : 'visibility_off'}</span>
+                <span>Show Projects</span>
+              </button>
+            </div>
+          </div>
+        </CollapsibleSection>
+
+        <CollapsibleSection
+          id="themes"
+          title="Themes & Appearance"
+          icon="palette"
+          isOpen={openSections.includes('themes')}
+          onToggle={toggleSection}
+        >
+          <div className="form-group">
+            <label>Color Theme</label>
             <div className="pill-group">
               {['light', 'dark', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter'].map(t => (
                 <button
@@ -204,7 +242,24 @@ const SettingsModal = ({
                 </button>
               ))}
             </div>
-            <div className="pill-group" style={{marginTop: '15px'}}>
+          </div>
+          <div className="form-group">
+            <label>Accent Color</label>
+            <div className="pill-group">
+              {colors.map(color => (
+                <button
+                  key={color}
+                  className={`color-pill ${accentColor === color ? 'active' : ''}`}
+                  style={{background: getHex(color)}}
+                  onClick={() => setAccentColor(color)}
+                  title={color}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="form-group">
+            <label>Visual Effects</label>
+            <div className="pill-group">
               <button className={`pill ${isCompact ? 'active' : ''}`} onClick={() => setIsCompact(!isCompact)}>
                 <span className="material-icons">view_module</span>
                 <span>Compact Mode</span>
@@ -226,149 +281,117 @@ const SettingsModal = ({
                 <span>Hover Effects</span>
               </button>
             </div>
-            <div className="pill-group" style={{marginTop: '15px'}}>
-              {colors.map(color => (
-                <button
-                  key={color}
-                  className={`color-pill ${accentColor === color ? 'active' : ''}`}
-                  style={{background: getHex(color)}}
-                  onClick={() => setAccentColor(color)}
-                  title={color}
-                />
-              ))}
-            </div>
           </div>
-          <div className="settings-section">
-            <h3>Navigation</h3>
-            <p className="settings-desc">Configure how you interact with search and links.</p>
-            <div className="pill-group">
-              <button className={`pill ${autoFocusSearch ? 'active' : ''}`} onClick={() => setAutoFocusSearch(!autoFocusSearch)}>
-                <span className="material-icons">center_focus_strong</span>
-                <span>Auto-focus Search</span>
-              </button>
-              <button className={`pill ${openInNewTab ? 'active' : ''}`} onClick={() => setOpenInNewTab(!openInNewTab)}>
-                <span className="material-icons">open_in_new</span>
-                <span>Open in New Tab</span>
-              </button>
-              <button className={`pill ${showProjectsTab ? 'active' : ''}`} onClick={() => setShowProjectsTab(!showProjectsTab)}>
-                <span className="material-icons">{showProjectsTab ? 'visibility' : 'visibility_off'}</span>
-                <span>Show Projects</span>
-              </button>
-            </div>
-          </div>
-          <div className="settings-section">
-            <h3>Data Management</h3>
-            <div className="pill-group">
-              <button className="pill" onClick={handleExport}>
-                <span className="material-icons">download</span> Export Backup
-              </button>
-              <label className="pill" style={{ cursor: 'pointer' }}>
-                <span className="material-icons">upload</span> Import Backup
-                <input type="file" accept="application/json" onChange={handleImport} style={{ display: 'none' }} />
-              </label>
-              <button className="pill" style={{color: '#ef4444'}} onClick={resetData}>
-                <span className="material-icons">refresh</span> Reset Local Data
-              </button>
-              <button className="pill" style={{color: 'var(--accent)'}} onClick={() => {
-                if (window.confirm("This will refresh the database with latest entries from source files. Existing links will NOT be deleted. Continue?")) {
-                  fetch('/api/refresh-db', { method: 'POST' })
-                    .then(res => res.ok ? alert("Database refreshed successfully") : alert("Failed to refresh database"))
-                    .then(() => window.location.reload());
-                }
-              }}>
-                <span className="material-icons">storage</span> Refresh Database
-              </button>
-            </div>
-          </div>
-          <div className="settings-section">
-            <h3>Recents</h3>
-            <div className="pill-group">
-              <button className={`pill ${hideRecentTools ? 'active' : ''}`} onClick={() => setHideRecentTools(!hideRecentTools)}>
-                <span className="material-icons">{hideRecentTools ? 'visibility_off' : 'visibility'}</span>
-                <span>Hide Recents</span>
-              </button>
-              <button className="pill" onClick={() => { if(window.confirm("Clear recent tools history?")) clearRecentTools(); }}>
-                <span className="material-icons">history</span>
-                <span>Clear Recents</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+        </CollapsibleSection>
 
-      {activeTab === 'bookmarks' && (
-        <div className="tab-pane">
-          <h2 className="settings-header">Bookmarks Settings</h2>
-          <div className="settings-section">
-            <h3>Layout & Visibility</h3>
-            <p className="settings-desc">Control how bookmarks are displayed in the grid.</p>
-            <div className="pill-group">
-              <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
-                <span className="material-icons">link_off</span>
-                <span>Hide URLs</span>
-              </button>
-              <button className={`pill ${hideIcons ? 'active' : ''}`} onClick={() => setHideIcons(!hideIcons)}>
-                <span className="material-icons">hide_image</span>
-                <span>Hide Icons</span>
-              </button>
-              <button className={`pill ${showStats ? 'active' : ''}`} onClick={() => setShowStats(!showStats)}>
-                <span className="material-icons">analytics</span>
-                <span>Show Stats</span>
-              </button>
-            </div>
+        <CollapsibleSection
+          id="bookmarks"
+          title="Bookmarks"
+          icon="bookmarks"
+          isOpen={openSections.includes('bookmarks')}
+          onToggle={toggleSection}
+        >
+          <div className="pill-group">
+            <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
+              <span className="material-icons">link_off</span>
+              <span>Hide URLs</span>
+            </button>
+            <button className={`pill ${hideIcons ? 'active' : ''}`} onClick={() => setHideIcons(!hideIcons)}>
+              <span className="material-icons">hide_image</span>
+              <span>Hide Icons</span>
+            </button>
+            <button className={`pill ${showStats ? 'active' : ''}`} onClick={() => setShowStats(!showStats)}>
+              <span className="material-icons">analytics</span>
+              <span>Show Stats</span>
+            </button>
+            <button className={`pill ${confirmDelete ? 'active' : ''}`} onClick={() => setConfirmDelete(!confirmDelete)}>
+              <span className="material-icons">delete_sweep</span>
+              <span>Confirm Deletion</span>
+            </button>
           </div>
-          <div className="settings-section">
-            <h3>Management</h3>
-            <div className="pill-group">
-              <button className={`pill ${confirmDelete ? 'active' : ''}`} onClick={() => setConfirmDelete(!confirmDelete)}>
-                <span className="material-icons">delete_sweep</span>
-                <span>Confirm Deletion</span>
-              </button>
-            </div>
+        </CollapsibleSection>
+
+        <CollapsibleSection
+          id="projects"
+          title="Projects"
+          icon="rocket_launch"
+          isOpen={openSections.includes('projects')}
+          onToggle={toggleSection}
+        >
+          <div className="pill-group">
+            <button className={`pill ${openProjectsInternally ? 'active' : ''}`} onClick={() => setOpenProjectsInternally(!openProjectsInternally)}>
+              <span className="material-icons">tab</span>
+              <span>Open Projects Internally</span>
+            </button>
           </div>
-        </div>
-      )}
+        </CollapsibleSection>
 
-      {activeTab === 'projects' && (
-        <div className="tab-pane">
-          <h2 className="settings-header">Projects Settings</h2>
-          <div className="settings-section">
-            <h3>Behavior</h3>
-            <div className="pill-group">
-              <button className={`pill ${openProjectsInternally ? 'active' : ''}`} onClick={() => setOpenProjectsInternally(!openProjectsInternally)}>
-                <span className="material-icons">tab</span>
-                <span>Open Projects Internally</span>
-              </button>
-            </div>
+        <CollapsibleSection
+          id="toolbox"
+          title="Toolbox"
+          icon="handyman"
+          isOpen={openSections.includes('toolbox')}
+          onToggle={toggleSection}
+        >
+          <div className="pill-group">
+            <button className={`pill ${groupToolbox ? 'active' : ''}`} onClick={() => setGroupToolbox(!groupToolbox)}>
+              <span className="material-icons">reorder</span>
+              <span>Group Toolbox</span>
+            </button>
+            <button className={`pill ${hideRecentTools ? 'active' : ''}`} onClick={() => setHideRecentTools(!hideRecentTools)}>
+              <span className="material-icons">{hideRecentTools ? 'visibility_off' : 'visibility'}</span>
+              <span>Hide Recents</span>
+            </button>
+            <button className="pill" onClick={() => { if(window.confirm("Clear recent tools history?")) clearRecentTools(); }}>
+              <span className="material-icons">history</span>
+              <span>Clear Recents</span>
+            </button>
           </div>
-        </div>
-      )}
+        </CollapsibleSection>
 
-      {activeTab === 'toolbox' && (
-        <div className="tab-pane">
-          <h2 className="settings-header">Toolbox Settings</h2>
-          <div className="settings-section">
-            <h3>Organization</h3>
-            <div className="pill-group">
-              <button className={`pill ${groupToolbox ? 'active' : ''}`} onClick={() => setGroupToolbox(!groupToolbox)}>
-                <span className="material-icons">reorder</span>
-                <span>Group Toolbox</span>
-              </button>
-              <button className={`pill ${showStats ? 'active' : ''}`} onClick={() => setShowStats(!showStats)}>
-                <span className="material-icons">analytics</span>
-                <span>Show Counts</span>
-              </button>
-            </div>
+        <CollapsibleSection
+          id="data"
+          title="Data Management"
+          icon="storage"
+          isOpen={openSections.includes('data')}
+          onToggle={toggleSection}
+        >
+          <div className="pill-group">
+            <button className="pill" onClick={handleExport}>
+              <span className="material-icons">download</span> Export Backup
+            </button>
+            <label className="pill" style={{ cursor: 'pointer' }}>
+              <span className="material-icons">upload</span> Import Backup
+              <input type="file" accept="application/json" onChange={handleImport} style={{ display: 'none' }} />
+            </label>
+            <button className="pill" style={{color: '#ef4444'}} onClick={resetData}>
+              <span className="material-icons">refresh</span> Reset Local Data
+            </button>
+            <button className="pill" style={{color: 'var(--accent)'}} onClick={() => {
+              if (window.confirm("This will refresh the database with latest entries from source files. Existing links will NOT be deleted. Continue?")) {
+                fetch('/api/refresh-db', { method: 'POST' })
+                  .then(res => res.ok ? alert("Database refreshed successfully") : alert("Failed to refresh database"))
+                  .then(() => window.location.reload());
+              }
+            }}>
+              <span className="material-icons">sync</span> Refresh Database
+            </button>
           </div>
-        </div>
-      )}
+        </CollapsibleSection>
 
-      {activeTab === 'about' && (
-        <AboutTab onClose={onClose} />
-      )}
+        <CollapsibleSection
+          id="about"
+          title="About"
+          icon="info"
+          isOpen={openSections.includes('about')}
+          onToggle={toggleSection}
+        >
+          <AboutTab onClose={onClose} />
+        </CollapsibleSection>
+      </div>
 
-      <div className="form-actions">
-        <button type="button" onClick={onClose}>Close</button>
+      <div className="form-actions" style={{marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border)'}}>
+        <button type="button" className="btn-primary" onClick={onClose} style={{width: '100%', padding: '12px'}}>Close</button>
       </div>
     </div>
   );
@@ -384,7 +407,7 @@ const AboutTab = () => {
   }, []);
 
   return (
-    <div className="tab-pane">
+    <div className="about-content-wrapper">
       <div className="about-content" dangerouslySetInnerHTML={{ __html: content }} />
       <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.5, fontSize: '0.8rem' }}>
         <p>N Box &bull; Version 1.2.0</p>
