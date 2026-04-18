@@ -222,26 +222,29 @@ const SettingsModal = ({
           <div className="form-group">
             <label>Color Theme</label>
             <div className="pill-group">
-              {['light', 'dark', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter'].map(t => (
-                <button
-                  key={t}
-                  className={`pill ${theme === t ? 'active' : ''}`}
-                  onClick={() => setTheme(t)}
-                >
-                  <span className="material-icons">
-                    {t === 'light' ? 'light_mode' :
-                     t === 'dark' ? 'dark_mode' :
-                     t === 'nature' ? 'eco' :
-                     t === 'forest' ? 'forest' :
-                     t === 'ocean' ? 'water' :
-                     t === 'earth' ? 'landscape' :
-                     t === 'mountain' ? 'terrain' :
-                     t === 'desert' ? 'wb_sunny' :
-                     t === 'sunset' ? 'wb_twilight' : 'ac_unit'}
-                  </span>
-                  <span>{t.charAt(0).toUpperCase() + t.slice(1)}</span>
-                </button>
-              ))}
+              {[
+                'light', 'dark', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter',
+                'autumn', 'lavender', 'spring', 'galaxy', 'blackhole', 'midnight', 'aurora', 'blossom', 'canyon', 'glacier'
+              ].map(t => {
+                const icons = {
+                  light: 'light_mode', dark: 'dark_mode', nature: 'eco', forest: 'forest',
+                  ocean: 'water', earth: 'landscape', mountain: 'terrain', desert: 'wb_sunny',
+                  sunset: 'wb_twilight', winter: 'ac_unit', autumn: 'park', lavender: 'spa',
+                  spring: 'local_florist', galaxy: 'auto_awesome', blackhole: 'vortex',
+                  midnight: 'nights_stay', aurora: 'waves', blossom: 'filter_vintage',
+                  canyon: 'terrain', glacier: 'ac_unit'
+                };
+                return (
+                  <button
+                    key={t}
+                    className={`pill ${theme === t ? 'active' : ''}`}
+                    onClick={() => setTheme(t)}
+                  >
+                    <span className="material-icons">{icons[t] || 'palette'}</span>
+                    <span>{t.charAt(0).toUpperCase() + t.slice(1)}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
           <div className="form-group">
@@ -294,7 +297,7 @@ const SettingsModal = ({
         >
           <div className="form-group">
             <label>Manage Bookmarks</label>
-            <button className="pill" style={{background: 'var(--accent)', color: 'white', border: 'none'}} onClick={() => { onAddBookmark(); onClose(); }}>
+            <button className="pill" style={{background: 'var(--primary)', color: 'white', border: 'none'}} onClick={() => { onAddBookmark(); onClose(); }}>
               <span className="material-icons">add_link</span>
               <span>Add New Bookmark</span>
             </button>
@@ -375,7 +378,7 @@ const SettingsModal = ({
             <button className="pill" style={{color: '#ef4444'}} onClick={resetData}>
               <span className="material-icons">refresh</span> Reset Local Data
             </button>
-            <button className="pill" style={{color: 'var(--accent)'}} onClick={() => {
+            <button className="pill" style={{color: 'var(--primary)'}} onClick={() => {
               if (window.confirm("This will refresh the database with latest entries from source files. Existing links will NOT be deleted. Continue?")) {
                 fetch('/api/refresh-db', { method: 'POST' })
                   .then(res => res.ok ? alert("Database refreshed successfully") : alert("Failed to refresh database"))
