@@ -164,6 +164,15 @@ function App() {
           if (input) input.focus();
         }, 100);
       }
+
+      // Tab Switching Shortcuts (Alt + 1/2/3/4)
+      if (e.altKey) {
+        if (e.key === '1') { e.preventDefault(); setCurrentTab('toolbox'); }
+        if (e.key === '2') { e.preventDefault(); setCurrentTab('bookmarks'); }
+        if (e.key === '3') { e.preventDefault(); setCurrentTab('projects'); }
+        if (e.key === '4') { e.preventDefault(); setIsSettingsOpen(true); }
+      }
+
       if (e.key === 'Escape') {
         setIsSettingsOpen(false);
         setIsProfileOpen(false);
@@ -172,7 +181,7 @@ function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSettingsOpen, isProfileOpen]);
+  }, [isSettingsOpen, isProfileOpen, showProjectsTab]);
 
   useEffect(() => { localStorage.setItem('hub_compact', isCompact); }, [isCompact]);
   useEffect(() => { localStorage.setItem('hub_hide_urls', hideUrls); }, [hideUrls]);
