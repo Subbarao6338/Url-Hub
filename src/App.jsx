@@ -22,8 +22,15 @@ function App() {
   const [accentColor, setAccentColor] = useState(localStorage.getItem('hub_accent_color') || 'indigo');
 
   useEffect(() => {
-    if (searchActive) document.body.classList.add('search-active');
-    else document.body.classList.remove('search-active');
+    if (searchActive) {
+      document.body.classList.add('search-active');
+      setTimeout(() => {
+        const input = document.getElementById('search');
+        if (input) input.focus();
+      }, 100);
+    } else {
+      document.body.classList.remove('search-active');
+    }
   }, [searchActive]);
 
   useEffect(() => {
@@ -279,6 +286,8 @@ function App() {
           onAddClick={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
           onBookmarksLongPress={() => { if (enableProfiles) setIsProfileOpen(true); }}
           onSettingsClick={() => setIsSettingsOpen(true)}
+          onSearchClick={handleSearchToggle}
+          searchActive={searchActive}
           showProjectsTab={showProjectsTab}
           enableProfiles={enableProfiles}
         />

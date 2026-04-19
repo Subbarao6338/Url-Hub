@@ -15,7 +15,7 @@ const Header = ({ appName, currentProfile, profiles, currentTab, setView, onSett
         <h1 className="page-title">{appName || 'N Box'}</h1>
       </div>
       <div className="top-actions">
-        <div className={`search-container ${searchActive ? 'active' : ''}`}>
+        <div className={`search-container ${searchActive ? 'active' : 'desktop-only'}`}>
           <button id="search-toggle" className="icon-btn" title="Search" onClick={onSearchToggle}>
             <span className="material-icons">search</span>
           </button>
@@ -30,7 +30,7 @@ const Header = ({ appName, currentProfile, profiles, currentTab, setView, onSett
             <span className="material-icons">close</span>
           </button>
         </div>
-        <button id="settings-toggle" className="icon-btn" title="Settings" onClick={onSettingsClick}>
+        <button id="settings-toggle" className="icon-btn desktop-only" title="Settings" onClick={onSettingsClick}>
           <span className="material-icons">settings</span>
         </button>
       </div>
