@@ -48,6 +48,17 @@ def setup_db():
         )
     ''')
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS projects (
+            id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            description TEXT,
+            url TEXT,
+            category TEXT,
+            icon TEXT
+        )
+    ''')
+
 
     # Default profiles
     cursor.execute("INSERT OR IGNORE INTO profiles (name, icon) VALUES ('Default', 'home')")
@@ -97,6 +108,17 @@ def setup_db():
             for name, icon in categories.items():
                 cursor.execute('INSERT OR REPLACE INTO categories (profile_id, name, icon) VALUES (?, ?, ?)', (profile_id, name, icon))
 
+    def migrate_projects(filename):
+        filepath = get_data_path(filename)
+        if not os.path.exists(filepath): return
+        with open(filepath, 'r') as f:
+            projects = json.load(f)
+            for p in projects:
+                cursor.execute('''
+                    INSERT OR IGNORE INTO projects (id, title, description, url, category, icon)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ''', (p.get('id', str(uuid.uuid4())), p.get('title'), p.get('description'), p.get('url'), p.get('category'), p.get('icon')))
+
     # Check if empty
     cursor.execute("SELECT COUNT(*) FROM links")
     if cursor.fetchone()[0] == 0:
@@ -104,6 +126,7 @@ def setup_db():
         migrate_categories('url_cat.json', 'Default')
         migrate_links('necs_links.json', 'Private')
         migrate_categories('necs_cat.json', 'Private')
+        migrate_projects('projects.json')
         print("Migration complete.")
     else:
         print("Database already has links, skipping migration.")

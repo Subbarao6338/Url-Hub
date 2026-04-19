@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Header = ({ appName, currentProfile, profiles, currentTab, setView, onSettingsClick, onSearchToggle, searchActive, searchQuery, onSearchChange, onSearchClear }) => {
+const Header = ({ appName, currentProfile, profiles, currentTab, setView, onSettingsClick, onSearchToggle, searchActive, searchQuery, onSearchChange, onSearchClear, children }) => {
   const profile = profiles.find(p => p.name === currentProfile) || { icon: 'inbox' };
 
   return (
@@ -15,21 +15,23 @@ const Header = ({ appName, currentProfile, profiles, currentTab, setView, onSett
         <h1 className="page-title">{appName || 'Nature toolbox'}</h1>
       </div>
       <div className="top-actions">
-        <div className={`search-container ${searchActive ? 'active' : 'desktop-only'}`}>
-          <button id="search-toggle" className="icon-btn" title="Search" onClick={onSearchToggle}>
-            <span className="material-icons">search</span>
-          </button>
-          <input
-            type="search"
-            id="search"
-            placeholder={`Search ${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)}... [/]`}
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-          />
-          <button id="search-clear" className="search-clear-btn" title="Clear Search" onClick={onSearchClear}>
-            <span className="material-icons">close</span>
-          </button>
-        </div>
+        {children || (
+          <div className={`search-container ${searchActive ? 'active' : 'desktop-only'}`}>
+            <button id="search-toggle" className="icon-btn" title="Search" onClick={onSearchToggle}>
+              <span className="material-icons">search</span>
+            </button>
+            <input
+              type="search"
+              id="search"
+              placeholder={`Search ${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)}... [/]`}
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+            />
+            <button id="search-clear" className="search-clear-btn" title="Clear Search" onClick={onSearchClear}>
+              <span className="material-icons">close</span>
+            </button>
+          </div>
+        )}
         <button id="settings-toggle" className="icon-btn desktop-only" title="Settings" onClick={onSettingsClick}>
           <span className="material-icons">settings</span>
         </button>

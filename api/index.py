@@ -104,6 +104,18 @@ def init_db():
         )
     ''')
 
+    # Projects table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS projects (
+            id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            description TEXT,
+            url TEXT,
+            category TEXT,
+            icon TEXT
+        )
+    ''')
+
 
     # Deduplicate before adding unique index
     cursor.execute('''
@@ -178,6 +190,26 @@ class Profile(BaseModel):
     id: int
     name: str
     icon: str
+
+class ProjectBase(BaseModel):
+    title: str
+    description: Optional[str] = None
+    url: Optional[str] = None
+    category: Optional[str] = None
+    icon: Optional[str] = None
+
+class ProjectCreate(ProjectBase):
+    pass
+
+class ProjectUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    url: Optional[str] = None
+    category: Optional[str] = None
+    icon: Optional[str] = None
+
+class Project(ProjectBase):
+    id: str
 
 @app.on_event("startup")
 def startup_event():
@@ -343,3 +375,55 @@ def create_category(category: Category):
     conn.close()
     return category
 
+# Projects Endpoints
+@app.get("/api/projects", response_model=List[Project])
+def get_projects():
+    conn = get_db_connection()
+    projects = conn.execute('SELECT * FROM projects ORDER BY title COLLATE NOCASE ASC').fetchall()
+    conn.close()
+    return [dict(p) for p in projects]
+
+@app.post("/api/projects", response_model=Project)
+def create_project(project: ProjectCreate):
+    conn = get_db_connection()
+    project_id = str(uuid.uuid4())
+    conn.execute('''
+        INSERT INTO projects (id, title, description, url, category, icon)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ''', (project_id, project.title, project.description, project.url, project.category, project.icon))
+    conn.commit()
+
+    new_project = conn.execute('SELECT * FROM projects WHERE id = ?', (project_id,)).fetchone()
+    conn.close()
+    return dict(new_project)
+
+@app.put("/api/projects/{project_id}", response_model=Project)
+def update_project(project_id: str, project: ProjectUpdate):
+    conn = get_db_connection()
+    existing = conn.execute('SELECT * FROM projects WHERE id = ?', (project_id,)).fetchone()
+    if not existing:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    update_data = project.dict(exclude_unset=True)
+    if not update_data:
+        conn.close()
+        return dict(existing)
+
+    query = 'UPDATE projects SET ' + ', '.join([f'{k} = ?' for k in update_data.keys()]) + ' WHERE id = ?'
+    values = list(update_data.values()) + [project_id]
+
+    conn.execute(query, values)
+    conn.commit()
+
+    updated = conn.execute('SELECT * FROM projects WHERE id = ?', (project_id,)).fetchone()
+    conn.close()
+    return dict(updated)
+
+@app.delete("/api/projects/{project_id}")
+def delete_project(project_id: str):
+    conn = get_db_connection()
+    conn.execute('DELETE FROM projects WHERE id = ?', (project_id,))
+    conn.commit()
+    conn.close()
+    return {"message": "Project deleted"}

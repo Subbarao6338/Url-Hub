@@ -7,6 +7,7 @@ const ASSETS_TO_CACHE = [
   './data/url_cat.json',
   './data/necs_links.json',
   './data/necs_cat.json',
+  './data/projects.json',
   './assets/favicon.svg',
   './assets/urlhub.png',
   'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap',

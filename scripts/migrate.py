@@ -92,10 +92,27 @@ def migrate(db_path=None):
                 ''', (profile_id, name, icon))
         print(f"Migrated categories from {filename} to {profile_name} profile.")
 
+    # Helper to migrate projects
+    def migrate_projects(filename):
+        filepath = get_data_path(filename)
+        if not filepath:
+            print(f"File {filename} not found.")
+            return
+
+        with open(filepath, 'r') as f:
+            projects = json.load(f)
+            for p in projects:
+                cursor.execute('''
+                    INSERT OR IGNORE INTO projects (id, title, description, url, category, icon)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ''', (p.get('id', str(uuid.uuid4())), p.get('title'), p.get('description'), p.get('url'), p.get('category'), p.get('icon')))
+        print(f"Migrated projects from {filename}.")
+
     migrate_links('url_links.json', 'Default')
     migrate_categories('url_cat.json', 'Default')
     migrate_links('necs_links.json', 'Private')
     migrate_categories('necs_cat.json', 'Private')
+    migrate_projects('projects.json')
 
     conn.commit()
     conn.close()

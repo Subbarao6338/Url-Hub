@@ -39,6 +39,10 @@ import AnomalyDetection from './tools/AnomalyDetection';
 import HashGenerator from './tools/HashGenerator';
 import GlassGenerator from './tools/GlassGenerator';
 import JsonToCsv from './tools/JsonToCsv';
+import JsonValidator from './tools/JsonValidator';
+import AspectRatioCalc from './tools/AspectRatioCalc';
+import HtmlEntities from './tools/HtmlEntities';
+import CronExpressionDescriptor from './tools/CronExpressionDescriptor';
 import DataQuality from './tools/DataQuality';
 import DataAnonymizer from './tools/DataAnonymizer';
 import Observability from './tools/Observability';
@@ -78,6 +82,8 @@ const TOOLS = [
     { id: 'json-formatter', title: 'JSON Formatter', icon: 'code', category: 'Web Tools', component: JsonFormatter },
     { id: 'csv-json', title: 'CSV/JSON', icon: 'swap_horiz', category: 'Web Tools', component: CsvJsonConverter },
     { id: 'json-to-csv', title: 'JSON to CSV', icon: 'table_view', category: 'Web Tools', component: JsonToCsv },
+    { id: 'json-validator', title: 'JSON Validator', icon: 'spellcheck', category: 'Web Tools', component: JsonValidator },
+    { id: 'html-entities', title: 'HTML Entities', icon: 'html', category: 'Web Tools', component: HtmlEntities },
     { id: 'network-tools', title: 'Network', icon: 'timeline', category: 'Web Tools', component: NetworkTools },
     { id: 'cookies', title: 'Cookies', icon: 'cookie', category: 'Web Tools', component: Cookies },
     { id: 'inspect', title: 'Inspect', icon: 'search', category: 'Web Tools', component: Inspect },
@@ -100,6 +106,7 @@ const TOOLS = [
     // Media
     { id: 'qr-gen', title: 'QR Gen', icon: 'qr_code_2', category: 'Media', component: QrGen },
     { id: 'img-optimizer', title: 'Image Optimizer', icon: 'image', category: 'Media', component: ImageOptimizer },
+    { id: 'aspect-ratio', title: 'Aspect Ratio', icon: 'aspect_ratio', category: 'Media', component: AspectRatioCalc },
 
     // Random
     { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Random', component: DiceRoller },
@@ -111,6 +118,7 @@ const TOOLS = [
     { id: 'diff-viewer', title: 'Diff Viewer', icon: 'difference', category: 'Dev Tools', component: DiffViewer },
     { id: 'base64-converter', title: 'Base64', icon: 'transform', category: 'Dev Tools', component: Base64Converter },
     { id: 'user-scripts', title: 'User Scripts', icon: 'add', category: 'Dev Tools', component: UserScripts },
+    { id: 'cron-desc', title: 'Cron Explainer', icon: 'event_repeat', category: 'Dev Tools', component: CronExpressionDescriptor },
 
     // Misc
     { id: 'notes', title: 'Notes', icon: 'description', category: 'Misc', component: Notes },

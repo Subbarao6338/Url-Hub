@@ -42,15 +42,36 @@ const Calculator = ({ onResultChange }) => {
   };
 
   const buttons = [
-    ['(', ')', 'C', '/'],
+    ['sin', 'cos', 'tan', 'C'],
+    ['sqrt', 'pow', 'pi', 'e'],
+    ['(', ')', '%', '/'],
     ['7', '8', '9', '*'],
     ['4', '5', '6', '-'],
     ['1', '2', '3', '+'],
-    ['0', '.', '=']
+    ['0', '.', 'exp', '=']
   ];
 
+  const handleFunc = (func) => {
+    if (func === 'sqrt') {
+        setExpr(expr + 'sqrt(');
+        setDisplay(expr + 'sqrt(');
+    } else if (func === 'pow') {
+        setExpr(expr + '^');
+        setDisplay(expr + '^');
+    } else if (func === 'pi' || func === 'e') {
+        setExpr(expr + (func === 'pi' ? 'pi' : 'e'));
+        setDisplay(expr + (func === 'pi' ? 'π' : 'e'));
+    } else if (func === 'exp') {
+        setExpr(expr + 'exp(');
+        setDisplay(expr + 'exp(');
+    } else {
+        setExpr(expr + func + '(');
+        setDisplay(expr + func + '(');
+    }
+  };
+
   return (
-    <div className="calculator" style={{maxWidth: '360px', margin: '0 auto', background: 'rgba(var(--primary-rgb), 0.05)', padding: '24px', borderRadius: '32px', border: '1px solid rgba(var(--primary-rgb), 0.1)', boxShadow: 'var(--shadow-lg)'}}>
+    <div className="calculator" style={{maxWidth: '400px', margin: '0 auto', background: 'rgba(var(--primary-rgb), 0.05)', padding: '24px', borderRadius: '32px', border: '1px solid rgba(var(--primary-rgb), 0.1)', boxShadow: 'var(--shadow-lg)'}}>
       <div id="calc-display" style={{
         background: 'var(--surface-solid)',
         padding: '20px',
@@ -76,12 +97,15 @@ const Calculator = ({ onResultChange }) => {
           <button
             key={btn}
             className="pill"
-            onClick={() => handleInput(btn)}
+            onClick={() => {
+                if (['sin', 'cos', 'tan', 'sqrt', 'pow', 'pi', 'e', 'exp'].includes(btn)) handleFunc(btn);
+                else handleInput(btn);
+            }}
             style={{
-              height: '60px',
-              fontSize: '1.25rem',
-              gridColumn: btn === '=' ? 'span 2' : 'span 1',
-              background: btn === '=' ? 'var(--primary)' : (['/', '*', '-', '+', 'C', '(', ')'].includes(btn) ? 'rgba(var(--primary-rgb), 0.1)' : 'var(--surface)'),
+              height: '50px',
+              fontSize: btn.length > 2 ? '0.9rem' : '1.25rem',
+              gridColumn: 'span 1',
+              background: btn === '=' ? 'var(--primary)' : (['/', '*', '-', '+', 'C', '(', ')', 'sin', 'cos', 'tan', 'sqrt', 'pow'].includes(btn) ? 'rgba(var(--primary-rgb), 0.1)' : 'var(--surface)'),
               color: btn === '=' ? 'var(--on-primary)' : (btn === 'C' ? '#ef4444' : 'var(--on-surface)'),
               border: '1px solid var(--border)',
               borderRadius: '16px',

@@ -88,6 +88,7 @@ const CollapsibleSection = ({ id, title, icon, isOpen, onToggle, children }) => 
 const SettingsModal = ({
   appName, setAppName,
   enableProfiles, setEnableProfiles,
+  showProjectsTab, setShowProjectsTab,
   startupTab, setStartupTab,
   enableHoverEffects, setEnableHoverEffects,
   theme, setTheme,
@@ -184,15 +185,18 @@ const SettingsModal = ({
           <div className="form-group">
             <label>Startup Tab</label>
             <div className="pill-group">
-              {['toolbox', 'bookmarks'].map(tab => (
-                <button
-                  key={tab}
-                  className={`pill ${startupTab === tab ? 'active' : ''}`}
-                  onClick={() => setStartupTab(tab)}
-                >
-                  <span>{tab.charAt(0).toUpperCase() + tab.slice(1)}</span>
-                </button>
-              ))}
+              {['toolbox', 'bookmarks', 'projects'].map(tab => {
+                if (tab === 'projects' && !showProjectsTab) return null;
+                return (
+                  <button
+                    key={tab}
+                    className={`pill ${startupTab === tab ? 'active' : ''}`}
+                    onClick={() => setStartupTab(tab)}
+                  >
+                    <span>{tab.charAt(0).toUpperCase() + tab.slice(1)}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
           <div className="form-group">
@@ -326,6 +330,10 @@ const SettingsModal = ({
             <button className={`pill ${hideBookmarks ? 'active' : ''}`} onClick={() => setHideBookmarks(!hideBookmarks)}>
               <span className="material-icons">{hideBookmarks ? 'bookmarks' : 'bookmark_border'}</span>
               <span>Hide Bookmarks Tab</span>
+            </button>
+            <button className={`pill ${showProjectsTab ? 'active' : ''}`} onClick={() => setShowProjectsTab(!showProjectsTab)}>
+              <span className="material-icons">{showProjectsTab ? 'architecture' : 'architecture'}</span>
+              <span>Show Projects Tab</span>
             </button>
             <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
               <span className="material-icons">link_off</span>

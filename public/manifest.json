@@ -5,7 +5,23 @@
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f1f5f9",
-  "theme_color": "#2e7d32",
+  "theme_color": "#6366f1",
+  "shortcuts": [
+    {
+      "name": "Toolbox",
+      "short_name": "Toolbox",
+      "description": "Open utility tools",
+      "url": "/?tab=toolbox",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Bookmarks",
+      "short_name": "Bookmarks",
+      "description": "View your bookmarks",
+      "url": "/?tab=bookmarks",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    }
+  ],
   "icons": [
     {
       "src": "assets/favicon.svg",

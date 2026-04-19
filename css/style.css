@@ -1890,6 +1890,28 @@ body.no-aurora::after {
   to { transform: rotate(360deg); }
 }
 
+/* Offline Indicator */
+.offline-indicator {
+  background: var(--danger);
+  color: white;
+  text-align: center;
+  padding: 4px 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 5000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.offline-indicator .material-icons {
+  font-size: 1rem;
+}
+
 /* Solid Mode (No Glass) */
 body.no-glass,
 body.no-glass::before,

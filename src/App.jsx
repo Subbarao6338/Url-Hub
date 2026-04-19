@@ -5,10 +5,36 @@ import Header from './components/Header';
 import TabBar from './components/TabBar';
 import BookmarksView from './components/BookmarksView';
 import ToolboxView from './components/ToolboxView';
+import ProjectsView from './components/ProjectsView';
+import SearchOverlay from './components/SearchOverlay';
 import SettingsModal from './components/SettingsModal';
 import ProfileModal from './components/ProfileModal';
 import BookmarkModal from './components/BookmarkModal';
 import API_BASE from './api';
+
+const OfflineIndicator = () => {
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  if (!isOffline) return null;
+
+  return (
+    <div className="offline-indicator">
+      <span className="material-icons">cloud_off</span>
+      <span>Offline Mode</span>
+    </div>
+  );
+};
 
 function App() {
   const [appName, setAppName] = useState(localStorage.getItem('hub_app_name') || 'Nature toolbox');
@@ -21,6 +47,7 @@ function App() {
   const [theme, setTheme] = useState(localStorage.getItem('hub_theme') || 'light');
   const [accentColor, setAccentColor] = useState(localStorage.getItem('hub_accent_color') || 'indigo');
   const [hideBookmarks, setHideBookmarks] = useState(localStorage.getItem('hub_hide_bookmarks') !== null ? localStorage.getItem('hub_hide_bookmarks') === 'true' : true);
+  const [showProjectsTab, setShowProjectsTab] = useState(localStorage.getItem('hub_show_projects_tab') === 'true');
 
   const setTab = (tab, skipHistory = false) => {
     setCurrentTab(tab);
@@ -54,7 +81,7 @@ function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get('tab');
-    if (tab && ['bookmarks', 'toolbox'].includes(tab)) {
+    if (tab && ['bookmarks', 'toolbox', 'projects'].includes(tab)) {
       setCurrentTab(tab);
     }
   }, []);
@@ -198,6 +225,7 @@ function App() {
   useEffect(() => { localStorage.setItem('hub_group_toolbox', groupToolbox); }, [groupToolbox]);
   useEffect(() => { localStorage.setItem('hub_app_name', appName); }, [appName]);
   useEffect(() => { localStorage.setItem('hub_startup_tab', startupTab); }, [startupTab]);
+  useEffect(() => { localStorage.setItem('hub_show_projects_tab', showProjectsTab); }, [showProjectsTab]);
   useEffect(() => { localStorage.setItem('hub_hide_recent_tools', hideRecentTools); }, [hideRecentTools]);
   useEffect(() => { localStorage.setItem('hub_enable_profiles', enableProfiles); }, [enableProfiles]);
 
@@ -260,11 +288,12 @@ function App() {
         }, 100);
       }
 
-      // Tab Switching Shortcuts (Alt + 1/2/3)
+      // Tab Switching Shortcuts (Alt + 1/2/3/4)
       if (e.altKey) {
         if (e.key === '1') { e.preventDefault(); setCurrentTab('toolbox'); }
         if (e.key === '2') { e.preventDefault(); setCurrentTab('bookmarks'); }
-        if (e.key === '3') { e.preventDefault(); setIsSettingsOpen(true); }
+        if (e.key === '3') { e.preventDefault(); if (showProjectsTab) setCurrentTab('projects'); }
+        if (e.key === '4') { e.preventDefault(); setIsSettingsOpen(true); }
       }
 
       if (e.key === 'Escape') {
@@ -351,6 +380,7 @@ function App() {
   return (
     <div className="app-layout">
       <main className="main-content">
+        <OfflineIndicator />
         <Header
           appName={appName}
           currentProfile={enableProfiles ? currentProfileName : 'Default'}
@@ -363,7 +393,16 @@ function App() {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           onSearchClear={handleSearchClear}
-        />
+        >
+          <SearchOverlay
+            active={searchActive}
+            query={searchQuery}
+            onChange={setSearchQuery}
+            onClear={handleSearchClear}
+            onToggle={handleSearchToggle}
+            currentTab={currentTab}
+          />
+        </Header>
 
         <TabBar
           currentTab={currentTab}
@@ -375,6 +414,7 @@ function App() {
           searchActive={searchActive}
           enableProfiles={enableProfiles}
           hideBookmarks={hideBookmarks}
+          showProjectsTab={showProjectsTab}
         />
 
         <div
@@ -414,6 +454,12 @@ function App() {
               hideRecentTools={hideRecentTools}
             />
           )}
+          {currentTab === 'projects' && showProjectsTab && (
+            <ProjectsView
+              searchQuery={searchQuery}
+              openInNewTab={openInNewTab}
+            />
+          )}
         </div>
 
         <button
@@ -438,6 +484,8 @@ function App() {
           setEnableProfiles={setEnableProfiles}
           hideBookmarks={hideBookmarks}
           setHideBookmarks={setHideBookmarks}
+          showProjectsTab={showProjectsTab}
+          setShowProjectsTab={setShowProjectsTab}
           startupTab={startupTab}
           setStartupTab={setStartupTab}
           enableHoverEffects={enableHoverEffects}
