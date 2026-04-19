@@ -90,62 +90,80 @@ const AndroidSensors = ({ onResultChange }) => {
     });
   }, [motion, orientation, ambient, onResultChange]);
 
-  const SensorValue = ({ label, value, unit = '' }) => (
-    <div className="tool-result" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-      <span>{label}</span>
-      <b>{value}{unit}</b>
+  const SensorValue = ({ label, value, unit = '', color = 'var(--primary)' }) => (
+    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+      <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{label}</span>
+      <b style={{ fontSize: '0.9rem', color: color }}>{value}{unit}</b>
     </div>
   );
 
   return (
     <div className="tool-form">
       {!permissionGranted ? (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <span className="material-icons" style={{ fontSize: '3rem', color: 'var(--primary)', marginBottom: '15px' }}>sensors</span>
-          <h4>Sensor Access Required</h4>
-          <p style={{ opacity: 0.7, marginBottom: '20px' }}>Enable access to see real-time motion and orientation data from your device sensors.</p>
-          <button className="btn-primary" onClick={requestPermission} style={{ padding: '10px 25px' }}>Enable Sensors</button>
-          {error && <div style={{ color: 'var(--danger)', marginTop: '15px' }}>{error}</div>}
+        <div style={{ textAlign: 'center', padding: '40px 20px', background: 'var(--surface)', borderRadius: '24px', border: '1px solid var(--border)' }}>
+          <div style={{ width: '80px', height: '80px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+            <span className="material-icons" style={{ fontSize: '2.5rem', color: 'var(--primary)' }}>sensors</span>
+          </div>
+          <h3 style={{ marginBottom: '10px' }}>Sensor Access</h3>
+          <p style={{ opacity: 0.7, marginBottom: '25px', maxWidth: '300px', margin: '0 auto 25px' }}>We need permission to access your device's motion and orientation sensors for real-time data.</p>
+          <button className="btn-primary" onClick={requestPermission} style={{ width: '100%', maxWidth: '200px' }}>Enable Sensors</button>
+          {error && <div style={{ color: 'var(--danger)', marginTop: '20px', fontSize: '0.9rem' }}>{error}</div>}
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
-          <div className="sensor-card" style={{ padding: '15px', background: 'rgba(var(--primary-rgb), 0.03)', borderRadius: '12px', border: '1px solid var(--border)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-              <span className="material-icons" style={{ color: 'var(--primary)' }}>speed</span>
-              <h5 style={{ margin: 0 }}>Accelerometer</h5>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+          <div className="sensor-card" style={{ padding: '20px', background: 'var(--surface)', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '36px', height: '36px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-icons" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}>speed</span>
+              </div>
+              <h5 style={{ margin: 0, fontWeight: 700 }}>Accelerometer</h5>
             </div>
-            <SensorValue label="X-axis" value={motion.acc.x} unit=" m/s²" />
-            <SensorValue label="Y-axis" value={motion.acc.y} unit=" m/s²" />
-            <SensorValue label="Z-axis" value={motion.acc.z} unit=" m/s²" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <SensorValue label="X-axis" value={motion.acc.x} unit=" m/s²" color="#ef4444" />
+              <SensorValue label="Y-axis" value={motion.acc.y} unit=" m/s²" color="#10b981" />
+              <SensorValue label="Z-axis" value={motion.acc.z} unit=" m/s²" color="#3b82f6" />
+            </div>
           </div>
 
-          <div className="sensor-card" style={{ padding: '15px', background: 'rgba(var(--primary-rgb), 0.03)', borderRadius: '12px', border: '1px solid var(--border)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-              <span className="material-icons" style={{ color: 'var(--primary)' }}>sync</span>
-              <h5 style={{ margin: 0 }}>Gyroscope</h5>
+          <div className="sensor-card" style={{ padding: '20px', background: 'var(--surface)', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '36px', height: '36px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-icons" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}>sync</span>
+              </div>
+              <h5 style={{ margin: 0, fontWeight: 700 }}>Gyroscope</h5>
             </div>
-            <SensorValue label="Alpha" value={motion.gyro.alpha} unit=" °/s" />
-            <SensorValue label="Beta" value={motion.gyro.beta} unit=" °/s" />
-            <SensorValue label="Gamma" value={motion.gyro.gamma} unit=" °/s" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <SensorValue label="Alpha" value={motion.gyro.alpha} unit=" °/s" color="#8b5cf6" />
+              <SensorValue label="Beta" value={motion.gyro.beta} unit=" °/s" color="#f59e0b" />
+              <SensorValue label="Gamma" value={motion.gyro.gamma} unit=" °/s" color="#ec4899" />
+            </div>
           </div>
 
-          <div className="sensor-card" style={{ padding: '15px', background: 'rgba(var(--primary-rgb), 0.03)', borderRadius: '12px', border: '1px solid var(--border)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-              <span className="material-icons" style={{ color: 'var(--primary)' }}>explore</span>
-              <h5 style={{ margin: 0 }}>Orientation</h5>
+          <div className="sensor-card" style={{ padding: '20px', background: 'var(--surface)', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '36px', height: '36px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-icons" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}>explore</span>
+              </div>
+              <h5 style={{ margin: 0, fontWeight: 700 }}>Orientation</h5>
             </div>
-            <SensorValue label="Alpha (Yaw)" value={orientation.alpha} unit="°" />
-            <SensorValue label="Beta (Pitch)" value={orientation.beta} unit="°" />
-            <SensorValue label="Gamma (Roll)" value={orientation.gamma} unit="°" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <SensorValue label="Yaw" value={orientation.alpha} unit="°" />
+              <SensorValue label="Pitch" value={orientation.beta} unit="°" />
+              <SensorValue label="Roll" value={orientation.gamma} unit="°" />
+            </div>
           </div>
 
-          <div className="sensor-card" style={{ padding: '15px', background: 'rgba(var(--primary-rgb), 0.03)', borderRadius: '12px', border: '1px solid var(--border)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-              <span className="material-icons" style={{ color: 'var(--primary)' }}>visibility</span>
-              <h5 style={{ margin: 0 }}>Environment</h5>
+          <div className="sensor-card" style={{ padding: '20px', background: 'var(--surface)', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '36px', height: '36px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-icons" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}>visibility</span>
+              </div>
+              <h5 style={{ margin: 0, fontWeight: 700 }}>Environment</h5>
             </div>
-            <SensorValue label="Light" value={ambient.light} />
-            <SensorValue label="Proximity" value={ambient.proximity} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <SensorValue label="Light" value={ambient.light} />
+              <SensorValue label="Proximity" value={ambient.proximity} />
+            </div>
           </div>
         </div>
       )}

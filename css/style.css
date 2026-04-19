@@ -1799,7 +1799,7 @@ body.no-aurora::after {
   }
 
   .tools-container {
-    padding: 1rem 1rem 5rem 1rem;
+    padding: 1rem 1rem 120px 1rem;
     border-radius: 0;
   }
 
@@ -2077,7 +2077,7 @@ body.no-glass[data-theme="dark"] {
     max-width: 800px;
     margin: 0 auto;
     padding: 1rem;
-    padding-bottom: 80px;
+    padding-bottom: 120px;
 }
 
 @media (max-width: 768px) {

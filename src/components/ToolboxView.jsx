@@ -52,49 +52,66 @@ import Counter from './tools/Counter';
 import MarkdownTable from './tools/MarkdownTable';
 
 const TOOLS = [
-    { id: 'notes', title: 'Notes', icon: 'description', category: 'Personal', component: Notes },
-    { id: 'pomodoro', title: 'Pomodoro', icon: 'timer', category: 'Productivity', component: PomodoroTimer },
-    { id: 'ai-summary', title: 'AI Summary', icon: 'auto_fix_high', category: 'Productivity', component: AiSummary },
-    { id: 'calculator', title: 'Calculator', icon: 'calculate', category: 'Productivity', component: Calculator },
-    { id: 'counter', title: 'Counter', icon: 'add_circle_outline', category: 'Productivity', component: Counter },
-    { id: 'qr-gen', title: 'QR Gen', icon: 'qr_code_2', category: 'Productivity', component: QrGen },
-    { id: 'img-optimizer', title: 'Image Optimizer', icon: 'image', category: 'Productivity', component: ImageOptimizer },
-    { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Productivity', component: Stopwatch },
-    { id: 'translate', title: 'Translate', icon: 'translate', category: 'Productivity', component: Translate },
-    { id: 'age-calculator', title: 'Age', icon: 'calendar_today', category: 'Productivity', component: AgeCalculator },
-    { id: 'bmi-calculator', title: 'BMI', icon: 'person', category: 'Productivity', component: BMICalculator },
-    { id: 'color-picker', title: 'Color', icon: 'palette', category: 'Productivity', component: ColorPicker },
-    { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Productivity', component: TimestampConverter },
-    { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Utilities', component: PasswordGenerator },
-    { id: 'hash-gen', title: 'Hash Gen', icon: 'security', category: 'Utilities', component: HashGenerator },
-    { id: 'uuid-gen', title: 'UUID Gen', icon: 'fingerprint', category: 'Utilities', component: UuidGenerator },
-    { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Utilities', component: DiceRoller },
-    { id: 'coin-flipper', title: 'Coin Flip', icon: 'monetization_on', category: 'Utilities', component: CoinFlipper },
-    { id: 'unit-converter', title: 'Unit Converter', icon: 'balance', category: 'Utilities', component: UnitConverter },
-    { id: 'currency-converter', title: 'Currency', icon: 'payments', category: 'Utilities', component: CurrencyConverter },
-    { id: 'panchangam', title: 'Panchangam', icon: 'auto_awesome', category: 'Utilities', component: TeluguPanchangam },
-    { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Utilities', component: LoremIpsum },
-    { id: 'text-utils', title: 'Text Tools', icon: 'title', category: 'Utilities', component: TextUtils },
-    { id: 'word-counter', title: 'Word Counter', icon: 'format_list_numbered', category: 'Utilities', component: WordCounter },
-    { id: 'word-rank', title: 'Word Rank', icon: 'sort_by_alpha', category: 'Utilities', component: WordRankCalculator },
-    { id: 'omni-hub', title: 'Omni Hub', icon: 'public', category: 'Web Tools', component: OmniHub },
+    // Calculators
+    { id: 'calculator', title: 'Calculator', icon: 'calculate', category: 'Calculators', component: Calculator },
+    { id: 'age-calculator', title: 'Age Calculator', icon: 'calendar_today', category: 'Calculators', component: AgeCalculator },
+    { id: 'bmi-calculator', title: 'BMI Calculator', icon: 'person', category: 'Calculators', component: BMICalculator },
+
+    // Converters
+    { id: 'unit-converter', title: 'Unit Converter', icon: 'balance', category: 'Converters', component: UnitConverter },
+    { id: 'currency-converter', title: 'Currency', icon: 'payments', category: 'Converters', component: CurrencyConverter },
+    { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Converters', component: TimestampConverter },
+    { id: 'base64-converter', title: 'Base64', icon: 'transform', category: 'Converters', component: Base64Converter },
+
+    // Text Tools
+    { id: 'translate', title: 'Translate', icon: 'translate', category: 'Text Tools', component: Translate },
+    { id: 'text-utils', title: 'Text Tools', icon: 'title', category: 'Text Tools', component: TextUtils },
+    { id: 'word-counter', title: 'Word Counter', icon: 'format_list_numbered', category: 'Text Tools', component: WordCounter },
+    { id: 'word-rank', title: 'Word Rank', icon: 'sort_by_alpha', category: 'Text Tools', component: WordRankCalculator },
+    { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Text Tools', component: LoremIpsum },
+
+    // Web Tools
+    { id: 'qr-gen', title: 'QR Gen', icon: 'qr_code_2', category: 'Web Tools', component: QrGen },
+    { id: 'url-tool', title: 'URL Tool', icon: 'link', category: 'Web Tools', component: UrlTool },
+    { id: 'json-formatter', title: 'JSON Formatter', icon: 'code', category: 'Web Tools', component: JsonFormatter },
+    { id: 'csv-json', title: 'CSV/JSON', icon: 'swap_horiz', category: 'Web Tools', component: CsvJsonConverter },
+    { id: 'json-to-csv', title: 'JSON to CSV', icon: 'table_view', category: 'Web Tools', component: JsonToCsv },
     { id: 'network-tools', title: 'Network', icon: 'timeline', category: 'Web Tools', component: NetworkTools },
     { id: 'cookies', title: 'Cookies', icon: 'cookie', category: 'Web Tools', component: Cookies },
     { id: 'inspect', title: 'Inspect', icon: 'search', category: 'Web Tools', component: Inspect },
-    { id: 'json-formatter', title: 'JSON', icon: 'code', category: 'Web Tools', component: JsonFormatter },
-    { id: 'csv-json', title: 'CSV/JSON', icon: 'swap_horiz', category: 'Web Tools', component: CsvJsonConverter },
-    { id: 'json-to-csv', title: 'JSON to CSV', icon: 'table_view', category: 'Web Tools', component: JsonToCsv },
-    { id: 'base64-converter', title: 'Base64', icon: 'transform', category: 'Web Tools', component: Base64Converter },
-    { id: 'url-tool', title: 'URL Tool', icon: 'link', category: 'Web Tools', component: UrlTool },
-    { id: 'morse', title: 'Morse', icon: 'timeline', category: 'Web Tools', component: MorseCode },
-    { id: 'device-info', title: 'Device', icon: 'memory', category: 'System', component: DeviceInfo },
+    { id: 'omni-hub', title: 'Omni Hub', icon: 'public', category: 'Web Tools', component: OmniHub },
+
+    // Security
+    { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Security', component: PasswordGenerator },
+    { id: 'hash-gen', title: 'Hash Gen', icon: 'security', category: 'Security', component: HashGenerator },
+    { id: 'uuid-gen', title: 'UUID Gen', icon: 'fingerprint', category: 'Security', component: UuidGenerator },
+    { id: 'security-info', title: 'Security Info', icon: 'verified_user', category: 'Security', component: SecurityInfo },
+
+    // System
+    { id: 'device-info', title: 'Device Info', icon: 'memory', category: 'System', component: DeviceInfo },
     { id: 'android-sensors', title: 'Sensors', icon: 'sensors', category: 'System', component: AndroidSensors },
-    { id: 'security-info', title: 'Security', icon: 'verified_user', category: 'System', component: SecurityInfo },
-    { id: 'user-scripts', title: 'User Scripts', icon: 'add', category: 'Dev Tools', component: UserScripts },
-    { id: 'markdown-table', title: 'MD Table', icon: 'grid_on', category: 'Dev Tools', component: MarkdownTable },
-    { id: 'glass-gen', title: 'Glass Gen', icon: 'blur_on', category: 'Dev Tools', component: GlassGenerator },
+
+    // Dev Tools
     { id: 'markdown-preview', title: 'Markdown', icon: 'article', category: 'Dev Tools', component: MarkdownPreview },
+    { id: 'markdown-table', title: 'MD Table', icon: 'grid_on', category: 'Dev Tools', component: MarkdownTable },
     { id: 'diff-viewer', title: 'Diff Viewer', icon: 'difference', category: 'Dev Tools', component: DiffViewer },
+    { id: 'color-picker', title: 'Color Picker', icon: 'palette', category: 'Dev Tools', component: ColorPicker },
+    { id: 'glass-gen', title: 'Glass Gen', icon: 'blur_on', category: 'Dev Tools', component: GlassGenerator },
+    { id: 'user-scripts', title: 'User Scripts', icon: 'add', category: 'Dev Tools', component: UserScripts },
+
+    // Misc
+    { id: 'notes', title: 'Notes', icon: 'description', category: 'Misc', component: Notes },
+    { id: 'pomodoro', title: 'Pomodoro', icon: 'timer', category: 'Misc', component: PomodoroTimer },
+    { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Misc', component: Stopwatch },
+    { id: 'ai-summary', title: 'AI Summary', icon: 'auto_fix_high', category: 'Misc', component: AiSummary },
+    { id: 'counter', title: 'Counter', icon: 'add_circle_outline', category: 'Misc', component: Counter },
+    { id: 'img-optimizer', title: 'Image Optimizer', icon: 'image', category: 'Misc', component: ImageOptimizer },
+    { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Misc', component: DiceRoller },
+    { id: 'coin-flipper', title: 'Coin Flip', icon: 'monetization_on', category: 'Misc', component: CoinFlipper },
+    { id: 'panchangam', title: 'Panchangam', icon: 'auto_awesome', category: 'Misc', component: TeluguPanchangam },
+    { id: 'morse', title: 'Morse', icon: 'timeline', category: 'Misc', component: MorseCode },
+
+    // Graviton
     { id: 'anomaly-detection', title: 'Anomaly Detection', icon: 'notifications_active', category: 'Graviton', component: AnomalyDetection },
     { id: 'data-quality', title: 'Data Quality', icon: 'verified', category: 'Graviton', component: DataQuality },
     { id: 'data-anonymizer', title: 'Data Anonymizer', icon: 'security', category: 'Graviton', component: DataAnonymizer },
@@ -384,7 +401,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
             </div>
             <div className="category-grid">
               {grouped[cat].map((tool, idx) => (
-                <div key={tool.id} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
+                <div key={tool.id} id={`card-${tool.id}`} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
                    <div className="card-actions">
                         <button className={`pin-btn ${pinnedTools.includes(tool.id) ? 'active' : ''}`} onClick={(e) => togglePin(e, tool.id)} title="Pin Tool">
                             <span className="material-icons">push_pin</span>
@@ -411,12 +428,14 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
 
 const getCategoryIcon = (cat) => {
     const icons = {
-        'Personal': 'person',
-        'Productivity': 'auto_fix_high',
-        'Utilities': 'construction',
+        'Calculators': 'calculate',
+        'Converters': 'swap_horiz',
+        'Text Tools': 'title',
         'Web Tools': 'public',
+        'Security': 'security',
         'System': 'settings_input_component',
         'Dev Tools': 'terminal',
+        'Misc': 'auto_fix_high',
         'Graviton': 'insights',
     };
     return icons[cat] || 'folder';
