@@ -56,20 +56,51 @@ const AndroidSensors = ({ onResultChange }) => {
 
     // Generic Sensor API (Chrome/Android)
     let lightSensor, proximitySensor;
-    try {
-      if ('AmbientLightSensor' in window) {
-        lightSensor = new window.AmbientLightSensor();
-        lightSensor.onreading = () => setAmbient(prev => ({ ...prev, light: lightSensor.illuminance.toFixed(1) + ' lx' }));
-        lightSensor.start();
-      }
-      if ('ProximitySensor' in window) {
-        proximitySensor = new window.ProximitySensor();
-        proximitySensor.onreading = () => setAmbient(prev => ({ ...prev, proximity: (proximitySensor.distance || 'Near') + ' cm' }));
-        proximitySensor.start();
-      }
-    } catch (e) {
-      console.warn('Generic Sensor API not supported:', e);
-    }
+
+    const startSensors = async () => {
+        try {
+            if ('AmbientLightSensor' in window) {
+                // Check for permission first if possible
+                if (navigator.permissions && navigator.permissions.query) {
+                    const result = await navigator.permissions.query({ name: 'ambient-light-sensor' });
+                    if (result.state === 'denied') {
+                        setAmbient(prev => ({ ...prev, light: 'Permission Denied' }));
+                    } else {
+                        lightSensor = new window.AmbientLightSensor();
+                        lightSensor.onreading = () => setAmbient(prev => ({ ...prev, light: lightSensor.illuminance.toFixed(1) + ' lx' }));
+                        lightSensor.onerror = (event) => {
+                            console.error('Light Sensor Error:', event.error);
+                            setAmbient(prev => ({ ...prev, light: 'Error: ' + event.error.name }));
+                        };
+                        lightSensor.start();
+                    }
+                } else {
+                    lightSensor = new window.AmbientLightSensor();
+                    lightSensor.onreading = () => setAmbient(prev => ({ ...prev, light: lightSensor.illuminance.toFixed(1) + ' lx' }));
+                    lightSensor.start();
+                }
+            } else {
+                setAmbient(prev => ({ ...prev, light: 'Not Supported' }));
+            }
+
+            if ('ProximitySensor' in window) {
+                // Proximity sensor often requires a flag or specific environment
+                proximitySensor = new window.ProximitySensor();
+                proximitySensor.onreading = () => setAmbient(prev => ({ ...prev, proximity: (proximitySensor.distance || 'Near') + ' cm' }));
+                proximitySensor.onerror = (event) => {
+                    console.error('Proximity Sensor Error:', event.error);
+                    setAmbient(prev => ({ ...prev, proximity: 'Error: ' + event.error.name }));
+                };
+                proximitySensor.start();
+            } else {
+                setAmbient(prev => ({ ...prev, proximity: 'Not Supported' }));
+            }
+        } catch (e) {
+            console.warn('Generic Sensor API error:', e);
+        }
+    };
+
+    startSensors();
 
     return () => {
       window.removeEventListener('devicemotion', handleMotion);

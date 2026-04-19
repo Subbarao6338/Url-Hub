@@ -54,14 +54,17 @@ import MarkdownTable from './tools/MarkdownTable';
 const TOOLS = [
     // Calculators
     { id: 'calculator', title: 'Calculator', icon: 'calculate', category: 'Calculators', component: Calculator },
-    { id: 'age-calculator', title: 'Age Calculator', icon: 'calendar_today', category: 'Calculators', component: AgeCalculator },
     { id: 'bmi-calculator', title: 'BMI Calculator', icon: 'person', category: 'Calculators', component: BMICalculator },
+
+    // Time
+    { id: 'age-calculator', title: 'Age Calculator', icon: 'calendar_today', category: 'Time', component: AgeCalculator },
+    { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Time', component: TimestampConverter },
+    { id: 'pomodoro', title: 'Pomodoro', icon: 'timer', category: 'Time', component: PomodoroTimer },
+    { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Time', component: Stopwatch },
 
     // Converters
     { id: 'unit-converter', title: 'Unit Converter', icon: 'balance', category: 'Converters', component: UnitConverter },
     { id: 'currency-converter', title: 'Currency', icon: 'payments', category: 'Converters', component: CurrencyConverter },
-    { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Converters', component: TimestampConverter },
-    { id: 'base64-converter', title: 'Base64', icon: 'transform', category: 'Converters', component: Base64Converter },
 
     // Text Tools
     { id: 'translate', title: 'Translate', icon: 'translate', category: 'Text Tools', component: Translate },
@@ -71,7 +74,6 @@ const TOOLS = [
     { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Text Tools', component: LoremIpsum },
 
     // Web Tools
-    { id: 'qr-gen', title: 'QR Gen', icon: 'qr_code_2', category: 'Web Tools', component: QrGen },
     { id: 'url-tool', title: 'URL Tool', icon: 'link', category: 'Web Tools', component: UrlTool },
     { id: 'json-formatter', title: 'JSON Formatter', icon: 'code', category: 'Web Tools', component: JsonFormatter },
     { id: 'csv-json', title: 'CSV/JSON', icon: 'swap_horiz', category: 'Web Tools', component: CsvJsonConverter },
@@ -91,23 +93,29 @@ const TOOLS = [
     { id: 'device-info', title: 'Device Info', icon: 'memory', category: 'System', component: DeviceInfo },
     { id: 'android-sensors', title: 'Sensors', icon: 'sensors', category: 'System', component: AndroidSensors },
 
+    // Design
+    { id: 'color-picker', title: 'Color Picker', icon: 'palette', category: 'Design', component: ColorPicker },
+    { id: 'glass-gen', title: 'Glass Gen', icon: 'blur_on', category: 'Design', component: GlassGenerator },
+
+    // Media
+    { id: 'qr-gen', title: 'QR Gen', icon: 'qr_code_2', category: 'Media', component: QrGen },
+    { id: 'img-optimizer', title: 'Image Optimizer', icon: 'image', category: 'Media', component: ImageOptimizer },
+
+    // Random
+    { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Random', component: DiceRoller },
+    { id: 'coin-flipper', title: 'Coin Flip', icon: 'monetization_on', category: 'Random', component: CoinFlipper },
+
     // Dev Tools
     { id: 'markdown-preview', title: 'Markdown', icon: 'article', category: 'Dev Tools', component: MarkdownPreview },
     { id: 'markdown-table', title: 'MD Table', icon: 'grid_on', category: 'Dev Tools', component: MarkdownTable },
     { id: 'diff-viewer', title: 'Diff Viewer', icon: 'difference', category: 'Dev Tools', component: DiffViewer },
-    { id: 'color-picker', title: 'Color Picker', icon: 'palette', category: 'Dev Tools', component: ColorPicker },
-    { id: 'glass-gen', title: 'Glass Gen', icon: 'blur_on', category: 'Dev Tools', component: GlassGenerator },
+    { id: 'base64-converter', title: 'Base64', icon: 'transform', category: 'Dev Tools', component: Base64Converter },
     { id: 'user-scripts', title: 'User Scripts', icon: 'add', category: 'Dev Tools', component: UserScripts },
 
     // Misc
     { id: 'notes', title: 'Notes', icon: 'description', category: 'Misc', component: Notes },
-    { id: 'pomodoro', title: 'Pomodoro', icon: 'timer', category: 'Misc', component: PomodoroTimer },
-    { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Misc', component: Stopwatch },
     { id: 'ai-summary', title: 'AI Summary', icon: 'auto_fix_high', category: 'Misc', component: AiSummary },
     { id: 'counter', title: 'Counter', icon: 'add_circle_outline', category: 'Misc', component: Counter },
-    { id: 'img-optimizer', title: 'Image Optimizer', icon: 'image', category: 'Misc', component: ImageOptimizer },
-    { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Misc', component: DiceRoller },
-    { id: 'coin-flipper', title: 'Coin Flip', icon: 'monetization_on', category: 'Misc', component: CoinFlipper },
     { id: 'panchangam', title: 'Panchangam', icon: 'auto_awesome', category: 'Misc', component: TeluguPanchangam },
     { id: 'morse', title: 'Morse', icon: 'timeline', category: 'Misc', component: MorseCode },
 
@@ -429,9 +437,13 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
 const getCategoryIcon = (cat) => {
     const icons = {
         'Calculators': 'calculate',
+        'Time': 'schedule',
         'Converters': 'swap_horiz',
         'Text Tools': 'title',
         'Web Tools': 'public',
+        'Design': 'palette',
+        'Media': 'perm_media',
+        'Random': 'casino',
         'Security': 'security',
         'System': 'settings_input_component',
         'Dev Tools': 'terminal',

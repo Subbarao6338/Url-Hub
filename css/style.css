@@ -1612,7 +1612,7 @@ body.no-aurora::after {
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-top: 1px solid var(--border);
-    padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+    padding: 8px 16px env(safe-area-inset-bottom);
     z-index: 4000;
     gap: 12px;
     justify-content: space-between;
@@ -1799,7 +1799,7 @@ body.no-aurora::after {
   }
 
   .tools-container {
-    padding: 1rem 1rem 120px 1rem;
+    padding: 1rem 1rem 100px 1rem;
     border-radius: 0;
   }
 
@@ -2077,7 +2077,7 @@ body.no-glass[data-theme="dark"] {
     max-width: 800px;
     margin: 0 auto;
     padding: 1rem;
-    padding-bottom: 120px;
+    padding-bottom: 100px;
 }
 
 @media (max-width: 768px) {
