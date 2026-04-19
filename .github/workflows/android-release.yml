@@ -4,11 +4,6 @@ on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
-    inputs:
-      api_url:
-        description: 'VITE_API_URL (Optional)'
-        required: false
-        default: ''
 
 jobs:
   build:
@@ -28,7 +23,7 @@ jobs:
       - name: Build React App
         run: npm run build
         env:
-          VITE_API_URL: ${{ github.event.inputs.api_url || secrets.VITE_API_URL }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://nhub-pi.vercel.app/api' }}
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -97,7 +92,7 @@ jobs:
           body: |
             Automatic build of N Box Android APK.
 
-            Configured API URL: `${{ github.event.inputs.api_url || secrets.VITE_API_URL || 'None (using /api)' }}`
+            Configured API URL: `${{ secrets.VITE_API_URL || 'https://nhub-pi.vercel.app/api' }}`
           draft: false
           prerelease: false
         env:
