@@ -153,21 +153,46 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
     localStorage.setItem('hub_pinned_tools', JSON.stringify(newPinned));
   };
 
-  const openTool = (id) => {
+  const openTool = (id, skipHistory = false) => {
     setActiveToolId(id);
     setCurrentResult(null);
     const newRecents = [id, ...recentTools.filter(t => t !== id)].slice(0, 4);
     setRecentTools(newRecents);
     localStorage.setItem('hub_recent_tools', JSON.stringify(newRecents));
+
+    if (!skipHistory) {
+      window.history.pushState({ toolId: id }, '', window.location.pathname + `?tab=toolbox&tool=${id}`);
+    }
   };
+
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state && event.state.toolId) {
+        openTool(event.state.toolId, true);
+      } else {
+        setActiveToolId(null);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    // Handle initial tool from URL
+    const params = new URLSearchParams(window.location.search);
+    const toolId = params.get('tool');
+    if (toolId && TOOLS.find(t => t.id === toolId)) {
+      openTool(toolId, true);
+    }
+
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleShare = async (e, tool) => {
     e.stopPropagation();
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `N Box - ${tool.title}`,
-          text: `Check out the ${tool.title} tool on N Box dashboard!`,
+          title: `Nature toolbox - ${tool.title}`,
+          text: `Check out the ${tool.title} tool on Nature toolbox dashboard!`,
           url: window.location.origin + window.location.pathname + `?tab=toolbox&tool=${tool.id}`
         });
       } catch (err) { console.error("Share failed:", err); }
@@ -260,7 +285,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
       <div className="tool-view">
         <div className="tool-view-header">
           <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-            <button className="icon-btn" onClick={() => setActiveToolId(null)} title="Back to Toolbox">
+            <button className="icon-btn" onClick={() => { setActiveToolId(null); window.history.back(); }} title="Back to Toolbox">
               <span className="material-icons">arrow_back</span>
             </button>
             <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>

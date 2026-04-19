@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { App as CapApp } from '@capacitor/app';
 import { Analytics } from '@vercel/analytics/react';
 import Header from './components/Header';
 import TabBar from './components/TabBar';
@@ -11,7 +12,7 @@ import BookmarkModal from './components/BookmarkModal';
 import API_BASE from './api';
 
 function App() {
-  const [appName, setAppName] = useState(localStorage.getItem('hub_app_name') || 'N Box');
+  const [appName, setAppName] = useState(localStorage.getItem('hub_app_name') || 'Nature toolbox');
   const [enableProfiles, setEnableProfiles] = useState(localStorage.getItem('hub_enable_profiles') === 'true');
   const [currentProfileName, setCurrentProfileName] = useState(localStorage.getItem('hub_current_profile') || localStorage.getItem('hub_startup_profile') || 'Default');
   const [profiles, setProfiles] = useState([]);
@@ -20,6 +21,23 @@ function App() {
   const [searchActive, setSearchActive] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('hub_theme') || 'light');
   const [accentColor, setAccentColor] = useState(localStorage.getItem('hub_accent_color') || 'indigo');
+
+  const setTab = (tab, skipHistory = false) => {
+    setCurrentTab(tab);
+    if (!skipHistory) {
+      window.history.pushState({ tab }, '', `?tab=${tab}`);
+    }
+  };
+
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state && event.state.tab) {
+        setCurrentTab(event.state.tab);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     if (searchActive) {
@@ -163,6 +181,29 @@ function App() {
   }, [currentTab, autoFocusSearch, isSettingsOpen, isProfileOpen]);
 
   useEffect(() => {
+    const backButtonListener = CapApp.addListener('backButton', ({ canGoBack }) => {
+      if (isSettingsOpen) {
+        setIsSettingsOpen(false);
+      } else if (isProfileOpen) {
+        setIsProfileOpen(false);
+      } else if (isBookmarkOpen) {
+        setIsBookmarkOpen(false);
+      } else if (searchActive) {
+        setSearchActive(false);
+      } else if (currentTab === 'toolbox') {
+        // If in a tool, history will handle it via popstate,
+        // but we need to ensure we don't exit the app if we are just closing a tool.
+        // Actually, if we use history.back() it might trigger popstate.
+        // If we can't go back in history, we might want to exit or do nothing.
+      }
+    });
+
+    return () => {
+      backButtonListener.then(l => l.remove());
+    };
+  }, [isSettingsOpen, isProfileOpen, isBookmarkOpen, searchActive, currentTab]);
+
+  useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && !isSettingsOpen && !isProfileOpen) {
         e.preventDefault();
@@ -271,7 +312,7 @@ function App() {
           currentProfile={enableProfiles ? currentProfileName : 'Default'}
           profiles={profiles}
           currentTab={currentTab}
-          setView={(view) => setCurrentTab(view)}
+          setView={(view) => setTab(view)}
           onSettingsClick={() => setIsSettingsOpen(true)}
           onSearchToggle={handleSearchToggle}
           searchActive={searchActive}
@@ -282,7 +323,7 @@ function App() {
 
         <TabBar
           currentTab={currentTab}
-          setTab={setCurrentTab}
+          setTab={setTab}
           onAddClick={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
           onBookmarksLongPress={() => { if (enableProfiles) setIsProfileOpen(true); }}
           onSettingsClick={() => setIsSettingsOpen(true)}
@@ -411,7 +452,7 @@ function App() {
           onClose={() => setIsBookmarkOpen(false)}
           onSave={(savedLink) => {
             setRefreshTrigger(prev => prev + 1);
-            setCurrentTab('bookmarks');
+            setTab('bookmarks');
             setSearchQuery('');
             if (savedLink && savedLink.profile_id) {
               const targetProfile = profiles.find(p => p.id === savedLink.profile_id);

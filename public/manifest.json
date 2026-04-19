@@ -1,11 +1,11 @@
 {
-  "name": "N Box",
-  "short_name": "N Box",
+  "name": "Nature toolbox",
+  "short_name": "Nature toolbox",
   "description": "A personal dashboard to organize and access your favorite websites.",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f1f5f9",
-  "theme_color": "#6366f1",
+  "theme_color": "#2e7d32",
   "icons": [
     {
       "src": "assets/favicon.svg",

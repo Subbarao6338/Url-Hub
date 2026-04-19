@@ -179,7 +179,7 @@ const SettingsModal = ({
               type="text"
               value={appName}
               onChange={(e) => setAppName(e.target.value)}
-              placeholder="N Box"
+              placeholder="Nature toolbox"
             />
           </div>
           <div className="form-group">
@@ -475,8 +475,8 @@ const AboutTab = () => {
     <div className="about-content-wrapper">
       <div className="about-content" dangerouslySetInnerHTML={{ __html: content }} />
       <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.5, fontSize: '0.8rem' }}>
-        <p>N Box &bull; Version 1.2.0</p>
-        <p>&copy; {new Date().getFullYear()} N Box Team</p>
+        <p>Nature toolbox &bull; Version 1.2.0</p>
+        <p>&copy; {new Date().getFullYear()} Nature toolbox Team</p>
       </div>
     </div>
   );

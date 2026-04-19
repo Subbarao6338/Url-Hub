@@ -12,7 +12,7 @@ const Header = ({ appName, currentProfile, profiles, currentTab, setView, onSett
         <span className="material-icons app-logo">
           {currentProfile === 'Default' ? 'inbox' : (profile.icon || 'person')}
         </span>
-        <h1 className="page-title">{appName || 'N Box'}</h1>
+        <h1 className="page-title">{appName || 'Nature toolbox'}</h1>
       </div>
       <div className="top-actions">
         <div className={`search-container ${searchActive ? 'active' : 'desktop-only'}`}>
