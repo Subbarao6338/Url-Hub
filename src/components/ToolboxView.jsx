@@ -18,6 +18,8 @@ import TextUtils from './tools/TextUtils';
 import WordCounter from './tools/WordCounter';
 import WordRankCalculator from './tools/WordRankCalculator';
 import JsonFormatter from './tools/JsonFormatter';
+import CsvJsonConverter from './tools/CsvJsonConverter';
+import ImageOptimizer from './tools/ImageOptimizer';
 import Base64Converter from './tools/Base64Converter';
 import DeviceInfo from './tools/DeviceInfo';
 import PomodoroTimer from './tools/PomodoroTimer';
@@ -52,6 +54,7 @@ const TOOLS = [
     { id: 'calculator', title: 'Calculator', icon: 'calculate', category: 'Productivity', component: Calculator },
     { id: 'counter', title: 'Counter', icon: 'add_circle_outline', category: 'Productivity', component: Counter },
     { id: 'qr-gen', title: 'QR Gen', icon: 'qr_code_2', category: 'Productivity', component: QrGen },
+    { id: 'img-optimizer', title: 'Image Optimizer', icon: 'image', category: 'Productivity', component: ImageOptimizer },
     { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Productivity', component: Stopwatch },
     { id: 'translate', title: 'Translate', icon: 'translate', category: 'Productivity', component: Translate },
     { id: 'age-calculator', title: 'Age', icon: 'calendar_today', category: 'Productivity', component: AgeCalculator },
@@ -74,6 +77,7 @@ const TOOLS = [
     { id: 'cookies', title: 'Cookies', icon: 'cookie', category: 'Web Tools', component: Cookies },
     { id: 'inspect', title: 'Inspect', icon: 'search', category: 'Web Tools', component: Inspect },
     { id: 'json-formatter', title: 'JSON', icon: 'code', category: 'Web Tools', component: JsonFormatter },
+    { id: 'csv-json', title: 'CSV/JSON', icon: 'swap_horiz', category: 'Web Tools', component: CsvJsonConverter },
     { id: 'base64-converter', title: 'Base64', icon: 'transform', category: 'Web Tools', component: Base64Converter },
     { id: 'url-tool', title: 'URL Tool', icon: 'link', category: 'Web Tools', component: UrlTool },
     { id: 'morse', title: 'Morse', icon: 'timeline', category: 'Web Tools', component: MorseCode },

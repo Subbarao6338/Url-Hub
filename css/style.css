@@ -22,7 +22,7 @@
   --border: rgba(var(--primary-rgb, 15, 23, 42), 0.1);
 
   --sidebar-bg: rgba(255, 255, 255, 0.5);
-  --glass-blur: 12px;
+  --glass-blur: 16px;
 
   --radius-full: 9999px;
   --radius-xl: 28px;
@@ -106,7 +106,11 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  outline: none;
+}
+
+*:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
 }
 
 html, body, #root {

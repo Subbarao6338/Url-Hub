@@ -209,13 +209,26 @@ async def ensure_db_middleware(request, call_next):
 def hello():
     return {"message": "Hello from Python on Vercel!"}
 
+@app.get("/api/health")
+def health():
+    try:
+        conn = get_db_connection()
+        conn.execute("SELECT 1")
+        conn.close()
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        return {"status": "unhealthy", "database": str(e)}, 500
+
 # Profiles Endpoints
 @app.get("/api/profiles", response_model=List[Profile])
 def get_profiles():
-    conn = get_db_connection()
-    profiles = conn.execute('SELECT * FROM profiles ORDER BY id ASC').fetchall()
-    conn.close()
-    return [dict(p) for p in profiles]
+    try:
+        conn = get_db_connection()
+        profiles = conn.execute('SELECT * FROM profiles ORDER BY id ASC').fetchall()
+        conn.close()
+        return [dict(p) for p in profiles]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Links Endpoints
 @app.get("/api/links", response_model=List[Link])
