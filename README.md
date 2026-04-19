@@ -1,6 +1,6 @@
-# URL Hub React
+# Nature toolbox
 
-![URL Hub Screenshot](assets/urlhub.png)
+![Nature toolbox Screenshot](assets/urlhub.png)
 
 A modern, full-stack personal dashboard to organize and access your favorite websites, projects, and tools. Built with **React**, **FastAPI**, and **SQLite**.
 
@@ -34,7 +34,7 @@ A modern, full-stack personal dashboard to organize and access your favorite web
 1. **Clone the repository**:
    ```bash
    git clone <repository-url>
-   cd url-hub-react
+   cd nature-toolbox
    ```
 
 2. **Install Frontend Dependencies**:

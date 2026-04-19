@@ -1,4 +1,4 @@
-package com.nbox.app;
+package com.nature.toolbox;
 
 import com.getcapacitor.BridgeActivity;
 
