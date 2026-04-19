@@ -221,7 +221,25 @@ const SettingsModal = ({
           onToggle={toggleSection}
         >
           <div className="form-group">
-            <label>Color Theme</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+              <label style={{ margin: 0 }}>Color Theme</label>
+              <button
+                className="pill"
+                style={{ padding: '4px 12px', fontSize: '0.75rem' }}
+                onClick={() => {
+                  const themes = [
+                    'light', 'dark', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter',
+                    'autumn', 'lavender', 'spring', 'galaxy', 'blackhole', 'midnight', 'aurora', 'blossom', 'canyon', 'glacier'
+                  ];
+                  const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+                  setTheme(randomTheme);
+                  const randomColor = ['indigo', 'blue', 'cyan', 'green', 'yellow', 'orange', 'red', 'pink', 'purple', 'violet', 'lime', 'sky', 'rose', 'slate', 'black'][Math.floor(Math.random() * 15)];
+                  setAccentColor(randomColor);
+                }}
+              >
+                <span className="material-icons" style={{ fontSize: '1rem' }}>shuffle</span> Random
+              </button>
+            </div>
             <div className="pill-group">
               {[
                 'light', 'dark', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter',

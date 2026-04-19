@@ -33,6 +33,9 @@ import SecurityInfo from './tools/SecurityInfo';
 import UserScripts from './tools/UserScripts';
 import DiffViewer from './tools/DiffViewer';
 import AnomalyDetection from './tools/AnomalyDetection';
+import HashGenerator from './tools/HashGenerator';
+import GlassGenerator from './tools/GlassGenerator';
+import JsonToCsv from './tools/JsonToCsv';
 import DataQuality from './tools/DataQuality';
 import DataAnonymizer from './tools/DataAnonymizer';
 import Observability from './tools/Observability';
@@ -59,6 +62,7 @@ const TOOLS = [
     { id: 'color-picker', title: 'Color', icon: 'palette', category: 'Productivity', component: ColorPicker },
     { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Productivity', component: TimestampConverter },
     { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Utilities', component: PasswordGenerator },
+    { id: 'hash-gen', title: 'Hash Gen', icon: 'security', category: 'Utilities', component: HashGenerator },
     { id: 'uuid-gen', title: 'UUID Gen', icon: 'fingerprint', category: 'Utilities', component: UuidGenerator },
     { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Utilities', component: DiceRoller },
     { id: 'coin-flipper', title: 'Coin Flip', icon: 'monetization_on', category: 'Utilities', component: CoinFlipper },
@@ -74,6 +78,7 @@ const TOOLS = [
     { id: 'cookies', title: 'Cookies', icon: 'cookie', category: 'Web Tools', component: Cookies },
     { id: 'inspect', title: 'Inspect', icon: 'search', category: 'Web Tools', component: Inspect },
     { id: 'json-formatter', title: 'JSON', icon: 'code', category: 'Web Tools', component: JsonFormatter },
+    { id: 'json-to-csv', title: 'JSON to CSV', icon: 'table_view', category: 'Web Tools', component: JsonToCsv },
     { id: 'base64-converter', title: 'Base64', icon: 'transform', category: 'Web Tools', component: Base64Converter },
     { id: 'url-tool', title: 'URL Tool', icon: 'link', category: 'Web Tools', component: UrlTool },
     { id: 'morse', title: 'Morse', icon: 'timeline', category: 'Web Tools', component: MorseCode },
@@ -81,6 +86,7 @@ const TOOLS = [
     { id: 'security-info', title: 'Security', icon: 'verified_user', category: 'System', component: SecurityInfo },
     { id: 'user-scripts', title: 'User Scripts', icon: 'add', category: 'Dev Tools', component: UserScripts },
     { id: 'markdown-table', title: 'MD Table', icon: 'grid_on', category: 'Dev Tools', component: MarkdownTable },
+    { id: 'glass-gen', title: 'Glass Gen', icon: 'blur_on', category: 'Dev Tools', component: GlassGenerator },
     { id: 'markdown-preview', title: 'Markdown', icon: 'article', category: 'Dev Tools', component: MarkdownPreview },
     { id: 'diff-viewer', title: 'Diff Viewer', icon: 'difference', category: 'Dev Tools', component: DiffViewer },
     { id: 'anomaly-detection', title: 'Anomaly Detection', icon: 'notifications_active', category: 'Graviton', component: AnomalyDetection },
