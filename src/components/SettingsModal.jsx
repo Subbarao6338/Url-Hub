@@ -93,6 +93,7 @@ const SettingsModal = ({
   theme, setTheme,
   accentColor, setAccentColor,
   isCompact, setIsCompact,
+  hideBookmarks, setHideBookmarks,
   hideUrls, setHideUrls,
   hideIcons, setHideIcons,
   showStats, setShowStats,
@@ -321,6 +322,10 @@ const SettingsModal = ({
             <button className={`pill ${enableProfiles ? 'active' : ''}`} onClick={() => setEnableProfiles(!enableProfiles)}>
               <span className="material-icons">{enableProfiles ? 'account_circle' : 'no_accounts'}</span>
               <span>Enable Profiles</span>
+            </button>
+            <button className={`pill ${hideBookmarks ? 'active' : ''}`} onClick={() => setHideBookmarks(!hideBookmarks)}>
+              <span className="material-icons">{hideBookmarks ? 'bookmarks' : 'bookmark_border'}</span>
+              <span>Hide Bookmarks Tab</span>
             </button>
             <button className={`pill ${hideUrls ? 'active' : ''}`} onClick={() => setHideUrls(!hideUrls)}>
               <span className="material-icons">link_off</span>

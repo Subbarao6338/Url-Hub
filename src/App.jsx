@@ -20,6 +20,7 @@ function App() {
   const [searchActive, setSearchActive] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('hub_theme') || 'light');
   const [accentColor, setAccentColor] = useState(localStorage.getItem('hub_accent_color') || 'indigo');
+  const [hideBookmarks, setHideBookmarks] = useState(localStorage.getItem('hub_hide_bookmarks') === 'true');
 
   const setTab = (tab, skipHistory = false) => {
     setCurrentTab(tab);
@@ -210,6 +211,13 @@ function App() {
   }, [currentProfileName]);
 
   useEffect(() => {
+    localStorage.setItem('hub_hide_bookmarks', hideBookmarks);
+    if (hideBookmarks && currentTab === 'bookmarks') {
+      setTab('toolbox');
+    }
+  }, [hideBookmarks]);
+
+  useEffect(() => {
     if (autoFocusSearch && !isSettingsOpen && !isProfileOpen) {
       const searchInput = document.getElementById('search');
       if (searchInput && window.innerWidth > 768) {
@@ -366,6 +374,7 @@ function App() {
           onSearchClick={handleSearchToggle}
           searchActive={searchActive}
           enableProfiles={enableProfiles}
+          hideBookmarks={hideBookmarks}
         />
 
         <div
@@ -427,6 +436,8 @@ function App() {
           setAppName={setAppName}
           enableProfiles={enableProfiles}
           setEnableProfiles={setEnableProfiles}
+          hideBookmarks={hideBookmarks}
+          setHideBookmarks={setHideBookmarks}
           startupTab={startupTab}
           setStartupTab={setStartupTab}
           enableHoverEffects={enableHoverEffects}

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettingsClick, onSearchClick, searchActive, enableProfiles }) => {
+const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettingsClick, onSearchClick, searchActive, enableProfiles, hideBookmarks }) => {
   const [pressTimer, setPressTimer] = useState(null);
   const isLongPress = useRef(false);
 
@@ -41,23 +41,25 @@ const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettin
           <span className="tab-name">Toolbox</span>
         </div>
       </div>
-      <div className="tab-group" id="group-bookmarks">
-        <div
-          id="tab-bookmarks"
-          className={`tab-item ${currentTab === 'bookmarks' ? 'active' : ''}`}
-          onClick={handleBookmarksClick}
-          onMouseDown={startPress}
-          onMouseUp={cancelPress}
-          onMouseLeave={cancelPress}
-          onTouchStart={startPress}
-          onTouchEnd={cancelPress}
-          onContextMenu={(e) => e.preventDefault()}
-          title="Bookmarks"
-        >
-          <span className="material-icons">bookmarks</span>
-          <span className="tab-name">Bookmarks</span>
+      {!hideBookmarks && (
+        <div className="tab-group" id="group-bookmarks">
+          <div
+            id="tab-bookmarks"
+            className={`tab-item ${currentTab === 'bookmarks' ? 'active' : ''}`}
+            onClick={handleBookmarksClick}
+            onMouseDown={startPress}
+            onMouseUp={cancelPress}
+            onMouseLeave={cancelPress}
+            onTouchStart={startPress}
+            onTouchEnd={cancelPress}
+            onContextMenu={(e) => e.preventDefault()}
+            title="Bookmarks"
+          >
+            <span className="material-icons">bookmarks</span>
+            <span className="tab-name">Bookmarks</span>
+          </div>
         </div>
-      </div>
+      )}
       <div className="tab-group mobile-only" id="group-search">
         <div
           id="tab-search"
