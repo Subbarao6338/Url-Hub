@@ -66,13 +66,15 @@ jobs:
           chmod +x gradlew
           if [ "$RELEASE_KEYSTORE_EXISTS" = "true" ]; then
             ./gradlew assembleRelease \
-              -Pandroid.injected.signing.store.file=release.keystore \
-              -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
-              -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEY_ALIAS }} \
-              -Pandroid.injected.signing.key.password=${{ secrets.ANDROID_KEY_PASSWORD }}
+              -PRELEASE_STORE_FILE=release.keystore \
+              -PRELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
+              -PRELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }} \
+              -PRELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
           else
             ./gradlew assembleDebug
           fi
+        env:
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

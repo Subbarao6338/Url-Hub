@@ -20,7 +20,7 @@ function App() {
   const [searchActive, setSearchActive] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('hub_theme') || 'light');
   const [accentColor, setAccentColor] = useState(localStorage.getItem('hub_accent_color') || 'indigo');
-  const [hideBookmarks, setHideBookmarks] = useState(localStorage.getItem('hub_hide_bookmarks') === 'true');
+  const [hideBookmarks, setHideBookmarks] = useState(localStorage.getItem('hub_hide_bookmarks') !== null ? localStorage.getItem('hub_hide_bookmarks') === 'true' : true);
 
   const setTab = (tab, skipHistory = false) => {
     setCurrentTab(tab);

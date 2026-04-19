@@ -53,12 +53,13 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
     }).catch(err => {
       console.error("Failed to fetch bookmarks:", err);
       setLoading(false);
-      setLinks([]);
+      setLinks(null); // Set to null to indicate error
       setCategories({});
     });
   }, [profileId, refreshTrigger]);
 
-  const filteredLinks = links.filter(l => {
+  const currentLinks = Array.isArray(links) ? links : [];
+  const filteredLinks = currentLinks.filter(l => {
     if (l.is_internal) return false;
 
     let matchesSearch = true;
@@ -109,15 +110,30 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
 
   const stats = {};
   const visibleCategories = {};
-  links.forEach(l => {
+  currentLinks.forEach(l => {
     if (l.is_internal) return;
     stats[l.category] = (stats[l.category] || 0) + 1;
     visibleCategories[l.category] = categories[l.category] || 'folder';
   });
   const totalCount = Object.values(stats).reduce((a, b) => a + b, 0);
-  const pinnedCount = links.filter(l => l.is_pinned).length;
+  const pinnedCount = currentLinks.filter(l => l.is_pinned).length;
 
   if (loading) return <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>Loading bookmarks...</div>;
+
+  if (links === null) return (
+    <div style={{textAlign:'center', padding:'3rem'}}>
+      <span className="material-icons" style={{fontSize: '3rem', color: 'var(--danger)', marginBottom: '1rem'}}>error_outline</span>
+      <h3 style={{marginBottom: '0.5rem'}}>Failed to load bookmarks</h3>
+      <p style={{opacity: 0.7, marginBottom: '1rem'}}>Could not connect to the server.</p>
+      <div style={{background: 'var(--surface)', padding: '1rem', borderRadius: '12px', fontSize: '0.8rem', marginBottom: '1.5rem', wordBreak: 'break-all', textAlign: 'left'}}>
+        <strong>API Base:</strong> {API_BASE}
+      </div>
+      <button className="btn-primary" onClick={() => window.location.reload()}>
+        <span className="material-icons" style={{fontSize: '1.1rem', verticalAlign: 'middle', marginRight: '4px'}}>refresh</span>
+        Retry
+      </button>
+    </div>
+  );
 
   if (!profileId) return (
     <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>

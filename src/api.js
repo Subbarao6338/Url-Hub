@@ -3,9 +3,18 @@ const DEFAULT_API_BASE = import.meta.env.VITE_API_URL || '/api';
 const isCapacitor = window.location.protocol === 'capacitor:';
 
 export const getApiBase = () => {
-  const base = localStorage.getItem('hub_api_base_url') || DEFAULT_API_BASE;
+  let base = localStorage.getItem('hub_api_base_url');
+
+  if (!base) {
+    base = DEFAULT_API_BASE;
+  }
+
   if (isCapacitor && (base === '/api' || !base.startsWith('http'))) {
     console.warn("Running in Capacitor with relative API path. External backend may be unreachable.");
+    // If we're in Capacitor and base is relative, and we have a VITE_API_URL, use it as a secondary fallback
+    if (import.meta.env.VITE_API_URL && import.meta.env.VITE_API_URL.startsWith('http')) {
+       return import.meta.env.VITE_API_URL;
+    }
   }
   return base;
 };
