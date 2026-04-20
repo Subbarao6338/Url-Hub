@@ -39,24 +39,12 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Cache Keystore
-        id: cache-keystore
-        uses: actions/cache@v4
-        with:
-          path: android/app/debug.keystore
-          key: ${{ runner.os }}-debug-keystore-v1
-
-      - name: Setup Keystore
+      - name: Setup Release Keystore
         run: |
           if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
             echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
             echo "RELEASE_KEYSTORE_EXISTS=true" >> $GITHUB_ENV
-          elif [ -f "android/app/debug.keystore" ]; then
-            echo "Using cached debug keystore"
-            echo "RELEASE_KEYSTORE_EXISTS=false" >> $GITHUB_ENV
           else
-            echo "Generating new debug keystore..."
-            keytool -genkey -v -keystore android/app/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
             echo "RELEASE_KEYSTORE_EXISTS=false" >> $GITHUB_ENV
           fi
 

@@ -17,6 +17,12 @@ android {
         }
     }
     signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
         release {
             if (System.getenv("ANDROID_KEYSTORE_BASE64") != null || project.hasProperty('RELEASE_STORE_FILE')) {
                 storeFile file(project.hasProperty('RELEASE_STORE_FILE') ? project.property('RELEASE_STORE_FILE') : "release.keystore")
@@ -28,6 +34,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
