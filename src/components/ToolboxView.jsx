@@ -54,30 +54,151 @@ import DiceRoller from './tools/DiceRoller';
 import CoinFlipper from './tools/CoinFlipper';
 import Counter from './tools/Counter';
 import MarkdownTable from './tools/MarkdownTable';
+import Measurements from './tools/Measurements';
+import Games from './tools/Games';
+import MathTools from './tools/MathTools';
+import Generators from './tools/Generators';
+import FinanceCalculators from './tools/FinanceCalculators';
+import MiscCalculators from './tools/MiscCalculators';
+import ImageTools from './tools/ImageTools';
+import ColorTools from './tools/ColorTools';
+import OutdoorTools from './tools/OutdoorTools';
+import PdfEdit from './tools/PdfEdit';
+import PdfSecure from './tools/PdfSecure';
+import PdfConvert from './tools/PdfConvert';
 
 const TOOLS = [
-    // Calculators
-    { id: 'calculator', title: 'Calculator', icon: 'calculate', category: 'Calculators', component: Calculator },
-    { id: 'bmi-calculator', title: 'BMI Calculator', icon: 'person', category: 'Calculators', component: BMICalculator },
+    // Measurements (11 Tools)
+    { id: 'ruler', title: 'Ruler', icon: 'straighten', category: 'Measurements', component: Measurements },
+    { id: 'level-pendulum', title: 'Level & Pendulum', icon: 'vibration', category: 'Measurements', component: Measurements },
+    { id: 'protractor', title: 'Protractor', icon: 'architecture', category: 'Measurements', component: Measurements },
+    { id: 'luxmeter', title: 'Luxmeter', icon: 'light_mode', category: 'Measurements', component: Measurements },
+    { id: 'soundmeter', title: 'Soundmeter', icon: 'volume_up', category: 'Measurements', component: Measurements },
+    { id: 'magnetic-tester', title: 'Magnetic Tester', icon: 'explore', category: 'Measurements', component: Measurements },
+    { id: 'metronome', title: 'Metronome', icon: 'timer', category: 'Measurements', component: Measurements },
+    { id: 'reaction-time', title: 'Reaction Time', icon: 'bolt', category: 'Measurements', component: Measurements },
+    { id: 'tally-counter', title: 'Tally Counter', icon: 'add_circle_outline', category: 'Measurements', component: Counter },
+    { id: 'pomodoro-timer', title: 'Pomodoro Timer', icon: 'schedule', category: 'Measurements', component: PomodoroTimer },
+    { id: 'tabata-timer', title: 'Tabata Timer', icon: 'fitness_center', category: 'Measurements', component: Measurements },
 
-    // Time
-    { id: 'age-calculator', title: 'Age Calculator', icon: 'calendar_today', category: 'Time', component: AgeCalculator },
-    { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Time', component: TimestampConverter },
-    { id: 'pomodoro', title: 'Pomodoro', icon: 'timer', category: 'Time', component: PomodoroTimer },
-    { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Time', component: Stopwatch },
+    // Games (9 Tools)
+    { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Games', component: DiceRoller },
+    { id: 'spin-wheel', title: 'Spin the Wheel', icon: 'refresh', category: 'Games', component: Games },
+    { id: 'spin-bottle', title: 'Spin the Bottle', icon: 'wine_bar', category: 'Games', component: Games },
+    { id: 'team-maker', title: 'Team Maker', icon: 'groups', category: 'Games', component: Games },
+    { id: 'tournament-maker', title: 'Tournament Maker', icon: 'account_tree', category: 'Games', component: Games },
+    { id: 'scoreboard', title: 'Scoreboard', icon: 'scoreboard', category: 'Games', component: Games },
+    { id: 'chess-clock', title: 'Chess Clock', icon: 'timer', category: 'Games', component: Games },
+    { id: 'chess960', title: 'Chess960', icon: 'grid_view', category: 'Games', component: Games },
+    { id: 'darts-scoreboard', title: 'Darts Scoreboard', icon: 'ads_click', category: 'Games', component: Games },
 
-    // Converters
-    { id: 'unit-converter', title: 'Unit Converter', icon: 'balance', category: 'Converters', component: UnitConverter },
-    { id: 'currency-converter', title: 'Currency', icon: 'payments', category: 'Converters', component: CurrencyConverter },
+    // Text (9 Tools)
+    { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Text', component: LoremIpsum },
+    { id: 'url-shortener', title: 'URL Shortener', icon: 'link', category: 'Text', component: TextUtils },
+    { id: 'character-counter', title: 'Character Counter', icon: 'format_list_numbered', category: 'Text', component: WordCounter },
+    { id: 'emoji-text', title: 'Emoji Text', icon: 'mood', category: 'Text', component: TextUtils },
+    { id: 'invisible-char', title: 'Invisible Character', icon: 'visibility_off', category: 'Text', component: TextUtils },
+    { id: 'case-converter', title: 'Case Converter', icon: 'title', category: 'Text', component: TextUtils },
+    { id: 'text-repeater', title: 'Text Repeater', icon: 'repeat', category: 'Text', component: TextUtils },
+    { id: 'list-sorter', title: 'List Sorter', icon: 'sort', category: 'Text', component: TextUtils },
+    { id: 'reverse-text', title: 'Reverse Text', icon: 'settings_backup_restore', category: 'Text', component: TextUtils },
 
-    // Text Tools
-    { id: 'translate', title: 'Translate', icon: 'translate', category: 'Text Tools', component: Translate },
-    { id: 'text-utils', title: 'Text Tools', icon: 'title', category: 'Text Tools', component: TextUtils },
-    { id: 'word-counter', title: 'Word Counter', icon: 'format_list_numbered', category: 'Text Tools', component: WordCounter },
-    { id: 'word-rank', title: 'Word Rank', icon: 'sort_by_alpha', category: 'Text Tools', component: WordRankCalculator },
-    { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Text Tools', component: LoremIpsum },
+    // Math (9 Tools)
+    { id: 'percentages', title: 'Percentages', icon: 'percent', category: 'Math', component: MathTools },
+    { id: 'geometry', title: 'Geometry', icon: 'architecture', category: 'Math', component: MathTools },
+    { id: 'pythagoras', title: 'Pythagoras', icon: 'change_history', category: 'Math', component: MathTools },
+    { id: 'proportions', title: 'Proportions', icon: 'balance', category: 'Math', component: MathTools },
+    { id: 'ruffini', title: 'Ruffini', icon: 'reorder', category: 'Math', component: MathTools },
+    { id: 'quadratic', title: 'Quadratic Equation', icon: 'functions', category: 'Math', component: MathTools },
+    { id: 'fractions', title: 'Fractions', icon: 'vertical_align_center', category: 'Math', component: MathTools },
+    { id: 'gcd-lcm', title: 'GCD & LCM', icon: 'format_list_numbered', category: 'Math', component: MathTools },
+    { id: 'prime-factors', title: 'Prime Factors', icon: 'grid_3x3', category: 'Math', component: MathTools },
+
+    // Generators (6 Tools)
+    { id: 'qr-gen', title: 'QR Code', icon: 'qr_code_2', category: 'Generators', component: QrGen },
+    { id: 'barcode-gen', title: 'Barcode Generator', icon: 'barcode_reader', category: 'Generators', component: Generators },
+    { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Generators', component: PasswordGenerator },
+    { id: 'random-numbers', title: 'Random Numbers', icon: 'pin', category: 'Generators', component: Generators },
+    { id: 'heads-tails', title: 'Heads or Tails', icon: 'monetization_on', category: 'Generators', component: CoinFlipper },
+    { id: 'magic-8ball', title: 'Magic 8-Ball', icon: 'filter_8', category: 'Generators', component: Generators },
+
+    // Calculators (6 Tools)
+    { id: 'currency-conv', title: 'Currency Exchange', icon: 'payments', category: 'Calculators', component: CurrencyConverter },
+    { id: 'tip-split', title: 'Tip & Split', icon: 'restaurant', category: 'Calculators', component: MiscCalculators },
+    { id: 'bmi-metabolism', title: 'BMI & Metabolism', icon: 'person', category: 'Calculators', component: BMICalculator },
+    { id: 'unit-converter', title: 'Unit Converter', icon: 'balance', category: 'Calculators', component: UnitConverter },
+    { id: 'weighted-avg', title: 'Weighted Average', icon: 'show_chart', category: 'Calculators', component: MiscCalculators },
+    { id: 'date-diff', title: 'Date Difference', icon: 'calendar_month', category: 'Calculators', component: MiscCalculators },
+
+    // Finance (6 Tools)
+    { id: 'vat-calc', title: 'VAT Calculator', icon: 'receipt_long', category: 'Finance', component: FinanceCalculators },
+    { id: 'inflation', title: 'Inflation', icon: 'trending_up', category: 'Finance', component: FinanceCalculators },
+    { id: 'loan-calc', title: 'Loan Calculator', icon: 'credit_card', category: 'Finance', component: FinanceCalculators },
+    { id: 'compound-int', title: 'Compound Interest', icon: 'savings', category: 'Finance', component: FinanceCalculators },
+    { id: 'cagr', title: 'CAGR', icon: 'query_stats', category: 'Finance', component: FinanceCalculators },
+    { id: 'dcf', title: 'DCF', icon: 'account_balance', category: 'Finance', component: FinanceCalculators },
+
+    // Images (6 Tools)
+    { id: 'img-format', title: 'Format Converter', icon: 'transform', category: 'Images', component: ImageTools },
+    { id: 'img-compress', title: 'Compressor', icon: 'compress', category: 'Images', component: ImageOptimizer },
+    { id: 'img-resize', title: 'Resize Image', icon: 'aspect_ratio', category: 'Images', component: ImageTools },
+    { id: 'img-blur', title: 'Privacy Blur', icon: 'blur_on', category: 'Images', component: ImageTools },
+    { id: 'img-meta', title: 'Metadata Cleaner', icon: 'no_photography', category: 'Images', component: ImageTools },
+    { id: 'img-bw', title: 'Black & White Filter', icon: 'filter_b_and_w', category: 'Images', component: ImageTools },
+
+    // Outdoor (6 Tools)
+    { id: 'sos', title: 'SOS', icon: 'warning', category: 'Outdoor', component: OutdoorTools },
+    { id: 'compass', title: 'Compass', icon: 'explore', category: 'Outdoor', component: OutdoorTools },
+    { id: 'gps-info', title: 'Altitude & GPS', icon: 'location_on', category: 'Outdoor', component: OutdoorTools },
+    { id: 'freq-gen', title: 'Frequency Gen', icon: 'waves', category: 'Outdoor', component: OutdoorTools },
+    { id: 'magnifier', title: 'Magnifying Glass', icon: 'zoom_in', category: 'Outdoor', component: OutdoorTools },
+    { id: 'mirror', title: 'Mirror', icon: 'face', category: 'Outdoor', component: OutdoorTools },
+
+    // Colors (7 Tools)
+    { id: 'img-color', title: 'Image Color Picker', icon: 'colorize', category: 'Colors', component: ColorTools },
+    { id: 'cam-color', title: 'Camera Color Picker', icon: 'camera', category: 'Colors', component: ColorTools },
+    { id: 'color-conv', title: 'Color Converter', icon: 'autorenew', category: 'Colors', component: ColorTools },
+    { id: 'tints-shades', title: 'Tints & Shades', icon: 'opacity', category: 'Colors', component: ColorTools },
+    { id: 'color-harm', title: 'Color Harmonizer', icon: 'style', category: 'Colors', component: ColorTools },
+    { id: 'color-blend', title: 'Color Blender', icon: 'format_color_fill', category: 'Colors', component: ColorTools },
+    { id: 'color-picker-std', title: 'Color Picker', icon: 'palette', category: 'Colors', component: ColorPicker },
+
+    // PDF Edit
+    { id: 'pdf-merge', title: 'Merge PDF', icon: 'merge_type', category: 'PDF Edit', component: PdfEdit },
+    { id: 'pdf-split', title: 'Split PDF', icon: 'call_split', category: 'PDF Edit', component: PdfEdit },
+    { id: 'pdf-delete', title: 'Delete Pages', icon: 'delete', category: 'PDF Edit', component: PdfEdit },
+    { id: 'pdf-rearrange', title: 'Rearrange PDF', icon: 'low_priority', category: 'PDF Edit', component: PdfEdit },
+    { id: 'pdf-rotate', title: 'Rotate PDF', icon: 'rotate_right', category: 'PDF Edit', component: PdfEdit },
+    { id: 'pdf-sign', title: 'Sign PDF', icon: 'draw', category: 'PDF Edit', component: PdfEdit },
+    { id: 'pdf-watermark', title: 'Watermark PDF', icon: 'branding_watermark', category: 'PDF Edit', component: PdfEdit },
+    { id: 'pdf-numbers', title: 'Add Page Numbers', icon: 'format_list_numbered', category: 'PDF Edit', component: PdfEdit },
+    { id: 'pdf-bookmarks', title: 'PDF Bookmarks', icon: 'bookmark', category: 'PDF Edit', component: PdfEdit },
+    { id: 'pdf-crop', title: 'Crop PDF', icon: 'crop', category: 'PDF Edit', component: PdfEdit },
+
+    // PDF Optimize & Secure
+    { id: 'pdf-compress', title: 'Compress PDF', icon: 'compress', category: 'PDF Optimize', component: PdfSecure },
+    { id: 'pdf-grayscale', title: 'Grayscale PDF', icon: 'filter_b_and_w', category: 'PDF Optimize', component: PdfSecure },
+    { id: 'pdf-repair', title: 'Repair PDF', icon: 'build', category: 'PDF Optimize', component: PdfSecure },
+    { id: 'pdf-compare', title: 'Compare PDF', icon: 'difference', category: 'PDF Optimize', component: PdfSecure },
+    { id: 'pdf-flatten', title: 'Flatten PDF', icon: 'layers_clear', category: 'PDF Optimize', component: PdfSecure },
+    { id: 'pdf-lock', title: 'Lock PDF', icon: 'lock', category: 'PDF Secure', component: PdfSecure },
+    { id: 'pdf-unlock', title: 'Unlock PDF', icon: 'lock_open', category: 'PDF Secure', component: PdfSecure },
+    { id: 'pdf-meta', title: 'PDF Metadata', icon: 'info', category: 'PDF Secure', component: PdfSecure },
+
+    // PDF Convert & Office
+    { id: 'pdf-to-img', title: 'PDF to Img', icon: 'image', category: 'PDF Convert', component: PdfConvert },
+    { id: 'img-to-pdf', title: 'Img to PDF', icon: 'picture_as_pdf', category: 'PDF Convert', component: PdfConvert },
+    { id: 'pdf-to-zip', title: 'PDF to ZIP', icon: 'folder_zip', category: 'PDF Convert', component: PdfConvert },
+    { id: 'pdf-extract', title: 'Extract Assets', icon: 'file_download', category: 'PDF Convert', component: PdfConvert },
+    { id: 'pdf-to-text', title: 'PDF to Text', icon: 'text_snippet', category: 'PDF Convert', component: PdfConvert },
+    { id: 'word-to-pdf', title: 'Word to PDF', icon: 'description', category: 'PDF Office', component: PdfConvert },
+    { id: 'excel-to-pdf', title: 'Excel to PDF', icon: 'table_chart', category: 'PDF Office', component: PdfConvert },
+    { id: 'ppt-to-pdf', title: 'PPT to PDF', icon: 'slideshow', category: 'PDF Office', component: PdfConvert },
+    { id: 'pdf-to-word', title: 'PDF to Word', icon: 'article', category: 'PDF Office', component: PdfConvert },
+    { id: 'pdf-scan', title: 'Scan PDF (OCR)', icon: 'document_scanner', category: 'PDF Office', component: PdfConvert },
 
     // Web Tools
+    { id: 'translate', title: 'Translate', icon: 'translate', category: 'Web Tools', component: Translate },
     { id: 'url-tool', title: 'URL Tool', icon: 'link', category: 'Web Tools', component: UrlTool },
     { id: 'json-formatter', title: 'JSON Formatter', icon: 'code', category: 'Web Tools', component: JsonFormatter },
     { id: 'csv-json', title: 'CSV/JSON', icon: 'swap_horiz', category: 'Web Tools', component: CsvJsonConverter },
@@ -89,29 +210,6 @@ const TOOLS = [
     { id: 'inspect', title: 'Inspect', icon: 'search', category: 'Web Tools', component: Inspect },
     { id: 'omni-hub', title: 'Omni Hub', icon: 'public', category: 'Web Tools', component: OmniHub },
 
-    // Security
-    { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Security', component: PasswordGenerator },
-    { id: 'hash-gen', title: 'Hash Gen', icon: 'security', category: 'Security', component: HashGenerator },
-    { id: 'uuid-gen', title: 'UUID Gen', icon: 'fingerprint', category: 'Security', component: UuidGenerator },
-    { id: 'security-info', title: 'Security Info', icon: 'verified_user', category: 'Security', component: SecurityInfo },
-
-    // System
-    { id: 'device-info', title: 'Device Info', icon: 'memory', category: 'System', component: DeviceInfo },
-    { id: 'android-sensors', title: 'Sensors', icon: 'sensors', category: 'System', component: AndroidSensors },
-
-    // Design
-    { id: 'color-picker', title: 'Color Picker', icon: 'palette', category: 'Design', component: ColorPicker },
-    { id: 'glass-gen', title: 'Glass Gen', icon: 'blur_on', category: 'Design', component: GlassGenerator },
-
-    // Media
-    { id: 'qr-gen', title: 'QR Gen', icon: 'qr_code_2', category: 'Media', component: QrGen },
-    { id: 'img-optimizer', title: 'Image Optimizer', icon: 'image', category: 'Media', component: ImageOptimizer },
-    { id: 'aspect-ratio', title: 'Aspect Ratio', icon: 'aspect_ratio', category: 'Media', component: AspectRatioCalc },
-
-    // Random
-    { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Random', component: DiceRoller },
-    { id: 'coin-flipper', title: 'Coin Flip', icon: 'monetization_on', category: 'Random', component: CoinFlipper },
-
     // Dev Tools
     { id: 'markdown-preview', title: 'Markdown', icon: 'article', category: 'Dev Tools', component: MarkdownPreview },
     { id: 'markdown-table', title: 'MD Table', icon: 'grid_on', category: 'Dev Tools', component: MarkdownTable },
@@ -120,21 +218,37 @@ const TOOLS = [
     { id: 'user-scripts', title: 'User Scripts', icon: 'add', category: 'Dev Tools', component: UserScripts },
     { id: 'cron-desc', title: 'Cron Explainer', icon: 'event_repeat', category: 'Dev Tools', component: CronExpressionDescriptor },
 
+    // Security (Integration)
+    { id: 'hash-gen', title: 'Hash Gen', icon: 'security', category: 'Security', component: HashGenerator },
+    { id: 'uuid-gen', title: 'UUID Gen', icon: 'fingerprint', category: 'Security', component: UuidGenerator },
+    { id: 'security-info', title: 'Security Info', icon: 'verified_user', category: 'Security', component: SecurityInfo },
+
+    // System
+    { id: 'device-info', title: 'Device Info', icon: 'memory', category: 'System', component: DeviceInfo },
+    { id: 'android-sensors', title: 'Sensors', icon: 'sensors', category: 'System', component: AndroidSensors },
+
+    // Time
+    { id: 'age-calculator', title: 'Age Calculator', icon: 'calendar_today', category: 'Time', component: AgeCalculator },
+    { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Time', component: TimestampConverter },
+    { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Time', component: Stopwatch },
+
     // Misc
     { id: 'notes', title: 'Notes', icon: 'description', category: 'Misc', component: Notes },
     { id: 'ai-summary', title: 'AI Summary', icon: 'auto_fix_high', category: 'Misc', component: AiSummary },
-    { id: 'counter', title: 'Counter', icon: 'add_circle_outline', category: 'Misc', component: Counter },
+    { id: 'counter-misc', title: 'Counter', icon: 'add_circle_outline', category: 'Misc', component: Counter },
     { id: 'panchangam', title: 'Panchangam', icon: 'auto_awesome', category: 'Misc', component: TeluguPanchangam },
     { id: 'morse', title: 'Morse', icon: 'timeline', category: 'Misc', component: MorseCode },
 
-    // Graviton
-    { id: 'anomaly-detection', title: 'Anomaly Detection', icon: 'notifications_active', category: 'Graviton', component: AnomalyDetection },
-    { id: 'data-quality', title: 'Data Quality', icon: 'verified', category: 'Graviton', component: DataQuality },
-    { id: 'data-anonymizer', title: 'Data Anonymizer', icon: 'security', category: 'Graviton', component: DataAnonymizer },
-    { id: 'observability', title: 'Observability', icon: 'visibility', category: 'Graviton', component: Observability },
-    { id: 'data-portal', title: 'Data Portal', icon: 'dashboard', category: 'Graviton', component: DataPortal },
-    { id: 'azure-integration', title: 'Azure Functions', icon: 'cloud', category: 'Graviton', component: AzureIntegration },
-    { id: 'specialized-tools', title: 'Specialized Tools', icon: 'construction', category: 'Graviton', component: SpecializedTools },
+    // Specialized/Graviton
+    { id: 'anomaly-detection', title: 'Anomaly Detection', icon: 'notifications_active', category: 'Specialized', component: AnomalyDetection },
+    { id: 'data-quality', title: 'Data Quality', icon: 'verified', category: 'Specialized', component: DataQuality },
+    { id: 'data-anonymizer', title: 'Data Anonymizer', icon: 'security', category: 'Specialized', component: DataAnonymizer },
+    { id: 'observability', title: 'Observability', icon: 'visibility', category: 'Specialized', component: Observability },
+    { id: 'data-portal', title: 'Data Portal', icon: 'dashboard', category: 'Specialized', component: DataPortal },
+    { id: 'azure-integration', title: 'Azure Functions', icon: 'cloud', category: 'Specialized', component: AzureIntegration },
+    { id: 'specialized-tools', title: 'Specialized Tools', icon: 'construction', category: 'Specialized', component: SpecializedTools },
+
+    { id: 'calculator-main', title: 'Scientific Calc', icon: 'calculate', category: 'Calculators', component: Calculator },
 ];
 
 const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRecentTools, hideRecentTools }) => {
@@ -315,7 +429,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
           </div>
         </div>
         <div className="tool-container-inner">
-          {tool.component ? <tool.component onResultChange={setCurrentResult} /> : <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>This tool is under development.</div>}
+          {tool.component ? <tool.component onResultChange={setCurrentResult} toolId={tool.id} /> : <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>This tool is under development.</div>}
         </div>
       </div>
     );
@@ -411,7 +525,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
       ) : !groupToolbox ? (
         <div className="category-grid" style={{padding: '0 10px'}}>
            {filteredTools.map((tool, idx) => (
-              <div key={tool.id} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
+              <div key={tool.id} id={`card-${tool.id}`} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
                  <div className="card-actions">
                       <button className={`pin-btn ${pinnedTools.includes(tool.id) ? 'active' : ''}`} onClick={(e) => togglePin(e, tool.id)} title="Pin Tool">
                           <span className="material-icons">push_pin</span>
@@ -469,19 +583,25 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
 
 const getCategoryIcon = (cat) => {
     const icons = {
+        'Measurements': 'straighten',
+        'Games': 'casino',
+        'Text': 'title',
+        'Math': 'functions',
+        'Generators': 'qr_code',
         'Calculators': 'calculate',
-        'Time': 'schedule',
-        'Converters': 'swap_horiz',
-        'Text Tools': 'title',
+        'Finance': 'account_balance',
+        'Images': 'image',
+        'Outdoor': 'explore',
+        'Colors': 'palette',
+        'PDF Edit': 'edit',
+        'PDF Optimize': 'speed',
+        'PDF Secure': 'security',
+        'PDF Convert': 'transform',
+        'PDF Office': 'business_center',
         'Web Tools': 'public',
-        'Design': 'palette',
-        'Media': 'perm_media',
-        'Random': 'casino',
-        'Security': 'security',
-        'System': 'settings_input_component',
         'Dev Tools': 'terminal',
         'Misc': 'auto_fix_high',
-        'Graviton': 'insights',
+        'Specialized': 'insights',
     };
     return icons[cat] || 'folder';
 };
