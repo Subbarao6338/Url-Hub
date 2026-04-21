@@ -6,7 +6,7 @@ def run_cuj(page):
     page.wait_for_timeout(5000)
     page.screenshot(path="/home/jules/verification/screenshots/home_nature_final.png")
 
-    search_input = page.get_by_placeholder("Search Toolbox... [/]")
+    search_input = page.get_by_placeholder("Search Toolbox...")
     search_input.fill("network")
     page.wait_for_timeout(2000)
 

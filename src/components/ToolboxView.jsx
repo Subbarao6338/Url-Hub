@@ -282,7 +282,8 @@ const ToolboxView = ({
   dashboardLayout,
   iconSize,
   hiddenTools = [],
-  toolOrder = []
+  toolOrder = [],
+  setToolOrder
 }) => {
   const [activeToolId, setActiveToolId] = useState(null);
   const [currentResult, setCurrentResult] = useState(null);
@@ -451,7 +452,7 @@ const ToolboxView = ({
   const handleDragStart = (id) => setDraggedToolId(id);
   const handleDragOver = (e, id) => {
     e.preventDefault();
-    if (draggedToolId === id) return;
+    if (!draggedToolId || draggedToolId === id) return;
 
     const newOrder = [...(toolOrder.length > 0 ? toolOrder : TOOLS.map(t => t.id))];
     const draggedIdx = newOrder.indexOf(draggedToolId);
@@ -460,8 +461,7 @@ const ToolboxView = ({
     if (draggedIdx > -1 && targetIdx > -1) {
       newOrder.splice(draggedIdx, 1);
       newOrder.splice(targetIdx, 0, draggedToolId);
-      // We should ideally call a setToolOrder here if it was passed from props
-      // Since it is managed in App.jsx, I'll just skip for now or assume it works
+      if (setToolOrder) setToolOrder(newOrder);
     }
   };
 
@@ -662,6 +662,8 @@ const ToolboxView = ({
                 highlightText={highlightText}
                 layout={dashboardLayout}
                 size={iconSize}
+                onDragStart={() => handleDragStart(tool.id)}
+                onDragOver={(e) => handleDragOver(e, tool.id)}
               />
             ))}
         </div>
@@ -690,6 +692,8 @@ const ToolboxView = ({
                     highlightText={highlightText}
                     layout={dashboardLayout}
                     size={iconSize}
+                    onDragStart={() => handleDragStart(tool.id)}
+                    onDragOver={(e) => handleDragOver(e, tool.id)}
                 />
               ))}
             </div>
@@ -700,7 +704,7 @@ const ToolboxView = ({
   );
 };
 
-const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, searchQuery, highlightText, layout = 'grid', size = 'medium' }) => {
+const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, searchQuery, highlightText, layout = 'grid', size = 'medium', onDragStart, onDragOver }) => {
   const iconSizeMap = { small: '1.25rem', medium: '1.5rem', large: '2rem' };
   const cardPaddingMap = { small: '12px', medium: '1.5rem', large: '2rem' };
 
@@ -719,6 +723,9 @@ const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, 
       role="button"
       aria-label={`Open ${tool.title}`}
       onKeyDown={handleKeyDown}
+      draggable="true"
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
       style={{
         '--delay': idx,
         padding: cardPaddingMap[size],

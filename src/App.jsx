@@ -70,7 +70,12 @@ function App() {
     if (searchActive) {
       document.body.classList.add('search-active');
       setTimeout(() => {
-        const input = document.getElementById('search');
+        // Try desktop input first
+        let input = document.getElementById('search');
+        // If not desktop or not visible, try mobile input
+        if (!input || window.getComputedStyle(input.parentElement).display === 'none') {
+          input = document.getElementById('search-mobile');
+        }
         if (input) input.focus();
       }, 100);
     } else {
@@ -487,6 +492,7 @@ function App() {
               iconSize={iconSize}
               hiddenTools={hiddenTools}
               toolOrder={toolOrder}
+              setToolOrder={setToolOrder}
             />
           )}
           {currentTab === 'projects' && showProjectsTab && (
