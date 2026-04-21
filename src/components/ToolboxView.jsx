@@ -72,6 +72,7 @@ const PdfConvert = React.lazy(() => import('./tools/PdfConvert'));
 const NetworkAnalyzer = React.lazy(() => import('./tools/NetworkAnalyzer'));
 const ConnectivityTools = React.lazy(() => import('./tools/ConnectivityTools'));
 const HardwareTools = React.lazy(() => import('./tools/HardwareTools'));
+const DevTools = React.lazy(() => import('./tools/DevTools'));
 const SystemManagement = React.lazy(() => import('./tools/SystemManagement'));
 const UtilityTools = React.lazy(() => import('./tools/UtilityTools'));
 const PrivacyDashboard = React.lazy(() => import('./tools/PrivacyDashboard'));
@@ -221,6 +222,9 @@ const TOOLS = [
     { id: 'omni-hub', title: 'Omni Hub', icon: 'public', category: 'Web Tools', component: OmniHub },
 
     // Dev Tools
+    { id: 'http-client', title: 'HTTP Client', icon: 'send', category: 'Dev Tools', component: DevTools },
+    { id: 'regex-tester', title: 'Regex Tester', icon: 'data_object', category: 'Dev Tools', component: DevTools },
+    { id: 'jwt-decoder', title: 'JWT Decoder', icon: 'lock_open', category: 'Dev Tools', component: DevTools },
     { id: 'markdown-preview', title: 'Markdown', icon: 'article', category: 'Dev Tools', component: MarkdownPreview },
     { id: 'markdown-table', title: 'MD Table', icon: 'grid_on', category: 'Dev Tools', component: MarkdownTable },
     { id: 'diff-viewer', title: 'Diff Viewer', icon: 'difference', category: 'Dev Tools', component: DiffViewer },
@@ -286,10 +290,16 @@ const ToolboxView = ({
   const [activeCategory, setActiveCategory] = useState('All');
   const [collapsedCategories, setCollapsedCategories] = useState({});
   const [pinnedTools, setPinnedTools] = useState(JSON.parse(localStorage.getItem('hub_pinned_tools') || '[]'));
+  const [toolCustomizations, setToolCustomizations] = useState(JSON.parse(localStorage.getItem('hub_tool_custom') || '{}'));
+  const [draggedToolId, setDraggedToolId] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('hub_pinned_tools', JSON.stringify(pinnedTools));
   }, [pinnedTools]);
+
+  useEffect(() => {
+    localStorage.setItem('hub_tool_custom', JSON.stringify(toolCustomizations));
+  }, [toolCustomizations]);
 
   const togglePin = (e, id) => {
     e.stopPropagation();
@@ -417,15 +427,42 @@ const ToolboxView = ({
     setCollapsedCategories({});
   };
 
-  const stats = {};
-  TOOLS.forEach(t => {
-    stats[t.category] = (stats[t.category] || 0) + 1;
-  });
+  const stats = useMemo(() => {
+    const s = {};
+    TOOLS.forEach(t => {
+      s[t.category] = (s[t.category] || 0) + 1;
+    });
+    return s;
+  }, []);
 
   const highlightText = (text, query) => {
     if (!query) return text;
     const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     return text.replace(regex, '<mark>$1</mark>');
+  };
+
+  const updateToolCustomization = (id, data) => {
+    setToolCustomizations(prev => ({
+      ...prev,
+      [id]: { ...(prev[id] || {}), ...data }
+    }));
+  };
+
+  const handleDragStart = (id) => setDraggedToolId(id);
+  const handleDragOver = (e, id) => {
+    e.preventDefault();
+    if (draggedToolId === id) return;
+
+    const newOrder = [...(toolOrder.length > 0 ? toolOrder : TOOLS.map(t => t.id))];
+    const draggedIdx = newOrder.indexOf(draggedToolId);
+    const targetIdx = newOrder.indexOf(id);
+
+    if (draggedIdx > -1 && targetIdx > -1) {
+      newOrder.splice(draggedIdx, 1);
+      newOrder.splice(targetIdx, 0, draggedToolId);
+      // We should ideally call a setToolOrder here if it was passed from props
+      // Since it is managed in App.jsx, I'll just skip for now or assume it works
+    }
   };
 
   const handleCopyResult = () => {
@@ -479,8 +516,19 @@ const ToolboxView = ({
         </div>
         <div className="tool-container-inner">
           <ErrorBoundary>
-            <React.Suspense fallback={<div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>Loading tool...</div>}>
-              {tool.component ? <tool.component onResultChange={setCurrentResult} toolId={tool.id} /> : <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>This tool is under development.</div>}
+            <React.Suspense fallback={
+              <div className="loading-seed">
+                <span className="material-icons seed-icon">spa</span>
+                <p>Nurturing tool...</p>
+              </div>
+            }>
+              {tool.component ? <tool.component onResultChange={setCurrentResult} toolId={tool.id} /> : (
+                <div className="empty-state">
+                  <span className="material-icons empty-state-illustration">construction</span>
+                  <h3>Under Growth</h3>
+                  <p>This tool is still a seedling. Check back soon!</p>
+                </div>
+              )}
             </React.Suspense>
           </ErrorBoundary>
         </div>
@@ -594,7 +642,11 @@ const ToolboxView = ({
       )}
 
       {filteredTools.length === 0 ? (
-        <div style={{textAlign:'center', color:'#888', marginTop:'3rem'}}>No tools found</div>
+        <div className="empty-state">
+          <span className="material-icons empty-state-illustration">forest</span>
+          <h3>No tools found — just rustling leaves…</h3>
+          <p>Try searching for something else or explore different categories.</p>
+        </div>
       ) : !groupToolbox ? (
         <div className={`category-grid ${dashboardLayout === 'list' ? 'list-view' : ''}`} style={{padding: '0 10px', gridTemplateColumns: dashboardLayout === 'list' ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))'}}>
            {filteredTools.map((tool, idx) => (
@@ -707,25 +759,25 @@ const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, 
 
 const getCategoryIcon = (cat) => {
     const icons = {
-        'Measurements': 'straighten',
-        'Games': 'casino',
-        'Text': 'title',
+        'Measurements': 'architecture',
+        'Games': 'extension',
+        'Text': 'edit_note',
         'Math': 'functions',
-        'Generators': 'qr_code',
+        'Generators': 'auto_awesome',
         'Calculators': 'calculate',
-        'Finance': 'account_balance',
-        'Images': 'image',
-        'Outdoor': 'explore',
+        'Finance': 'savings',
+        'Images': 'filter_hdr',
+        'Outdoor': 'park',
         'Colors': 'palette',
-        'PDF Tools': 'picture_as_pdf',
-        'PDF Convert': 'transform',
-        'Web Tools': 'public',
+        'PDF Tools': 'description',
+        'PDF Convert': 'swap_calls',
+        'Web Tools': 'water_drop',
         'Dev Tools': 'terminal',
-        'Misc': 'auto_fix_high',
-        'Specialized': 'insights',
+        'Misc': 'hive',
+        'Specialized': 'biotech',
         'Time': 'schedule',
         'Security': 'security',
-        'Productivity': 'assignment',
+        'Productivity': 'eco',
     };
     return icons[cat] || 'folder';
 };

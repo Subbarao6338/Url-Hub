@@ -4,66 +4,60 @@ const PrivacyDashboard = ({ onResultChange }) => {
   const [permissions, setPermissions] = useState([]);
 
   useEffect(() => {
-    const checkPermissions = async () => {
-      const names = ['camera', 'microphone', 'geolocation', 'notifications', 'bluetooth'];
-      const results = [];
-      for (const name of names) {
+    const check = async () => {
+      const perms = ['camera', 'microphone', 'geolocation', 'notifications'];
+      const results = await Promise.all(perms.map(async p => {
         try {
-          const status = await navigator.permissions.query({ name });
-          results.push({ name, state: status.state });
-        } catch (e) {
-          results.push({ name, state: 'Unsupported' });
-        }
-      }
+          const status = await navigator.permissions.query({ name: p });
+          return { name: p, state: status.state };
+        } catch (e) { return { name: p, state: 'unsupported' }; }
+      }));
       setPermissions(results);
     };
-    checkPermissions();
+    check();
   }, []);
-
-  useEffect(() => {
-    onResultChange({ text: JSON.stringify(permissions, null, 2), filename: 'privacy_report.json' });
-  }, [permissions, onResultChange]);
-
-  const permUsage = {
-    camera: ['Flashlight', 'QR Scanner', 'Camera Color Picker'],
-    microphone: ['Soundmeter'],
-    geolocation: ['Altitude & GPS'],
-    bluetooth: ['Connectivity Tools'],
-    notifications: ['Security Info']
-  };
 
   return (
     <div className="tool-form">
-      <div className="tool-result">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem' }}>
-           <span className="material-icons" style={{ fontSize: '2rem', color: 'var(--primary)' }}>security</span>
-           <h3 style={{ margin: 0 }}>Privacy Dashboard</h3>
-        </div>
-        <p style={{ opacity: 0.7, marginBottom: '2rem' }}>Detailed overview of system permissions and which tools use them. No data is ever transmitted off-device.</p>
+      <div className="card" style={{ padding: '20px', marginBottom: '20px' }}>
+        <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--nature-primary)' }}>
+          <span className="material-icons">shield</span> Privacy Auditor
+        </h3>
+        <p style={{ fontSize: '0.8rem', opacity: 0.7, margin: '10px 0' }}>Review data access for the Nature Toolbox app.</p>
 
-        <div style={{ display: 'grid', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {permissions.map(p => (
-            <div key={p.name} style={{ padding: '16px', background: 'var(--surface)', borderRadius: '16px', border: '1px solid var(--border)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <b style={{ textTransform: 'capitalize', fontSize: '1.1rem' }}>{p.name}</b>
-                <span className={`fallback-badge`} style={{ background: p.state === 'granted' ? 'var(--accent-green)' : 'var(--text-muted)', boxShadow: 'none' }}>
-                  {p.state.toUpperCase()}
-                </span>
-              </div>
-              <div style={{ fontSize: '0.85rem', opacity: 0.6 }}>
-                Used by: {permUsage[p.name]?.join(', ') || 'None'}
-              </div>
+            <div key={p.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'var(--nature-bg)', borderRadius: '12px' }}>
+              <span style={{ textTransform: 'capitalize', fontWeight: '600' }}>{p.name}</span>
+              <span style={{
+                fontSize: '0.75rem',
+                fontWeight: 'bold',
+                padding: '4px 12px',
+                borderRadius: '20px',
+                background: p.state === 'granted' ? 'var(--nature-mist)' : (p.state === 'denied' ? '#BA1A1A' : '#eee'),
+                color: p.state === 'granted' ? 'var(--nature-primary)' : (p.state === 'denied' ? 'white' : 'black')
+              }}>
+                {p.state.toUpperCase()}
+              </span>
             </div>
           ))}
         </div>
+      </div>
 
-        <div style={{ marginTop: '2rem', padding: '16px', background: 'var(--md-sys-color-primary-container)', color: 'var(--md-sys-color-on-primary-container)', borderRadius: '16px' }}>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-            <span className="material-icons">info</span>
-            <div style={{ fontSize: '0.9rem' }}>
-              <b>Your Privacy is Protected</b>
-              <p style={{ margin: '4px 0 0', opacity: 0.8 }}>This app runs entirely locally. We do not track your location, record your audio, or save your images to any server.</p>
-            </div>
+      <div className="card" style={{ padding: '20px', background: 'var(--nature-white)' }}>
+        <h4 style={{ marginBottom: '10px' }}>Permission Rationale</h4>
+        <div style={{ fontSize: '0.85rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <span className="material-icons" style={{ fontSize: '1rem', color: 'var(--nature-moss)' }}>camera</span>
+            <span>Used for Magnifier and QR Scanner tools.</span>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <span className="material-icons" style={{ fontSize: '1rem', color: 'var(--nature-moss)' }}>mic</span>
+            <span>Used for the Sound Meter decibel analyzer.</span>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <span className="material-icons" style={{ fontSize: '1rem', color: 'var(--nature-moss)' }}>location_on</span>
+            <span>Used for Altitude and GPS info in Outdoor tools.</span>
           </div>
         </div>
       </div>

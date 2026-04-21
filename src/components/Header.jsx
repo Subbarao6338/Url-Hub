@@ -10,9 +10,9 @@ const Header = ({ appName, currentProfile, profiles, currentTab, setView, onSett
         onClick={() => setView('bookmarks')}
       >
         <span className="material-icons app-logo">
-          {currentProfile === 'Default' ? 'inbox' : (profile.icon || 'person')}
+          {currentProfile === 'Default' ? 'nature_people' : (profile.icon || 'person')}
         </span>
-        <h1 className="page-title">{appName || 'Nature toolbox'}</h1>
+        <h1 className="page-title">{appName || 'Nature Toolbox'}</h1>
       </div>
       <div className="top-actions">
         {children || (

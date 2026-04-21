@@ -29,9 +29,9 @@ const OfflineIndicator = () => {
   if (!isOffline) return null;
 
   return (
-    <div className="offline-indicator">
-      <span className="material-icons">cloud_off</span>
-      <span>Offline Mode</span>
+    <div className="offline-indicator" style={{ background: 'var(--nature-moss)', color: 'white', padding: '8px', fontSize: '0.9rem' }}>
+      <span className="material-icons" style={{ fontSize: '1.1rem' }}>forest</span>
+      <span>You're in the wilderness — no signal, but Nature Toolbox works fine 🌿</span>
     </div>
   );
 };
