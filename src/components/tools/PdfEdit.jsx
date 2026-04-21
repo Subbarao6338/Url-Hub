@@ -26,6 +26,8 @@ const PdfEdit = ({ onResultChange, toolId }) => {
 
   const [pagesToRemove, setPagesToRemove] = useState('');
   const [pageOrder, setPageOrder] = useState('');
+  const [splitRange, setSplitRange] = useState('');
+  const [watermarkText, setWatermarkText] = useState('Confidential');
 
   const mergePdfs = async () => {
       if (files.length < 2) return;
@@ -91,13 +93,80 @@ const PdfEdit = ({ onResultChange, toolId }) => {
       } catch (e) { alert("Error rearranging pages: " + e.message); }
   };
 
+  const splitPdf = async () => {
+      if (files.length === 0 || !splitRange) return;
+      try {
+        const pdfBytes = await files[0].arrayBuffer();
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+        const newDoc = await PDFDocument.create();
+        const pages = [];
+        splitRange.split(',').forEach(part => {
+            if (part.includes('-')) {
+                const [start, end] = part.split('-').map(s => parseInt(s.trim()));
+                for (let i = start; i <= end; i++) pages.push(i - 1);
+            } else {
+                pages.push(parseInt(part.trim()) - 1);
+            }
+        });
+        const copiedPages = await newDoc.copyPages(pdfDoc, pages.filter(p => p >= 0 && p < pdfDoc.getPageCount()));
+        copiedPages.forEach(page => newDoc.addPage(page));
+        const splitBytes = await newDoc.save();
+        onResultChange({ text: 'Split PDF', blob: new Blob([splitBytes], { type: 'application/pdf' }), filename: 'split.pdf' });
+      } catch (e) { alert("Error splitting PDF: " + e.message); }
+  };
+
+  const addPageNumbers = async () => {
+      if (files.length === 0) return;
+      try {
+        const pdfBytes = await files[0].arrayBuffer();
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+        const pages = pdfDoc.getPages();
+        for (let i = 0; i < pages.length; i++) {
+            const { width } = pages[i].getSize();
+            pages[i].drawText(`${i + 1}`, {
+                x: width / 2,
+                y: 20,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
+        }
+        const pdfBytesWithNumbers = await pdfDoc.save();
+        onResultChange({ text: 'Added Page Numbers', blob: new Blob([pdfBytesWithNumbers], { type: 'application/pdf' }), filename: 'numbered.pdf' });
+      } catch (e) { alert("Error adding page numbers: " + e.message); }
+  };
+
+  const addWatermark = async () => {
+      if (files.length === 0 || !watermarkText) return;
+      try {
+          const pdfBytes = await files[0].arrayBuffer();
+          const pdfDoc = await PDFDocument.load(pdfBytes);
+          const pages = pdfDoc.getPages();
+          for (const page of pages) {
+              const { width, height } = page.getSize();
+              page.drawText(watermarkText, {
+                  x: width / 2 - 100,
+                  y: height / 2,
+                  size: 50,
+                  color: rgb(0.5, 0.5, 0.5),
+                  opacity: 0.3,
+                  rotate: { angle: 45, type: 'degrees' }
+              });
+          }
+          const watermarkedBytes = await pdfDoc.save();
+          onResultChange({ text: 'Added Watermark', blob: new Blob([watermarkedBytes], { type: 'application/pdf' }), filename: 'watermarked.pdf' });
+      } catch (e) { alert("Error adding watermark: " + e.message); }
+  };
+
   return (
     <div className="tool-form">
       <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
         <button className={`pill ${activeTab === 'merge' ? 'active' : ''}`} onClick={() => setActiveTab('merge')}>Merge</button>
+        <button className={`pill ${activeTab === 'split' ? 'active' : ''}`} onClick={() => setActiveTab('split')}>Split</button>
         <button className={`pill ${activeTab === 'rotate' ? 'active' : ''}`} onClick={() => setActiveTab('rotate')}>Rotate</button>
         <button className={`pill ${activeTab === 'delete' ? 'active' : ''}`} onClick={() => setActiveTab('delete')}>Delete Pages</button>
         <button className={`pill ${activeTab === 'rearrange' ? 'active' : ''}`} onClick={() => setActiveTab('rearrange')}>Rearrange</button>
+        <button className={`pill ${activeTab === 'numbers' ? 'active' : ''}`} onClick={() => setActiveTab('numbers')}>Page Numbers</button>
+        <button className={`pill ${activeTab === 'watermark' ? 'active' : ''}`} onClick={() => setActiveTab('watermark')}>Watermark</button>
       </div>
 
       <div className="form-group">
@@ -140,7 +209,34 @@ const PdfEdit = ({ onResultChange, toolId }) => {
           </div>
       )}
 
-      {(activeTab === 'split' || activeTab === 'sign' || activeTab === 'watermark' || activeTab === 'numbers' || activeTab === 'bookmarks' || activeTab === 'crop') && <div style={{ textAlign: 'center', opacity: 0.6, marginTop: '20px' }}>This advanced PDF feature is coming soon.</div>}
+      {activeTab === 'split' && (
+          <div style={{ marginTop: '20px' }}>
+              <div className="form-group">
+                  <label>Page Range (e.g. 1-3, 5)</label>
+                  <input type="text" value={splitRange} onChange={e => setSplitRange(e.target.value)} placeholder="1-3, 5" className="pill" style={{ width: '100%' }} />
+              </div>
+              <button className="btn-primary" onClick={splitPdf} disabled={files.length === 0 || !splitRange} style={{ width: '100%' }}>Split PDF</button>
+          </div>
+      )}
+
+      {activeTab === 'numbers' && (
+          <div style={{ marginTop: '20px' }}>
+              <p style={{ fontSize: '0.9rem', marginBottom: '10px', opacity: 0.7 }}>Adds page numbers at the bottom center of each page.</p>
+              <button className="btn-primary" onClick={addPageNumbers} disabled={files.length === 0} style={{ width: '100%' }}>Add Page Numbers</button>
+          </div>
+      )}
+
+      {activeTab === 'watermark' && (
+          <div style={{ marginTop: '20px' }}>
+              <div className="form-group">
+                  <label>Watermark Text</label>
+                  <input type="text" value={watermarkText} onChange={e => setWatermarkText(e.target.value)} placeholder="Confidential" className="pill" style={{ width: '100%' }} />
+              </div>
+              <button className="btn-primary" onClick={addWatermark} disabled={files.length === 0 || !watermarkText} style={{ width: '100%' }}>Add Watermark</button>
+          </div>
+      )}
+
+      {(activeTab === 'sign' || activeTab === 'bookmarks' || activeTab === 'crop') && <div style={{ textAlign: 'center', opacity: 0.6, marginTop: '20px' }}>This advanced PDF feature is coming soon.</div>}
     </div>
   );
 };

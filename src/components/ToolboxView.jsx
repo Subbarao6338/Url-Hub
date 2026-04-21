@@ -236,9 +236,6 @@ const TOOLS = [
     { id: 'tabata-timer', title: 'Tabata Timer', icon: 'fitness_center', category: 'Time', component: Measurements },
 
     // Misc
-    { id: 'notes', title: 'Notes', icon: 'description', category: 'Misc', component: Notes },
-    { id: 'ai-summary', title: 'AI Summary', icon: 'auto_fix_high', category: 'Misc', component: AiSummary },
-    { id: 'counter-misc', title: 'Counter', icon: 'add_circle_outline', category: 'Misc', component: Counter },
     { id: 'panchangam', title: 'Panchangam', icon: 'auto_awesome', category: 'Misc', component: TeluguPanchangam },
     { id: 'morse', title: 'Morse', icon: 'timeline', category: 'Misc', component: MorseCode },
 
@@ -354,6 +351,10 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
     const grouped = {};
     filteredTools.forEach(t => {
       (grouped[t.category] || (grouped[t.category] = [])).push(t);
+    });
+    // Sort tools within each category
+    Object.keys(grouped).forEach(cat => {
+      grouped[cat].sort((a, b) => a.title.localeCompare(b.title));
     });
     return { grouped, cats: Object.keys(grouped).sort() };
   }, [filteredTools]);

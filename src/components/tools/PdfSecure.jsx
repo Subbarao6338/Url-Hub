@@ -24,10 +24,22 @@ const PdfSecure = ({ onResultChange, toolId }) => {
 
   const lockPdf = async () => {
       if (!file || !password) return;
-      const pdfBytes = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(pdfBytes);
-      const encryptedBytes = await pdfDoc.save({ userPassword: password, ownerPassword: password });
-      onResultChange({ text: 'Locked PDF', blob: new Blob([encryptedBytes], { type: 'application/pdf' }), filename: 'locked.pdf' });
+      try {
+          const pdfBytes = await file.arrayBuffer();
+          const pdfDoc = await PDFDocument.load(pdfBytes);
+          const encryptedBytes = await pdfDoc.save({ userPassword: password, ownerPassword: password });
+          onResultChange({ text: 'Locked PDF', blob: new Blob([encryptedBytes], { type: 'application/pdf' }), filename: 'locked.pdf' });
+      } catch (e) { alert("Error locking PDF: " + e.message); }
+  };
+
+  const unlockPdf = async () => {
+      if (!file || !password) return;
+      try {
+          const pdfBytes = await file.arrayBuffer();
+          const pdfDoc = await PDFDocument.load(pdfBytes, { password });
+          const decryptedBytes = await pdfDoc.save();
+          onResultChange({ text: 'Unlocked PDF', blob: new Blob([decryptedBytes], { type: 'application/pdf' }), filename: 'unlocked.pdf' });
+      } catch (e) { alert("Error unlocking PDF (Check password): " + e.message); }
   };
 
   const [metadata, setMetadata] = useState({ title: '', author: '', subject: '', keywords: '' });
@@ -50,6 +62,7 @@ const PdfSecure = ({ onResultChange, toolId }) => {
     <div className="tool-form">
       <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
         <button className={`pill ${activeTab === 'lock' ? 'active' : ''}`} onClick={() => setActiveTab('lock')}>Lock</button>
+        <button className={`pill ${activeTab === 'unlock' ? 'active' : ''}`} onClick={() => setActiveTab('unlock')}>Unlock</button>
         <button className={`pill ${activeTab === 'metadata' ? 'active' : ''}`} onClick={() => setActiveTab('metadata')}>Metadata</button>
       </div>
 
@@ -66,6 +79,17 @@ const PdfSecure = ({ onResultChange, toolId }) => {
                 <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password..." className="pill" style={{ width: '100%' }} />
               </div>
               <button className="btn-primary" onClick={lockPdf} disabled={!file || !password}>Lock PDF</button>
+          </div>
+      )}
+
+      {activeTab === 'unlock' && (
+          <div style={{ display: 'grid', gap: '10px', marginTop: '20px' }}>
+              <p style={{ fontSize: '0.9rem', opacity: 0.7 }}>Removes password protection from the PDF.</p>
+              <div className="form-group">
+                <label>Password</label>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password..." className="pill" style={{ width: '100%' }} />
+              </div>
+              <button className="btn-primary" onClick={unlockPdf} disabled={!file || !password}>Unlock PDF</button>
           </div>
       )}
 
