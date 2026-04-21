@@ -110,6 +110,11 @@ function App() {
 
   // Additional Settings
   const [isCompact, setIsCompact] = useState(localStorage.getItem('hub_compact') === 'true');
+  const [dashboardLayout, setDashboardLayout] = useState(localStorage.getItem('hub_dashboard_layout') || 'grid'); // 'grid' | 'list'
+  const [iconSize, setIconSize] = useState(localStorage.getItem('hub_icon_size') || 'medium'); // 'small' | 'medium' | 'large'
+  const [hiddenTools, setHiddenTools] = useState(JSON.parse(localStorage.getItem('hub_hidden_tools') || '[]'));
+  const [toolOrder, setToolOrder] = useState(JSON.parse(localStorage.getItem('hub_tool_order') || '[]'));
+
   const [hideUrls, setHideUrls] = useState(localStorage.getItem('hub_hide_urls') === 'true');
   const [hideIcons, setHideIcons] = useState(localStorage.getItem('hub_hide_icons') === 'true');
   const [showStats, setShowStats] = useState(localStorage.getItem('hub_show_stats') !== 'false');
@@ -199,6 +204,12 @@ function App() {
         activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
       document.documentElement.setAttribute('data-theme', activeTheme);
+
+      // Handle Material You dynamic color extraction if supported
+      if (t === 'system' && 'window' in globalThis && 'matchMedia' in window) {
+         // Placeholder for real dynamic color extraction logic
+         // For now, we rely on the defined MD3 CSS variables
+      }
     };
 
     applyTheme(theme);
@@ -322,6 +333,11 @@ function App() {
   }, [isSettingsOpen, isProfileOpen]);
 
   useEffect(() => { localStorage.setItem('hub_compact', isCompact); }, [isCompact]);
+  useEffect(() => { localStorage.setItem('hub_dashboard_layout', dashboardLayout); }, [dashboardLayout]);
+  useEffect(() => { localStorage.setItem('hub_icon_size', iconSize); }, [iconSize]);
+  useEffect(() => { localStorage.setItem('hub_hidden_tools', JSON.stringify(hiddenTools)); }, [hiddenTools]);
+  useEffect(() => { localStorage.setItem('hub_tool_order', JSON.stringify(toolOrder)); }, [toolOrder]);
+
   useEffect(() => { localStorage.setItem('hub_hide_urls', hideUrls); }, [hideUrls]);
   useEffect(() => { localStorage.setItem('hub_hide_icons', hideIcons); }, [hideIcons]);
   useEffect(() => { localStorage.setItem('hub_show_stats', showStats); }, [showStats]);
@@ -467,6 +483,10 @@ function App() {
               recentTools={recentTools}
               setRecentTools={setRecentTools}
               hideRecentTools={hideRecentTools}
+              dashboardLayout={dashboardLayout}
+              iconSize={iconSize}
+              hiddenTools={hiddenTools}
+              toolOrder={toolOrder}
             />
           )}
           {currentTab === 'projects' && showProjectsTab && (
@@ -511,6 +531,10 @@ function App() {
           setAccentColor={setAccentColor}
           isCompact={isCompact}
           setIsCompact={setIsCompact}
+          dashboardLayout={dashboardLayout}
+          setDashboardLayout={setDashboardLayout}
+          iconSize={iconSize}
+          setIconSize={setIconSize}
           hideUrls={hideUrls}
           setHideUrls={setHideUrls}
           hideIcons={hideIcons}

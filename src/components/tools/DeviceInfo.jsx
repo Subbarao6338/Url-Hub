@@ -1,51 +1,55 @@
 import React, { useState, useEffect } from 'react';
+import { Device } from '@capacitor/device';
+import { Network } from '@capacitor/network';
 
 const DeviceInfo = ({ onResultChange }) => {
+  const [deviceInfo, setDeviceInfo] = useState({});
   const [battery, setBattery] = useState({ level: 'N/A', charging: 'N/A' });
-  const [network, setNetwork] = useState({ type: 'N/A', speed: 'N/A' });
-  const [memory, setMemory] = useState(navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'N/A');
+  const [network, setNetwork] = useState({ type: 'N/A', connected: false });
+  const [memInfo, setMemInfo] = useState({ total: 'N/A', free: 'N/A' });
 
   useEffect(() => {
-    // Battery API
-    if (navigator.getBattery) {
-      navigator.getBattery().then(batt => {
-        const updateBattery = () => {
-          setBattery({
-            level: `${Math.round(batt.level * 100)}%`,
-            charging: batt.charging ? 'Charging' : 'Discharging'
-          });
-        };
-        updateBattery();
-        batt.addEventListener('levelchange', updateBattery);
-        batt.addEventListener('chargingchange', updateBattery);
-      });
-    }
+    const fetchInfo = async () => {
+      try {
+        const info = await Device.getInfo();
+        setDeviceInfo(info);
 
-    // Network Information API
-    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (connection) {
-      const updateNetwork = () => {
-        setNetwork({
-          type: connection.effectiveType || 'N/A',
-          speed: connection.downlink ? `${connection.downlink} Mbps` : 'N/A'
+        const batt = await Device.getBatteryInfo();
+        setBattery({
+           level: `${Math.round((batt.batteryLevel || 0) * 100)}%`,
+           charging: batt.isCharging ? 'Charging' : 'Discharging'
         });
-      };
-      updateNetwork();
-      connection.addEventListener('change', updateNetwork);
-    }
+
+        const net = await Network.getStatus();
+        setNetwork({ type: net.connectionType, connected: net.connected });
+
+        // Memory info often requires specific platform implementation
+        // For now, we use navigator.deviceMemory as fallback
+        setMemInfo({
+          total: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'N/A',
+          free: 'N/A'
+        });
+      } catch (err) {
+        console.error("Capacitor API failed:", err);
+      }
+    };
+
+    fetchInfo();
+    const interval = setInterval(fetchInfo, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const info = [
-    { l: 'Platform', v: navigator.platform },
-    { l: 'Language', v: navigator.language },
-    { l: 'Screen', v: `${window.screen.width}x${window.screen.height} (${window.screen.orientation?.type || 'N/A'})` },
-    { l: 'Pixel Ratio', v: window.devicePixelRatio },
-    { l: 'CPU Cores', v: navigator.hardwareConcurrency || 'N/A' },
-    { l: 'Device Memory', v: memory },
+    { l: 'Manufacturer', v: deviceInfo.manufacturer || 'N/A' },
+    { l: 'Model', v: deviceInfo.model || 'N/A' },
+    { l: 'Platform', v: deviceInfo.platform || navigator.platform },
+    { l: 'OS Version', v: deviceInfo.osVersion || 'N/A' },
     { l: 'Battery', v: `${battery.level} (${battery.charging})` },
-    { l: 'Network', v: `${network.type} (~${network.speed})` },
-    { l: 'Dark Mode', v: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Enabled' : 'Disabled' },
-    { l: 'Cookies Enabled', v: navigator.cookieEnabled ? 'Yes' : 'No' }
+    { l: 'Network', v: `${network.type} (${network.connected ? 'Online' : 'Offline'})` },
+    { l: 'Device Memory', v: memInfo.total },
+    { l: 'Screen', v: `${window.screen.width}x${window.screen.height}` },
+    { l: 'Language', v: navigator.language },
+    { l: 'CPU Cores', v: navigator.hardwareConcurrency || 'N/A' }
   ];
 
   useEffect(() => {
