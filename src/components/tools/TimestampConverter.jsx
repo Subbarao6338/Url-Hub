@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 const TimestampConverter = ({ onResultChange }) => {
   const [unix, setUnix] = useState(Math.floor(Date.now() / 1000));
+  const [local, setLocal] = useState('');
+  const [iso, setIso] = useState('');
 
   useEffect(() => {
     onResultChange({
@@ -9,8 +11,6 @@ const TimestampConverter = ({ onResultChange }) => {
       filename: 'timestamp.txt'
     });
   }, [unix, local, iso, onResultChange]);
-  const [local, setLocal] = useState('');
-  const [iso, setIso] = useState('');
 
   useEffect(() => {
     const d = new Date(unix * 1000);

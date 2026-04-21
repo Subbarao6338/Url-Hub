@@ -88,18 +88,20 @@ const Measurements = ({ onResultChange, toolId }) => {
 
   return (
     <div className="tool-form">
-      <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
-        <button className={`pill ${activeTab === 'ruler' ? 'active' : ''}`} onClick={() => setActiveTab('ruler')}>Ruler</button>
-        <button className={`pill ${activeTab === 'level' ? 'active' : ''}`} onClick={() => setActiveTab('level')}>Level</button>
-        <button className={`pill ${activeTab === 'pendulum' ? 'active' : ''}`} onClick={() => setActiveTab('pendulum')}>Pendulum</button>
-        <button className={`pill ${activeTab === 'protractor' ? 'active' : ''}`} onClick={() => setActiveTab('protractor')}>Protractor</button>
-        <button className={`pill ${activeTab === 'luxmeter' ? 'active' : ''}`} onClick={() => setActiveTab('luxmeter')}>Luxmeter</button>
-        <button className={`pill ${activeTab === 'soundmeter' ? 'active' : ''}`} onClick={() => setActiveTab('soundmeter')}>Soundmeter</button>
-        <button className={`pill ${activeTab === 'magnetic' ? 'active' : ''}`} onClick={() => setActiveTab('magnetic')}>Magnetic</button>
-        <button className={`pill ${activeTab === 'metronome' ? 'active' : ''}`} onClick={() => setActiveTab('metronome')}>Metronome</button>
-        <button className={`pill ${activeTab === 'reaction' ? 'active' : ''}`} onClick={() => setActiveTab('reaction')}>Reaction</button>
-        <button className={`pill ${activeTab === 'tabata' ? 'active' : ''}`} onClick={() => setActiveTab('tabata')}>Tabata</button>
-      </div>
+      {!toolId && (
+        <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
+          <button className={`pill ${activeTab === 'ruler' ? 'active' : ''}`} onClick={() => setActiveTab('ruler')}>Ruler</button>
+          <button className={`pill ${activeTab === 'level' ? 'active' : ''}`} onClick={() => setActiveTab('level')}>Level</button>
+          <button className={`pill ${activeTab === 'pendulum' ? 'active' : ''}`} onClick={() => setActiveTab('pendulum')}>Pendulum</button>
+          <button className={`pill ${activeTab === 'protractor' ? 'active' : ''}`} onClick={() => setActiveTab('protractor')}>Protractor</button>
+          <button className={`pill ${activeTab === 'luxmeter' ? 'active' : ''}`} onClick={() => setActiveTab('luxmeter')}>Luxmeter</button>
+          <button className={`pill ${activeTab === 'soundmeter' ? 'active' : ''}`} onClick={() => setActiveTab('soundmeter')}>Soundmeter</button>
+          <button className={`pill ${activeTab === 'magnetic' ? 'active' : ''}`} onClick={() => setActiveTab('magnetic')}>Magnetic</button>
+          <button className={`pill ${activeTab === 'metronome' ? 'active' : ''}`} onClick={() => setActiveTab('metronome')}>Metronome</button>
+          <button className={`pill ${activeTab === 'reaction' ? 'active' : ''}`} onClick={() => setActiveTab('reaction')}>Reaction</button>
+          <button className={`pill ${activeTab === 'tabata' ? 'active' : ''}`} onClick={() => setActiveTab('tabata')}>Tabata</button>
+        </div>
+      )}
 
       {!permissionGranted && (['level', 'pendulum', 'protractor', 'luxmeter', 'magnetic'].includes(activeTab)) && (
         <div style={{ textAlign: 'center', padding: '20px' }}>

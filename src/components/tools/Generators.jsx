@@ -15,11 +15,13 @@ const Generators = ({ onResultChange, toolId }) => {
 
   return (
     <div className="tool-form">
-      <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
-        <button className={`pill ${activeTab === 'barcode' ? 'active' : ''}`} onClick={() => setActiveTab('barcode')}>Barcode</button>
-        <button className={`pill ${activeTab === 'random' ? 'active' : ''}`} onClick={() => setActiveTab('random')}>Random Numbers</button>
-        <button className={`pill ${activeTab === 'magic8' ? 'active' : ''}`} onClick={() => setActiveTab('magic8')}>Magic 8-Ball</button>
-      </div>
+      {!toolId && (
+        <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
+          <button className={`pill ${activeTab === 'barcode' ? 'active' : ''}`} onClick={() => setActiveTab('barcode')}>Barcode</button>
+          <button className={`pill ${activeTab === 'random' ? 'active' : ''}`} onClick={() => setActiveTab('random')}>Random Numbers</button>
+          <button className={`pill ${activeTab === 'magic8' ? 'active' : ''}`} onClick={() => setActiveTab('magic8')}>Magic 8-Ball</button>
+        </div>
+      )}
 
       {activeTab === 'barcode' && <BarcodeTool onResultChange={onResultChange} />}
       {activeTab === 'random' && <RandomNumbersTool />}
@@ -34,13 +36,25 @@ const BarcodeTool = ({ onResultChange }) => {
     const canvasRef = useRef(null);
 
     useEffect(() => {
-        if (!canvasRef.current) return;
+        if (!canvasRef.current || !input) return;
         try {
-            JsBarcode(canvasRef.current, input, { format });
-            canvasRef.current.toBlob(blob => {
-                onResultChange({ text: input, blob, filename: 'barcode.png' });
+            // Basic validation to prevent jsbarcode from crashing
+            if (format === 'EAN13' && !/^\d{12,13}$/.test(input)) return;
+            if (format === 'UPC' && !/^\d{11,12}$/.test(input)) return;
+
+            JsBarcode(canvasRef.current, input, {
+                format,
+                valid: (valid) => {
+                    if (valid) {
+                        canvasRef.current.toBlob(blob => {
+                            onResultChange({ text: input, blob, filename: 'barcode.png' });
+                        });
+                    }
+                }
             });
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error("Barcode generation failed:", e);
+        }
     }, [input, format, onResultChange]);
 
     return (

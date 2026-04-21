@@ -14,14 +14,16 @@ const FinanceCalculators = ({ toolId }) => {
 
   return (
     <div className="tool-form">
-      <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
-        <button className={`pill ${activeTab === 'vat' ? 'active' : ''}`} onClick={() => setActiveTab('vat')}>VAT</button>
-        <button className={`pill ${activeTab === 'inflation' ? 'active' : ''}`} onClick={() => setActiveTab('inflation')}>Inflation</button>
-        <button className={`pill ${activeTab === 'loan' ? 'active' : ''}`} onClick={() => setActiveTab('loan')}>Loan</button>
-        <button className={`pill ${activeTab === 'compound' ? 'active' : ''}`} onClick={() => setActiveTab('compound')}>Compound Interest</button>
-        <button className={`pill ${activeTab === 'cagr' ? 'active' : ''}`} onClick={() => setActiveTab('cagr')}>CAGR</button>
-        <button className={`pill ${activeTab === 'dcf' ? 'active' : ''}`} onClick={() => setActiveTab('dcf')}>DCF</button>
-      </div>
+      {!toolId && (
+        <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
+          <button className={`pill ${activeTab === 'vat' ? 'active' : ''}`} onClick={() => setActiveTab('vat')}>VAT</button>
+          <button className={`pill ${activeTab === 'inflation' ? 'active' : ''}`} onClick={() => setActiveTab('inflation')}>Inflation</button>
+          <button className={`pill ${activeTab === 'loan' ? 'active' : ''}`} onClick={() => setActiveTab('loan')}>Loan</button>
+          <button className={`pill ${activeTab === 'compound' ? 'active' : ''}`} onClick={() => setActiveTab('compound')}>Compound Interest</button>
+          <button className={`pill ${activeTab === 'cagr' ? 'active' : ''}`} onClick={() => setActiveTab('cagr')}>CAGR</button>
+          <button className={`pill ${activeTab === 'dcf' ? 'active' : ''}`} onClick={() => setActiveTab('dcf')}>DCF</button>
+        </div>
+      )}
 
       {activeTab === 'vat' && <VatCalculator />}
       {activeTab === 'inflation' && <InflationCalculator />}

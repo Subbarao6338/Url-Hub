@@ -68,20 +68,20 @@ import PdfSecure from './tools/PdfSecure';
 import PdfConvert from './tools/PdfConvert';
 
 const TOOLS = [
-    // Measurements (11 Tools)
+    // Measurements (6 Tools)
     { id: 'ruler', title: 'Ruler', icon: 'straighten', category: 'Measurements', component: Measurements },
     { id: 'level-pendulum', title: 'Level & Pendulum', icon: 'vibration', category: 'Measurements', component: Measurements },
     { id: 'protractor', title: 'Protractor', icon: 'architecture', category: 'Measurements', component: Measurements },
     { id: 'luxmeter', title: 'Luxmeter', icon: 'light_mode', category: 'Measurements', component: Measurements },
     { id: 'soundmeter', title: 'Soundmeter', icon: 'volume_up', category: 'Measurements', component: Measurements },
     { id: 'magnetic-tester', title: 'Magnetic Tester', icon: 'explore', category: 'Measurements', component: Measurements },
-    { id: 'metronome', title: 'Metronome', icon: 'timer', category: 'Measurements', component: Measurements },
-    { id: 'reaction-time', title: 'Reaction Time', icon: 'bolt', category: 'Measurements', component: Measurements },
-    { id: 'tally-counter', title: 'Tally Counter', icon: 'add_circle_outline', category: 'Measurements', component: Counter },
-    { id: 'pomodoro-timer', title: 'Pomodoro Timer', icon: 'schedule', category: 'Measurements', component: PomodoroTimer },
-    { id: 'tabata-timer', title: 'Tabata Timer', icon: 'fitness_center', category: 'Measurements', component: Measurements },
 
-    // Games (9 Tools)
+    // Productivity (3 Tools)
+    { id: 'tally-counter', title: 'Tally Counter', icon: 'add_circle_outline', category: 'Productivity', component: Counter },
+    { id: 'notes', title: 'Notes', icon: 'description', category: 'Productivity', component: Notes },
+    { id: 'ai-summary', title: 'AI Summary', icon: 'auto_fix_high', category: 'Productivity', component: AiSummary },
+
+    // Games (11 Tools)
     { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Games', component: DiceRoller },
     { id: 'spin-wheel', title: 'Spin the Wheel', icon: 'refresh', category: 'Games', component: Games },
     { id: 'spin-bottle', title: 'Spin the Bottle', icon: 'wine_bar', category: 'Games', component: Games },
@@ -115,12 +115,13 @@ const TOOLS = [
     { id: 'prime-factors', title: 'Prime Factors', icon: 'grid_3x3', category: 'Math', component: MathTools },
 
     // Generators (6 Tools)
+    // Generators (4 Tools)
     { id: 'qr-gen', title: 'QR Code', icon: 'qr_code_2', category: 'Generators', component: QrGen },
     { id: 'barcode-gen', title: 'Barcode Generator', icon: 'barcode_reader', category: 'Generators', component: Generators },
     { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Generators', component: PasswordGenerator },
     { id: 'random-numbers', title: 'Random Numbers', icon: 'pin', category: 'Generators', component: Generators },
-    { id: 'heads-tails', title: 'Heads or Tails', icon: 'monetization_on', category: 'Generators', component: CoinFlipper },
-    { id: 'magic-8ball', title: 'Magic 8-Ball', icon: 'filter_8', category: 'Generators', component: Generators },
+    { id: 'heads-tails', title: 'Heads or Tails', icon: 'monetization_on', category: 'Games', component: CoinFlipper },
+    { id: 'magic-8ball', title: 'Magic 8-Ball', icon: 'filter_8', category: 'Games', component: Generators },
 
     // Calculators (6 Tools)
     { id: 'currency-conv', title: 'Currency Exchange', icon: 'payments', category: 'Calculators', component: CurrencyConverter },
@@ -163,39 +164,37 @@ const TOOLS = [
     { id: 'color-blend', title: 'Color Blender', icon: 'format_color_fill', category: 'Colors', component: ColorTools },
     { id: 'color-picker-std', title: 'Color Picker', icon: 'palette', category: 'Colors', component: ColorPicker },
 
-    // PDF Edit
-    { id: 'pdf-merge', title: 'Merge PDF', icon: 'merge_type', category: 'PDF Edit', component: PdfEdit },
-    { id: 'pdf-split', title: 'Split PDF', icon: 'call_split', category: 'PDF Edit', component: PdfEdit },
-    { id: 'pdf-delete', title: 'Delete Pages', icon: 'delete', category: 'PDF Edit', component: PdfEdit },
-    { id: 'pdf-rearrange', title: 'Rearrange PDF', icon: 'low_priority', category: 'PDF Edit', component: PdfEdit },
-    { id: 'pdf-rotate', title: 'Rotate PDF', icon: 'rotate_right', category: 'PDF Edit', component: PdfEdit },
-    { id: 'pdf-sign', title: 'Sign PDF', icon: 'draw', category: 'PDF Edit', component: PdfEdit },
-    { id: 'pdf-watermark', title: 'Watermark PDF', icon: 'branding_watermark', category: 'PDF Edit', component: PdfEdit },
-    { id: 'pdf-numbers', title: 'Add Page Numbers', icon: 'format_list_numbered', category: 'PDF Edit', component: PdfEdit },
-    { id: 'pdf-bookmarks', title: 'PDF Bookmarks', icon: 'bookmark', category: 'PDF Edit', component: PdfEdit },
-    { id: 'pdf-crop', title: 'Crop PDF', icon: 'crop', category: 'PDF Edit', component: PdfEdit },
+    // PDF Tools (Edit, Optimize, Secure)
+    { id: 'pdf-merge', title: 'Merge PDF', icon: 'merge_type', category: 'PDF Tools', component: PdfEdit },
+    { id: 'pdf-split', title: 'Split PDF', icon: 'call_split', category: 'PDF Tools', component: PdfEdit },
+    { id: 'pdf-delete', title: 'Delete Pages', icon: 'delete', category: 'PDF Tools', component: PdfEdit },
+    { id: 'pdf-rearrange', title: 'Rearrange PDF', icon: 'low_priority', category: 'PDF Tools', component: PdfEdit },
+    { id: 'pdf-rotate', title: 'Rotate PDF', icon: 'rotate_right', category: 'PDF Tools', component: PdfEdit },
+    { id: 'pdf-sign', title: 'Sign PDF', icon: 'draw', category: 'PDF Tools', component: PdfEdit },
+    { id: 'pdf-watermark', title: 'Watermark PDF', icon: 'branding_watermark', category: 'PDF Tools', component: PdfEdit },
+    { id: 'pdf-numbers', title: 'Add Page Numbers', icon: 'format_list_numbered', category: 'PDF Tools', component: PdfEdit },
+    { id: 'pdf-bookmarks', title: 'PDF Bookmarks', icon: 'bookmark', category: 'PDF Tools', component: PdfEdit },
+    { id: 'pdf-crop', title: 'Crop PDF', icon: 'crop', category: 'PDF Tools', component: PdfEdit },
+    { id: 'pdf-compress', title: 'Compress PDF', icon: 'compress', category: 'PDF Tools', component: PdfSecure },
+    { id: 'pdf-grayscale', title: 'Grayscale PDF', icon: 'filter_b_and_w', category: 'PDF Tools', component: PdfSecure },
+    { id: 'pdf-repair', title: 'Repair PDF', icon: 'build', category: 'PDF Tools', component: PdfSecure },
+    { id: 'pdf-compare', title: 'Compare PDF', icon: 'difference', category: 'PDF Tools', component: PdfSecure },
+    { id: 'pdf-flatten', title: 'Flatten PDF', icon: 'layers_clear', category: 'PDF Tools', component: PdfSecure },
+    { id: 'pdf-lock', title: 'Lock PDF', icon: 'lock', category: 'PDF Tools', component: PdfSecure },
+    { id: 'pdf-unlock', title: 'Unlock PDF', icon: 'lock_open', category: 'PDF Tools', component: PdfSecure },
+    { id: 'pdf-meta', title: 'PDF Metadata', icon: 'info', category: 'PDF Tools', component: PdfSecure },
 
-    // PDF Optimize & Secure
-    { id: 'pdf-compress', title: 'Compress PDF', icon: 'compress', category: 'PDF Optimize', component: PdfSecure },
-    { id: 'pdf-grayscale', title: 'Grayscale PDF', icon: 'filter_b_and_w', category: 'PDF Optimize', component: PdfSecure },
-    { id: 'pdf-repair', title: 'Repair PDF', icon: 'build', category: 'PDF Optimize', component: PdfSecure },
-    { id: 'pdf-compare', title: 'Compare PDF', icon: 'difference', category: 'PDF Optimize', component: PdfSecure },
-    { id: 'pdf-flatten', title: 'Flatten PDF', icon: 'layers_clear', category: 'PDF Optimize', component: PdfSecure },
-    { id: 'pdf-lock', title: 'Lock PDF', icon: 'lock', category: 'PDF Secure', component: PdfSecure },
-    { id: 'pdf-unlock', title: 'Unlock PDF', icon: 'lock_open', category: 'PDF Secure', component: PdfSecure },
-    { id: 'pdf-meta', title: 'PDF Metadata', icon: 'info', category: 'PDF Secure', component: PdfSecure },
-
-    // PDF Convert & Office
+    // PDF Convert (Convert & Office)
     { id: 'pdf-to-img', title: 'PDF to Img', icon: 'image', category: 'PDF Convert', component: PdfConvert },
     { id: 'img-to-pdf', title: 'Img to PDF', icon: 'picture_as_pdf', category: 'PDF Convert', component: PdfConvert },
     { id: 'pdf-to-zip', title: 'PDF to ZIP', icon: 'folder_zip', category: 'PDF Convert', component: PdfConvert },
     { id: 'pdf-extract', title: 'Extract Assets', icon: 'file_download', category: 'PDF Convert', component: PdfConvert },
     { id: 'pdf-to-text', title: 'PDF to Text', icon: 'text_snippet', category: 'PDF Convert', component: PdfConvert },
-    { id: 'word-to-pdf', title: 'Word to PDF', icon: 'description', category: 'PDF Office', component: PdfConvert },
-    { id: 'excel-to-pdf', title: 'Excel to PDF', icon: 'table_chart', category: 'PDF Office', component: PdfConvert },
-    { id: 'ppt-to-pdf', title: 'PPT to PDF', icon: 'slideshow', category: 'PDF Office', component: PdfConvert },
-    { id: 'pdf-to-word', title: 'PDF to Word', icon: 'article', category: 'PDF Office', component: PdfConvert },
-    { id: 'pdf-scan', title: 'Scan PDF (OCR)', icon: 'document_scanner', category: 'PDF Office', component: PdfConvert },
+    { id: 'word-to-pdf', title: 'Word to PDF', icon: 'description', category: 'PDF Convert', component: PdfConvert },
+    { id: 'excel-to-pdf', title: 'Excel to PDF', icon: 'table_chart', category: 'PDF Convert', component: PdfConvert },
+    { id: 'ppt-to-pdf', title: 'PPT to PDF', icon: 'slideshow', category: 'PDF Convert', component: PdfConvert },
+    { id: 'pdf-to-word', title: 'PDF to Word', icon: 'article', category: 'PDF Convert', component: PdfConvert },
+    { id: 'pdf-scan', title: 'Scan PDF (OCR)', icon: 'document_scanner', category: 'PDF Convert', component: PdfConvert },
 
     // Web Tools
     { id: 'translate', title: 'Translate', icon: 'translate', category: 'Web Tools', component: Translate },
@@ -231,6 +230,10 @@ const TOOLS = [
     { id: 'age-calculator', title: 'Age Calculator', icon: 'calendar_today', category: 'Time', component: AgeCalculator },
     { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Time', component: TimestampConverter },
     { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Time', component: Stopwatch },
+    { id: 'pomodoro-timer', title: 'Pomodoro Timer', icon: 'schedule', category: 'Time', component: PomodoroTimer },
+    { id: 'metronome', title: 'Metronome', icon: 'timer', category: 'Time', component: Measurements },
+    { id: 'reaction-time', title: 'Reaction Time', icon: 'bolt', category: 'Time', component: Measurements },
+    { id: 'tabata-timer', title: 'Tabata Timer', icon: 'fitness_center', category: 'Time', component: Measurements },
 
     // Misc
     { id: 'notes', title: 'Notes', icon: 'description', category: 'Misc', component: Notes },
@@ -242,7 +245,7 @@ const TOOLS = [
     // Specialized/Graviton
     { id: 'anomaly-detection', title: 'Anomaly Detection', icon: 'notifications_active', category: 'Specialized', component: AnomalyDetection },
     { id: 'data-quality', title: 'Data Quality', icon: 'verified', category: 'Specialized', component: DataQuality },
-    { id: 'data-anonymizer', title: 'Data Anonymizer', icon: 'security', category: 'Specialized', component: DataAnonymizer },
+    { id: 'data-anonymizer', title: 'Data Anonymizer', icon: 'security', category: 'Security', component: DataAnonymizer },
     { id: 'observability', title: 'Observability', icon: 'visibility', category: 'Specialized', component: Observability },
     { id: 'data-portal', title: 'Data Portal', icon: 'dashboard', category: 'Specialized', component: DataPortal },
     { id: 'azure-integration', title: 'Azure Functions', icon: 'cloud', category: 'Specialized', component: AzureIntegration },
@@ -603,15 +606,15 @@ const getCategoryIcon = (cat) => {
         'Images': 'image',
         'Outdoor': 'explore',
         'Colors': 'palette',
-        'PDF Edit': 'edit',
-        'PDF Optimize': 'speed',
-        'PDF Secure': 'security',
+        'PDF Tools': 'picture_as_pdf',
         'PDF Convert': 'transform',
-        'PDF Office': 'business_center',
         'Web Tools': 'public',
         'Dev Tools': 'terminal',
         'Misc': 'auto_fix_high',
         'Specialized': 'insights',
+        'Time': 'schedule',
+        'Security': 'security',
+        'Productivity': 'assignment',
     };
     return icons[cat] || 'folder';
 };

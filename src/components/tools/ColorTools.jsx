@@ -1,17 +1,29 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-const ColorTools = () => {
+const ColorTools = ({ toolId }) => {
   const [activeTab, setActiveTab] = useState('picker');
   const [color, setColor] = useState('#3b82f6');
 
+  useEffect(() => {
+    if (toolId) {
+        if (toolId === 'img-color' || toolId === 'cam-color') setActiveTab('picker');
+        else if (toolId === 'color-conv') setActiveTab('converter');
+        else if (toolId === 'color-harm' || toolId === 'tints-shades') setActiveTab('harmonies');
+        else if (toolId === 'color-blend') setActiveTab('blender');
+        else setActiveTab(toolId);
+    }
+  }, [toolId]);
+
   return (
     <div className="tool-form">
-      <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
-        <button className={`pill ${activeTab === 'picker' ? 'active' : ''}`} onClick={() => setActiveTab('picker')}>Picker</button>
-        <button className={`pill ${activeTab === 'converter' ? 'active' : ''}`} onClick={() => setActiveTab('converter')}>Converter</button>
-        <button className={`pill ${activeTab === 'harmonies' ? 'active' : ''}`} onClick={() => setActiveTab('harmonies')}>Harmonies</button>
-        <button className={`pill ${activeTab === 'blender' ? 'active' : ''}`} onClick={() => setActiveTab('blender')}>Blender</button>
-      </div>
+      {!toolId && (
+        <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
+          <button className={`pill ${activeTab === 'picker' ? 'active' : ''}`} onClick={() => setActiveTab('picker')}>Picker</button>
+          <button className={`pill ${activeTab === 'converter' ? 'active' : ''}`} onClick={() => setActiveTab('converter')}>Converter</button>
+          <button className={`pill ${activeTab === 'harmonies' ? 'active' : ''}`} onClick={() => setActiveTab('harmonies')}>Harmonies</button>
+          <button className={`pill ${activeTab === 'blender' ? 'active' : ''}`} onClick={() => setActiveTab('blender')}>Blender</button>
+        </div>
+      )}
 
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <input type="color" value={color} onChange={e => setColor(e.target.value)} style={{ width: '100px', height: '100px', borderRadius: '50%', border: 'none', cursor: 'pointer' }} />

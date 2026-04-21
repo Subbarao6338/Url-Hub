@@ -2,6 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 
 const Stopwatch = ({ onResultChange }) => {
   const [time, setTime] = useState(0);
+  const [isActive, setIsActive] = useState(false);
+  const [laps, setLaps] = useState([]);
+  const intervalRef = useRef(null);
+
+  const formatTime = (time) => {
+    const ms = Math.floor((time % 1000) / 10);
+    const s = Math.floor((time / 1000) % 60);
+    const m = Math.floor((time / 60000) % 60);
+    const h = Math.floor(time / 3600000);
+    return {
+      h: h.toString().padStart(2, '0'),
+      m: m.toString().padStart(2, '0'),
+      s: s.toString().padStart(2, '0'),
+      ms: ms.toString().padStart(2, '0')
+    };
+  };
 
   useEffect(() => {
     const { h, m, s, ms } = formatTime(time);
@@ -15,9 +31,6 @@ const Stopwatch = ({ onResultChange }) => {
       filename: 'stopwatch_result.txt'
     });
   }, [time, laps, onResultChange]);
-  const [isActive, setIsActive] = useState(false);
-  const [laps, setLaps] = useState([]);
-  const intervalRef = useRef(null);
 
   useEffect(() => {
     if (isActive) {
@@ -43,19 +56,6 @@ const Stopwatch = ({ onResultChange }) => {
 
   const addLap = () => {
     setLaps([{ id: Date.now(), time }, ...laps]);
-  };
-
-  const formatTime = (time) => {
-    const ms = Math.floor((time % 1000) / 10);
-    const s = Math.floor((time / 1000) % 60);
-    const m = Math.floor((time / 60000) % 60);
-    const h = Math.floor(time / 3600000);
-    return {
-      h: h.toString().padStart(2, '0'),
-      m: m.toString().padStart(2, '0'),
-      s: s.toString().padStart(2, '0'),
-      ms: ms.toString().padStart(2, '0')
-    };
   };
 
   const { h, m, s, ms } = formatTime(time);

@@ -42,13 +42,15 @@ const OutdoorTools = ({ toolId }) => {
 
   return (
     <div className="tool-form">
-      <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
-        <button className={`pill ${activeTab === 'sos' ? 'active' : ''}`} onClick={() => setActiveTab('sos')}>SOS</button>
-        <button className={`pill ${activeTab === 'compass' ? 'active' : ''}`} onClick={() => setActiveTab('compass')}>Compass</button>
-        <button className={`pill ${activeTab === 'gps' ? 'active' : ''}`} onClick={() => setActiveTab('gps')}>GPS</button>
-        <button className={`pill ${activeTab === 'frequency' ? 'active' : ''}`} onClick={() => setActiveTab('frequency')}>Frequency</button>
-        <button className={`pill ${activeTab === 'mirror' ? 'active' : ''}`} onClick={() => setActiveTab('mirror')}>Mirror</button>
-      </div>
+      {!toolId && (
+        <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
+          <button className={`pill ${activeTab === 'sos' ? 'active' : ''}`} onClick={() => setActiveTab('sos')}>SOS</button>
+          <button className={`pill ${activeTab === 'compass' ? 'active' : ''}`} onClick={() => setActiveTab('compass')}>Compass</button>
+          <button className={`pill ${activeTab === 'gps' ? 'active' : ''}`} onClick={() => setActiveTab('gps')}>GPS</button>
+          <button className={`pill ${activeTab === 'frequency' ? 'active' : ''}`} onClick={() => setActiveTab('frequency')}>Frequency</button>
+          <button className={`pill ${activeTab === 'mirror' ? 'active' : ''}`} onClick={() => setActiveTab('mirror')}>Mirror</button>
+        </div>
+      )}
 
       {!permissionGranted && (activeTab === 'compass' || activeTab === 'gps') && (
           <button className="btn-primary" onClick={requestPermission} style={{ width: '100%' }}>Enable Sensors/GPS</button>

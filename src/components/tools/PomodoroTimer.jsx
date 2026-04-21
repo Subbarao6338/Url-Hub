@@ -1,7 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const PomodoroTimer = ({ onResultChange }) => {
+  const modes = {
+    work: { label: 'Work', time: 25 * 60, icon: 'work' },
+    shortBreak: { label: 'Short Break', time: 5 * 60, icon: 'coffee' },
+    longBreak: { label: 'Long Break', time: 15 * 60, icon: 'self_improvement' }
+  };
+
   const [timeLeft, setTimeLeft] = useState(25 * 60);
+  const [isActive, setIsActive] = useState(false);
+  const [mode, setMode] = useState('work'); // 'work', 'shortBreak', 'longBreak'
+  const timerRef = useRef(null);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     onResultChange({
@@ -9,15 +24,6 @@ const PomodoroTimer = ({ onResultChange }) => {
       filename: 'pomodoro_status.txt'
     });
   }, [timeLeft, mode, onResultChange]);
-  const [isActive, setIsActive] = useState(false);
-  const [mode, setMode] = useState('work'); // 'work', 'shortBreak', 'longBreak'
-  const timerRef = useRef(null);
-
-  const modes = {
-    work: { label: 'Work', time: 25 * 60, icon: 'work' },
-    shortBreak: { label: 'Short Break', time: 5 * 60, icon: 'coffee' },
-    longBreak: { label: 'Long Break', time: 15 * 60, icon: 'self_improvement' }
-  };
 
   useEffect(() => {
     if (isActive && timeLeft > 0) {
@@ -45,12 +51,6 @@ const PomodoroTimer = ({ onResultChange }) => {
     setMode(newMode);
     setIsActive(false);
     setTimeLeft(modes[newMode].time);
-  };
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   const playAlarm = () => {

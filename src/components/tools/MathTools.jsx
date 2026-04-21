@@ -12,17 +12,19 @@ const MathTools = ({ onResultChange, toolId }) => {
 
   return (
     <div className="tool-form">
-      <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
-        <button className={`pill ${activeTab === 'percentages' ? 'active' : ''}`} onClick={() => setActiveTab('percentages')}>Percentages</button>
-        <button className={`pill ${activeTab === 'geometry' ? 'active' : ''}`} onClick={() => setActiveTab('geometry')}>Geometry</button>
-        <button className={`pill ${activeTab === 'pythagoras' ? 'active' : ''}`} onClick={() => setActiveTab('pythagoras')}>Pythagoras</button>
-        <button className={`pill ${activeTab === 'proportions' ? 'active' : ''}`} onClick={() => setActiveTab('proportions')}>Proportions</button>
-        <button className={`pill ${activeTab === 'ruffini' ? 'active' : ''}`} onClick={() => setActiveTab('ruffini')}>Ruffini</button>
-        <button className={`pill ${activeTab === 'quadratic' ? 'active' : ''}`} onClick={() => setActiveTab('quadratic')}>Quadratic</button>
-        <button className={`pill ${activeTab === 'fractions' ? 'active' : ''}`} onClick={() => setActiveTab('fractions')}>Fractions</button>
-        <button className={`pill ${activeTab === 'gcd-lcm' ? 'active' : ''}`} onClick={() => setActiveTab('gcd-lcm')}>GCD/LCM</button>
-        <button className={`pill ${activeTab === 'primes' ? 'active' : ''}`} onClick={() => setActiveTab('primes')}>Primes</button>
-      </div>
+      {!toolId && (
+        <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
+          <button className={`pill ${activeTab === 'percentages' ? 'active' : ''}`} onClick={() => setActiveTab('percentages')}>Percentages</button>
+          <button className={`pill ${activeTab === 'geometry' ? 'active' : ''}`} onClick={() => setActiveTab('geometry')}>Geometry</button>
+          <button className={`pill ${activeTab === 'pythagoras' ? 'active' : ''}`} onClick={() => setActiveTab('pythagoras')}>Pythagoras</button>
+          <button className={`pill ${activeTab === 'proportions' ? 'active' : ''}`} onClick={() => setActiveTab('proportions')}>Proportions</button>
+          <button className={`pill ${activeTab === 'ruffini' ? 'active' : ''}`} onClick={() => setActiveTab('ruffini')}>Ruffini</button>
+          <button className={`pill ${activeTab === 'quadratic' ? 'active' : ''}`} onClick={() => setActiveTab('quadratic')}>Quadratic</button>
+          <button className={`pill ${activeTab === 'fractions' ? 'active' : ''}`} onClick={() => setActiveTab('fractions')}>Fractions</button>
+          <button className={`pill ${activeTab === 'gcd-lcm' ? 'active' : ''}`} onClick={() => setActiveTab('gcd-lcm')}>GCD/LCM</button>
+          <button className={`pill ${activeTab === 'primes' ? 'active' : ''}`} onClick={() => setActiveTab('primes')}>Primes</button>
+        </div>
+      )}
 
       {activeTab === 'percentages' && <PercentagesTool />}
       {activeTab === 'geometry' && <GeometryTool />}
