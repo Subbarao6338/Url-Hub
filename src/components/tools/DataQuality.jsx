@@ -13,33 +13,60 @@ const DataQuality = ({ onResultChange }) => {
     }
   };
 
+  const [dataInput, setDataInput] = useState('');
+
   const runValidation = () => {
+    if (!dataInput && activeTab === 'ge') return;
     setIsValidating(true);
     setReport(null);
     onResultChange(null);
 
     setTimeout(() => {
-      const score = (95 + Math.random() * 5).toFixed(1);
-      const passed = Math.floor(Math.random() * 50) + 30;
-      const failed = Math.floor(Math.random() * 3);
+        try {
+            const rows = dataInput.split('\n').filter(r => r.trim());
+            if (rows.length === 0) throw new Error("No data to validate");
 
-      const res = {
-        score: score,
-        passed: passed,
-        failed: failed,
-        suite: 'Production_Core_v2',
-        fileName: fileName || 'default_dataset.parquet',
-        timestamp: new Date().toLocaleString()
-      };
+            let passed = 0;
+            let failed = 0;
+            const issues = [];
 
-      setReport(res);
-      setIsValidating(false);
+            rows.forEach((row, idx) => {
+                const cols = row.split(',').map(s => s.trim());
+                // Simple rules: 1. No empty columns, 2. First column must be numeric if present
+                if (cols.some(c => !c)) {
+                    failed++;
+                    issues.push(`Row ${idx + 1}: Empty column detected`);
+                } else if (cols[0] && isNaN(parseFloat(cols[0]))) {
+                    failed++;
+                    issues.push(`Row ${idx + 1}: First column is not numeric`);
+                } else {
+                    passed++;
+                }
+            });
 
-      onResultChange({
-        text: JSON.stringify(res, null, 2),
-        filename: `dq_report_${Date.now()}.json`
-      });
-    }, 1500);
+            const score = ((passed / rows.length) * 100).toFixed(1);
+
+            const res = {
+                score: score,
+                passed: passed,
+                failed: failed,
+                issues: issues.slice(0, 5),
+                totalRows: rows.length,
+                timestamp: new Date().toLocaleString()
+            };
+
+            setReport(res);
+            setIsValidating(false);
+
+            onResultChange({
+                text: JSON.stringify(res, null, 2),
+                filename: `dq_report_${Date.now()}.json`
+            });
+        } catch (e) {
+            alert(e.message);
+            setIsValidating(false);
+        }
+    }, 1000);
   };
 
   return (
@@ -57,26 +84,25 @@ const DataQuality = ({ onResultChange }) => {
       {activeTab === 'ge' && (
         <div>
           <div className="form-group">
-            <label>Data Asset (Upload)</label>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '15px' }}>
-              <input type="file" onChange={handleFileUpload} style={{ display: 'none' }} id="dq-upload" />
-              <label htmlFor="dq-upload" className="pill" style={{ cursor: 'pointer', margin: 0 }}>
-                <span className="material-icons" style={{ fontSize: '1.2rem' }}>upload_file</span>
-                {fileName ? 'Change File' : 'Select Data File'}
-              </label>
-              {fileName && <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{fileName}</span>}
-            </div>
+            <label>Data Input (CSV format)</label>
+            <textarea
+                value={dataInput}
+                onChange={e => setDataInput(e.target.value)}
+                placeholder="id, name, age&#10;1, John, 25&#10;2, Jane, 30"
+                className="pill"
+                style={{ width: '100%', height: '120px', borderRadius: '12px', padding: '12px', fontFamily: 'monospace' }}
+            />
           </div>
           <div className="form-group">
             <label>Expectation Suite</label>
             <select style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)' }}>
-              <option>Production_Core_v2</option>
-              <option>Raw_Ingestion_Check</option>
-              <option>Customer_PII_Rules</option>
+              <option>Basic_Sanity_Check</option>
+              <option>Numeric_First_Col</option>
+              <option>Non_Empty_Rows</option>
             </select>
           </div>
           <button className="btn-primary" style={{ width: '100%', marginTop: '20px' }} onClick={runValidation} disabled={isValidating}>
-            {isValidating ? 'Validating...' : 'Run GE Checkpoint'}
+            {isValidating ? 'Validating...' : 'Run Validation'}
           </button>
         </div>
       )}

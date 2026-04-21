@@ -243,11 +243,11 @@ const SettingsModal = ({
             </div>
             <div className="pill-group">
               {[
-                'light', 'dark', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter',
+                'light', 'dark', 'system', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter',
                 'autumn', 'lavender', 'spring', 'galaxy', 'blackhole', 'midnight', 'aurora', 'blossom', 'canyon', 'glacier'
               ].map(t => {
                 const icons = {
-                  light: 'light_mode', dark: 'dark_mode', nature: 'eco', forest: 'forest',
+                  light: 'light_mode', dark: 'dark_mode', system: 'settings_brightness', nature: 'eco', forest: 'forest',
                   ocean: 'water', earth: 'landscape', mountain: 'terrain', desert: 'wb_sunny',
                   sunset: 'wb_twilight', winter: 'ac_unit', autumn: 'park', lavender: 'spa',
                   spring: 'local_florist', galaxy: 'auto_awesome', blackhole: 'cyclone',

@@ -193,8 +193,23 @@ function App() {
   }, []);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    const applyTheme = (t) => {
+      let activeTheme = t;
+      if (t === 'system') {
+        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', activeTheme);
+    };
+
+    applyTheme(theme);
     localStorage.setItem('hub_theme', theme);
+
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => applyTheme('system');
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
   }, [theme]);
 
   useEffect(() => {

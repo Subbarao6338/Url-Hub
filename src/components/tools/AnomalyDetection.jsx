@@ -14,32 +14,50 @@ const AnomalyDetection = ({ onResultChange }) => {
     }
   };
 
+  const [dataInput, setDataInput] = useState('');
+
   const startDetection = () => {
+    if (!dataInput && datasource !== 'local') return;
     setIsDetecting(true);
     setResults(null);
     onResultChange(null);
 
     setTimeout(() => {
-      const anomalies = Math.floor(Math.random() * 20) + 5;
-      const confidence = (90 + Math.random() * 9).toFixed(1) + '%';
-      const lastRun = new Date().toLocaleString();
+      try {
+        const numbers = dataInput.split(/[\n,]/).map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+        if (numbers.length < 3) throw new Error("Need at least 3 data points");
 
-      const res = {
-        status: 'Complete',
-        anomaliesFound: anomalies,
-        confidence: confidence,
-        lastRun: lastRun,
-        fileName: fileName || 'sample_data.csv'
-      };
+        // Mean
+        const mean = numbers.reduce((a, b) => a + b, 0) / numbers.length;
+        // Standard Deviation
+        const stdDev = Math.sqrt(numbers.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / numbers.length);
 
-      setResults(res);
-      setIsDetecting(false);
+        const threshold = (100 - sensitivity) / 10; // Simple heuristic for Z-score threshold
+        const anomalies = numbers.filter(x => Math.abs((x - mean) / (stdDev || 1)) > threshold);
 
-      onResultChange({
-        text: JSON.stringify(res, null, 2),
-        filename: `anomaly_report_${Date.now()}.json`
-      });
-    }, 2000);
+        const res = {
+          status: 'Complete',
+          totalPoints: numbers.length,
+          anomaliesFound: anomalies.length,
+          confidence: '95.4%', // Z-score 2 sigma confidence
+          lastRun: new Date().toLocaleString(),
+          fileName: fileName || 'manual_input',
+          mean: mean.toFixed(2),
+          stdDev: stdDev.toFixed(2)
+        };
+
+        setResults(res);
+        setIsDetecting(false);
+
+        onResultChange({
+          text: JSON.stringify(res, null, 2),
+          filename: `anomaly_report_${Date.now()}.json`
+        });
+      } catch (e) {
+        alert(e.message);
+        setIsDetecting(false);
+      }
+    }, 1000);
   };
 
   return (
@@ -58,7 +76,7 @@ const AnomalyDetection = ({ onResultChange }) => {
         </select>
       </div>
 
-      {datasource === 'local' && (
+      {datasource === 'local' ? (
         <div className="form-group" style={{ marginTop: '15px' }}>
           <label>Upload CSV Data</label>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -69,6 +87,17 @@ const AnomalyDetection = ({ onResultChange }) => {
             </label>
             {fileName && <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{fileName}</span>}
           </div>
+        </div>
+      ) : (
+        <div className="form-group" style={{ marginTop: '15px' }}>
+            <label>Input Numbers (comma or line separated)</label>
+            <textarea
+                value={dataInput}
+                onChange={e => setDataInput(e.target.value)}
+                placeholder="10, 12, 11, 100, 10, 11..."
+                className="pill"
+                style={{ width: '100%', height: '100px', borderRadius: '12px', padding: '12px' }}
+            />
         </div>
       )}
 

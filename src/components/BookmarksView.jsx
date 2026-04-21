@@ -118,7 +118,29 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
   const totalCount = Object.values(stats).reduce((a, b) => a + b, 0);
   const pinnedCount = currentLinks.filter(l => l.is_pinned).length;
 
-  if (loading) return <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>Loading bookmarks...</div>;
+  if (loading) return (
+    <div style={{ padding: '2rem' }}>
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '2rem', overflowX: 'auto' }}>
+            {[1,2,3,4,5].map(i => <div key={i} className="skeleton" style={{ width: '100px', height: '40px', borderRadius: '20px', flexShrink: 0 }} />)}
+        </div>
+        <div className="category-grid">
+            {[1,2,3,4,5,6].map(i => (
+                <div key={i} className="card skeleton" style={{ height: '120px' }}></div>
+            ))}
+        </div>
+        <style>{`
+            .skeleton {
+                background: linear-gradient(90deg, var(--surface) 25%, var(--border) 50%, var(--surface) 75%);
+                background-size: 200% 100%;
+                animation: skeleton-loading 1.5s infinite;
+            }
+            @keyframes skeleton-loading {
+                0% { background-position: 200% 0; }
+                100% { background-position: -200% 0; }
+            }
+        `}</style>
+    </div>
+  );
 
   if (links === null) return (
     <div style={{textAlign:'center', padding:'3rem'}}>

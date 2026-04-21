@@ -89,6 +89,7 @@ def init_db():
             is_internal BOOLEAN DEFAULT 0,
             tool_id TEXT,
             is_pinned BOOLEAN DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (profile_id) REFERENCES profiles (id)
         )
     ''')
@@ -116,6 +117,12 @@ def init_db():
         )
     ''')
 
+
+    # Check if created_at column exists, if not add it (for existing databases)
+    cursor.execute("PRAGMA table_info(links)")
+    columns = [col[1] for col in cursor.fetchall()]
+    if 'created_at' not in columns:
+        cursor.execute("ALTER TABLE links ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 
     # Deduplicate before adding unique index
     cursor.execute('''

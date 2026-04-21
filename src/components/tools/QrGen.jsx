@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { QRCodeCanvas } from 'qrcode.react';
 
 const QrGen = ({ onResultChange }) => {
   const [input, setInput] = useState('');
-
-  const qrUrl = input ? `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(input)}` : null;
+  const qrRef = useRef(null);
 
   useEffect(() => {
-    if (qrUrl) {
-      fetch(qrUrl)
-        .then(res => res.blob())
-        .then(blob => {
-          onResultChange({
-            text: input,
-            blob: blob,
-            filename: 'qrcode.png'
-          });
-        });
+    if (input && qrRef.current) {
+        const canvas = qrRef.current.querySelector('canvas');
+        if (canvas) {
+            canvas.toBlob((blob) => {
+                onResultChange({
+                    text: input,
+                    blob: blob,
+                    filename: 'qrcode.png'
+                });
+            });
+        }
     } else {
       onResultChange(null);
     }
-  }, [qrUrl, input, onResultChange]);
+  }, [input, onResultChange]);
 
   return (
     <div className="tool-form">
@@ -33,9 +34,16 @@ const QrGen = ({ onResultChange }) => {
           style={{width: '100%'}}
         />
       </div>
-      {qrUrl && (
+      {input && (
         <div id="qr-result-container" style={{textAlign: 'center', marginTop: '2rem', padding: '20px', background: 'white', borderRadius: '16px', border: '1px solid #eee'}}>
-          <img src={qrUrl} alt="QR Code" style={{maxWidth: '100%', height: 'auto'}} />
+          <div ref={qrRef} style={{ display: 'inline-block', padding: '10px', background: 'white' }}>
+            <QRCodeCanvas
+                value={input}
+                size={250}
+                level={"H"}
+                includeMargin={true}
+            />
+          </div>
           <p style={{marginTop: '15px', fontSize: '0.8rem', color: '#888'}}>Scan this code with your camera</p>
         </div>
       )}

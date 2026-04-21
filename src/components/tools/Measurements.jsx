@@ -37,16 +37,21 @@ const Measurements = ({ onResultChange, toolId }) => {
     window.addEventListener('deviceorientation', handleOrientation);
 
     let lightSensor, magSensor;
-    if ('AmbientLightSensor' in window) {
-        lightSensor = new window.AmbientLightSensor();
-        lightSensor.onreading = () => setAmbient(prev => ({ ...prev, light: lightSensor.illuminance }));
-        lightSensor.start();
-    }
-    if ('Magnetometer' in window) {
-        magSensor = new window.Magnetometer();
-        magSensor.onreading = () => setAmbient(prev => ({ ...prev, magnetic: { x: magSensor.x, y: magSensor.y, z: magSensor.z } }));
-        magSensor.start();
-    }
+    try {
+        if ('AmbientLightSensor' in window) {
+            lightSensor = new window.AmbientLightSensor();
+            lightSensor.onreading = () => setAmbient(prev => ({ ...prev, light: lightSensor.illuminance }));
+            lightSensor.start();
+        }
+    } catch (e) { console.warn("AmbientLightSensor not available:", e); }
+
+    try {
+        if ('Magnetometer' in window) {
+            magSensor = new window.Magnetometer();
+            magSensor.onreading = () => setAmbient(prev => ({ ...prev, magnetic: { x: magSensor.x, y: magSensor.y, z: magSensor.z } }));
+            magSensor.start();
+        }
+    } catch (e) { console.warn("Magnetometer not available:", e); }
 
     let audioContext, analyser, microphone, scriptProcessor, audioStream;
     if (activeTab === 'soundmeter') {

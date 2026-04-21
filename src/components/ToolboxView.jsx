@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, memo } from 'react';
 import CategoryNav from './CategoryNav';
 import Calculator from './tools/Calculator';
 import QrGen from './tools/QrGen';
@@ -324,7 +324,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
     }
   };
 
-  const filteredTools = TOOLS.filter(t => {
+  const filteredTools = useMemo(() => TOOLS.filter(t => {
     let matchesSearch = true;
     let matchesCat = true;
 
@@ -345,14 +345,15 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
     }
 
     return matchesSearch && matchesCat;
-  });
+  }), [searchQuery, activeCategory]);
 
-  const grouped = {};
-  filteredTools.forEach(t => {
-    (grouped[t.category] || (grouped[t.category] = [])).push(t);
-  });
-
-  const cats = Object.keys(grouped).sort();
+  const { grouped, cats } = useMemo(() => {
+    const grouped = {};
+    filteredTools.forEach(t => {
+      (grouped[t.category] || (grouped[t.category] = [])).push(t);
+    });
+    return { grouped, cats: Object.keys(grouped).sort() };
+  }, [filteredTools]);
 
   const toggleCategoryCollapse = (cat) => {
     setCollapsedCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
@@ -525,22 +526,17 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
       ) : !groupToolbox ? (
         <div className="category-grid" style={{padding: '0 10px'}}>
            {filteredTools.map((tool, idx) => (
-              <div key={tool.id} id={`card-${tool.id}`} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
-                 <div className="card-actions">
-                      <button className={`pin-btn ${pinnedTools.includes(tool.id) ? 'active' : ''}`} onClick={(e) => togglePin(e, tool.id)} title="Pin Tool">
-                          <span className="material-icons">push_pin</span>
-                      </button>
-                      <button onClick={(e) => handleShare(e, tool)} title="Share Tool">
-                          <span className="material-icons">share</span>
-                      </button>
-                 </div>
-                 <div className="card-header">
-                      <div className="card-icon" style={{display:'grid', placeItems:'center', background:'var(--bg)'}}>
-                          <span className="material-icons">{tool.icon}</span>
-                      </div>
-                      <div className="card-title" dangerouslySetInnerHTML={{ __html: highlightText(tool.title, searchQuery) }} />
-                  </div>
-              </div>
+              <ToolCard
+                key={tool.id}
+                tool={tool}
+                idx={idx}
+                isPinned={pinnedTools.includes(tool.id)}
+                togglePin={togglePin}
+                handleShare={handleShare}
+                openTool={openTool}
+                searchQuery={searchQuery}
+                highlightText={highlightText}
+              />
             ))}
         </div>
       ) : (
@@ -556,22 +552,17 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
             </div>
             <div className="category-grid">
               {grouped[cat].map((tool, idx) => (
-                <div key={tool.id} id={`card-${tool.id}`} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
-                   <div className="card-actions">
-                        <button className={`pin-btn ${pinnedTools.includes(tool.id) ? 'active' : ''}`} onClick={(e) => togglePin(e, tool.id)} title="Pin Tool">
-                            <span className="material-icons">push_pin</span>
-                        </button>
-                        <button onClick={(e) => handleShare(e, tool)} title="Share Tool">
-                            <span className="material-icons">share</span>
-                        </button>
-                   </div>
-                   <div className="card-header">
-                        <div className="card-icon" style={{display:'grid', placeItems:'center', background:'var(--bg)'}}>
-                            <span className="material-icons">{tool.icon}</span>
-                        </div>
-                                    <div className="card-title" dangerouslySetInnerHTML={{ __html: highlightText(tool.title, searchQuery) }} />
-                    </div>
-                </div>
+                <ToolCard
+                    key={tool.id}
+                    tool={tool}
+                    idx={idx}
+                    isPinned={pinnedTools.includes(tool.id)}
+                    togglePin={togglePin}
+                    handleShare={handleShare}
+                    openTool={openTool}
+                    searchQuery={searchQuery}
+                    highlightText={highlightText}
+                />
               ))}
             </div>
           </div>
@@ -580,6 +571,25 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
     </>
   );
 };
+
+const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, searchQuery, highlightText }) => (
+    <div id={`card-${tool.id}`} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
+       <div className="card-actions">
+            <button className={`pin-btn ${isPinned ? 'active' : ''}`} onClick={(e) => togglePin(e, tool.id)} title="Pin Tool">
+                <span className="material-icons">push_pin</span>
+            </button>
+            <button onClick={(e) => handleShare(e, tool)} title="Share Tool">
+                <span className="material-icons">share</span>
+            </button>
+       </div>
+       <div className="card-header">
+            <div className="card-icon" style={{display:'grid', placeItems:'center', background:'var(--bg)'}}>
+                <span className="material-icons">{tool.icon}</span>
+            </div>
+            <div className="card-title" dangerouslySetInnerHTML={{ __html: highlightText(tool.title, searchQuery) }} />
+        </div>
+    </div>
+));
 
 const getCategoryIcon = (cat) => {
     const icons = {

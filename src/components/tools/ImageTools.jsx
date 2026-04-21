@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const ImageTools = ({ onResultChange, toolId }) => {
   const [activeTab, setActiveTab] = useState('format');

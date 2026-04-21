@@ -49,7 +49,26 @@ const ProjectsView = ({ searchQuery, openInNewTab }) => {
     );
   });
 
-  if (loading) return <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>Loading projects...</div>;
+  if (loading) return (
+    <div style={{ padding: '2rem' }}>
+        <div className="category-grid">
+            {[1,2,3,4,5,6].map(i => (
+                <div key={i} className="card skeleton" style={{ height: '180px' }}></div>
+            ))}
+        </div>
+        <style>{`
+            .skeleton {
+                background: linear-gradient(90deg, var(--surface) 25%, var(--border) 50%, var(--surface) 75%);
+                background-size: 200% 100%;
+                animation: skeleton-loading 1.5s infinite;
+            }
+            @keyframes skeleton-loading {
+                0% { background-position: 200% 0; }
+                100% { background-position: -200% 0; }
+            }
+        `}</style>
+    </div>
+  );
 
   if (error) return (
     <div style={{textAlign:'center', padding:'3rem'}}>

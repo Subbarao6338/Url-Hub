@@ -3,11 +3,6 @@ const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './css/style.css',
-  './data/url_links.json',
-  './data/url_cat.json',
-  './data/necs_links.json',
-  './data/necs_cat.json',
-  './data/projects.json',
   './assets/favicon.svg',
   './assets/urlhub.png',
   'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap',
@@ -50,7 +45,11 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   const isLocal = url.origin === self.location.origin;
   const isApi = url.pathname.startsWith('/api/');
-  const isFont = url.origin.includes('fonts.googleapis.com') || url.origin.includes('fonts.gstatic.com');
+  const isFont = url.origin.includes('fonts.googleapis.com') ||
+                 url.origin.includes('fonts.gstatic.com') ||
+                 url.pathname.endsWith('.woff2') ||
+                 url.pathname.endsWith('.woff') ||
+                 url.pathname.endsWith('.ttf');
   const isCachable = (isLocal && !isApi) || isFont;
 
   // Cache API GET requests - Network First strategy

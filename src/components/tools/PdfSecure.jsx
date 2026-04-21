@@ -30,29 +30,67 @@ const PdfSecure = ({ onResultChange, toolId }) => {
       onResultChange({ text: 'Locked PDF', blob: new Blob([encryptedBytes], { type: 'application/pdf' }), filename: 'locked.pdf' });
   };
 
-  const grayscalePdf = async () => {
+  const [metadata, setMetadata] = useState({ title: '', author: '', subject: '', keywords: '' });
+
+  const updateMetadata = async () => {
       if (!file) return;
-      onResultChange({ text: 'Grayscale Filter Applied (Stub)', blob: file, filename: 'grayscale.pdf' });
+      try {
+        const pdfBytes = await file.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+        pdfDoc.setTitle(metadata.title);
+        pdfDoc.setAuthor(metadata.author);
+        pdfDoc.setSubject(metadata.subject);
+        pdfDoc.setKeywords(metadata.keywords.split(',').map(s => s.trim()));
+        const modifiedBytes = await pdfDoc.save();
+        onResultChange({ text: 'Updated Metadata', blob: new Blob([modifiedBytes], { type: 'application/pdf' }), filename: 'updated_meta.pdf' });
+      } catch (e) { alert("Error updating metadata: " + e.message); }
   };
 
   return (
     <div className="tool-form">
       <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
         <button className={`pill ${activeTab === 'lock' ? 'active' : ''}`} onClick={() => setActiveTab('lock')}>Lock</button>
-        <button className={`pill ${activeTab === 'grayscale' ? 'active' : ''}`} onClick={() => setActiveTab('grayscale')}>Grayscale</button>
         <button className={`pill ${activeTab === 'metadata' ? 'active' : ''}`} onClick={() => setActiveTab('metadata')}>Metadata</button>
       </div>
 
-      <input type="file" onChange={handleFileUpload} accept="application/pdf" className="pill" style={{ width: '100%', marginBottom: '20px' }} />
+      <div className="form-group">
+        <label>Upload PDF</label>
+        <input type="file" onChange={handleFileUpload} accept="application/pdf" className="pill" style={{ width: '100%' }} />
+      </div>
 
       {activeTab === 'lock' && (
-          <div style={{ display: 'grid', gap: '10px' }}>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" className="pill" />
+          <div style={{ display: 'grid', gap: '10px', marginTop: '20px' }}>
+              <p style={{ fontSize: '0.9rem', opacity: 0.7 }}>Encrypts the PDF and requires a password to open it.</p>
+              <div className="form-group">
+                <label>Password</label>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password..." className="pill" style={{ width: '100%' }} />
+              </div>
               <button className="btn-primary" onClick={lockPdf} disabled={!file || !password}>Lock PDF</button>
           </div>
       )}
-      {activeTab === 'grayscale' && <button className="btn-primary" onClick={grayscalePdf} disabled={!file} style={{ width: '100%' }}>Convert to Grayscale</button>}
-      {(activeTab === 'compress' || activeTab === 'repair' || activeTab === 'compare' || activeTab === 'flatten' || activeTab === 'unlock') && <div style={{ textAlign: 'center', opacity: 0.6 }}>Placeholder (Complex logic required)</div>}
+
+      {activeTab === 'metadata' && (
+          <div style={{ display: 'grid', gap: '10px', marginTop: '20px' }}>
+              <div className="form-group">
+                  <label>Title</label>
+                  <input type="text" value={metadata.title} onChange={e => setMetadata({...metadata, title: e.target.value})} className="pill" style={{ width: '100%' }} />
+              </div>
+              <div className="form-group">
+                  <label>Author</label>
+                  <input type="text" value={metadata.author} onChange={e => setMetadata({...metadata, author: e.target.value})} className="pill" style={{ width: '100%' }} />
+              </div>
+              <div className="form-group">
+                  <label>Subject</label>
+                  <input type="text" value={metadata.subject} onChange={e => setMetadata({...metadata, subject: e.target.value})} className="pill" style={{ width: '100%' }} />
+              </div>
+              <div className="form-group">
+                  <label>Keywords (comma separated)</label>
+                  <input type="text" value={metadata.keywords} onChange={e => setMetadata({...metadata, keywords: e.target.value})} className="pill" style={{ width: '100%' }} />
+              </div>
+              <button className="btn-primary" onClick={updateMetadata} disabled={!file}>Update Metadata</button>
+          </div>
+      )}
+
     </div>
   );
 };
