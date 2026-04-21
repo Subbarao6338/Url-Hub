@@ -10,7 +10,6 @@ const OutdoorTools = ({ toolId }) => {
     if (toolId) {
         if (toolId === 'gps-info') setActiveTab('gps');
         else if (toolId === 'freq-gen') setActiveTab('frequency');
-        else if (toolId === 'magnifier') setActiveTab('mirror'); // Placeholder for zoom
         else setActiveTab(toolId);
     }
   }, [toolId]);
@@ -48,6 +47,7 @@ const OutdoorTools = ({ toolId }) => {
           <button className={`pill ${activeTab === 'compass' ? 'active' : ''}`} onClick={() => setActiveTab('compass')}>Compass</button>
           <button className={`pill ${activeTab === 'gps' ? 'active' : ''}`} onClick={() => setActiveTab('gps')}>GPS</button>
           <button className={`pill ${activeTab === 'frequency' ? 'active' : ''}`} onClick={() => setActiveTab('frequency')}>Frequency</button>
+          <button className={`pill ${activeTab === 'magnifier' ? 'active' : ''}`} onClick={() => setActiveTab('magnifier')}>Magnifier</button>
           <button className={`pill ${activeTab === 'mirror' ? 'active' : ''}`} onClick={() => setActiveTab('mirror')}>Mirror</button>
         </div>
       )}
@@ -60,6 +60,7 @@ const OutdoorTools = ({ toolId }) => {
       {activeTab === 'compass' && <CompassTool heading={heading} />}
       {activeTab === 'gps' && <GpsTool location={location} />}
       {activeTab === 'frequency' && <FrequencyTool />}
+      {activeTab === 'magnifier' && <MagnifierTool />}
       {activeTab === 'mirror' && <MirrorTool />}
     </div>
   );
@@ -164,6 +165,32 @@ const FrequencyTool = () => {
                 if (oscRef.current) oscRef.current.frequency.value = e.target.value;
             }} style={{ width: '100%', marginBottom: '20px' }} />
             <button className="btn-primary" onClick={toggle} style={{ width: '100%' }}>{active ? 'Stop' : 'Start'}</button>
+        </div>
+    );
+};
+
+const MagnifierTool = () => {
+    const videoRef = useRef(null);
+    const [zoom, setZoom] = useState(1);
+    useEffect(() => {
+        let videoStream;
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(stream => {
+            videoStream = stream;
+            if (videoRef.current) videoRef.current.srcObject = stream;
+        }).catch(err => console.error(err));
+        return () => {
+            if (videoStream) videoStream.getTracks().forEach(track => track.stop());
+        };
+    }, []);
+    return (
+        <div style={{ textAlign: 'center' }}>
+            <div style={{ width: '100%', height: '300px', borderRadius: '16px', overflow: 'hidden', position: 'relative', background: '#000' }}>
+                <video ref={videoRef} autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${zoom})`, transition: 'transform 0.1s ease-out' }} />
+            </div>
+            <div style={{ marginTop: '20px' }}>
+                <label style={{ display: 'block', marginBottom: '10px' }}>Zoom: {zoom}x</label>
+                <input type="range" min="1" max="5" step="0.1" value={zoom} onChange={e => setZoom(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            </div>
         </div>
     );
 };
