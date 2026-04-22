@@ -42,7 +42,7 @@ const OutdoorTools = ({ toolId }) => {
   return (
     <div className="tool-form">
       {!toolId && (
-        <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
+        <div className="pill-group mb-20 scrollable-x">
           <button className={`pill ${activeTab === 'sos' ? 'active' : ''}`} onClick={() => setActiveTab('sos')}>SOS</button>
           <button className={`pill ${activeTab === 'compass' ? 'active' : ''}`} onClick={() => setActiveTab('compass')}>Compass</button>
           <button className={`pill ${activeTab === 'gps' ? 'active' : ''}`} onClick={() => setActiveTab('gps')}>GPS</button>
@@ -53,7 +53,7 @@ const OutdoorTools = ({ toolId }) => {
       )}
 
       {!permissionGranted && (activeTab === 'compass' || activeTab === 'gps') && (
-          <button className="btn-primary" onClick={requestPermission} style={{ width: '100%' }}>Enable Sensors/GPS</button>
+          <button className="btn-primary w-full" onClick={requestPermission}>Enable Sensors/GPS</button>
       )}
 
       {activeTab === 'sos' && <SosTool />}
@@ -95,43 +95,36 @@ const SosTool = () => {
     }, []);
 
     return (
-        <div style={{ textAlign: 'center' }}>
-            <button className="btn-primary" onClick={toggleSos} style={{ width: '100%', height: '100px', fontSize: '2rem', background: active ? '#ef4444' : 'var(--primary)' }}>{active ? 'STOP SOS' : 'START SOS'}</button>
-            <p style={{ marginTop: '20px' }}>Flashes screen in SOS Morse code</p>
+        <div className="text-center">
+            <button className="btn-primary w-full" onClick={toggleSos} style={{ height: '100px', fontSize: '2rem', background: active ? '#ef4444' : 'var(--primary)' }}>{active ? 'STOP SOS' : 'START SOS'}</button>
+            <p className="mt-20">Flashes screen in SOS Morse code</p>
         </div>
     );
 };
 
 const CompassTool = ({ heading }) => (
-    <div style={{ textAlign: 'center', position: 'relative', height: '250px' }}>
-        <div style={{
-            width: '200px',
-            height: '200px',
-            border: '4px solid var(--primary)',
-            borderRadius: '50%',
-            margin: '0 auto',
-            position: 'relative',
+    <div className="text-center w-full" style={{ position: 'relative', height: '250px' }}>
+        <div className="compass-ring" style={{
             transform: `rotate(${-heading}deg)`,
-            transition: 'transform 0.1s ease-out'
         }}>
             <div style={{ position: 'absolute', top: '10px', left: '50%', transform: 'translateX(-50%)', fontWeight: 'bold', color: '#ef4444' }}>N</div>
             <div style={{ position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)' }}>S</div>
             <div style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)' }}>W</div>
             <div style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}>E</div>
-            <div style={{ position: 'absolute', top: '50%', left: '50%', width: '4px', height: '80px', background: 'var(--primary)', transformOrigin: 'bottom center', transform: 'translate(-50%, -100%)' }} />
+            <div className="compass-needle" />
         </div>
-        <div style={{ marginTop: '20px', fontSize: '1.5rem' }}>{Math.round(heading)}°</div>
+        <div className="mt-20" style={{ fontSize: '1.5rem' }}>{Math.round(heading)}°</div>
     </div>
 );
 
 const GpsTool = ({ location }) => (
-    <div style={{ textAlign: 'center' }}>
+    <div className="text-center">
         {location ? (
             <div className="tool-result">
                 <div>Lat: {location.latitude.toFixed(6)}</div>
                 <div>Lon: {location.longitude.toFixed(6)}</div>
                 <div>Alt: {location.altitude?.toFixed(1) || 'N/A'} m</div>
-                <div style={{ marginTop: '10px', fontSize: '0.8rem', opacity: 0.6 }}>Accuracy: {location.accuracy.toFixed(1)}m</div>
+                <div className="mt-10 opacity-6" style={{ fontSize: '0.8rem' }}>Accuracy: {location.accuracy.toFixed(1)}m</div>
             </div>
         ) : <p>Waiting for GPS...</p>}
     </div>
@@ -158,13 +151,13 @@ const FrequencyTool = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center' }}>
+        <div className="text-center">
             <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '20px' }}>{freq} Hz</div>
             <input type="range" min="100" max="5000" value={freq} onChange={e => {
                 setFreq(e.target.value);
                 if (oscRef.current) oscRef.current.frequency.value = e.target.value;
-            }} style={{ width: '100%', marginBottom: '20px' }} />
-            <button className="btn-primary" onClick={toggle} style={{ width: '100%' }}>{active ? 'Stop' : 'Start'}</button>
+            }} className="w-full mb-20" />
+            <button className="btn-primary w-full" onClick={toggle}>{active ? 'Stop' : 'Start'}</button>
         </div>
     );
 };
@@ -183,13 +176,13 @@ const MagnifierTool = () => {
         };
     }, []);
     return (
-        <div style={{ textAlign: 'center' }}>
+        <div className="text-center">
             <div style={{ width: '100%', height: '300px', borderRadius: '16px', overflow: 'hidden', position: 'relative', background: '#000' }}>
                 <video ref={videoRef} autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${zoom})`, transition: 'transform 0.1s ease-out' }} />
             </div>
-            <div style={{ marginTop: '20px' }}>
+            <div className="mt-20">
                 <label style={{ display: 'block', marginBottom: '10px' }}>Zoom: {zoom}x</label>
-                <input type="range" min="1" max="5" step="0.1" value={zoom} onChange={e => setZoom(parseFloat(e.target.value))} style={{ width: '100%' }} />
+                <input type="range" min="1" max="5" step="0.1" value={zoom} onChange={e => setZoom(parseFloat(e.target.value))} className="w-full" />
             </div>
         </div>
     );
@@ -208,7 +201,7 @@ const MirrorTool = () => {
         };
     }, []);
     return (
-        <div style={{ textAlign: 'center' }}>
+        <div className="text-center">
             <video ref={videoRef} autoPlay playsInline style={{ width: '100%', borderRadius: '16px', transform: 'scaleX(-1)' }} />
         </div>
     );

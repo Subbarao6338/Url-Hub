@@ -89,7 +89,7 @@ const Measurements = ({ onResultChange, toolId }) => {
   return (
     <div className="tool-form">
       {!toolId && (
-        <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
+        <div className="pill-group mb-20 scrollable-x">
           <button className={`pill ${activeTab === 'ruler' ? 'active' : ''}`} onClick={() => setActiveTab('ruler')}>Ruler</button>
           <button className={`pill ${activeTab === 'level' ? 'active' : ''}`} onClick={() => setActiveTab('level')}>Level</button>
           <button className={`pill ${activeTab === 'pendulum' ? 'active' : ''}`} onClick={() => setActiveTab('pendulum')}>Pendulum</button>
@@ -104,7 +104,7 @@ const Measurements = ({ onResultChange, toolId }) => {
       )}
 
       {!permissionGranted && (['level', 'pendulum', 'protractor', 'luxmeter', 'magnetic'].includes(activeTab)) && (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
+        <div className="text-center p-20">
           <button className="btn-primary" onClick={requestPermission}>Enable Sensors</button>
         </div>
       )}
@@ -125,31 +125,28 @@ const Measurements = ({ onResultChange, toolId }) => {
 
 const RulerTool = () => {
   const [unit, setUnit] = useState('cm');
-  const dpi = 96; // Standard DPI, though it varies by device
+  const dpi = 96; // Standard DPI
   const ppcm = dpi / 2.54;
   const ppin = dpi;
 
   return (
-    <div style={{ position: 'relative', height: '200px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+    <div className="ruler-container">
+      <div className="flex-center p-10">
         <button className={`pill ${unit === 'cm' ? 'active' : ''}`} onClick={() => setUnit('cm')}>CM</button>
         <button className={`pill ${unit === 'in' ? 'active' : ''}`} onClick={() => setUnit('in')}>IN</button>
       </div>
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '100px', borderTop: '2px solid var(--primary)', display: 'flex', alignItems: 'flex-start' }}>
+      <div className="ruler-marks">
         {Array.from({ length: 50 }).map((_, i) => {
           const step = unit === 'cm' ? ppcm : ppin;
           const isMajor = i % (unit === 'cm' ? 10 : 8) === 0;
           const isHalf = i % (unit === 'cm' ? 5 : 4) === 0;
           return (
-            <div key={i} style={{
-              position: 'absolute',
+            <div key={i} className="ruler-mark" style={{
               left: `${i * (step / (unit === 'cm' ? 10 : 8))}px`,
-              width: '1px',
               height: isMajor ? '40px' : (isHalf ? '25px' : '15px'),
-              background: 'var(--on-surface)',
               opacity: isMajor ? 1 : 0.5
             }}>
-              {isMajor && <span style={{ position: 'absolute', top: '45px', left: '-5px', fontSize: '10px' }}>{i / (unit === 'cm' ? 10 : 8)}</span>}
+              {isMajor && <span className="ruler-label">{i / (unit === 'cm' ? 10 : 8)}</span>}
             </div>
           );
         })}
@@ -162,22 +159,14 @@ const LevelTool = ({ orientation }) => {
   const x = Math.max(-50, Math.min(50, orientation.gamma));
   const y = Math.max(-50, Math.min(50, orientation.beta));
   return (
-    <div style={{ textAlign: 'center' }}>
-      <div style={{ width: '200px', height: '200px', margin: '0 auto', borderRadius: '50%', border: '2px solid var(--border)', position: 'relative', background: 'rgba(var(--primary-rgb), 0.05)' }}>
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          width: '20px',
-          height: '20px',
-          background: 'var(--primary)',
-          borderRadius: '50%',
+    <div className="text-center">
+      <div className="sensor-circle">
+        <div className="level-bubble" style={{
           transform: `translate(calc(-50% + ${x * 1.5}px), calc(-50% + ${y * 1.5}px))`,
-          transition: 'transform 0.1s ease-out'
         }} />
-        <div style={{ position: 'absolute', top: '50%', left: '50%', width: '30px', height: '30px', border: '1px solid var(--primary)', borderRadius: '50%', transform: 'translate(-50%, -50%)', opacity: 0.3 }} />
+        <div className="level-bubble opacity-3" style={{ border: '1px solid var(--primary)', background: 'none', width: '30px', height: '30px' }} />
       </div>
-      <div style={{ marginTop: '10px' }}>
+      <div className="mt-10">
         X: {orientation.gamma.toFixed(1)}° Y: {orientation.beta.toFixed(1)}°
       </div>
     </div>
@@ -187,19 +176,11 @@ const LevelTool = ({ orientation }) => {
 const PendulumTool = ({ orientation }) => {
     const angle = orientation.gamma;
     return (
-        <div style={{ textAlign: 'center', height: '250px', position: 'relative' }}>
-             <div style={{
-                position: 'absolute',
-                top: '20px',
-                left: '50%',
-                width: '4px',
-                height: '180px',
-                background: 'var(--on-surface)',
-                transformOrigin: 'top center',
+        <div className="text-center w-full" style={{ height: '250px', position: 'relative' }}>
+             <div className="pendulum-string" style={{
                 transform: `translateX(-50%) rotate(${angle}deg)`,
-                transition: 'transform 0.1s ease-out'
              }}>
-                 <div style={{ position: 'absolute', bottom: '-20px', left: '50%', width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '50%', transform: 'translateX(-50%)' }} />
+                 <div className="pendulum-bob" />
              </div>
              <div style={{ position: 'absolute', bottom: '0', width: '100%' }}>Angle: {angle.toFixed(1)}°</div>
         </div>
@@ -208,42 +189,21 @@ const PendulumTool = ({ orientation }) => {
 
 const ProtractorTool = ({ orientation }) => {
     return (
-        <div style={{ textAlign: 'center', position: 'relative', height: '250px' }}>
-            <div style={{
-                width: '300px',
-                height: '150px',
-                border: '2px solid var(--border)',
-                borderBottom: 'none',
-                borderRadius: '150px 150px 0 0',
-                margin: '20px auto',
-                position: 'relative',
-                overflow: 'hidden',
-                background: 'rgba(var(--primary-rgb), 0.05)'
-            }}>
+        <div className="text-center w-full" style={{ position: 'relative', height: '250px' }}>
+            <div className="protractor-semi">
                 {Array.from({ length: 19 }).map((_, i) => (
-                    <div key={i} style={{
-                        position: 'absolute',
+                    <div key={i} className="ruler-mark" style={{
                         bottom: 0,
                         left: '50%',
-                        width: '1px',
                         height: i % 3 === 0 ? '20px' : '10px',
-                        background: 'var(--on-surface)',
                         transformOrigin: 'bottom center',
                         transform: `rotate(${(i * 10) - 90}deg)`
                     }}>
-                        {i % 3 === 0 && <span style={{ position: 'absolute', top: '25px', left: '-10px', fontSize: '10px', transform: `rotate(${90 - (i * 10)}deg)` }}>{i * 10}</span>}
+                        {i % 3 === 0 && <span className="ruler-label" style={{ top: '25px', transform: `rotate(${90 - (i * 10)}deg)` }}>{i * 10}</span>}
                     </div>
                 ))}
-                <div style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    left: '50%',
-                    width: '2px',
-                    height: '140px',
-                    background: 'var(--primary)',
-                    transformOrigin: 'bottom center',
+                <div className="protractor-needle" style={{
                     transform: `translateX(-50%) rotate(${orientation.gamma}deg)`,
-                    transition: 'transform 0.1s ease-out'
                 }} />
             </div>
             <div>Angle: {(orientation.gamma + 90).toFixed(1)}°</div>
@@ -252,14 +212,14 @@ const ProtractorTool = ({ orientation }) => {
 };
 
 const LuxmeterTool = ({ light }) => (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
+    <div className="text-center p-20">
         <div style={{ fontSize: '3rem', color: 'var(--primary)' }}>{light.toFixed(1)} <span style={{ fontSize: '1rem' }}>lx</span></div>
         <p>Ambient Light Intensity</p>
     </div>
 );
 
 const SoundmeterTool = ({ noise }) => (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
+    <div className="text-center p-20">
         <div style={{ width: '100%', height: '20px', background: 'var(--border)', borderRadius: '10px', overflow: 'hidden', marginBottom: '10px' }}>
             <div style={{ width: `${Math.min(100, noise)}%`, height: '100%', background: 'var(--primary)', transition: 'width 0.1s ease' }} />
         </div>
@@ -269,7 +229,7 @@ const SoundmeterTool = ({ noise }) => (
 );
 
 const MagneticTool = ({ mag }) => (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
+    <div className="text-center p-20">
         <div style={{ fontSize: '1.5rem', color: 'var(--primary)' }}>
             X: {mag.x.toFixed(2)} Y: {mag.y.toFixed(2)} Z: {mag.z.toFixed(2)}
         </div>
@@ -309,10 +269,10 @@ const MetronomeTool = () => {
     }, [isPlaying, bpm]);
 
     return (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
+        <div className="text-center p-20">
             <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '20px' }}>{bpm} BPM</div>
-            <input type="range" min="40" max="240" value={bpm} onChange={(e) => setBpm(e.target.value)} style={{ width: '100%', marginBottom: '20px' }} />
-            <button className="btn-primary" onClick={() => setIsPlaying(!isPlaying)} style={{ width: '100%' }}>{isPlaying ? 'Stop' : 'Start'}</button>
+            <input type="range" min="40" max="240" value={bpm} onChange={(e) => setBpm(e.target.value)} className="w-full mb-20" />
+            <button className="btn-primary w-full" onClick={() => setIsPlaying(!isPlaying)}>{isPlaying ? 'Stop' : 'Start'}</button>
         </div>
     );
 };
@@ -348,18 +308,12 @@ const ReactionTimeTool = () => {
         <div onClick={handleClick} style={{
             height: '250px',
             background: state === 'waiting' ? '#ef4444' : (state === 'click' ? '#10b981' : 'var(--surface)'),
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '12px',
-            cursor: 'pointer',
-            transition: 'background 0.1s'
-        }}>
+        }} className="flex-center p-20 ruler-container">
             {state === 'idle' && <button className="btn-primary" onClick={(e) => { e.stopPropagation(); startTest(); }}>Start Test</button>}
             {state === 'waiting' && <h2 style={{ color: 'white' }}>Wait for Green...</h2>}
             {state === 'click' && <h2 style={{ color: 'white' }}>CLICK NOW!</h2>}
             {state === 'result' && (
-                <div style={{ textAlign: 'center' }}>
+                <div className="text-center">
                     <h2>{time} ms</h2>
                     <button className="pill" onClick={(e) => { e.stopPropagation(); startTest(); }}>Try Again</button>
                 </div>
@@ -407,27 +361,27 @@ const TabataTimerTool = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-            <div style={{ fontSize: '1rem', opacity: 0.6 }}>Cycle {currentCycle}/{cycles}</div>
+        <div className="text-center p-20">
+            <div className="opacity-6">Cycle {currentCycle}/{cycles}</div>
             <div style={{ fontSize: '4rem', fontWeight: 'bold', color: mode === 'Work' ? '#ef4444' : '#10b981' }}>{mode}</div>
             <div style={{ fontSize: '5rem', fontFamily: 'monospace' }}>{timeLeft}s</div>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+            <div className="flex-gap mt-20">
                 <button className="btn-primary" style={{ flex: 1 }} onClick={() => setIsActive(!isActive)}>{isActive ? 'Pause' : 'Start'}</button>
                 <button className="pill" style={{ flex: 1 }} onClick={reset}>Reset</button>
             </div>
             {!isActive && mode === 'Work' && currentCycle === 1 && (
-                <div style={{ marginTop: '20px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '5px' }}>
+                <div className="mt-20" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '5px' }}>
                     <div>
                         <label style={{ fontSize: '0.7rem' }}>Cycles</label>
-                        <input type="number" value={cycles} onChange={e => setCycles(parseInt(e.target.value))} style={{ width: '100%' }} />
+                        <input type="number" value={cycles} onChange={e => setCycles(parseInt(e.target.value))} className="w-full" />
                     </div>
                     <div>
                         <label style={{ fontSize: '0.7rem' }}>Work (s)</label>
-                        <input type="number" value={work} onChange={e => { setWork(parseInt(e.target.value)); setTimeLeft(parseInt(e.target.value)); }} style={{ width: '100%' }} />
+                        <input type="number" value={work} onChange={e => { setWork(parseInt(e.target.value)); setTimeLeft(parseInt(e.target.value)); }} className="w-full" />
                     </div>
                     <div>
                         <label style={{ fontSize: '0.7rem' }}>Rest (s)</label>
-                        <input type="number" value={rest} onChange={e => setRest(parseInt(e.target.value))} style={{ width: '100%' }} />
+                        <input type="number" value={rest} onChange={e => setRest(parseInt(e.target.value))} className="w-full" />
                     </div>
                 </div>
             )}

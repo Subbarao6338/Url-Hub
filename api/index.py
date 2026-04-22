@@ -122,7 +122,8 @@ def init_db():
     cursor.execute("PRAGMA table_info(links)")
     columns = [col[1] for col in cursor.fetchall()]
     if 'created_at' not in columns:
-        cursor.execute("ALTER TABLE links ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+        # SQLite doesn't allow CURRENT_TIMESTAMP as a default for ADD COLUMN in some environments
+        cursor.execute("ALTER TABLE links ADD COLUMN created_at TIMESTAMP DEFAULT 0")
 
     # Deduplicate before adding unique index
     cursor.execute('''
@@ -134,6 +135,9 @@ def init_db():
         )
     ''')
     cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_links_unique ON links(profile_id, title, url)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_links_profile_id ON links(profile_id)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_links_category ON links(category)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_projects_category ON projects(category)')
 
     # Insert default profiles if not exist
     cursor.execute("INSERT OR IGNORE INTO profiles (name, icon) VALUES ('Default', 'home')")
