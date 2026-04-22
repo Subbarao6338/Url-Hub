@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { STRINGS } from '../../strings';
 
 const HardwareTools = ({ onResultChange, toolId }) => {
   const [activeTab, setActiveTab] = useState('flashlight');
@@ -7,6 +8,7 @@ const HardwareTools = ({ onResultChange, toolId }) => {
     if (toolId === 'flashlight') setActiveTab('flashlight');
     else if (toolId === 'magnifier') setActiveTab('magnifier');
     else if (toolId === 'vibrometer') setActiveTab('vibrometer');
+    else if (toolId === 'soundmeter') setActiveTab('soundmeter');
   }, [toolId]);
 
   return (
@@ -31,10 +33,12 @@ const HardwareTools = ({ onResultChange, toolId }) => {
 const FlashlightTool = () => {
   const [isOn, setIsOn] = useState(false);
   const [strobe, setStrobe] = useState(0);
+  const [permissionError, setPermissionError] = useState(null);
   const trackRef = useRef(null);
 
   const toggleFlash = async () => {
     try {
+      setPermissionError(null);
       if (!isOn) {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
         const track = stream.getVideoTracks()[0];
@@ -44,7 +48,7 @@ const FlashlightTool = () => {
           trackRef.current = track;
           setIsOn(true);
         } else {
-          alert("Torch not supported on this device.");
+          setPermissionError("Torch not supported on this device.");
         }
       } else {
         if (trackRef.current) {
@@ -55,7 +59,11 @@ const FlashlightTool = () => {
       }
     } catch (err) {
       console.error(err);
-      alert("Permission denied or camera in use.");
+      if (err.name === 'NotAllowedError') {
+        setPermissionError("Permission denied. We need camera access to use the flashlight.");
+      } else {
+        setPermissionError("Could not access camera/flashlight.");
+      }
     }
   };
 
@@ -74,35 +82,47 @@ const FlashlightTool = () => {
 
   return (
     <div style={{ textAlign: 'center', padding: '20px' }}>
+      {permissionError && (
+        <div className="card" style={{ background: '#FFF1F0', borderColor: '#FFA39E', marginBottom: '1.5rem', padding: '1rem' }}>
+          <p style={{ color: '#CF1322', fontSize: '0.85rem', margin: 0 }}>{permissionError}</p>
+        </div>
+      )}
+
       <div
         onClick={toggleFlash}
         style={{
-          width: '120px',
-          height: '120px',
-          borderRadius: '60px',
+          width: '140px',
+          height: '140px',
+          borderRadius: '50%',
           background: isOn ? 'var(--nature-gold)' : 'var(--nature-mist)',
-          margin: '0 auto 20px',
+          margin: '0 auto 30px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
-          boxShadow: isOn ? '0 0 40px var(--nature-gold)' : 'none',
-          transition: 'all 0.3s ease'
+          boxShadow: isOn ? '0 0 50px rgba(244, 162, 97, 0.4)' : 'none',
+          transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+          border: '6px solid white'
         }}
       >
-        <span className="material-icons" style={{ fontSize: '3rem', color: isOn ? 'white' : 'var(--nature-primary)' }}>
-          {isOn ? 'flashlight_on' : 'flashlight_off'}
+        <span className="material-icons" style={{ fontSize: '3.5rem', color: isOn ? 'white' : 'var(--nature-primary)' }}>
+          {isOn ? 'lightbulb' : 'lightbulb_outline'}
         </span>
       </div>
 
-      <div className="form-group">
-        <label>Strobe Mode (Hz): {strobe}</label>
-        <input type="range" min="0" max="10" value={strobe} onChange={(e) => setStrobe(parseInt(e.target.value))} style={{ width: '100%' }} />
-      </div>
+      <div className="card" style={{ padding: '1.5rem' }}>
+        <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+          <label style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+            <span style={{ fontWeight: '600', fontSize: '0.9rem' }}>Strobe Mode</span>
+            <span style={{ color: 'var(--nature-primary)', fontWeight: 'bold' }}>{strobe} Hz</span>
+          </label>
+          <input type="range" min="0" max="10" value={strobe} onChange={(e) => setStrobe(parseInt(e.target.value))} />
+        </div>
 
-      <div className="pill-group" style={{ justifyContent: 'center', marginTop: '1rem' }}>
-        <button className="pill" onClick={() => { setStrobe(2); if(!isOn) toggleFlash(); }}>S.O.S</button>
-        <button className="pill" onClick={() => { setStrobe(0); }}>Normal</button>
+        <div className="pill-group" style={{ justifyContent: 'center' }}>
+          <button className={`pill ${strobe === 2 ? 'active' : ''}`} onClick={() => { setStrobe(2); if(!isOn) toggleFlash(); }}>S.O.S</button>
+          <button className={`pill ${strobe === 0 ? 'active' : ''}`} onClick={() => { setStrobe(0); }}>Normal</button>
+        </div>
       </div>
     </div>
   );
@@ -112,19 +132,28 @@ const MagnifierTool = () => {
   const videoRef = useRef(null);
   const [zoom, setZoom] = useState(1);
   const [stream, setStream] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const startCam = async () => {
       try {
-        const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', zoom: true } });
+        setError(null);
+        const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
         setStream(s);
         if (videoRef.current) videoRef.current.srcObject = s;
       } catch (err) {
         console.error(err);
+        if (err.name === 'NotAllowedError') {
+          setError("We need camera access to provide the magnifying glass experience 🔍");
+        } else {
+          setError("Unable to start camera.");
+        }
       }
     };
     startCam();
-    return () => stream?.getTracks().forEach(t => t.stop());
+    return () => {
+      if (stream) stream.getTracks().forEach(t => t.stop());
+    };
   }, []);
 
   const handleZoom = (e) => {
@@ -132,16 +161,55 @@ const MagnifierTool = () => {
     setZoom(z);
     const track = stream?.getVideoTracks()[0];
     if (track) {
-      track.applyConstraints({ advanced: [{ zoom: z }] });
+      try {
+        const caps = track.getCapabilities();
+        if (caps.zoom) {
+           track.applyConstraints({ advanced: [{ zoom: z }] });
+        }
+      } catch (err) { console.error("Native zoom not supported"); }
     }
   };
 
+  if (error) {
+    return (
+      <div className="empty-state">
+        <span className="material-icons">no_photography</span>
+        <p>{error}</p>
+        <button className="btn-primary" onClick={() => window.location.reload()}>Try Again</button>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '24px', background: 'black' }}>
-      <video ref={videoRef} autoPlay playsInline style={{ width: '100%', height: '300px', objectFit: 'cover' }} />
-      <div style={{ position: 'absolute', bottom: '20px', left: '20px', right: '20px', background: 'rgba(0,0,0,0.5)', padding: '10px', borderRadius: '12px' }}>
-        <input type="range" min="1" max="5" step="0.1" value={zoom} onChange={handleZoom} style={{ width: '100%' }} />
-        <div style={{ color: 'white', textAlign: 'center', fontSize: '0.8rem', marginTop: '5px' }}>Zoom: {zoom}x</div>
+    <div className="card" style={{ padding: '0', overflow: 'hidden', background: '#000' }}>
+      <div style={{ position: 'relative', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            transform: `scale(${zoom})`,
+            transition: 'transform 0.2s'
+          }}
+        />
+        <div style={{
+          position: 'absolute',
+          inset: '0',
+          border: '20px solid rgba(255,255,255,0.1)',
+          pointerEvents: 'none',
+          boxShadow: 'inset 0 0 100px rgba(0,0,0,0.5)'
+        }} />
+      </div>
+
+      <div style={{ padding: '1.5rem', background: 'var(--nature-bg)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.9rem', fontWeight: '600' }}>Magnification Level</span>
+          <span className="pill active">{zoom}x</span>
+        </div>
+        <input type="range" min="1" max="8" step="0.1" value={zoom} onChange={handleZoom} />
       </div>
     </div>
   );
@@ -150,38 +218,65 @@ const MagnifierTool = () => {
 const VibrometerTool = () => {
   const [history, setHistory] = useState(new Array(30).fill(0));
   const [isActive, setIsActive] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!isActive) return;
+
     const handleMotion = (e) => {
       const total = Math.abs(e.acceleration?.x || 0) + Math.abs(e.acceleration?.y || 0) + Math.abs(e.acceleration?.z || 0);
       setHistory(prev => [...prev, total].slice(-30));
     };
-    window.addEventListener('devicemotion', handleMotion);
+
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission()
+        .then(response => {
+          if (response === 'granted') {
+             window.addEventListener('devicemotion', handleMotion);
+          } else {
+             setError("Permission denied for motion sensors.");
+             setIsActive(false);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          setError("Error requesting motion sensors.");
+          setIsActive(false);
+        });
+    } else {
+      window.addEventListener('devicemotion', handleMotion);
+    }
+
     return () => window.removeEventListener('devicemotion', handleMotion);
   }, [isActive]);
 
-  const testVibration = () => {
-    if (navigator.vibrate) {
-      navigator.vibrate([100, 50, 100]);
-    } else {
-      alert("Vibration not supported.");
-    }
-  };
-
   return (
     <div style={{ textAlign: 'center' }}>
-      <div style={{ height: '100px', display: 'flex', alignItems: 'flex-end', gap: '2px', padding: '10px', background: 'var(--nature-bg)', borderRadius: '12px', border: '1px solid var(--border)', marginBottom: '20px' }}>
-        {history.map((h, i) => (
-          <div key={i} style={{ flex: 1, height: `${Math.min(100, h * 10)}%`, background: 'var(--nature-primary)', borderRadius: '2px' }} />
-        ))}
+      {error && <p style={{ color: '#CF1322', fontSize: '0.8rem', marginBottom: '1rem' }}>{error}</p>}
+
+      <div className="card" style={{ marginBottom: '2rem', padding: '1.5rem' }}>
+        <div style={{ height: '120px', display: 'flex', alignItems: 'flex-end', gap: '3px', padding: '10px', background: 'rgba(45, 106, 79, 0.05)', borderRadius: '16px', border: '1px solid var(--border)' }}>
+          {history.map((h, i) => (
+            <div key={i} style={{
+              flex: 1,
+              height: `${Math.min(100, h * 15)}%`,
+              background: 'var(--nature-primary)',
+              borderRadius: '4px',
+              transition: 'height 0.1s ease'
+            }} />
+          ))}
+        </div>
+        <p style={{ marginTop: '1rem', fontSize: '0.85rem', opacity: 0.6 }}>Earthquake and vibration monitor.</p>
       </div>
-      <button className="btn-primary" onClick={() => setIsActive(!isActive)}>
-        {isActive ? 'Stop Monitoring' : 'Start Monitor'}
-      </button>
-      <button className="pill" onClick={testVibration} style={{ marginLeft: '10px' }}>
-        Test Vibration
-      </button>
+
+      <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+        <button className={isActive ? "pill active" : "btn-primary"} onClick={() => setIsActive(!isActive)}>
+          {isActive ? 'Pause Monitor' : 'Start Monitor'}
+        </button>
+        <button className="pill" onClick={() => { if(navigator.vibrate) navigator.vibrate([50, 50, 50]); }}>
+           <span className="material-icons" style={{ fontSize: '1.1rem' }}>vibration</span> Test Pulse
+        </button>
+      </div>
     </div>
   );
 };
@@ -189,43 +284,53 @@ const VibrometerTool = () => {
 const SoundMeterTool = ({ onResultChange }) => {
   const [dB, setDb] = useState(0);
   const [history, setHistory] = useState(new Array(50).fill(0));
+  const [error, setError] = useState(null);
   const audioCtxRef = useRef(null);
   const streamRef = useRef(null);
 
-  useEffect(() => {
-    const startMeter = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        streamRef.current = stream;
-        const audioCtx = new AudioContext();
-        audioCtxRef.current = audioCtx;
-        const source = audioCtx.createMediaStreamSource(stream);
-        const analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 256;
-        source.connect(analyser);
+  const startMeter = async () => {
+    try {
+      setError(null);
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      const audioCtx = new AudioContext();
+      audioCtxRef.current = audioCtx;
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
 
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
 
-        const update = () => {
-          analyser.getByteFrequencyData(dataArray);
-          let sum = 0;
-          for(let i=0; i<bufferLength; i++) sum += dataArray[i];
-          const average = sum / bufferLength;
-          const dbValue = Math.round(average);
-          setDb(dbValue);
-          setHistory(prev => [...prev, dbValue].slice(-50));
-          requestAnimationFrame(update);
-        };
-        update();
-      } catch (err) {
-        console.error(err);
+      const update = () => {
+        if (!audioCtxRef.current) return;
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for(let i=0; i<bufferLength; i++) sum += dataArray[i];
+        const average = sum / bufferLength;
+        const dbValue = Math.round(average);
+        setDb(dbValue);
+        setHistory(prev => [...prev, dbValue].slice(-50));
+        requestAnimationFrame(update);
+      };
+      update();
+    } catch (err) {
+      console.error(err);
+      if (err.name === 'NotAllowedError') {
+        setError("Microphone access is required to measure sound levels 🌲");
+      } else {
+        setError("Could not access microphone.");
       }
-    };
+    }
+  };
+
+  useEffect(() => {
     startMeter();
     return () => {
       audioCtxRef.current?.close();
-      streamRef.current?.getTracks().forEach(t => t.stop());
+      audioCtxRef.current = null;
+      if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
     };
   }, []);
 
@@ -235,13 +340,42 @@ const SoundMeterTool = ({ onResultChange }) => {
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <div style={{ fontSize: '4rem', fontWeight: 'bold', color: 'var(--nature-primary)' }}>{dB} <span style={{ fontSize: '1rem' }}>dB</span></div>
-      <div style={{ height: '60px', display: 'flex', alignItems: 'center', gap: '1px', marginBottom: '20px' }}>
-        {history.map((h, i) => (
-          <div key={i} style={{ flex: 1, height: `${h}%`, background: h > 70 ? 'var(--nature-gold)' : 'var(--nature-moss)', borderRadius: '1px' }} />
-        ))}
-      </div>
-      <p style={{ opacity: 0.6, fontSize: '0.8rem' }}>Ambient sound level monitoring via microphone.</p>
+      {error ? (
+         <div className="empty-state">
+            <span className="material-icons">mic_off</span>
+            <p>{error}</p>
+            <button className="btn-primary" onClick={startMeter}>Allow Access</button>
+         </div>
+      ) : (
+        <>
+          <div className="card" style={{ padding: '2.5rem 1.5rem', marginBottom: '1.5rem' }}>
+            <div style={{ fontSize: '4.5rem', fontWeight: '800', color: 'var(--nature-primary)', fontFamily: 'Outfit' }}>
+              {dB} <span style={{ fontSize: '1.5rem', opacity: 0.4 }}>dB</span>
+            </div>
+            <div style={{
+              height: '80px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2px',
+              marginTop: '1.5rem',
+              padding: '10px',
+              background: 'var(--nature-bg)',
+              borderRadius: '16px'
+            }}>
+              {history.map((h, i) => (
+                <div key={i} style={{
+                  flex: 1,
+                  height: `${Math.max(5, h)}%`,
+                  background: h > 70 ? 'var(--nature-gold)' : 'var(--nature-moss)',
+                  borderRadius: '10px',
+                  opacity: 0.3 + (h / 100)
+                }} />
+              ))}
+            </div>
+          </div>
+          <p style={{ opacity: 0.6, fontSize: '0.85rem' }}>Listening to the rustle of leaves… Ambient sound level monitor.</p>
+        </>
+      )}
     </div>
   );
 };

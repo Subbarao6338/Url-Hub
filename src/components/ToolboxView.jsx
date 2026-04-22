@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, memo } from 'react';
 import CategoryNav from './CategoryNav';
 import ErrorBoundary from './ErrorBoundary';
+import NatureEmptyState from './NatureEmptyState';
 import DOMPurify from 'dompurify';
 
 const Calculator = React.lazy(() => import('./tools/Calculator'));
@@ -77,14 +78,16 @@ const SystemManagement = React.lazy(() => import('./tools/SystemManagement'));
 const UtilityTools = React.lazy(() => import('./tools/UtilityTools'));
 const PrivacyDashboard = React.lazy(() => import('./tools/PrivacyDashboard'));
 const QrScanner = React.lazy(() => import('./tools/QrScanner'));
+const AmbientLightGraph = React.lazy(() => import('./tools/AmbientLightGraph'));
+const SystemThermal = React.lazy(() => import('./tools/SystemThermal'));
 
 const TOOLS = [
     // Measurements (6 Tools)
     { id: 'ruler', title: 'Ruler', icon: 'straighten', category: 'Measurements', component: Measurements },
     { id: 'level-pendulum', title: 'Level & Pendulum', icon: 'vibration', category: 'Measurements', component: Measurements },
     { id: 'protractor', title: 'Protractor', icon: 'architecture', category: 'Measurements', component: Measurements },
-    { id: 'luxmeter', title: 'Luxmeter', icon: 'light_mode', category: 'Measurements', component: Measurements },
-    { id: 'soundmeter', title: 'Soundmeter', icon: 'volume_up', category: 'Measurements', component: Measurements },
+    { id: 'sunlight-graph', title: 'Sunlight Graph', icon: 'wb_sunny', category: 'Measurements', component: AmbientLightGraph },
+    { id: 'soundmeter', title: 'Soundmeter', icon: 'volume_up', category: 'Measurements', component: HardwareTools },
     { id: 'magnetic-tester', title: 'Magnetic Tester', icon: 'explore', category: 'Measurements', component: Measurements },
 
     // Productivity (3 Tools)
@@ -239,6 +242,7 @@ const TOOLS = [
 
     // System
     { id: 'device-info', title: 'Device Info', icon: 'memory', category: 'System', component: DeviceInfo },
+    { id: 'thermal-health', title: 'Thermal Health', icon: 'thermostat', category: 'System', component: SystemThermal },
     { id: 'android-sensors', title: 'Sensors', icon: 'sensors', category: 'System', component: AndroidSensors },
     { id: 'network-analyzer', title: 'Network Analyzer', icon: 'troubleshoot', category: 'Web Tools', component: NetworkAnalyzer },
     { id: 'connectivity-tools', title: 'Connectivity', icon: 'settings_input_antenna', category: 'Web Tools', component: ConnectivityTools },
@@ -252,6 +256,7 @@ const TOOLS = [
     { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Time', component: TimestampConverter },
     { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Time', component: Stopwatch },
     { id: 'pomodoro-timer', title: 'Pomodoro Timer', icon: 'schedule', category: 'Time', component: PomodoroTimer },
+    { id: 'vibrometer', title: 'Vibrometer', icon: 'vibration', category: 'Time', component: HardwareTools },
     { id: 'metronome', title: 'Metronome', icon: 'timer', category: 'Time', component: Measurements },
     { id: 'reaction-time', title: 'Reaction Time', icon: 'bolt', category: 'Time', component: Measurements },
     { id: 'tabata-timer', title: 'Tabata Timer', icon: 'fitness_center', category: 'Time', component: Measurements },
@@ -449,20 +454,30 @@ const ToolboxView = ({
     }));
   };
 
-  const handleDragStart = (id) => setDraggedToolId(id);
+  const handleDragStart = (id) => {
+    setDraggedToolId(id);
+    if (navigator.vibrate) navigator.vibrate(10);
+  };
+
   const handleDragOver = (e, id) => {
     e.preventDefault();
     if (!draggedToolId || draggedToolId === id) return;
 
-    const newOrder = [...(toolOrder.length > 0 ? toolOrder : TOOLS.map(t => t.id))];
-    const draggedIdx = newOrder.indexOf(draggedToolId);
-    const targetIdx = newOrder.indexOf(id);
+    const currentOrder = toolOrder.length > 0 ? [...toolOrder] : TOOLS.map(t => t.id);
+    const draggedIdx = currentOrder.indexOf(draggedToolId);
+    const targetIdx = currentOrder.indexOf(id);
 
     if (draggedIdx > -1 && targetIdx > -1) {
+      const newOrder = [...currentOrder];
       newOrder.splice(draggedIdx, 1);
       newOrder.splice(targetIdx, 0, draggedToolId);
       if (setToolOrder) setToolOrder(newOrder);
     }
+  };
+
+  const handleDragEnd = () => {
+    setDraggedToolId(null);
+    if (navigator.vibrate) navigator.vibrate([20, 10]);
   };
 
   const handleCopyResult = () => {
@@ -523,11 +538,10 @@ const ToolboxView = ({
               </div>
             }>
               {tool.component ? <tool.component onResultChange={setCurrentResult} toolId={tool.id} /> : (
-                <div className="empty-state">
-                  <span className="material-icons empty-state-illustration">construction</span>
-                  <h3>Under Growth</h3>
-                  <p>This tool is still a seedling. Check back soon!</p>
-                </div>
+                <NatureEmptyState
+                  title="Under Growth"
+                  body="This tool is still a seedling. Check back soon!"
+                />
               )}
             </React.Suspense>
           </ErrorBoundary>
@@ -642,11 +656,7 @@ const ToolboxView = ({
       )}
 
       {filteredTools.length === 0 ? (
-        <div className="empty-state">
-          <span className="material-icons empty-state-illustration">forest</span>
-          <h3>No tools found — just rustling leaves…</h3>
-          <p>Try searching for something else or explore different categories.</p>
-        </div>
+        <NatureEmptyState />
       ) : !groupToolbox ? (
         <div className={`category-grid ${dashboardLayout === 'list' ? 'list-view' : ''}`} style={{padding: '0 10px', gridTemplateColumns: dashboardLayout === 'list' ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))'}}>
            {filteredTools.map((tool, idx) => (
@@ -655,6 +665,7 @@ const ToolboxView = ({
                 tool={tool}
                 idx={idx}
                 isPinned={pinnedTools.includes(tool.id)}
+                isDragged={draggedToolId === tool.id}
                 togglePin={togglePin}
                 handleShare={handleShare}
                 openTool={openTool}
@@ -664,6 +675,7 @@ const ToolboxView = ({
                 size={iconSize}
                 onDragStart={() => handleDragStart(tool.id)}
                 onDragOver={(e) => handleDragOver(e, tool.id)}
+                onDragEnd={handleDragEnd}
               />
             ))}
         </div>
@@ -685,6 +697,7 @@ const ToolboxView = ({
                     tool={tool}
                     idx={idx}
                     isPinned={pinnedTools.includes(tool.id)}
+                    isDragged={draggedToolId === tool.id}
                     togglePin={togglePin}
                     handleShare={handleShare}
                     openTool={openTool}
@@ -694,6 +707,7 @@ const ToolboxView = ({
                     size={iconSize}
                     onDragStart={() => handleDragStart(tool.id)}
                     onDragOver={(e) => handleDragOver(e, tool.id)}
+                    onDragEnd={handleDragEnd}
                 />
               ))}
             </div>
@@ -704,7 +718,7 @@ const ToolboxView = ({
   );
 };
 
-const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, searchQuery, highlightText, layout = 'grid', size = 'medium', onDragStart, onDragOver }) => {
+const ToolCard = memo(({ tool, idx, isPinned, isDragged, togglePin, handleShare, openTool, searchQuery, highlightText, layout = 'grid', size = 'medium', onDragStart, onDragOver, onDragEnd }) => {
   const iconSizeMap = { small: '1.25rem', medium: '1.5rem', large: '2rem' };
   const cardPaddingMap = { small: '12px', medium: '1.5rem', large: '2rem' };
 
@@ -718,7 +732,7 @@ const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, 
   return (
     <div
       id={`card-${tool.id}`}
-      className={`card ${layout}-item`}
+      className={`card ${layout}-item ${isDragged ? 'is-dragging' : ''}`}
       tabIndex="0"
       role="button"
       aria-label={`Open ${tool.title}`}
@@ -726,6 +740,7 @@ const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, 
       draggable="true"
       onDragStart={onDragStart}
       onDragOver={onDragOver}
+      onDragEnd={onDragEnd}
       style={{
         '--delay': idx,
         padding: cardPaddingMap[size],
