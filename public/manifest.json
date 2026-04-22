@@ -1,7 +1,7 @@
 {
   "name": "Nature toolbox",
   "short_name": "Nature toolbox",
-  "description": "A personal dashboard to organize and access your favorite websites.",
+  "description": "A personal dashboard to organize and access your favorite websites, projects, and tools.",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f1f5f9",
@@ -20,6 +20,27 @@
       "description": "View your bookmarks",
       "url": "/?tab=bookmarks",
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Calculator",
+      "short_name": "Calculator",
+      "description": "Open scientific calculator",
+      "url": "/?tab=toolbox&tool=calculator-main",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Notes",
+      "short_name": "Notes",
+      "description": "Open notes",
+      "url": "/?tab=toolbox&tool=notes",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Password Generator",
+      "short_name": "Pass Gen",
+      "description": "Generate secure passwords",
+      "url": "/?tab=toolbox&tool=password-gen",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     }
   ],
   "icons": [
@@ -27,25 +48,43 @@
       "src": "assets/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     },
     {
       "src": "assets/urlhub.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "assets/urlhub.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "assets/urlhub.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "assets/urlhub.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "assets/urlhub.png",
       "sizes": "1024x1024",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }

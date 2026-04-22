@@ -16,7 +16,7 @@ const Generators = ({ onResultChange, toolId }) => {
   return (
     <div className="tool-form">
       {!toolId && (
-        <div className="pill-group" style={{ marginBottom: '20px', overflowX: 'auto', whiteSpace: 'nowrap', display: 'flex', flexWrap: 'nowrap' }}>
+        <div className="pill-group mb-20 scrollable-x">
           <button className={`pill ${activeTab === 'barcode' ? 'active' : ''}`} onClick={() => setActiveTab('barcode')}>Barcode</button>
           <button className={`pill ${activeTab === 'random' ? 'active' : ''}`} onClick={() => setActiveTab('random')}>Random Numbers</button>
           <button className={`pill ${activeTab === 'magic8' ? 'active' : ''}`} onClick={() => setActiveTab('magic8')}>Magic 8-Ball</button>
@@ -64,14 +64,14 @@ const BarcodeTool = ({ onResultChange }) => {
     }, [input, format, onResultChange]);
 
     return (
-        <div style={{ textAlign: 'center' }}>
-            <input value={input} onChange={e => setInput(e.target.value)} placeholder="Text/Number" className="pill" style={{ width: '100%', marginBottom: '10px' }} />
-            <select value={format} onChange={e => setFormat(e.target.value)} className="pill" style={{ width: '100%', marginBottom: '10px' }}>
+        <div className="text-center">
+            <input value={input} onChange={e => setInput(e.target.value)} placeholder="Text/Number" className="pill w-full mb-10" />
+            <select value={format} onChange={e => setFormat(e.target.value)} className="pill w-full mb-10">
                 <option value="CODE128">CODE128</option>
                 <option value="EAN13">EAN13</option>
                 <option value="UPC">UPC</option>
             </select>
-            <div style={{ background: 'white', padding: '20px', borderRadius: '12px' }}>
+            <div className="barcode-canvas-container">
                 <canvas ref={canvasRef}></canvas>
             </div>
         </div>
@@ -93,14 +93,14 @@ const RandomNumbersTool = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center' }}>
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+        <div className="text-center">
+            <div className="flex-gap mb-10">
                 <input type="number" value={min} onChange={e => setMin(e.target.value)} placeholder="Min" className="pill" style={{ flex: 1 }} />
                 <input type="number" value={max} onChange={e => setMax(e.target.value)} placeholder="Max" className="pill" style={{ flex: 1 }} />
             </div>
-            <input type="number" value={count} onChange={e => setCount(e.target.value)} placeholder="Count" className="pill" style={{ width: '100%', marginBottom: '10px' }} />
-            <button className="btn-primary" onClick={generate} style={{ width: '100%' }}>Generate</button>
-            <div style={{ marginTop: '20px', fontSize: '1.5rem', fontWeight: 'bold' }}>{results.join(', ')}</div>
+            <input type="number" value={count} onChange={e => setCount(e.target.value)} placeholder="Count" className="pill w-full mb-10" />
+            <button className="btn-primary w-full" onClick={generate}>Generate</button>
+            <div className="mt-20" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{results.join(', ')}</div>
         </div>
     );
 };
@@ -119,33 +119,11 @@ const Magic8BallTool = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-            <div style={{
-                width: '200px',
-                height: '200px',
-                background: 'black',
-                borderRadius: '50%',
-                margin: '0 auto 20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                position: 'relative',
+        <div className="text-center p-20">
+            <div className={`magic-8-ball ${shaking ? 'shake' : ''}`} style={{
                 animation: shaking ? 'shake 0.5s infinite' : 'none'
             }}>
-                <div style={{
-                    width: '100px',
-                    height: '100px',
-                    background: '#1a1a1a',
-                    borderRadius: '50%',
-                    border: '2px solid #333',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '10px',
-                    fontSize: '0.8rem',
-                    textAlign: 'center'
-                }}>
+                <div className="magic-8-window">
                     {answer}
                 </div>
             </div>

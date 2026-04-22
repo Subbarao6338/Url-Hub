@@ -1,4 +1,4 @@
-const CACHE_NAME = 'url-hub-v9';
+const CACHE_NAME = 'url-hub-v10';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -37,7 +37,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch Event - Stale-While-Revalidate Strategy
+// Fetch Event - Network First for API, Stale-While-Revalidate for Assets
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
@@ -51,7 +51,7 @@ self.addEventListener('fetch', (event) => {
                  url.pathname.endsWith('.ttf');
   const isCachable = (isLocal && !isApi) || isFont;
 
-  // Cache API GET requests - Network First strategy
+  // Network First strategy for API GET requests
   if (isLocal && isApi) {
     event.respondWith(
       fetch(event.request)
@@ -71,45 +71,42 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // For non-cachable origins (mostly external favicons)
-  if (!isCachable) {
-    if (event.request.destination === 'image') {
-      event.respondWith(
-        caches.match(event.request).then((cached) => {
-          return cached || fetch(event.request).then((response) => {
-            if (response.ok) {
-              const copy = response.clone();
-              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+  // Stale-while-revalidate for cachable assets
+  if (isCachable) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) => {
+        const matchOptions = isLocal ? { ignoreSearch: true } : {};
+        return cache.match(event.request, matchOptions).then((cachedResponse) => {
+          const fetchPromise = fetch(event.request).then((networkResponse) => {
+            if (networkResponse.ok) {
+              cache.put(event.request, networkResponse.clone());
             }
-            return response;
-          }).catch(() => caches.match('./assets/favicon.svg'));
-        })
-      );
-    }
+            return networkResponse;
+          }).catch((err) => {
+            if (event.request.destination === 'image') {
+              return cachedResponse || caches.match('./assets/favicon.svg');
+            }
+            return cachedResponse;
+          });
+          return cachedResponse || fetchPromise;
+        });
+      })
+    );
     return;
   }
 
-  // Stale-while-revalidate for cachable assets
-  event.respondWith(
-    caches.open(CACHE_NAME).then((cache) => {
-      // ignoreSearch is useful for local assets that might have cache-buster timestamps
-      const matchOptions = isLocal ? { ignoreSearch: true } : {};
-
-      return cache.match(event.request, matchOptions).then((cachedResponse) => {
-        const fetchPromise = fetch(event.request).then((networkResponse) => {
-          if (networkResponse.ok) {
-            cache.put(event.request, networkResponse.clone());
+  // Fallback for non-cachable images (like external favicons)
+  if (event.request.destination === 'image') {
+    event.respondWith(
+      caches.match(event.request).then((cached) => {
+        return cached || fetch(event.request).then((response) => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
           }
-          return networkResponse;
-        }).catch((err) => {
-          if (event.request.destination === 'image') {
-            return cachedResponse || caches.match('./assets/favicon.svg');
-          }
-          return cachedResponse;
-        });
-
-        return cachedResponse || fetchPromise;
-      });
-    })
-  );
+          return response;
+        }).catch(() => caches.match('./assets/favicon.svg'));
+      })
+    );
+  }
 });

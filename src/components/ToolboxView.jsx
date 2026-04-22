@@ -1,75 +1,79 @@
-import React, { useState, useEffect, useMemo, memo } from 'react';
+import React, { useState, useEffect, useMemo, memo, lazy, Suspense } from 'react';
 import { storage } from '../utils/storage';
 import CategoryNav from './CategoryNav';
 import NatureEmptyState from './NatureEmptyState';
-import Calculator from './tools/Calculator';
-import QrGen from './tools/QrGen';
-import PasswordGenerator from './tools/PasswordGenerator';
-import UnitConverter from './tools/UnitConverter';
-import CurrencyConverter from './tools/CurrencyConverter';
-import Stopwatch from './tools/Stopwatch';
-import Notes from './tools/Notes';
-import Translate from './tools/Translate';
-import MorseCode from './tools/MorseCode';
-import AgeCalculator from './tools/AgeCalculator';
-import BMICalculator from './tools/BMICalculator';
-import ColorPicker from './tools/ColorPicker';
-import TimestampConverter from './tools/TimestampConverter';
-import LoremIpsum from './tools/LoremIpsum';
-import TextUtils from './tools/TextUtils';
-import WordCounter from './tools/WordCounter';
-import WordRankCalculator from './tools/WordRankCalculator';
-import JsonFormatter from './tools/JsonFormatter';
-import CsvJsonConverter from './tools/CsvJsonConverter';
-import ImageOptimizer from './tools/ImageOptimizer';
-import Base64Converter from './tools/Base64Converter';
-import DeviceInfo from './tools/DeviceInfo';
-import AndroidSensors from './tools/AndroidSensors';
-import PomodoroTimer from './tools/PomodoroTimer';
-import MarkdownPreview from './tools/MarkdownPreview';
-import TeluguPanchangam from './tools/TeluguPanchangam';
-import AiSummary from './tools/AiSummary';
-import OmniHub from './tools/OmniHub';
-import NetworkTools from './tools/NetworkTools';
-import Cookies from './tools/Cookies';
-import Inspect from './tools/Inspect';
-import UrlTool from './tools/UrlTool';
-import SecurityInfo from './tools/SecurityInfo';
-import UserScripts from './tools/UserScripts';
-import DiffViewer from './tools/DiffViewer';
-import AnomalyDetection from './tools/AnomalyDetection';
-import HashGenerator from './tools/HashGenerator';
-import GlassGenerator from './tools/GlassGenerator';
-import JsonToCsv from './tools/JsonToCsv';
-import JsonValidator from './tools/JsonValidator';
-import AspectRatioCalc from './tools/AspectRatioCalc';
-import HtmlEntities from './tools/HtmlEntities';
-import CronExpressionDescriptor from './tools/CronExpressionDescriptor';
-import DataQuality from './tools/DataQuality';
-import DataAnonymizer from './tools/DataAnonymizer';
-import Observability from './tools/Observability';
-import DataPortal from './tools/DataPortal';
-import AzureIntegration from './tools/AzureIntegration';
-import SpecializedTools from './tools/SpecializedTools';
-import UuidGenerator from './tools/UuidGenerator';
-import DiceRoller from './tools/DiceRoller';
-import CoinFlipper from './tools/CoinFlipper';
-import Counter from './tools/Counter';
-import MarkdownTable from './tools/MarkdownTable';
-import Measurements from './tools/Measurements';
-import Games from './tools/Games';
-import MathTools from './tools/MathTools';
-import Generators from './tools/Generators';
-import FinanceCalculators from './tools/FinanceCalculators';
-import MiscCalculators from './tools/MiscCalculators';
-import ImageTools from './tools/ImageTools';
-import ColorTools from './tools/ColorTools';
-import OutdoorTools from './tools/OutdoorTools';
-import PdfEdit from './tools/PdfEdit';
-import PdfSecure from './tools/PdfSecure';
-import PdfConvert from './tools/PdfConvert';
-import SocialTools from './tools/SocialTools';
-import WebToMarkdown from './tools/WebToMarkdown';
+
+// Lazy Loaded Tools
+const Calculator = lazy(() => import('./tools/Calculator'));
+const QrGen = lazy(() => import('./tools/QrGen'));
+const PasswordGenerator = lazy(() => import('./tools/PasswordGenerator'));
+const UnitConverter = lazy(() => import('./tools/UnitConverter'));
+const CurrencyConverter = lazy(() => import('./tools/CurrencyConverter'));
+const Stopwatch = lazy(() => import('./tools/Stopwatch'));
+const Notes = lazy(() => import('./tools/Notes'));
+const Translate = lazy(() => import('./tools/Translate'));
+const MorseCode = lazy(() => import('./tools/MorseCode'));
+const AgeCalculator = lazy(() => import('./tools/AgeCalculator'));
+const BMICalculator = lazy(() => import('./tools/BMICalculator'));
+const ColorPicker = lazy(() => import('./tools/ColorPicker'));
+const TimestampConverter = lazy(() => import('./tools/TimestampConverter'));
+const LoremIpsum = lazy(() => import('./tools/LoremIpsum'));
+const TextUtils = lazy(() => import('./tools/TextUtils'));
+const WordCounter = lazy(() => import('./tools/WordCounter'));
+const WordRankCalculator = lazy(() => import('./tools/WordRankCalculator'));
+const JsonFormatter = lazy(() => import('./tools/JsonFormatter'));
+const CsvJsonConverter = lazy(() => import('./tools/CsvJsonConverter'));
+const ImageOptimizer = lazy(() => import('./tools/ImageOptimizer'));
+const Base64Converter = lazy(() => import('./tools/Base64Converter'));
+const DeviceInfo = lazy(() => import('./tools/DeviceInfo'));
+const AndroidSensors = lazy(() => import('./tools/AndroidSensors'));
+const PomodoroTimer = lazy(() => import('./tools/PomodoroTimer'));
+const MarkdownPreview = lazy(() => import('./tools/MarkdownPreview'));
+const TeluguPanchangam = lazy(() => import('./tools/TeluguPanchangam'));
+const AiSummary = lazy(() => import('./tools/AiSummary'));
+const OmniHub = lazy(() => import('./tools/OmniHub'));
+const NetworkTools = lazy(() => import('./tools/NetworkTools'));
+const Cookies = lazy(() => import('./tools/Cookies'));
+const Inspect = lazy(() => import('./tools/Inspect'));
+const UrlTool = lazy(() => import('./tools/UrlTool'));
+const SecurityInfo = lazy(() => import('./tools/SecurityInfo'));
+const UserScripts = lazy(() => import('./tools/UserScripts'));
+const DiffViewer = lazy(() => import('./tools/DiffViewer'));
+const AnomalyDetection = lazy(() => import('./tools/AnomalyDetection'));
+const HashGenerator = lazy(() => import('./tools/HashGenerator'));
+const GlassGenerator = lazy(() => import('./tools/GlassGenerator'));
+const JsonToCsv = lazy(() => import('./tools/JsonToCsv'));
+const JsonValidator = lazy(() => import('./tools/JsonValidator'));
+const AspectRatioCalc = lazy(() => import('./tools/AspectRatioCalc'));
+const HtmlEntities = lazy(() => import('./tools/HtmlEntities'));
+const CronExpressionDescriptor = lazy(() => import('./tools/CronExpressionDescriptor'));
+const DataQuality = lazy(() => import('./tools/DataQuality'));
+const DataAnonymizer = lazy(() => import('./tools/DataAnonymizer'));
+const Observability = lazy(() => import('./tools/Observability'));
+const DataPortal = lazy(() => import('./tools/DataPortal'));
+const AzureIntegration = lazy(() => import('./tools/AzureIntegration'));
+const SpecializedTools = lazy(() => import('./tools/SpecializedTools'));
+const UuidGenerator = lazy(() => import('./tools/UuidGenerator'));
+const DiceRoller = lazy(() => import('./tools/DiceRoller'));
+const CoinFlipper = lazy(() => import('./tools/CoinFlipper'));
+const Counter = lazy(() => import('./tools/Counter'));
+const MarkdownTable = lazy(() => import('./tools/MarkdownTable'));
+const Measurements = lazy(() => import('./tools/Measurements'));
+const Games = lazy(() => import('./tools/Games'));
+const MathTools = lazy(() => import('./tools/MathTools'));
+const Generators = lazy(() => import('./tools/Generators'));
+const FinanceCalculators = lazy(() => import('./tools/FinanceCalculators'));
+const MiscCalculators = lazy(() => import('./tools/MiscCalculators'));
+const ImageTools = lazy(() => import('./tools/ImageTools'));
+const ColorTools = lazy(() => import('./tools/ColorTools'));
+const OutdoorTools = lazy(() => import('./tools/OutdoorTools'));
+const PdfEdit = lazy(() => import('./tools/PdfEdit'));
+const PdfSecure = lazy(() => import('./tools/PdfSecure'));
+const PdfConvert = lazy(() => import('./tools/PdfConvert'));
+const SocialTools = lazy(() => import('./tools/SocialTools'));
+const WebToMarkdown = lazy(() => import('./tools/WebToMarkdown'));
+const NatureSounds = lazy(() => import('./tools/NatureSounds'));
+const WaterReminder = lazy(() => import('./tools/WaterReminder'));
 
 const TOOLS = [
     // Measurements (6 Tools)
@@ -80,10 +84,12 @@ const TOOLS = [
     { id: 'soundmeter', title: 'Soundmeter', icon: 'volume_up', category: 'Measurements', component: Measurements },
     { id: 'magnetic-tester', title: 'Magnetic Tester', icon: 'explore', category: 'Measurements', component: Measurements },
 
-    // Productivity (3 Tools)
+    // Productivity
     { id: 'tally-counter', title: 'Tally Counter', icon: 'add_circle_outline', category: 'Productivity', component: Counter },
     { id: 'notes', title: 'Notes', icon: 'description', category: 'Productivity', component: Notes },
     { id: 'ai-summary', title: 'AI Summary', icon: 'auto_fix_high', category: 'Productivity', component: AiSummary },
+    { id: 'water-reminder', title: 'Water Reminder', icon: 'local_drink', category: 'Productivity', component: WaterReminder },
+    { id: 'nature-sounds', title: 'Nature Sounds', icon: 'filter_drama', category: 'Productivity', component: NatureSounds },
 
     // Games (11 Tools)
     { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Games', component: DiceRoller },
@@ -118,8 +124,7 @@ const TOOLS = [
     { id: 'gcd-lcm', title: 'GCD & LCM', icon: 'format_list_numbered', category: 'Math', component: MathTools },
     { id: 'prime-factors', title: 'Prime Factors', icon: 'grid_3x3', category: 'Math', component: MathTools },
 
-    // Generators (6 Tools)
-    // Generators (4 Tools)
+    // Generators
     { id: 'qr-gen', title: 'QR Code', icon: 'qr_code_2', category: 'Generators', component: QrGen },
     { id: 'barcode-gen', title: 'Barcode Generator', icon: 'barcode_reader', category: 'Generators', component: Generators },
     { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Generators', component: PasswordGenerator },
@@ -432,7 +437,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
             <button className="icon-btn" onClick={() => { setActiveToolId(null); window.history.back(); }} title="Back to Toolbox">
               <span className="material-icons">arrow_back</span>
             </button>
-            <h2 style={{margin: 0}}>Tool Not Found</h2>
+            <h2 className="m-0">Tool Not Found</h2>
           </div>
           <NatureEmptyState
             title="Lost in the woods?"
@@ -445,16 +450,16 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
     return (
       <div className="tool-view">
         <div className="tool-view-header">
-          <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+          <div className="flex-center" style={{ gap: '12px' }}>
             <button className="icon-btn" onClick={() => { setActiveToolId(null); window.history.back(); }} title="Back to Toolbox">
               <span className="material-icons">arrow_back</span>
             </button>
-            <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+            <div className="flex-center" style={{ gap: '12px' }}>
               <span className="material-icons" style={{fontSize: '2rem', color: 'var(--primary)'}}>{tool.icon}</span>
-              <h2 style={{margin: 0, fontSize: '1.75rem'}}>{tool.title}</h2>
+              <h2 className="m-0" style={{ fontSize: '1.75rem' }}>{tool.title}</h2>
             </div>
           </div>
-          <div style={{display: 'flex', gap: '10px'}}>
+          <div className="flex-center" style={{ gap: '10px' }}>
             {currentResult?.text && (
               <button className={`icon-btn ${copySuccess ? 'copy-success' : ''}`} onClick={handleCopyResult} title="Copy Result">
                 <span className="material-icons">{copySuccess ? 'check' : 'content_copy'}</span>
@@ -468,7 +473,9 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
           </div>
         </div>
         <div className="tool-container-inner">
-          {tool.component ? <tool.component onResultChange={setCurrentResult} toolId={tool.id} /> : <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>This tool is under development.</div>}
+          <Suspense fallback={<div className="text-center p-20"><span className="material-icons rotating">refresh</span> Loading tool...</div>}>
+            {tool.component ? <tool.component onResultChange={setCurrentResult} toolId={tool.id} /> : <div className="text-center p-20 opacity-5">This tool is under development.</div>}
+          </Suspense>
         </div>
       </div>
     );

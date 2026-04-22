@@ -2507,3 +2507,234 @@ body.no-hover-effects .pill:hover {
   --radius-lg: 20px;
   --glass-blur: 8px;
 }
+
+/* --- Tool Utility Classes --- */
+.text-center { text-align: center; }
+.m-0 { margin: 0; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-column { display: flex; flex-direction: column; }
+.flex-gap { display: flex; gap: 12px; }
+.flex-wrap { display: flex; flex-wrap: wrap; }
+.scrollable-x { overflow-x: auto; white-space: nowrap; }
+.w-full { width: 100%; }
+.mt-10 { margin-top: 10px; }
+.mt-20 { margin-top: 20px; }
+.mb-10 { margin-bottom: 10px; }
+.mb-20 { margin-bottom: 20px; }
+.p-20 { padding: 20px; }
+.opacity-3 { opacity: 0.3; }
+.opacity-5 { opacity: 0.5; }
+.opacity-6 { opacity: 0.6; }
+.opacity-7 { opacity: 0.7; }
+.font-mono { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+
+/* --- Tool Specific Classes --- */
+
+/* Ruler */
+.ruler-container {
+  position: relative;
+  height: 200px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.ruler-marks {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  border-top: 2px solid var(--primary);
+  display: flex;
+  align-items: flex-start;
+}
+.ruler-mark {
+  position: absolute;
+  width: 1px;
+  background: var(--on-surface);
+}
+.ruler-label {
+  position: absolute;
+  top: 45px;
+  left: -5px;
+  font-size: 10px;
+}
+
+/* Level & Pendulum */
+.sensor-circle {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  position: relative;
+  background: rgba(var(--primary-rgb), 0.05);
+}
+.level-bubble {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: var(--primary);
+  border-radius: 50%;
+  transition: transform 0.1s ease-out;
+}
+.pendulum-string {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  width: 4px;
+  height: 180px;
+  background: var(--on-surface);
+  transform-origin: top center;
+  transition: transform 0.1s ease-out;
+}
+.pendulum-bob {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  background: var(--primary);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+/* Protractor */
+.protractor-semi {
+  width: 300px;
+  height: 150px;
+  border: 2px solid var(--border);
+  border-bottom: none;
+  border-radius: 150px 150px 0 0;
+  margin: 20px auto;
+  position: relative;
+  overflow: hidden;
+  background: rgba(var(--primary-rgb), 0.05);
+}
+.protractor-needle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  height: 140px;
+  background: var(--primary);
+  transform-origin: bottom center;
+  transition: transform 0.1s ease-out;
+}
+
+/* Compass */
+.compass-ring {
+  width: 200px;
+  height: 200px;
+  border: 4px solid var(--primary);
+  border-radius: 50%;
+  margin: 0 auto;
+  position: relative;
+  transition: transform 0.1s ease-out;
+}
+.compass-needle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 80px;
+  background: var(--primary);
+  transform-origin: bottom center;
+  transform: translate(-50%, -100%);
+}
+
+/* Generators */
+.barcode-canvas-container {
+  background: white;
+  padding: 20px;
+  border-radius: var(--radius-md);
+}
+
+/* Magic 8 Ball */
+.magic-8-ball {
+  width: 200px;
+  height: 200px;
+  background: black;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+}
+.magic-8-window {
+  width: 100px;
+  height: 100px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  border: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* Nature Sounds */
+.nature-sounds-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+}
+.sound-card {
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.sound-card.active {
+  border-color: var(--primary);
+  background: rgba(var(--primary-rgb), 0.1);
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.shake {
+  animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* Water Reminder */
+.water-reminder-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.water-progress-container {
+  width: 100%;
+  height: 24px;
+  background: var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+.water-progress-bar {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
