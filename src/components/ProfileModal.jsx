@@ -1,11 +1,12 @@
 import React from 'react';
+import { storage } from '../utils/storage';
 
 const ProfileModal = ({ profiles, currentProfile, onSelect, onCancel }) => {
-  const [startupProfile, setStartupProfile] = React.useState(localStorage.getItem('hub_startup_profile') || 'Default');
+  const [startupProfile, setStartupProfile] = React.useState(storage.get('hub_startup_profile', 'Default'));
 
   const toggleStartup = (e, name) => {
     e.stopPropagation();
-    localStorage.setItem('hub_startup_profile', name);
+    storage.set('hub_startup_profile', name);
     setStartupProfile(name);
   };
 

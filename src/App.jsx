@@ -10,6 +10,7 @@ import SettingsModal from './components/SettingsModal';
 import ProfileModal from './components/ProfileModal';
 import BookmarkModal from './components/BookmarkModal';
 import API_BASE from './api';
+import { storage } from './utils/storage';
 
 const OfflineIndicator = () => {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -36,17 +37,17 @@ const OfflineIndicator = () => {
 };
 
 function App() {
-  const [appName, setAppName] = useState(localStorage.getItem('hub_app_name') || 'Nature toolbox');
-  const [enableProfiles, setEnableProfiles] = useState(localStorage.getItem('hub_enable_profiles') === 'true');
-  const [currentProfileName, setCurrentProfileName] = useState(localStorage.getItem('hub_current_profile') || localStorage.getItem('hub_startup_profile') || 'Default');
+  const [appName, setAppName] = useState(storage.get('hub_app_name', 'Nature toolbox'));
+  const [enableProfiles, setEnableProfiles] = useState(storage.getBoolean('hub_enable_profiles', false));
+  const [currentProfileName, setCurrentProfileName] = useState(storage.get('hub_current_profile') || storage.get('hub_startup_profile', 'Default'));
   const [profiles, setProfiles] = useState([]);
-  const [currentTab, setCurrentTab] = useState(localStorage.getItem('hub_startup_tab') || 'toolbox');
+  const [currentTab, setCurrentTab] = useState(storage.get('hub_startup_tab', 'toolbox'));
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActive, setSearchActive] = useState(false);
-  const [theme, setTheme] = useState(localStorage.getItem('hub_theme') || 'light');
-  const [accentColor, setAccentColor] = useState(localStorage.getItem('hub_accent_color') || 'indigo');
-  const [hideBookmarks, setHideBookmarks] = useState(localStorage.getItem('hub_hide_bookmarks') !== null ? localStorage.getItem('hub_hide_bookmarks') === 'true' : false);
-  const [showProjectsTab, setShowProjectsTab] = useState(localStorage.getItem('hub_show_projects_tab') === 'true');
+  const [theme, setTheme] = useState(storage.get('hub_theme', 'light'));
+  const [accentColor, setAccentColor] = useState(storage.get('hub_accent_color', 'indigo'));
+  const [hideBookmarks, setHideBookmarks] = useState(storage.get('hub_hide_bookmarks') !== null ? storage.getBoolean('hub_hide_bookmarks') : false);
+  const [showProjectsTab, setShowProjectsTab] = useState(storage.getBoolean('hub_show_projects_tab', false));
 
   const setTab = (tab, skipHistory = false) => {
     setCurrentTab(tab);
@@ -108,28 +109,28 @@ function App() {
   };
 
   // Additional Settings
-  const [isCompact, setIsCompact] = useState(localStorage.getItem('hub_compact') === 'true');
-  const [hideUrls, setHideUrls] = useState(localStorage.getItem('hub_hide_urls') === 'true');
-  const [hideIcons, setHideIcons] = useState(localStorage.getItem('hub_hide_icons') === 'true');
-  const [showStats, setShowStats] = useState(localStorage.getItem('hub_show_stats') !== 'false');
-  const [autoFocusSearch, setAutoFocusSearch] = useState(localStorage.getItem('hub_auto_focus_search') === 'true');
-  const [openInNewTab, setOpenInNewTab] = useState(localStorage.getItem('hub_open_newtab') !== 'false');
-  const [startupTab, setStartupTab] = useState(localStorage.getItem('hub_startup_tab') || 'toolbox');
-  const [hideRecentTools, setHideRecentTools] = useState(localStorage.getItem('hub_hide_recent_tools') === 'true');
-  const [recentTools, setRecentTools] = useState(JSON.parse(localStorage.getItem('hub_recent_tools') || '[]'));
+  const [isCompact, setIsCompact] = useState(storage.getBoolean('hub_compact', false));
+  const [hideUrls, setHideUrls] = useState(storage.getBoolean('hub_hide_urls', false));
+  const [hideIcons, setHideIcons] = useState(storage.getBoolean('hub_hide_icons', false));
+  const [showStats, setShowStats] = useState(storage.get('hub_show_stats') !== 'false');
+  const [autoFocusSearch, setAutoFocusSearch] = useState(storage.getBoolean('hub_auto_focus_search', false));
+  const [openInNewTab, setOpenInNewTab] = useState(storage.get('hub_open_newtab') !== 'false');
+  const [startupTab, setStartupTab] = useState(storage.get('hub_startup_tab', 'toolbox'));
+  const [hideRecentTools, setHideRecentTools] = useState(storage.getBoolean('hub_hide_recent_tools', false));
+  const [recentTools, setRecentTools] = useState(storage.getJSON('hub_recent_tools', []));
 
   const clearRecentTools = () => {
     setRecentTools([]);
-    localStorage.removeItem('hub_recent_tools');
+    storage.remove('hub_recent_tools');
   };
 
   // Visual Settings
-  const [disableGlass, setDisableGlass] = useState(localStorage.getItem('hub_disable_glass') === 'true');
-  const [enableAurora, setEnableAurora] = useState(localStorage.getItem('hub_enable_aurora') !== 'false');
-  const [reducedMotion, setReducedMotion] = useState(localStorage.getItem('hub_reduced_motion') === 'true');
-  const [confirmDelete, setConfirmDelete] = useState(localStorage.getItem('hub_confirm_delete') !== 'false');
-  const [groupToolbox, setGroupToolbox] = useState(localStorage.getItem('hub_group_toolbox') !== 'false');
-  const [enableHoverEffects, setEnableHoverEffects] = useState(localStorage.getItem('hub_enable_hover_effects') !== 'false');
+  const [disableGlass, setDisableGlass] = useState(storage.getBoolean('hub_disable_glass', false));
+  const [enableAurora, setEnableAurora] = useState(storage.get('hub_enable_aurora') !== 'false');
+  const [reducedMotion, setReducedMotion] = useState(storage.getBoolean('hub_reduced_motion', false));
+  const [confirmDelete, setConfirmDelete] = useState(storage.get('hub_confirm_delete') !== 'false');
+  const [groupToolbox, setGroupToolbox] = useState(storage.get('hub_group_toolbox') !== 'false');
+  const [enableHoverEffects, setEnableHoverEffects] = useState(storage.get('hub_enable_hover_effects') !== 'false');
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -201,7 +202,7 @@ function App() {
     };
 
     applyTheme(theme);
-    localStorage.setItem('hub_theme', theme);
+    storage.set('hub_theme', theme);
 
     if (theme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -214,46 +215,46 @@ function App() {
   useEffect(() => {
     if (disableGlass) document.body.classList.add('no-glass');
     else document.body.classList.remove('no-glass');
-    localStorage.setItem('hub_disable_glass', disableGlass);
+    storage.set('hub_disable_glass', disableGlass);
   }, [disableGlass]);
 
   useEffect(() => {
     if (enableAurora) document.body.classList.remove('no-aurora');
     else document.body.classList.add('no-aurora');
-    localStorage.setItem('hub_enable_aurora', enableAurora);
+    storage.set('hub_enable_aurora', enableAurora);
   }, [enableAurora]);
 
   useEffect(() => {
     if (reducedMotion) document.body.classList.add('reduced-motion');
     else document.body.classList.remove('reduced-motion');
-    localStorage.setItem('hub_reduced_motion', reducedMotion);
+    storage.set('hub_reduced_motion', reducedMotion);
   }, [reducedMotion]);
 
   useEffect(() => {
     if (enableHoverEffects) document.body.classList.remove('no-hover-effects');
     else document.body.classList.add('no-hover-effects');
-    localStorage.setItem('hub_enable_hover_effects', enableHoverEffects);
+    storage.set('hub_enable_hover_effects', enableHoverEffects);
   }, [enableHoverEffects]);
 
-  useEffect(() => { localStorage.setItem('hub_confirm_delete', confirmDelete); }, [confirmDelete]);
-  useEffect(() => { localStorage.setItem('hub_group_toolbox', groupToolbox); }, [groupToolbox]);
-  useEffect(() => { localStorage.setItem('hub_app_name', appName); }, [appName]);
-  useEffect(() => { localStorage.setItem('hub_startup_tab', startupTab); }, [startupTab]);
-  useEffect(() => { localStorage.setItem('hub_show_projects_tab', showProjectsTab); }, [showProjectsTab]);
-  useEffect(() => { localStorage.setItem('hub_hide_recent_tools', hideRecentTools); }, [hideRecentTools]);
-  useEffect(() => { localStorage.setItem('hub_enable_profiles', enableProfiles); }, [enableProfiles]);
+  useEffect(() => { storage.set('hub_confirm_delete', confirmDelete); }, [confirmDelete]);
+  useEffect(() => { storage.set('hub_group_toolbox', groupToolbox); }, [groupToolbox]);
+  useEffect(() => { storage.set('hub_app_name', appName); }, [appName]);
+  useEffect(() => { storage.set('hub_startup_tab', startupTab); }, [startupTab]);
+  useEffect(() => { storage.set('hub_show_projects_tab', showProjectsTab); }, [showProjectsTab]);
+  useEffect(() => { storage.set('hub_hide_recent_tools', hideRecentTools); }, [hideRecentTools]);
+  useEffect(() => { storage.set('hub_enable_profiles', enableProfiles); }, [enableProfiles]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-color', accentColor);
-    localStorage.setItem('hub_accent_color', accentColor);
+    storage.set('hub_accent_color', accentColor);
   }, [accentColor]);
 
   useEffect(() => {
-    localStorage.setItem('hub_current_profile', currentProfileName);
+    storage.set('hub_current_profile', currentProfileName);
   }, [currentProfileName]);
 
   useEffect(() => {
-    localStorage.setItem('hub_hide_bookmarks', hideBookmarks);
+    storage.set('hub_hide_bookmarks', hideBookmarks);
   }, [hideBookmarks]);
 
   // Tab Validation and Redirection
@@ -305,12 +306,12 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSettingsOpen, isProfileOpen]);
 
-  useEffect(() => { localStorage.setItem('hub_compact', isCompact); }, [isCompact]);
-  useEffect(() => { localStorage.setItem('hub_hide_urls', hideUrls); }, [hideUrls]);
-  useEffect(() => { localStorage.setItem('hub_hide_icons', hideIcons); }, [hideIcons]);
-  useEffect(() => { localStorage.setItem('hub_show_stats', showStats); }, [showStats]);
-  useEffect(() => { localStorage.setItem('hub_auto_focus_search', autoFocusSearch); }, [autoFocusSearch]);
-  useEffect(() => { localStorage.setItem('hub_open_newtab', openInNewTab); }, [openInNewTab]);
+  useEffect(() => { storage.set('hub_compact', isCompact); }, [isCompact]);
+  useEffect(() => { storage.set('hub_hide_urls', hideUrls); }, [hideUrls]);
+  useEffect(() => { storage.set('hub_hide_icons', hideIcons); }, [hideIcons]);
+  useEffect(() => { storage.set('hub_show_stats', showStats); }, [showStats]);
+  useEffect(() => { storage.set('hub_auto_focus_search', autoFocusSearch); }, [autoFocusSearch]);
+  useEffect(() => { storage.set('hub_open_newtab', openInNewTab); }, [openInNewTab]);
 
   const currentProfile = Array.isArray(profiles) && profiles.length > 0
     ? (profiles.find(p => p.name.trim() === (enableProfiles ? (currentProfileName?.trim() || 'Default') : 'Default')) ||

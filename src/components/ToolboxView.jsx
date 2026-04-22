@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, memo } from 'react';
+import { storage } from '../utils/storage';
 import CategoryNav from './CategoryNav';
 import NatureEmptyState from './NatureEmptyState';
 import Calculator from './tools/Calculator';
@@ -269,10 +270,10 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
   const [copySuccess, setCopySuccess] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
   const [collapsedCategories, setCollapsedCategories] = useState({});
-  const [pinnedTools, setPinnedTools] = useState(JSON.parse(localStorage.getItem('hub_pinned_tools') || '[]'));
+  const [pinnedTools, setPinnedTools] = useState(storage.getJSON('hub_pinned_tools', []));
 
   useEffect(() => {
-    localStorage.setItem('hub_pinned_tools', JSON.stringify(pinnedTools));
+    storage.setJSON('hub_pinned_tools', pinnedTools);
   }, [pinnedTools]);
 
   const togglePin = (e, id) => {
@@ -295,7 +296,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
     if (tool) {
       const newRecents = [id, ...recentTools.filter(t => t !== id)].slice(0, 4);
       setRecentTools(newRecents);
-      localStorage.setItem('hub_recent_tools', JSON.stringify(newRecents));
+      storage.setJSON('hub_recent_tools', newRecents);
     }
 
     if (!skipHistory) {

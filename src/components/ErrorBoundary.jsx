@@ -3,31 +3,67 @@ import React from 'react';
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, error: null };
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error("Tool Error:", error, errorInfo);
+    console.error('ErrorBoundary caught an error', error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="empty-state" style={{ border: '1px solid #BA1A1A', background: '#FFF8F7', borderRadius: '32px' }}>
-          <span className="material-icons empty-state-illustration" style={{ color: '#BA1A1A' }}>pest_control</span>
-          <h3>A small bug in the forest...</h3>
-          <p>This tool encountered a problem. Our digital gardeners are informed.</p>
+        <div style={{
+          padding: '2rem',
+          textAlign: 'center',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+          backgroundColor: '#f8f9fa',
+          color: '#212529'
+        }}>
+          <h1 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Something went wrong</h1>
+          <p style={{ marginBottom: '1.5rem', color: '#6c757d' }}>
+            The application encountered an unexpected error.
+          </p>
           <button
-            className="btn-primary"
-            onClick={() => this.setState({ hasError: false })}
-            style={{ marginTop: '1rem', background: '#BA1A1A' }}
+            onClick={() => {
+              localStorage.clear();
+              window.location.reload();
+            }}
+            style={{
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#4f46e5',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              fontWeight: '500'
+            }}
           >
-            Try Again
+            Clear Data & Refresh
           </button>
+          {import.meta.env.DEV && (
+            <pre style={{
+              marginTop: '2rem',
+              textAlign: 'left',
+              backgroundColor: '#e9ecef',
+              padding: '1rem',
+              borderRadius: '0.25rem',
+              maxWidth: '90%',
+              overflow: 'auto',
+              fontSize: '0.875rem'
+            }}>
+              {this.state.error && this.state.error.toString()}
+            </pre>
+          )}
         </div>
       );
     }

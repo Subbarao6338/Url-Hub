@@ -124,7 +124,7 @@ const SettingsModal = ({
     const data = {};
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key.startsWith('hub_')) {
+      if (key && key.startsWith('hub_')) {
         data[key] = localStorage.getItem(key);
       }
     }
