@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { App as CapApp } from '@capacitor/app';
 import { Analytics } from '@vercel/analytics/react';
 import Header from './components/Header';
 import TabBar from './components/TabBar';
@@ -285,28 +284,6 @@ function App() {
     }
   }, [currentTab, autoFocusSearch, isSettingsOpen, isProfileOpen]);
 
-  useEffect(() => {
-    const backButtonListener = CapApp.addListener('backButton', ({ canGoBack }) => {
-      if (isSettingsOpen) {
-        setIsSettingsOpen(false);
-      } else if (isProfileOpen) {
-        setIsProfileOpen(false);
-      } else if (isBookmarkOpen) {
-        setIsBookmarkOpen(false);
-      } else if (searchActive) {
-        setSearchActive(false);
-      } else if (currentTab === 'toolbox') {
-        // If in a tool, history will handle it via popstate,
-        // but we need to ensure we don't exit the app if we are just closing a tool.
-        // Actually, if we use history.back() it might trigger popstate.
-        // If we can't go back in history, we might want to exit or do nothing.
-      }
-    });
-
-    return () => {
-      backButtonListener.then(l => l.remove());
-    };
-  }, [isSettingsOpen, isProfileOpen, isBookmarkOpen, searchActive, currentTab]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
