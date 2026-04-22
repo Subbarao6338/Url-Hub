@@ -94,8 +94,6 @@ const SettingsModal = ({
   theme, setTheme,
   accentColor, setAccentColor,
   isCompact, setIsCompact,
-  dashboardLayout, setDashboardLayout,
-  iconSize, setIconSize,
   hideBookmarks, setHideBookmarks,
   hideUrls, setHideUrls,
   hideIcons, setHideIcons,
@@ -245,11 +243,11 @@ const SettingsModal = ({
             </div>
             <div className="pill-group">
               {[
-                'light', 'dark', 'amoled', 'system', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter',
+                'light', 'dark', 'system', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter',
                 'autumn', 'lavender', 'spring', 'galaxy', 'blackhole', 'midnight', 'aurora', 'blossom', 'canyon', 'glacier'
               ].map(t => {
                 const icons = {
-                  light: 'light_mode', dark: 'dark_mode', amoled: 'bedtime', system: 'settings_brightness', nature: 'eco', forest: 'forest',
+                  light: 'light_mode', dark: 'dark_mode', system: 'settings_brightness', nature: 'eco', forest: 'forest',
                   ocean: 'water', earth: 'landscape', mountain: 'terrain', desert: 'wb_sunny',
                   sunset: 'wb_twilight', winter: 'ac_unit', autumn: 'park', lavender: 'spa',
                   spring: 'local_florist', galaxy: 'auto_awesome', blackhole: 'cyclone',
@@ -306,29 +304,6 @@ const SettingsModal = ({
                 <span className="material-icons">auto_fix_high</span>
                 <span>Hover Effects</span>
               </button>
-            </div>
-          </div>
-          <div className="form-group">
-            <label>Dashboard Layout</label>
-            <div className="pill-group">
-              <button className={`pill ${dashboardLayout === 'grid' ? 'active' : ''}`} onClick={() => setDashboardLayout('grid')}>
-                <span className="material-icons">grid_view</span>
-                <span>Grid</span>
-              </button>
-              <button className={`pill ${dashboardLayout === 'list' ? 'active' : ''}`} onClick={() => setDashboardLayout('list')}>
-                <span className="material-icons">view_list</span>
-                <span>List</span>
-              </button>
-            </div>
-          </div>
-          <div className="form-group">
-            <label>Icon Size</label>
-            <div className="pill-group">
-              {['small', 'medium', 'large'].map(size => (
-                <button key={size} className={`pill ${iconSize === size ? 'active' : ''}`} onClick={() => setIconSize(size)}>
-                  <span>{size.charAt(0).toUpperCase() + size.slice(1)}</span>
-                </button>
-              ))}
             </div>
           </div>
         </CollapsibleSection>

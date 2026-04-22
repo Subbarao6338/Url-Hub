@@ -19,9 +19,6 @@ const Measurements = ({ onResultChange, toolId }) => {
   const [permissionGranted, setPermissionGranted] = useState(false);
 
   const requestPermission = async () => {
-    if (!window.confirm("Measurement tools need access to device sensors (orientation, light, microphone) to function. Proceed?")) {
-      return;
-    }
     if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
       try {
         const response = await DeviceOrientationEvent.requestPermission();

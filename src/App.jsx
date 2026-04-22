@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { App as CapApp } from '@capacitor/app';
 import { Analytics } from '@vercel/analytics/react';
 import Header from './components/Header';
 import TabBar from './components/TabBar';
@@ -28,9 +29,9 @@ const OfflineIndicator = () => {
   if (!isOffline) return null;
 
   return (
-    <div className="offline-indicator" style={{ background: 'var(--nature-moss)', color: 'white', padding: '8px', fontSize: '0.9rem' }}>
-      <span className="material-icons" style={{ fontSize: '1.1rem' }}>forest</span>
-      <span>You're in the wilderness — no signal, but Nature Toolbox works fine 🌿</span>
+    <div className="offline-indicator">
+      <span className="material-icons">cloud_off</span>
+      <span>Offline Mode</span>
     </div>
   );
 };
@@ -69,12 +70,7 @@ function App() {
     if (searchActive) {
       document.body.classList.add('search-active');
       setTimeout(() => {
-        // Try desktop input first
-        let input = document.getElementById('search');
-        // If not desktop or not visible, try mobile input
-        if (!input || window.getComputedStyle(input.parentElement).display === 'none') {
-          input = document.getElementById('search-mobile');
-        }
+        const input = document.getElementById('search');
         if (input) input.focus();
       }, 100);
     } else {
@@ -114,11 +110,6 @@ function App() {
 
   // Additional Settings
   const [isCompact, setIsCompact] = useState(localStorage.getItem('hub_compact') === 'true');
-  const [dashboardLayout, setDashboardLayout] = useState(localStorage.getItem('hub_dashboard_layout') || 'grid'); // 'grid' | 'list'
-  const [iconSize, setIconSize] = useState(localStorage.getItem('hub_icon_size') || 'medium'); // 'small' | 'medium' | 'large'
-  const [hiddenTools, setHiddenTools] = useState(JSON.parse(localStorage.getItem('hub_hidden_tools') || '[]'));
-  const [toolOrder, setToolOrder] = useState(JSON.parse(localStorage.getItem('hub_tool_order') || '[]'));
-
   const [hideUrls, setHideUrls] = useState(localStorage.getItem('hub_hide_urls') === 'true');
   const [hideIcons, setHideIcons] = useState(localStorage.getItem('hub_hide_icons') === 'true');
   const [showStats, setShowStats] = useState(localStorage.getItem('hub_show_stats') !== 'false');
@@ -208,12 +199,6 @@ function App() {
         activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
       document.documentElement.setAttribute('data-theme', activeTheme);
-
-      // Handle Material You dynamic color extraction if supported
-      if (t === 'system' && 'window' in globalThis && 'matchMedia' in window) {
-         // Placeholder for real dynamic color extraction logic
-         // For now, we rely on the defined MD3 CSS variables
-      }
     };
 
     applyTheme(theme);
@@ -284,6 +269,28 @@ function App() {
     }
   }, [currentTab, autoFocusSearch, isSettingsOpen, isProfileOpen]);
 
+  useEffect(() => {
+    const backButtonListener = CapApp.addListener('backButton', ({ canGoBack }) => {
+      if (isSettingsOpen) {
+        setIsSettingsOpen(false);
+      } else if (isProfileOpen) {
+        setIsProfileOpen(false);
+      } else if (isBookmarkOpen) {
+        setIsBookmarkOpen(false);
+      } else if (searchActive) {
+        setSearchActive(false);
+      } else if (currentTab === 'toolbox') {
+        // If in a tool, history will handle it via popstate,
+        // but we need to ensure we don't exit the app if we are just closing a tool.
+        // Actually, if we use history.back() it might trigger popstate.
+        // If we can't go back in history, we might want to exit or do nothing.
+      }
+    });
+
+    return () => {
+      backButtonListener.then(l => l.remove());
+    };
+  }, [isSettingsOpen, isProfileOpen, isBookmarkOpen, searchActive, currentTab]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -315,11 +322,6 @@ function App() {
   }, [isSettingsOpen, isProfileOpen]);
 
   useEffect(() => { localStorage.setItem('hub_compact', isCompact); }, [isCompact]);
-  useEffect(() => { localStorage.setItem('hub_dashboard_layout', dashboardLayout); }, [dashboardLayout]);
-  useEffect(() => { localStorage.setItem('hub_icon_size', iconSize); }, [iconSize]);
-  useEffect(() => { localStorage.setItem('hub_hidden_tools', JSON.stringify(hiddenTools)); }, [hiddenTools]);
-  useEffect(() => { localStorage.setItem('hub_tool_order', JSON.stringify(toolOrder)); }, [toolOrder]);
-
   useEffect(() => { localStorage.setItem('hub_hide_urls', hideUrls); }, [hideUrls]);
   useEffect(() => { localStorage.setItem('hub_hide_icons', hideIcons); }, [hideIcons]);
   useEffect(() => { localStorage.setItem('hub_show_stats', showStats); }, [showStats]);
@@ -465,11 +467,6 @@ function App() {
               recentTools={recentTools}
               setRecentTools={setRecentTools}
               hideRecentTools={hideRecentTools}
-              dashboardLayout={dashboardLayout}
-              iconSize={iconSize}
-              hiddenTools={hiddenTools}
-              toolOrder={toolOrder}
-              setToolOrder={setToolOrder}
             />
           )}
           {currentTab === 'projects' && showProjectsTab && (
@@ -514,10 +511,6 @@ function App() {
           setAccentColor={setAccentColor}
           isCompact={isCompact}
           setIsCompact={setIsCompact}
-          dashboardLayout={dashboardLayout}
-          setDashboardLayout={setDashboardLayout}
-          iconSize={iconSize}
-          setIconSize={setIconSize}
           hideUrls={hideUrls}
           setHideUrls={setHideUrls}
           hideIcons={hideIcons}

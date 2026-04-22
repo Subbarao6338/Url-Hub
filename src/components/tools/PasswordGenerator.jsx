@@ -45,59 +45,51 @@ const PasswordGenerator = ({ onResultChange }) => {
   return (
     <div className="tool-form">
       <div className="form-group">
-        <label className="flex-between">
-          <span>Password Length</span>
-          <span className="badge">{length}</span>
-        </label>
+        <label>Length: <span id="pw-len-val">{length}</span></label>
         <input
           type="range"
           min="8"
           max="64"
           value={length}
           onChange={(e) => setLength(parseInt(e.target.value))}
+          style={{ width: '100%' }}
         />
       </div>
-
-      <div className="checkbox-grid">
-        <label className={`pill ${useUpper ? 'active' : ''}`}>
-          <input type="checkbox" checked={useUpper} onChange={() => setUseUpper(!useUpper)} />
-          <span className="material-icons">{useUpper ? 'check_circle' : 'circle'}</span>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
+        <label className={`pill ${useUpper ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <input type="checkbox" checked={useUpper} onChange={() => setUseUpper(!useUpper)} style={{ display: 'none' }} />
+          <span className="material-icons" style={{ fontSize: '1.2rem' }}>{useUpper ? 'check_box' : 'check_box_outline_blank'}</span>
           ABC
         </label>
-        <label className={`pill ${useNumbers ? 'active' : ''}`}>
-          <input type="checkbox" checked={useNumbers} onChange={() => setUseNumbers(!useNumbers)} />
-          <span className="material-icons">{useNumbers ? 'check_circle' : 'circle'}</span>
+        <label className={`pill ${useNumbers ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <input type="checkbox" checked={useNumbers} onChange={() => setUseNumbers(!useNumbers)} style={{ display: 'none' }} />
+          <span className="material-icons" style={{ fontSize: '1.2rem' }}>{useNumbers ? 'check_box' : 'check_box_outline_blank'}</span>
           123
         </label>
-        <label className={`pill ${useSymbols ? 'active' : ''}`}>
-          <input type="checkbox" checked={useSymbols} onChange={() => setUseSymbols(!useSymbols)} />
-          <span className="material-icons">{useSymbols ? 'check_circle' : 'circle'}</span>
+        <label className={`pill ${useSymbols ? 'active' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <input type="checkbox" checked={useSymbols} onChange={() => setUseSymbols(!useSymbols)} style={{ display: 'none' }} />
+          <span className="material-icons" style={{ fontSize: '1.2rem' }}>{useSymbols ? 'check_box' : 'check_box_outline_blank'}</span>
           !@#
         </label>
       </div>
-
-      <button className="btn-primary full-width" onClick={generatePassword}>
-        Generate Password
+      <button className="btn-primary" style={{ width: '100%' }} onClick={generatePassword}>
+        Generate Secure Password
       </button>
 
       {password && (
-        <div className="result-area">
-          <div className="result-label">YOUR SECURE PASSWORD</div>
-          <div className="result-value mono">
+        <div className="tool-result" style={{ marginTop: '1.5rem', position: 'relative', paddingRight: '50px' }}>
+          <div style={{ wordBreak: 'break-all', fontFamily: 'monospace', fontSize: '1.2rem', letterSpacing: '0.05em' }}>
             {password}
           </div>
           <button
-            className="icon-btn copy-btn"
+            className="icon-btn"
+            style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}
             onClick={copyToClipboard}
           >
             <span className="material-icons">{copied ? 'check' : 'content_copy'}</span>
           </button>
         </div>
       )}
-
-      <div className="tool-footer-note">
-        <p>Randomly generated in your browser for maximum security.</p>
-      </div>
     </div>
   );
 };

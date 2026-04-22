@@ -4,8 +4,7 @@ const CategoryNav = ({ categories, activeCategory, setActiveCategory, showStats,
   return (
     <nav className="main-category-nav">
       <div className={`pill ${activeCategory === 'All' ? 'active' : ''}`} onClick={() => setActiveCategory('All')}>
-        <span className="material-icons">home</span>
-        <span>All</span>
+        <span className="material-icons">home</span> <span>All</span>
         {showStats && totalCount !== undefined && <span className="count">{totalCount}</span>}
       </div>
 

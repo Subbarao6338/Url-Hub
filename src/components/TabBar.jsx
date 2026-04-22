@@ -37,7 +37,7 @@ const TabBar = ({ currentTab, setTab, onAddClick, onBookmarksLongPress, onSettin
           onClick={() => setTab('toolbox')}
           title="Toolbox"
         >
-          <span className="material-icons">park</span>
+          <span className="material-icons">handyman</span>
           <span className="tab-name">Toolbox</span>
         </div>
       </div>

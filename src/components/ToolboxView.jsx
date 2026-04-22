@@ -1,93 +1,79 @@
 import React, { useState, useEffect, useMemo, memo } from 'react';
 import CategoryNav from './CategoryNav';
-import ErrorBoundary from './ErrorBoundary';
-import NatureEmptyState from './NatureEmptyState';
-import DOMPurify from 'dompurify';
-
-const Calculator = React.lazy(() => import('./tools/Calculator'));
-const QrGen = React.lazy(() => import('./tools/QrGen'));
-const PasswordGenerator = React.lazy(() => import('./tools/PasswordGenerator'));
-const UnitConverter = React.lazy(() => import('./tools/UnitConverter'));
-const CurrencyConverter = React.lazy(() => import('./tools/CurrencyConverter'));
-const Stopwatch = React.lazy(() => import('./tools/Stopwatch'));
-const Notes = React.lazy(() => import('./tools/Notes'));
-const Translate = React.lazy(() => import('./tools/Translate'));
-const MorseCode = React.lazy(() => import('./tools/MorseCode'));
-const AgeCalculator = React.lazy(() => import('./tools/AgeCalculator'));
-const BMICalculator = React.lazy(() => import('./tools/BMICalculator'));
-const ColorPicker = React.lazy(() => import('./tools/ColorPicker'));
-const TimestampConverter = React.lazy(() => import('./tools/TimestampConverter'));
-const LoremIpsum = React.lazy(() => import('./tools/LoremIpsum'));
-const TextUtils = React.lazy(() => import('./tools/TextUtils'));
-const WordCounter = React.lazy(() => import('./tools/WordCounter'));
-const WordRankCalculator = React.lazy(() => import('./tools/WordRankCalculator'));
-const JsonFormatter = React.lazy(() => import('./tools/JsonFormatter'));
-const CsvJsonConverter = React.lazy(() => import('./tools/CsvJsonConverter'));
-const ImageOptimizer = React.lazy(() => import('./tools/ImageOptimizer'));
-const Base64Converter = React.lazy(() => import('./tools/Base64Converter'));
-const DeviceInfo = React.lazy(() => import('./tools/DeviceInfo'));
-const AndroidSensors = React.lazy(() => import('./tools/AndroidSensors'));
-const PomodoroTimer = React.lazy(() => import('./tools/PomodoroTimer'));
-const MarkdownPreview = React.lazy(() => import('./tools/MarkdownPreview'));
-const TeluguPanchangam = React.lazy(() => import('./tools/TeluguPanchangam'));
-const AiSummary = React.lazy(() => import('./tools/AiSummary'));
-const OmniHub = React.lazy(() => import('./tools/OmniHub'));
-const NetworkTools = React.lazy(() => import('./tools/NetworkTools'));
-const Cookies = React.lazy(() => import('./tools/Cookies'));
-const Inspect = React.lazy(() => import('./tools/Inspect'));
-const UrlTool = React.lazy(() => import('./tools/UrlTool'));
-const SecurityInfo = React.lazy(() => import('./tools/SecurityInfo'));
-const UserScripts = React.lazy(() => import('./tools/UserScripts'));
-const DiffViewer = React.lazy(() => import('./tools/DiffViewer'));
-const AnomalyDetection = React.lazy(() => import('./tools/AnomalyDetection'));
-const HashGenerator = React.lazy(() => import('./tools/HashGenerator'));
-const GlassGenerator = React.lazy(() => import('./tools/GlassGenerator'));
-const JsonToCsv = React.lazy(() => import('./tools/JsonToCsv'));
-const JsonValidator = React.lazy(() => import('./tools/JsonValidator'));
-const AspectRatioCalc = React.lazy(() => import('./tools/AspectRatioCalc'));
-const HtmlEntities = React.lazy(() => import('./tools/HtmlEntities'));
-const CronExpressionDescriptor = React.lazy(() => import('./tools/CronExpressionDescriptor'));
-const DataQuality = React.lazy(() => import('./tools/DataQuality'));
-const DataAnonymizer = React.lazy(() => import('./tools/DataAnonymizer'));
-const Observability = React.lazy(() => import('./tools/Observability'));
-const DataPortal = React.lazy(() => import('./tools/DataPortal'));
-const AzureIntegration = React.lazy(() => import('./tools/AzureIntegration'));
-const SpecializedTools = React.lazy(() => import('./tools/SpecializedTools'));
-const UuidGenerator = React.lazy(() => import('./tools/UuidGenerator'));
-const DiceRoller = React.lazy(() => import('./tools/DiceRoller'));
-const CoinFlipper = React.lazy(() => import('./tools/CoinFlipper'));
-const Counter = React.lazy(() => import('./tools/Counter'));
-const MarkdownTable = React.lazy(() => import('./tools/MarkdownTable'));
-const Measurements = React.lazy(() => import('./tools/Measurements'));
-const Games = React.lazy(() => import('./tools/Games'));
-const MathTools = React.lazy(() => import('./tools/MathTools'));
-const Generators = React.lazy(() => import('./tools/Generators'));
-const FinanceCalculators = React.lazy(() => import('./tools/FinanceCalculators'));
-const MiscCalculators = React.lazy(() => import('./tools/MiscCalculators'));
-const ImageTools = React.lazy(() => import('./tools/ImageTools'));
-const ColorTools = React.lazy(() => import('./tools/ColorTools'));
-const OutdoorTools = React.lazy(() => import('./tools/OutdoorTools'));
-const PdfEdit = React.lazy(() => import('./tools/PdfEdit'));
-const PdfSecure = React.lazy(() => import('./tools/PdfSecure'));
-const PdfConvert = React.lazy(() => import('./tools/PdfConvert'));
-const NetworkAnalyzer = React.lazy(() => import('./tools/NetworkAnalyzer'));
-const ConnectivityTools = React.lazy(() => import('./tools/ConnectivityTools'));
-const HardwareTools = React.lazy(() => import('./tools/HardwareTools'));
-const DevTools = React.lazy(() => import('./tools/DevTools'));
-const SystemManagement = React.lazy(() => import('./tools/SystemManagement'));
-const UtilityTools = React.lazy(() => import('./tools/UtilityTools'));
-const PrivacyDashboard = React.lazy(() => import('./tools/PrivacyDashboard'));
-const QrScanner = React.lazy(() => import('./tools/QrScanner'));
-const AmbientLightGraph = React.lazy(() => import('./tools/AmbientLightGraph'));
-const SystemThermal = React.lazy(() => import('./tools/SystemThermal'));
+import Calculator from './tools/Calculator';
+import QrGen from './tools/QrGen';
+import PasswordGenerator from './tools/PasswordGenerator';
+import UnitConverter from './tools/UnitConverter';
+import CurrencyConverter from './tools/CurrencyConverter';
+import Stopwatch from './tools/Stopwatch';
+import Notes from './tools/Notes';
+import Translate from './tools/Translate';
+import MorseCode from './tools/MorseCode';
+import AgeCalculator from './tools/AgeCalculator';
+import BMICalculator from './tools/BMICalculator';
+import ColorPicker from './tools/ColorPicker';
+import TimestampConverter from './tools/TimestampConverter';
+import LoremIpsum from './tools/LoremIpsum';
+import TextUtils from './tools/TextUtils';
+import WordCounter from './tools/WordCounter';
+import WordRankCalculator from './tools/WordRankCalculator';
+import JsonFormatter from './tools/JsonFormatter';
+import CsvJsonConverter from './tools/CsvJsonConverter';
+import ImageOptimizer from './tools/ImageOptimizer';
+import Base64Converter from './tools/Base64Converter';
+import DeviceInfo from './tools/DeviceInfo';
+import AndroidSensors from './tools/AndroidSensors';
+import PomodoroTimer from './tools/PomodoroTimer';
+import MarkdownPreview from './tools/MarkdownPreview';
+import TeluguPanchangam from './tools/TeluguPanchangam';
+import AiSummary from './tools/AiSummary';
+import OmniHub from './tools/OmniHub';
+import NetworkTools from './tools/NetworkTools';
+import Cookies from './tools/Cookies';
+import Inspect from './tools/Inspect';
+import UrlTool from './tools/UrlTool';
+import SecurityInfo from './tools/SecurityInfo';
+import UserScripts from './tools/UserScripts';
+import DiffViewer from './tools/DiffViewer';
+import AnomalyDetection from './tools/AnomalyDetection';
+import HashGenerator from './tools/HashGenerator';
+import GlassGenerator from './tools/GlassGenerator';
+import JsonToCsv from './tools/JsonToCsv';
+import JsonValidator from './tools/JsonValidator';
+import AspectRatioCalc from './tools/AspectRatioCalc';
+import HtmlEntities from './tools/HtmlEntities';
+import CronExpressionDescriptor from './tools/CronExpressionDescriptor';
+import DataQuality from './tools/DataQuality';
+import DataAnonymizer from './tools/DataAnonymizer';
+import Observability from './tools/Observability';
+import DataPortal from './tools/DataPortal';
+import AzureIntegration from './tools/AzureIntegration';
+import SpecializedTools from './tools/SpecializedTools';
+import UuidGenerator from './tools/UuidGenerator';
+import DiceRoller from './tools/DiceRoller';
+import CoinFlipper from './tools/CoinFlipper';
+import Counter from './tools/Counter';
+import MarkdownTable from './tools/MarkdownTable';
+import Measurements from './tools/Measurements';
+import Games from './tools/Games';
+import MathTools from './tools/MathTools';
+import Generators from './tools/Generators';
+import FinanceCalculators from './tools/FinanceCalculators';
+import MiscCalculators from './tools/MiscCalculators';
+import ImageTools from './tools/ImageTools';
+import ColorTools from './tools/ColorTools';
+import OutdoorTools from './tools/OutdoorTools';
+import PdfEdit from './tools/PdfEdit';
+import PdfSecure from './tools/PdfSecure';
+import PdfConvert from './tools/PdfConvert';
 
 const TOOLS = [
     // Measurements (6 Tools)
     { id: 'ruler', title: 'Ruler', icon: 'straighten', category: 'Measurements', component: Measurements },
     { id: 'level-pendulum', title: 'Level & Pendulum', icon: 'vibration', category: 'Measurements', component: Measurements },
     { id: 'protractor', title: 'Protractor', icon: 'architecture', category: 'Measurements', component: Measurements },
-    { id: 'sunlight-graph', title: 'Sunlight Graph', icon: 'wb_sunny', category: 'Measurements', component: AmbientLightGraph },
-    { id: 'soundmeter', title: 'Soundmeter', icon: 'volume_up', category: 'Measurements', component: HardwareTools },
+    { id: 'luxmeter', title: 'Luxmeter', icon: 'light_mode', category: 'Measurements', component: Measurements },
+    { id: 'soundmeter', title: 'Soundmeter', icon: 'volume_up', category: 'Measurements', component: Measurements },
     { id: 'magnetic-tester', title: 'Magnetic Tester', icon: 'explore', category: 'Measurements', component: Measurements },
 
     // Productivity (3 Tools)
@@ -131,7 +117,6 @@ const TOOLS = [
     // Generators (6 Tools)
     // Generators (4 Tools)
     { id: 'qr-gen', title: 'QR Code', icon: 'qr_code_2', category: 'Generators', component: QrGen },
-    { id: 'qr-scan', title: 'QR Scanner', icon: 'qr_code_scanner', category: 'Generators', component: QrScanner },
     { id: 'barcode-gen', title: 'Barcode Generator', icon: 'barcode_reader', category: 'Generators', component: Generators },
     { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Generators', component: PasswordGenerator },
     { id: 'random-numbers', title: 'Random Numbers', icon: 'pin', category: 'Generators', component: Generators },
@@ -225,9 +210,6 @@ const TOOLS = [
     { id: 'omni-hub', title: 'Omni Hub', icon: 'public', category: 'Web Tools', component: OmniHub },
 
     // Dev Tools
-    { id: 'http-client', title: 'HTTP Client', icon: 'send', category: 'Dev Tools', component: DevTools },
-    { id: 'regex-tester', title: 'Regex Tester', icon: 'data_object', category: 'Dev Tools', component: DevTools },
-    { id: 'jwt-decoder', title: 'JWT Decoder', icon: 'lock_open', category: 'Dev Tools', component: DevTools },
     { id: 'markdown-preview', title: 'Markdown', icon: 'article', category: 'Dev Tools', component: MarkdownPreview },
     { id: 'markdown-table', title: 'MD Table', icon: 'grid_on', category: 'Dev Tools', component: MarkdownTable },
     { id: 'diff-viewer', title: 'Diff Viewer', icon: 'difference', category: 'Dev Tools', component: DiffViewer },
@@ -242,21 +224,13 @@ const TOOLS = [
 
     // System
     { id: 'device-info', title: 'Device Info', icon: 'memory', category: 'System', component: DeviceInfo },
-    { id: 'thermal-health', title: 'Thermal Health', icon: 'thermostat', category: 'System', component: SystemThermal },
     { id: 'android-sensors', title: 'Sensors', icon: 'sensors', category: 'System', component: AndroidSensors },
-    { id: 'network-analyzer', title: 'Network Analyzer', icon: 'troubleshoot', category: 'Web Tools', component: NetworkAnalyzer },
-    { id: 'connectivity-tools', title: 'Connectivity', icon: 'settings_input_antenna', category: 'Web Tools', component: ConnectivityTools },
-    { id: 'hardware-tools', title: 'Hardware', icon: 'developer_board', category: 'System', component: HardwareTools },
-    { id: 'system-management', title: 'System Manager', icon: 'manage_accounts', category: 'System', component: SystemManagement },
-    { id: 'utility-timer', title: 'Smart Timer', icon: 'timer', category: 'Time', component: UtilityTools },
-    { id: 'privacy-dashboard', title: 'Privacy', icon: 'privacy_tip', category: 'Security', component: PrivacyDashboard },
 
     // Time
     { id: 'age-calculator', title: 'Age Calculator', icon: 'calendar_today', category: 'Time', component: AgeCalculator },
     { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Time', component: TimestampConverter },
     { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Time', component: Stopwatch },
     { id: 'pomodoro-timer', title: 'Pomodoro Timer', icon: 'schedule', category: 'Time', component: PomodoroTimer },
-    { id: 'vibrometer', title: 'Vibrometer', icon: 'vibration', category: 'Time', component: HardwareTools },
     { id: 'metronome', title: 'Metronome', icon: 'timer', category: 'Time', component: Measurements },
     { id: 'reaction-time', title: 'Reaction Time', icon: 'bolt', category: 'Time', component: Measurements },
     { id: 'tabata-timer', title: 'Tabata Timer', icon: 'fitness_center', category: 'Time', component: Measurements },
@@ -277,35 +251,17 @@ const TOOLS = [
     { id: 'calculator-main', title: 'Scientific Calc', icon: 'calculate', category: 'Calculators', component: Calculator },
 ];
 
-const ToolboxView = ({
-  searchQuery,
-  groupToolbox,
-  showStats,
-  recentTools,
-  setRecentTools,
-  hideRecentTools,
-  dashboardLayout,
-  iconSize,
-  hiddenTools = [],
-  toolOrder = [],
-  setToolOrder
-}) => {
+const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRecentTools, hideRecentTools }) => {
   const [activeToolId, setActiveToolId] = useState(null);
   const [currentResult, setCurrentResult] = useState(null);
   const [copySuccess, setCopySuccess] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All');
   const [collapsedCategories, setCollapsedCategories] = useState({});
   const [pinnedTools, setPinnedTools] = useState(JSON.parse(localStorage.getItem('hub_pinned_tools') || '[]'));
-  const [toolCustomizations, setToolCustomizations] = useState(JSON.parse(localStorage.getItem('hub_tool_custom') || '{}'));
-  const [draggedToolId, setDraggedToolId] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('hub_pinned_tools', JSON.stringify(pinnedTools));
   }, [pinnedTools]);
-
-  useEffect(() => {
-    localStorage.setItem('hub_tool_custom', JSON.stringify(toolCustomizations));
-  }, [toolCustomizations]);
 
   const togglePin = (e, id) => {
     e.stopPropagation();
@@ -368,44 +324,28 @@ const ToolboxView = ({
     }
   };
 
-  const filteredTools = useMemo(() => {
-    let base = TOOLS.filter(t => !hiddenTools.includes(t.id));
+  const filteredTools = useMemo(() => TOOLS.filter(t => {
+    let matchesSearch = true;
+    let matchesCat = true;
 
-    // Sort based on toolOrder
-    if (toolOrder.length > 0) {
-      base.sort((a, b) => {
-        const idxA = toolOrder.indexOf(a.id);
-        const idxB = toolOrder.indexOf(b.id);
-        if (idxA === -1 && idxB === -1) return 0;
-        if (idxA === -1) return 1;
-        if (idxB === -1) return -1;
-        return idxA - idxB;
-      });
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      if (query.startsWith('cat:')) {
+        const catQuery = query.replace('cat:', '').trim();
+        matchesCat = t.category.toLowerCase().includes(catQuery);
+        matchesSearch = true;
+      } else {
+        matchesSearch = t.title.toLowerCase().includes(query) ||
+          t.category.toLowerCase().includes(query);
+      }
     }
 
-    return base.filter(t => {
-      let matchesSearch = true;
-      let matchesCat = true;
+    if (!searchQuery || !searchQuery.toLowerCase().startsWith('cat:')) {
+      if (activeCategory !== 'All') matchesCat = t.category === activeCategory;
+    }
 
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        if (query.startsWith('cat:')) {
-          const catQuery = query.replace('cat:', '').trim();
-          matchesCat = t.category.toLowerCase().includes(catQuery);
-          matchesSearch = true;
-        } else {
-          matchesSearch = t.title.toLowerCase().includes(query) ||
-            t.category.toLowerCase().includes(query);
-        }
-      }
-
-      if (!searchQuery || !searchQuery.toLowerCase().startsWith('cat:')) {
-        if (activeCategory !== 'All') matchesCat = t.category === activeCategory;
-      }
-
-      return matchesSearch && matchesCat;
-    });
-  }, [searchQuery, activeCategory, hiddenTools, toolOrder]);
+    return matchesSearch && matchesCat;
+  }), [searchQuery, activeCategory]);
 
   const { grouped, cats } = useMemo(() => {
     const grouped = {};
@@ -433,51 +373,15 @@ const ToolboxView = ({
     setCollapsedCategories({});
   };
 
-  const stats = useMemo(() => {
-    const s = {};
-    TOOLS.forEach(t => {
-      s[t.category] = (s[t.category] || 0) + 1;
-    });
-    return s;
-  }, []);
+  const stats = {};
+  TOOLS.forEach(t => {
+    stats[t.category] = (stats[t.category] || 0) + 1;
+  });
 
   const highlightText = (text, query) => {
     if (!query) return text;
     const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     return text.replace(regex, '<mark>$1</mark>');
-  };
-
-  const updateToolCustomization = (id, data) => {
-    setToolCustomizations(prev => ({
-      ...prev,
-      [id]: { ...(prev[id] || {}), ...data }
-    }));
-  };
-
-  const handleDragStart = (id) => {
-    setDraggedToolId(id);
-    if (navigator.vibrate) navigator.vibrate(10);
-  };
-
-  const handleDragOver = (e, id) => {
-    e.preventDefault();
-    if (!draggedToolId || draggedToolId === id) return;
-
-    const currentOrder = toolOrder.length > 0 ? [...toolOrder] : TOOLS.map(t => t.id);
-    const draggedIdx = currentOrder.indexOf(draggedToolId);
-    const targetIdx = currentOrder.indexOf(id);
-
-    if (draggedIdx > -1 && targetIdx > -1) {
-      const newOrder = [...currentOrder];
-      newOrder.splice(draggedIdx, 1);
-      newOrder.splice(targetIdx, 0, draggedToolId);
-      if (setToolOrder) setToolOrder(newOrder);
-    }
-  };
-
-  const handleDragEnd = () => {
-    setDraggedToolId(null);
-    if (navigator.vibrate) navigator.vibrate([20, 10]);
   };
 
   const handleCopyResult = () => {
@@ -507,46 +411,30 @@ const ToolboxView = ({
     return (
       <div className="tool-view">
         <div className="tool-view-header">
-          <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
-            <button className="icon-btn" onClick={() => { setActiveToolId(null); window.history.back(); }} title="Back to Toolbox" style={{ background: 'var(--nature-mist)', borderRadius: 'var(--pebble-2)' }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+            <button className="icon-btn" onClick={() => { setActiveToolId(null); window.history.back(); }} title="Back to Toolbox">
               <span className="material-icons">arrow_back</span>
             </button>
-            <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
-              <div className="card-icon" style={{ borderRadius: 'var(--pebble-1)' }}>
-                <span className="material-icons" style={{fontSize: '1.75rem'}}>{tool.icon}</span>
-              </div>
-              <h2 style={{margin: 0, fontSize: '2rem', fontWeight: 800}}>{tool.title}</h2>
+            <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+              <span className="material-icons" style={{fontSize: '2rem', color: 'var(--primary)'}}>{tool.icon}</span>
+              <h2 style={{margin: 0, fontSize: '1.75rem'}}>{tool.title}</h2>
             </div>
           </div>
-          <div style={{display: 'flex', gap: '12px'}}>
+          <div style={{display: 'flex', gap: '10px'}}>
             {currentResult?.text && (
-              <button className={`icon-btn ${copySuccess ? 'copy-success' : ''}`} onClick={handleCopyResult} title="Copy Result" style={{ background: 'var(--nature-mist)', borderRadius: 'var(--pebble-3)' }}>
+              <button className={`icon-btn ${copySuccess ? 'copy-success' : ''}`} onClick={handleCopyResult} title="Copy Result">
                 <span className="material-icons">{copySuccess ? 'check' : 'content_copy'}</span>
               </button>
             )}
             {currentResult && (
-              <button className="icon-btn" onClick={handleDownloadResult} title="Download Result" style={{ background: 'var(--nature-mist)', borderRadius: 'var(--pebble-2)' }}>
+              <button className="icon-btn" onClick={handleDownloadResult} title="Download Result">
                 <span className="material-icons">download</span>
               </button>
             )}
           </div>
         </div>
         <div className="tool-container-inner">
-          <ErrorBoundary>
-            <React.Suspense fallback={
-              <div className="loading-seed">
-                <span className="material-icons seed-icon">spa</span>
-                <p>Nurturing tool...</p>
-              </div>
-            }>
-              {tool.component ? <tool.component onResultChange={setCurrentResult} toolId={tool.id} /> : (
-                <NatureEmptyState
-                  title="Under Growth"
-                  body="This tool is still a seedling. Check back soon!"
-                />
-              )}
-            </React.Suspense>
-          </ErrorBoundary>
+          {tool.component ? <tool.component onResultChange={setCurrentResult} toolId={tool.id} /> : <div style={{textAlign:'center', padding:'3rem', opacity:0.5}}>This tool is under development.</div>}
         </div>
       </div>
     );
@@ -585,80 +473,73 @@ const ToolboxView = ({
 
       {activeCategory === 'All' && !searchQuery && (
         <div style={{ padding: '0 10px', marginBottom: '2rem' }}>
-          {pinnedTools.length > 0 && (
-            <div className="favorites-bar" style={{ marginBottom: '2rem' }}>
-               <h3 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', opacity: 0.6, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="material-icons" style={{ fontSize: '1.1rem' }}>star</span> Favorites
-              </h3>
-              <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none' }}>
-                {pinnedTools.map(id => {
-                  const tool = TOOLS.find(t => t.id === id);
-                  if (!tool) return null;
-                  return (
-                    <div key={id} className="fav-item" onClick={() => openTool(tool.id)} style={{
-                      flexShrink: 0,
-                      width: '80px',
-                      textAlign: 'center',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}>
-                      <div className="fav-icon-wrapper">
-                        <span className="material-icons">{tool.icon}</span>
-                      </div>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%' }}>{tool.title}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {recentTools.length > 0 && !hideRecentTools && (
-            <div className="history-section" style={{ marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', opacity: 0.6, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="material-icons" style={{ fontSize: '1.1rem' }}>history</span> History
-              </h3>
-              <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', scrollbarWidth: 'none' }}>
-                {recentTools.filter(id => !pinnedTools.includes(id)).map(id => {
-                  const tool = TOOLS.find(t => t.id === id);
-                  if (!tool) return null;
-                  return (
-                    <div key={id} className="history-item" onClick={() => openTool(tool.id)}>
-                      <span className="material-icons" style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>{tool.icon}</span>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>{tool.title}</span>
-                    </div>
-                  );
-                })}
-              </div>
+          {(pinnedTools.length > 0 || (recentTools.length > 0 && !hideRecentTools)) && (
+            <div className="toolbox-special-sections" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              {pinnedTools.length > 0 && (
+                <div className="special-section">
+                  <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', opacity: 0.6, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span className="material-icons" style={{ fontSize: '1.2rem' }}>push_pin</span> Pinned
+                  </h3>
+                  <div style={{ display: 'grid', gap: '12px' }}>
+                    {pinnedTools.map(id => {
+                      const tool = TOOLS.find(t => t.id === id);
+                      if (!tool) return null;
+                      return (
+                        <div key={id} className="card" style={{ padding: '12px 16px', minHeight: 'unset', animation: 'none' }} onClick={() => openTool(tool.id)}>
+                          <div className="card-header" style={{ marginBottom: 0, gap: '12px' }}>
+                            <span className="material-icons" style={{ color: 'var(--primary)' }}>{tool.icon}</span>
+                            <span style={{ fontWeight: 600 }}>{tool.title}</span>
+                          </div>
+                          <div className="card-actions">
+                            <button className="pin-btn active" onClick={(e) => togglePin(e, tool.id)}><span className="material-icons">push_pin</span></button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {recentTools.length > 0 && !hideRecentTools && (
+                <div className="special-section">
+                  <h3 style={{ fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', opacity: 0.6, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span className="material-icons" style={{ fontSize: '1.2rem' }}>history</span> Recent
+                  </h3>
+                  <div style={{ display: 'grid', gap: '12px' }}>
+                    {recentTools.filter(id => !pinnedTools.includes(id)).map(id => {
+                      const tool = TOOLS.find(t => t.id === id);
+                      if (!tool) return null;
+                      return (
+                        <div key={id} className="card" style={{ padding: '12px 16px', minHeight: 'unset', animation: 'none' }} onClick={() => openTool(tool.id)}>
+                          <div className="card-header" style={{ marginBottom: 0, gap: '12px' }}>
+                            <span className="material-icons" style={{ color: 'var(--text-muted)' }}>{tool.icon}</span>
+                            <span style={{ fontWeight: 600 }}>{tool.title}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
       )}
 
       {filteredTools.length === 0 ? (
-        <NatureEmptyState />
+        <div style={{textAlign:'center', color:'#888', marginTop:'3rem'}}>No tools found</div>
       ) : !groupToolbox ? (
-        <div className={`category-grid ${dashboardLayout === 'list' ? 'list-view' : ''}`} style={{padding: '0 10px', gridTemplateColumns: dashboardLayout === 'list' ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))'}}>
+        <div className="category-grid" style={{padding: '0 10px'}}>
            {filteredTools.map((tool, idx) => (
               <ToolCard
                 key={tool.id}
                 tool={tool}
                 idx={idx}
                 isPinned={pinnedTools.includes(tool.id)}
-                isDragged={draggedToolId === tool.id}
                 togglePin={togglePin}
                 handleShare={handleShare}
                 openTool={openTool}
                 searchQuery={searchQuery}
                 highlightText={highlightText}
-                layout={dashboardLayout}
-                size={iconSize}
-                onDragStart={() => handleDragStart(tool.id)}
-                onDragOver={(e) => handleDragOver(e, tool.id)}
-                onDragEnd={handleDragEnd}
               />
             ))}
         </div>
@@ -673,24 +554,18 @@ const ToolboxView = ({
               </div>
               <span className="material-icons expand-icon">expand_more</span>
             </div>
-            <div className={`category-grid ${dashboardLayout === 'list' ? 'list-view' : ''}`} style={{gridTemplateColumns: dashboardLayout === 'list' ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))'}}>
+            <div className="category-grid">
               {grouped[cat].map((tool, idx) => (
                 <ToolCard
                     key={tool.id}
                     tool={tool}
                     idx={idx}
                     isPinned={pinnedTools.includes(tool.id)}
-                    isDragged={draggedToolId === tool.id}
                     togglePin={togglePin}
                     handleShare={handleShare}
                     openTool={openTool}
                     searchQuery={searchQuery}
                     highlightText={highlightText}
-                    layout={dashboardLayout}
-                    size={iconSize}
-                    onDragStart={() => handleDragStart(tool.id)}
-                    onDragOver={(e) => handleDragOver(e, tool.id)}
-                    onDragEnd={handleDragEnd}
                 />
               ))}
             </div>
@@ -701,82 +576,46 @@ const ToolboxView = ({
   );
 };
 
-const ToolCard = memo(({ tool, idx, isPinned, isDragged, togglePin, handleShare, openTool, searchQuery, highlightText, layout = 'grid', size = 'medium', onDragStart, onDragOver, onDragEnd }) => {
-  const iconSizeMap = { small: '1.25rem', medium: '1.5rem', large: '2rem' };
-  const cardPaddingMap = { small: '12px', medium: '1.5rem', large: '2rem' };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      openTool(tool.id);
-    }
-  };
-
-  return (
-    <div
-      id={`card-${tool.id}`}
-      className={`card ${layout}-item ${isDragged ? 'is-dragging' : ''}`}
-      tabIndex="0"
-      role="button"
-      aria-label={`Open ${tool.title}`}
-      onKeyDown={handleKeyDown}
-      draggable="true"
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDragEnd={onDragEnd}
-      style={{
-        '--delay': idx,
-        padding: cardPaddingMap[size],
-        flexDirection: layout === 'list' ? 'row' : 'column',
-        alignItems: layout === 'list' ? 'center' : 'stretch'
-      }}
-      onClick={() => openTool(tool.id)}
-    >
+const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, searchQuery, highlightText }) => (
+    <div id={`card-${tool.id}`} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
        <div className="card-actions">
             <button className={`pin-btn ${isPinned ? 'active' : ''}`} onClick={(e) => togglePin(e, tool.id)} title="Pin Tool">
-                <span className="material-icons" style={{fontSize: '1.1rem'}}>push_pin</span>
+                <span className="material-icons">push_pin</span>
             </button>
             <button onClick={(e) => handleShare(e, tool)} title="Share Tool">
-                <span className="material-icons" style={{fontSize: '1.1rem'}}>share</span>
+                <span className="material-icons">share</span>
             </button>
        </div>
-       <div className="card-header" style={{ marginBottom: layout === 'list' ? 0 : '1rem', flex: layout === 'list' ? 1 : 'unset' }}>
-            <div className="card-icon">
-                <span className="material-icons" style={{ fontSize: iconSizeMap[size] }}>{tool.icon}</span>
+       <div className="card-header">
+            <div className="card-icon" style={{display:'grid', placeItems:'center', background:'var(--bg)'}}>
+                <span className="material-icons">{tool.icon}</span>
             </div>
-            <div className="card-title">
-              {searchQuery ? (
-                <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(highlightText(tool.title, searchQuery)) }} />
-              ) : (
-                tool.title
-              )}
-            </div>
+            <div className="card-title" dangerouslySetInnerHTML={{ __html: highlightText(tool.title, searchQuery) }} />
         </div>
     </div>
-  );
-});
+));
 
 const getCategoryIcon = (cat) => {
     const icons = {
-        'Measurements': 'architecture',
-        'Games': 'extension',
-        'Text': 'edit_note',
+        'Measurements': 'straighten',
+        'Games': 'casino',
+        'Text': 'title',
         'Math': 'functions',
-        'Generators': 'auto_awesome',
+        'Generators': 'qr_code',
         'Calculators': 'calculate',
-        'Finance': 'savings',
-        'Images': 'filter_hdr',
-        'Outdoor': 'park',
+        'Finance': 'account_balance',
+        'Images': 'image',
+        'Outdoor': 'explore',
         'Colors': 'palette',
-        'PDF Tools': 'description',
-        'PDF Convert': 'swap_calls',
-        'Web Tools': 'water_drop',
+        'PDF Tools': 'picture_as_pdf',
+        'PDF Convert': 'transform',
+        'Web Tools': 'public',
         'Dev Tools': 'terminal',
-        'Misc': 'hive',
-        'Specialized': 'biotech',
+        'Misc': 'auto_fix_high',
+        'Specialized': 'insights',
         'Time': 'schedule',
         'Security': 'security',
-        'Productivity': 'eco',
+        'Productivity': 'assignment',
     };
     return icons[cat] || 'folder';
 };
