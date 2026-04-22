@@ -23,20 +23,19 @@ const QrGen = ({ onResultChange }) => {
   }, [input, onResultChange]);
 
   return (
-    <div className="tool-form">
+    <div className="tool-container-inner">
       <div className="form-group">
-        <label>URL or Text</label>
+        <label>URL or Text to Encode</label>
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="https://google.com"
-          style={{width: '100%'}}
+          placeholder="https://nature-toolbox.hub"
         />
       </div>
       {input && (
-        <div id="qr-result-container" style={{textAlign: 'center', marginTop: '2rem', padding: '20px', background: 'white', borderRadius: '16px', border: '1px solid #eee'}}>
-          <div ref={qrRef} style={{ display: 'inline-block', padding: '10px', background: 'white' }}>
+        <div className="result-area">
+          <div ref={qrRef} style={{ display: 'inline-block', padding: '16px', background: 'white', borderRadius: '12px', boxShadow: 'var(--shadow-sm)' }}>
             <QRCodeCanvas
                 value={input}
                 size={250}
@@ -44,7 +43,9 @@ const QrGen = ({ onResultChange }) => {
                 includeMargin={true}
             />
           </div>
-          <p style={{marginTop: '15px', fontSize: '0.8rem', color: '#888'}}>Scan this code with your camera</p>
+          <p style={{marginTop: '20px', fontSize: '0.9rem', color: 'var(--nature-primary)', fontWeight: '500'}}>
+             Scan with any camera or QR reader
+          </p>
         </div>
       )}
     </div>

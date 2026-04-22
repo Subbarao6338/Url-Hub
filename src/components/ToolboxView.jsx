@@ -507,23 +507,25 @@ const ToolboxView = ({
     return (
       <div className="tool-view">
         <div className="tool-view-header">
-          <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-            <button className="icon-btn" onClick={() => { setActiveToolId(null); window.history.back(); }} title="Back to Toolbox">
+          <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+            <button className="icon-btn" onClick={() => { setActiveToolId(null); window.history.back(); }} title="Back to Toolbox" style={{ background: 'var(--nature-mist)', borderRadius: 'var(--pebble-2)' }}>
               <span className="material-icons">arrow_back</span>
             </button>
-            <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-              <span className="material-icons" style={{fontSize: '2rem', color: 'var(--primary)'}}>{tool.icon}</span>
-              <h2 style={{margin: 0, fontSize: '1.75rem'}}>{tool.title}</h2>
+            <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+              <div className="card-icon" style={{ borderRadius: 'var(--pebble-1)' }}>
+                <span className="material-icons" style={{fontSize: '1.75rem'}}>{tool.icon}</span>
+              </div>
+              <h2 style={{margin: 0, fontSize: '2rem', fontWeight: 800}}>{tool.title}</h2>
             </div>
           </div>
-          <div style={{display: 'flex', gap: '10px'}}>
+          <div style={{display: 'flex', gap: '12px'}}>
             {currentResult?.text && (
-              <button className={`icon-btn ${copySuccess ? 'copy-success' : ''}`} onClick={handleCopyResult} title="Copy Result">
+              <button className={`icon-btn ${copySuccess ? 'copy-success' : ''}`} onClick={handleCopyResult} title="Copy Result" style={{ background: 'var(--nature-mist)', borderRadius: 'var(--pebble-3)' }}>
                 <span className="material-icons">{copySuccess ? 'check' : 'content_copy'}</span>
               </button>
             )}
             {currentResult && (
-              <button className="icon-btn" onClick={handleDownloadResult} title="Download Result">
+              <button className="icon-btn" onClick={handleDownloadResult} title="Download Result" style={{ background: 'var(--nature-mist)', borderRadius: 'var(--pebble-2)' }}>
                 <span className="material-icons">download</span>
               </button>
             )}
@@ -603,16 +605,7 @@ const ToolboxView = ({
                       alignItems: 'center',
                       gap: '8px'
                     }}>
-                      <div style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '16px',
-                        background: 'var(--md-sys-color-primary-container)',
-                        color: 'var(--md-sys-color-on-primary-container)',
-                        display: 'grid',
-                        placeItems: 'center',
-                        boxShadow: 'var(--shadow-sm)'
-                      }}>
+                      <div className="fav-icon-wrapper">
                         <span className="material-icons">{tool.icon}</span>
                       </div>
                       <span style={{ fontSize: '0.75rem', fontWeight: 600, opacity: 0.8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%' }}>{tool.title}</span>
@@ -633,17 +626,7 @@ const ToolboxView = ({
                   const tool = TOOLS.find(t => t.id === id);
                   if (!tool) return null;
                   return (
-                    <div key={id} className="history-item" onClick={() => openTool(tool.id)} style={{
-                      flexShrink: 0,
-                      padding: '8px 16px',
-                      borderRadius: '12px',
-                      background: 'var(--surface)',
-                      border: '1px solid var(--border)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      cursor: 'pointer'
-                    }}>
+                    <div key={id} className="history-item" onClick={() => openTool(tool.id)}>
                       <span className="material-icons" style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>{tool.icon}</span>
                       <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>{tool.title}</span>
                     </div>
@@ -758,13 +741,7 @@ const ToolCard = memo(({ tool, idx, isPinned, isDragged, togglePin, handleShare,
             </button>
        </div>
        <div className="card-header" style={{ marginBottom: layout === 'list' ? 0 : '1rem', flex: layout === 'list' ? 1 : 'unset' }}>
-            <div className="card-icon" style={{
-              display:'grid',
-              placeItems:'center',
-              background:'var(--surface-solid)',
-              width: layout === 'list' ? '40px' : '52px',
-              height: layout === 'list' ? '40px' : '52px'
-            }}>
+            <div className="card-icon">
                 <span className="material-icons" style={{ fontSize: iconSizeMap[size] }}>{tool.icon}</span>
             </div>
             <div className="card-title">

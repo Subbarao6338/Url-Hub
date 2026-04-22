@@ -113,8 +113,8 @@ const UnitConverter = ({ onResultChange }) => {
 
   return (
     <div className="tool-form">
-      <div className="main-category-nav" style={{ padding: '0 0 1.5rem 0' }}>
-        {Object.keys(conversions).map(cat => (
+      <div className="tool-nav scroll-nav">
+        {Object.keys(conversions).map((cat) => (
           <button
             key={cat}
             className={`pill ${category === cat ? 'active' : ''}`}
@@ -126,54 +126,48 @@ const UnitConverter = ({ onResultChange }) => {
       </div>
 
       <div className="form-group">
-        <label>Input Value</label>
+        <label className="label-bold">Input Value</label>
         <input
           type="number"
           value={value}
           onChange={(e) => setValue(parseFloat(e.target.value) || 0)}
-          className="form-control"
-          style={{ fontSize: '1.2rem', fontWeight: 'bold' }}
+          placeholder="Enter value..."
         />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+      <div className="grid-2-col">
         <div className="form-group">
-          <label>From</label>
+          <label className="label-bold">From</label>
           <select
             value={fromUnit}
             onChange={(e) => setFromUnit(e.target.value)}
-            className="form-control"
-            style={{ appearance: 'auto' }}
           >
-            {Object.keys(conversions[category]).map(u => <option key={u} value={u}>{u.replace('_', ' ')}</option>)}
+            {Object.keys(conversions[category]).map(u => <option key={u} value={u}>{u.replace(/_/g, ' ')}</option>)}
           </select>
         </div>
         <div className="form-group">
-          <label>To</label>
+          <label className="label-bold">To</label>
           <select
             value={toUnit}
             onChange={(e) => setToUnit(e.target.value)}
-            className="form-control"
-            style={{ appearance: 'auto' }}
           >
-            {Object.keys(conversions[category]).map(u => <option key={u} value={u}>{u.replace('_', ' ')}</option>)}
+            {Object.keys(conversions[category]).map(u => <option key={u} value={u}>{u.replace(/_/g, ' ')}</option>)}
           </select>
         </div>
       </div>
 
-      <div className="card" style={{ padding: '2.5rem', textAlign: 'center', background: 'var(--nature-mist)', border: 'none' }}>
-        <div style={{ fontSize: '0.8rem', fontWeight: 'bold', opacity: 0.6, letterSpacing: '0.1em', marginBottom: '8px' }}>CONVERTED VALUE</div>
-        <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--nature-primary)', wordBreak: 'break-all' }}>
+      <div className="result-area">
+        <div className="result-label">CONVERTED VALUE</div>
+        <div className="result-value">
           {result.toLocaleString(undefined, { maximumFractionDigits: 6 })}
         </div>
-        <div style={{ fontSize: '1.2rem', color: 'var(--nature-primary)', opacity: 0.8, marginTop: '4px' }}>
-          {toUnit.replace('_', ' ')}
+        <div className="result-subtext">
+          {toUnit.replace(/_/g, ' ')}
         </div>
       </div>
 
-      <div className="empty-state" style={{ padding: '2rem 0', opacity: 0.6 }}>
-        <span className="material-icons" style={{ fontSize: '2rem' }}>eco</span>
-        <p style={{ fontSize: '0.8rem' }}>Precise conversions for all your natural and technical measurements.</p>
+      <div className="tool-footer-note">
+        <p>Precise conversions for all your natural and technical measurements.</p>
       </div>
     </div>
   );
