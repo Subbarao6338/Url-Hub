@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Device } from '@capacitor/device';
-import { Network } from '@capacitor/network';
 import { STRINGS } from '../../strings';
 
 const DeviceInfo = ({ onResultChange }) => {
@@ -12,17 +10,28 @@ const DeviceInfo = ({ onResultChange }) => {
   useEffect(() => {
     const fetchInfo = async () => {
       try {
-        const info = await Device.getInfo();
+        // Fallback to web APIs for Vercel deployment
+        const info = {
+          manufacturer: navigator.vendor || 'Unknown',
+          model: navigator.userAgent.split(' ')[0],
+          osVersion: 'Web',
+          platform: 'web'
+        };
         setDeviceInfo(info);
 
-        const batt = await Device.getBatteryInfo();
-        setBattery({
-          level: Math.round((batt.batteryLevel || 0) * 100),
-          charging: batt.isCharging
-        });
+        if ('getBattery' in navigator) {
+          const batt = await navigator.getBattery();
+          setBattery({
+            level: Math.round(batt.level * 100),
+            charging: batt.charging
+          });
+        }
 
-        const net = await Network.getStatus();
-        setNetwork({ type: net.connectionType, connected: net.connected });
+        const net = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        setNetwork({
+          type: net ? net.effectiveType : 'unknown',
+          connected: navigator.onLine
+        });
 
         // Simulate live metrics for visualization
         setHistory(prev => ({
