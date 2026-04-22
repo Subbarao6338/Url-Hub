@@ -64,7 +64,7 @@ const BookmarkModal = ({ link, profileId, profiles, enableProfiles, onClose, onS
       // Clear Service Worker cache for API requests after mutation
       if ('caches' in window) {
         try {
-          const cache = await caches.open('url-hub-v9');
+          const cache = await caches.open('url-hub-v10');
           const keys = await cache.keys();
           for (const request of keys) {
             if (request.url.includes('/api/')) {
