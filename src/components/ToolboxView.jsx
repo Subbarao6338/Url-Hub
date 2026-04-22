@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, memo } from 'react';
 import CategoryNav from './CategoryNav';
+import NatureEmptyState from './NatureEmptyState';
 import Calculator from './tools/Calculator';
 import QrGen from './tools/QrGen';
 import PasswordGenerator from './tools/PasswordGenerator';
@@ -289,9 +290,13 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
   const openTool = (id, skipHistory = false) => {
     setActiveToolId(id);
     setCurrentResult(null);
-    const newRecents = [id, ...recentTools.filter(t => t !== id)].slice(0, 4);
-    setRecentTools(newRecents);
-    localStorage.setItem('hub_recent_tools', JSON.stringify(newRecents));
+
+    const tool = TOOLS.find(t => t.id === id);
+    if (tool) {
+      const newRecents = [id, ...recentTools.filter(t => t !== id)].slice(0, 4);
+      setRecentTools(newRecents);
+      localStorage.setItem('hub_recent_tools', JSON.stringify(newRecents));
+    }
 
     if (!skipHistory) {
       window.history.pushState({ toolId: id }, '', window.location.pathname + `?tab=toolbox&tool=${id}`);
@@ -312,8 +317,8 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
     // Handle initial tool from URL
     const params = new URLSearchParams(window.location.search);
     const toolId = params.get('tool');
-    if (toolId && TOOLS.find(t => t.id === toolId)) {
-      openTool(toolId, true);
+    if (toolId) {
+      setActiveToolId(toolId);
     }
 
     return () => window.removeEventListener('popstate', handlePopState);
@@ -419,6 +424,23 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
 
   if (activeToolId) {
     const tool = TOOLS.find(t => t.id === activeToolId);
+    if (!tool) {
+      return (
+        <div className="tool-view">
+          <div className="tool-view-header">
+            <button className="icon-btn" onClick={() => { setActiveToolId(null); window.history.back(); }} title="Back to Toolbox">
+              <span className="material-icons">arrow_back</span>
+            </button>
+            <h2 style={{margin: 0}}>Tool Not Found</h2>
+          </div>
+          <NatureEmptyState
+            title="Lost in the woods?"
+            body="The tool you're looking for doesn't seem to exist in our toolbox."
+            action={{ label: "Back to Toolbox", onClick: () => { setActiveToolId(null); window.history.back(); } }}
+          />
+        </div>
+      );
+    }
     return (
       <div className="tool-view">
         <div className="tool-view-header">
@@ -537,7 +559,10 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
       )}
 
       {filteredTools.length === 0 ? (
-        <div style={{textAlign:'center', color:'#888', marginTop:'3rem'}}>No tools found</div>
+        <NatureEmptyState
+          title={searchQuery ? "No matching tools" : "The toolbox is empty"}
+          body={searchQuery ? `No tools match "${searchQuery}". Try a different search.` : "Wait for the seeds to grow or check back later."}
+        />
       ) : !groupToolbox ? (
         <div className="category-grid" style={{padding: '0 10px'}}>
            {filteredTools.map((tool, idx) => (

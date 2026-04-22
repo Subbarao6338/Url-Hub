@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import NatureEmptyState from './NatureEmptyState';
 import API_BASE from '../api';
 
 const HighlightText = ({ text, query }) => {
@@ -86,7 +87,10 @@ const ProjectsView = ({ searchQuery, openInNewTab }) => {
       </div>
 
       {filteredProjects.length === 0 ? (
-        <div style={{textAlign:'center', color:'#888', marginTop:'3rem'}}>No projects found</div>
+        <NatureEmptyState
+          title={searchQuery ? "No matching projects" : "Project garden is quiet"}
+          body={searchQuery ? `No projects match "${searchQuery}".` : "Check back later for new projects and contributions."}
+        />
       ) : (
         <div className="category-grid">
           {filteredProjects.map((project, idx) => (

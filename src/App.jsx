@@ -45,7 +45,7 @@ function App() {
   const [searchActive, setSearchActive] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('hub_theme') || 'light');
   const [accentColor, setAccentColor] = useState(localStorage.getItem('hub_accent_color') || 'indigo');
-  const [hideBookmarks, setHideBookmarks] = useState(localStorage.getItem('hub_hide_bookmarks') !== null ? localStorage.getItem('hub_hide_bookmarks') === 'true' : true);
+  const [hideBookmarks, setHideBookmarks] = useState(localStorage.getItem('hub_hide_bookmarks') !== null ? localStorage.getItem('hub_hide_bookmarks') === 'true' : false);
   const [showProjectsTab, setShowProjectsTab] = useState(localStorage.getItem('hub_show_projects_tab') === 'true');
 
   const setTab = (tab, skipHistory = false) => {
@@ -254,10 +254,18 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem('hub_hide_bookmarks', hideBookmarks);
+  }, [hideBookmarks]);
+
+  // Tab Validation and Redirection
+  useEffect(() => {
     if (hideBookmarks && currentTab === 'bookmarks') {
       setTab('toolbox');
+    } else if (!showProjectsTab && currentTab === 'projects') {
+      setTab('toolbox');
+    } else if (!['toolbox', 'bookmarks', 'projects'].includes(currentTab)) {
+      setTab('toolbox');
     }
-  }, [hideBookmarks]);
+  }, [currentTab, hideBookmarks, showProjectsTab]);
 
   useEffect(() => {
     if (autoFocusSearch && !isSettingsOpen && !isProfileOpen) {
@@ -384,6 +392,7 @@ function App() {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           onSearchClear={handleSearchClear}
+          hideBookmarks={hideBookmarks}
         >
           <SearchOverlay
             active={searchActive}

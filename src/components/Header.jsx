@@ -1,13 +1,13 @@
 import React from 'react';
 
-const Header = ({ appName, currentProfile, profiles, currentTab, setView, onSettingsClick, onSearchToggle, searchActive, searchQuery, onSearchChange, onSearchClear, children }) => {
+const Header = ({ appName, currentProfile, profiles, currentTab, setView, onSettingsClick, onSearchToggle, searchActive, searchQuery, onSearchChange, onSearchClear, hideBookmarks, children }) => {
   const profile = profiles.find(p => p.name === currentProfile) || { icon: 'inbox' };
 
   return (
     <header className="top-bar">
       <div
         className="logo-container"
-        onClick={() => setView('bookmarks')}
+        onClick={() => setView(hideBookmarks ? 'toolbox' : 'bookmarks')}
       >
         <span className="material-icons app-logo">
           {currentProfile === 'Default' ? 'inbox' : (profile.icon || 'person')}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CategoryNav from './CategoryNav';
+import NatureEmptyState from './NatureEmptyState';
 import API_BASE from '../api';
 
 const highlightText = (text, query) => {
@@ -223,7 +224,10 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
       </div>
 
       {cats.length === 0 ? (
-        <div style={{textAlign:'center', color:'#888', marginTop:'3rem'}}>No bookmarks found</div>
+    <NatureEmptyState
+      title={searchQuery ? "No matching bookmarks" : "No bookmarks here yet"}
+      body={searchQuery ? `We couldn't find any bookmarks matching "${searchQuery}".` : "Start by adding some of your favorite links!"}
+    />
       ) : (
         cats.map(cat => (
           <div key={cat} className={`category-section ${collapsedCategories[cat] ? 'collapsed' : ''}`}>
