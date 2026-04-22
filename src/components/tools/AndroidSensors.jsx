@@ -1,192 +1,205 @@
 import React, { useState, useEffect } from 'react';
-import { STRINGS } from '../../strings';
-import { NATURE_THEME } from '../../constants';
 
 const AndroidSensors = ({ onResultChange }) => {
-  const [sensors, setSensors] = useState({
-    accelerometer: { x: 0, y: 0, z: 0 },
-    orientation: { alpha: 0, beta: 0, gamma: 0 },
-    light: 0
-  });
+  const [motion, setMotion] = useState({ acc: { x: 0, y: 0, z: 0 }, gyro: { alpha: 0, beta: 0, gamma: 0 } });
+  const [orientation, setOrientation] = useState({ alpha: 0, beta: 0, gamma: 0 });
+  const [ambient, setAmbient] = useState({ light: 'N/A', proximity: 'N/A' });
+  const [error, setError] = useState(null);
+  const [permissionGranted, setPermissionGranted] = useState(false);
+
+  const requestPermission = async () => {
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+      try {
+        const response = await DeviceMotionEvent.requestPermission();
+        if (response === 'granted') {
+          setPermissionGranted(true);
+        } else {
+          setError('Permission denied');
+        }
+      } catch (err) {
+        setError('Error requesting permission: ' + err.message);
+      }
+    } else {
+      // For browsers that don't need explicit permission request or don't support it
+      setPermissionGranted(true);
+    }
+  };
 
   useEffect(() => {
-    const handleMotion = (e) => {
-      const acc = e.accelerationIncludingGravity || { x: 0, y: 0, z: 0 };
-      setSensors(prev => ({ ...prev, accelerometer: acc }));
+    if (!permissionGranted) return;
+
+    const handleMotion = (event) => {
+      setMotion({
+        acc: {
+          x: event.accelerationIncludingGravity?.x?.toFixed(2) || 0,
+          y: event.accelerationIncludingGravity?.y?.toFixed(2) || 0,
+          z: event.accelerationIncludingGravity?.z?.toFixed(2) || 0,
+        },
+        gyro: {
+          alpha: event.rotationRate?.alpha?.toFixed(2) || 0,
+          beta: event.rotationRate?.beta?.toFixed(2) || 0,
+          gamma: event.rotationRate?.gamma?.toFixed(2) || 0,
+        }
+      });
     };
 
-    const handleOrientation = (e) => {
-      setSensors(prev => ({
-        ...prev,
-        orientation: { alpha: e.alpha || 0, beta: e.beta || 0, gamma: e.gamma || 0 }
-      }));
+    const handleOrientation = (event) => {
+      setOrientation({
+        alpha: event.alpha?.toFixed(2) || 0,
+        beta: event.beta?.toFixed(2) || 0,
+        gamma: event.gamma?.toFixed(2) || 0,
+      });
     };
 
     window.addEventListener('devicemotion', handleMotion);
     window.addEventListener('deviceorientation', handleOrientation);
 
+    // Generic Sensor API (Chrome/Android)
+    let lightSensor, proximitySensor;
+
+    const startSensors = async () => {
+        try {
+            if ('AmbientLightSensor' in window) {
+                // Check for permission first if possible
+                if (navigator.permissions && navigator.permissions.query) {
+                    const result = await navigator.permissions.query({ name: 'ambient-light-sensor' });
+                    if (result.state === 'denied') {
+                        setAmbient(prev => ({ ...prev, light: 'Permission Denied' }));
+                    } else {
+                        lightSensor = new window.AmbientLightSensor();
+                        lightSensor.onreading = () => setAmbient(prev => ({ ...prev, light: lightSensor.illuminance.toFixed(1) + ' lx' }));
+                        lightSensor.onerror = (event) => {
+                            console.error('Light Sensor Error:', event.error);
+                            setAmbient(prev => ({ ...prev, light: 'Error: ' + event.error.name }));
+                        };
+                        lightSensor.start();
+                    }
+                } else {
+                    lightSensor = new window.AmbientLightSensor();
+                    lightSensor.onreading = () => setAmbient(prev => ({ ...prev, light: lightSensor.illuminance.toFixed(1) + ' lx' }));
+                    lightSensor.start();
+                }
+            } else {
+                setAmbient(prev => ({ ...prev, light: 'Not Supported' }));
+            }
+
+            if ('ProximitySensor' in window) {
+                // Proximity sensor often requires a flag or specific environment
+                proximitySensor = new window.ProximitySensor();
+                proximitySensor.onreading = () => setAmbient(prev => ({ ...prev, proximity: (proximitySensor.distance || 'Near') + ' cm' }));
+                proximitySensor.onerror = (event) => {
+                    console.error('Proximity Sensor Error:', event.error);
+                    setAmbient(prev => ({ ...prev, proximity: 'Error: ' + event.error.name }));
+                };
+                proximitySensor.start();
+            } else {
+                setAmbient(prev => ({ ...prev, proximity: 'Not Supported' }));
+            }
+        } catch (e) {
+            console.warn('Generic Sensor API error:', e);
+        }
+    };
+
+    startSensors();
+
     return () => {
       window.removeEventListener('devicemotion', handleMotion);
       window.removeEventListener('deviceorientation', handleOrientation);
+      lightSensor?.stop();
+      proximitySensor?.stop();
     };
-  }, []);
+  }, [permissionGranted]);
 
   useEffect(() => {
     onResultChange({
-      text: JSON.stringify(sensors, null, 2),
-      filename: 'sensor_data.json'
+      text: `Sensor Data:\n` +
+            `Accelerometer: X:${motion.acc.x} Y:${motion.acc.y} Z:${motion.acc.z}\n` +
+            `Gyroscope: A:${motion.gyro.alpha} B:${motion.gyro.beta} G:${motion.gyro.gamma}\n` +
+            `Orientation: A:${orientation.alpha} B:${orientation.beta} G:${orientation.gamma}\n` +
+            `Light: ${ambient.light}, Proximity: ${ambient.proximity}`,
+      filename: 'sensor_data.txt'
     });
-  }, [sensors, onResultChange]);
+  }, [motion, orientation, ambient, onResultChange]);
 
-  const s = STRINGS.tools.sensors;
-
-  const renderCompass = () => {
-    const angle = sensors.orientation.alpha;
-    return (
-      <div style={{
-        position: 'relative',
-        width: '180px',
-        height: '180px',
-        margin: '0 auto',
-        border: `8px solid var(--nature-mist)`,
-        borderRadius: '50%',
-        background: 'var(--nature-bg)',
-        boxShadow: 'inset 0 4px 12px rgba(0,0,0,0.05)'
-      }}>
-        {/* Needle */}
-        <div style={{
-          position: 'absolute', top: '50%', left: '50%', width: '6px', height: '140px',
-          background: `linear-gradient(to bottom, ${NATURE_THEME.palette.sunlight} 50%, ${NATURE_THEME.palette.earth} 50%)`,
-          transform: `translate(-50%, -50%) rotate(${angle}deg)`,
-          transition: 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
-          borderRadius: '3px',
-          zIndex: 2
-        }} />
-        {/* Center pin */}
-        <div style={{
-          position: 'absolute', top: '50%', left: '50%', width: '12px', height: '12px',
-          background: 'var(--nature-mist)', border: '2px solid white',
-          borderRadius: '50%', transform: 'translate(-50%, -50%)', zIndex: 3
-        }} />
-
-        {['N', 'E', 'S', 'W'].map((d, i) => (
-          <div key={d} style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: `translate(-50%, -50%) rotate(${i * 90}deg) translateY(-65px)`,
-            fontWeight: '800',
-            fontSize: '0.9rem',
-            fontFamily: 'Outfit',
-            color: i === 0 ? NATURE_THEME.palette.sunlight : 'var(--nature-primary)'
-          }}>
-            {d}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  const renderSpiritLevel = () => {
-    const { beta, gamma } = sensors.orientation;
-    const x = Math.min(60, Math.max(-60, gamma)) * 1.2;
-    const y = Math.min(60, Math.max(-60, beta)) * 1.2;
-    return (
-        <div style={{
-          width: '180px',
-          height: '180px',
-          margin: '0 auto',
-          borderRadius: '50%',
-          border: '4px solid var(--nature-mist)',
-          position: 'relative',
-          background: 'rgba(82, 183, 136, 0.05)',
-          overflow: 'hidden'
-        }}>
-          {/* Grid lines */}
-          <div style={{ position: 'absolute', top: '50%', left: '0', right: '0', height: '1px', background: 'var(--border)' }} />
-          <div style={{ position: 'absolute', left: '50%', top: '0', bottom: '0', width: '1px', background: 'var(--border)' }} />
-
-          {/* The Bubble */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            width: '32px',
-            height: '32px',
-            background: 'var(--nature-moss)',
-            borderRadius: '50%',
-            transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-            boxShadow: 'inset -4px -4px 12px rgba(0,0,0,0.2), 0 4px 8px rgba(82, 183, 136, 0.3)',
-            transition: 'transform 0.1s ease-out',
-            display: 'grid',
-            placeItems: 'center'
-          }}>
-             <div style={{ width: '8px', height: '8px', background: 'rgba(255,255,255,0.4)', borderRadius: '50%' }} />
-          </div>
-
-          {/* Center ring */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            width: '40px',
-            height: '40px',
-            border: '2px solid var(--nature-primary)',
-            borderRadius: '50%',
-            transform: 'translate(-50%, -50%)',
-            opacity: 0.2
-          }} />
-        </div>
-    );
-  };
+  const SensorValue = ({ label, value, unit = '', color = 'var(--primary)' }) => (
+    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+      <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>{label}</span>
+      <b style={{ fontSize: '0.9rem', color: color }}>{value}{unit}</b>
+    </div>
+  );
 
   return (
     <div className="tool-form">
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-          <h4 style={{ fontSize: '0.75rem', marginBottom: '1.5rem', opacity: 0.6, letterSpacing: '0.1em' }}>{s.compass}</h4>
-          {renderCompass()}
-          <div style={{ marginTop: '1.5rem', fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--nature-primary)' }}>
-            {Math.round(sensors.orientation.alpha)}°
+      {!permissionGranted ? (
+        <div style={{ textAlign: 'center', padding: '40px 20px', background: 'var(--surface)', borderRadius: '24px', border: '1px solid var(--border)' }}>
+          <div style={{ width: '80px', height: '80px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+            <span className="material-icons" style={{ fontSize: '2.5rem', color: 'var(--primary)' }}>sensors</span>
           </div>
+          <h3 style={{ marginBottom: '10px' }}>Sensor Access</h3>
+          <p style={{ opacity: 0.7, marginBottom: '25px', maxWidth: '300px', margin: '0 auto 25px' }}>We need permission to access your device's motion and orientation sensors for real-time data.</p>
+          <button className="btn-primary" onClick={requestPermission} style={{ width: '100%', maxWidth: '200px' }}>Enable Sensors</button>
+          {error && <div style={{ color: 'var(--danger)', marginTop: '20px', fontSize: '0.9rem' }}>{error}</div>}
         </div>
-        <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-          <h4 style={{ fontSize: '0.75rem', marginBottom: '1.5rem', opacity: 0.6, letterSpacing: '0.1em' }}>{s.spiritLevel}</h4>
-          {renderSpiritLevel()}
-          <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center', gap: '12px' }}>
-            <span className="pill" style={{ background: 'var(--nature-mist)', color: 'var(--nature-primary)', fontSize: '0.8rem' }}>β: {sensors.orientation.beta.toFixed(1)}°</span>
-            <span className="pill" style={{ background: 'var(--nature-mist)', color: 'var(--nature-primary)', fontSize: '0.8rem' }}>γ: {sensors.orientation.gamma.toFixed(1)}°</span>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+          <div className="sensor-card" style={{ padding: '20px', background: 'var(--surface)', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '36px', height: '36px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-icons" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}>speed</span>
+              </div>
+              <h5 style={{ margin: 0, fontWeight: 700 }}>Accelerometer</h5>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <SensorValue label="X-axis" value={motion.acc.x} unit=" m/s²" color="#ef4444" />
+              <SensorValue label="Y-axis" value={motion.acc.y} unit=" m/s²" color="#10b981" />
+              <SensorValue label="Z-axis" value={motion.acc.z} unit=" m/s²" color="#3b82f6" />
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div className="card" style={{ padding: '1.5rem' }}>
-        <h4 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--nature-primary)' }}>
-          <span className="material-icons">query_stats</span> {s.allSensors}
-        </h4>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '10px' }}>
-           <SensorItem label={s.accX} value={sensors.accelerometer.x.toFixed(2)} />
-           <SensorItem label={s.accY} value={sensors.accelerometer.y.toFixed(2)} />
-           <SensorItem label={s.accZ} value={sensors.accelerometer.z.toFixed(2)} />
+          <div className="sensor-card" style={{ padding: '20px', background: 'var(--surface)', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '36px', height: '36px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-icons" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}>sync</span>
+              </div>
+              <h5 style={{ margin: 0, fontWeight: 700 }}>Gyroscope</h5>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <SensorValue label="Alpha" value={motion.gyro.alpha} unit=" °/s" color="#8b5cf6" />
+              <SensorValue label="Beta" value={motion.gyro.beta} unit=" °/s" color="#f59e0b" />
+              <SensorValue label="Gamma" value={motion.gyro.gamma} unit=" °/s" color="#ec4899" />
+            </div>
+          </div>
+
+          <div className="sensor-card" style={{ padding: '20px', background: 'var(--surface)', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '36px', height: '36px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-icons" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}>explore</span>
+              </div>
+              <h5 style={{ margin: 0, fontWeight: 700 }}>Orientation</h5>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <SensorValue label="Yaw" value={orientation.alpha} unit="°" />
+              <SensorValue label="Pitch" value={orientation.beta} unit="°" />
+              <SensorValue label="Roll" value={orientation.gamma} unit="°" />
+            </div>
+          </div>
+
+          <div className="sensor-card" style={{ padding: '20px', background: 'var(--surface)', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '36px', height: '36px', background: 'rgba(var(--primary-rgb), 0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-icons" style={{ color: 'var(--primary)', fontSize: '1.25rem' }}>visibility</span>
+              </div>
+              <h5 style={{ margin: 0, fontWeight: 700 }}>Environment</h5>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <SensorValue label="Light" value={ambient.light} />
+              <SensorValue label="Proximity" value={ambient.proximity} />
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
-
-const SensorItem = ({ label, value }) => (
-  <div style={{
-    padding: '12px',
-    background: 'rgba(255,255,255,0.5)',
-    borderRadius: '16px',
-    border: '1px solid var(--border)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px'
-  }}>
-    <span style={{ fontSize: '0.7rem', opacity: 0.5, textTransform: 'uppercase' }}>{label}</span>
-    <span style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--nature-primary)' }}>{value}</span>
-  </div>
-);
 
 export default AndroidSensors;

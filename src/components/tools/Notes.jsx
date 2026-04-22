@@ -15,21 +15,20 @@ const Notes = ({ onResultChange }) => {
     }
   }, [notes, onResultChange]);
 
-  const charCount = notes.length;
-  const wordCount = notes.trim() ? notes.trim().split(/\s+/).length : 0;
-
   return (
-    <div className="tool-form notes-container">
-      <div className="flex-between mb-8">
-        <label className="label-bold">Quick Notepad (Auto-saves)</label>
-        <div className="stats-badge">
-          <span>{wordCount} words</span>
-          <span className="separator">|</span>
-          <span>{charCount} chars</span>
-        </div>
-      </div>
+    <div className="tool-form" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <label style={{ marginBottom: '8px', display: 'block', fontWeight: 500 }}>Quick Notepad (Auto-saves)</label>
       <textarea
-        className="notes-textarea"
+        style={{
+          flex: 1,
+          minHeight: '300px',
+          fontFamily: 'inherit',
+          lineHeight: 1.6,
+          padding: '1rem',
+          borderRadius: '12px',
+          background: 'rgba(var(--primary-rgb), 0.05)',
+          border: '1px solid rgba(var(--primary-rgb), 0.1)'
+        }}
         placeholder="Type your notes here..."
         value={notes}
         onChange={(e) => setNotes(e.target.value)}

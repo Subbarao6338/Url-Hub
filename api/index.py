@@ -122,11 +122,7 @@ def init_db():
     cursor.execute("PRAGMA table_info(links)")
     columns = [col[1] for col in cursor.fetchall()]
     if 'created_at' not in columns:
-        # SQLite older versions don't support CURRENT_TIMESTAMP in ALTER TABLE ADD COLUMN
-        # We add it as NULLable and then update if needed
-        cursor.execute("ALTER TABLE links ADD COLUMN created_at TIMESTAMP")
-        # Populate existing rows with current time
-        cursor.execute("UPDATE links SET created_at = CURRENT_TIMESTAMP WHERE created_at IS NULL")
+        cursor.execute("ALTER TABLE links ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 
     # Deduplicate before adding unique index
     cursor.execute('''
