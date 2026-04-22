@@ -1,9 +1,11 @@
+import { storage } from './utils/storage';
+
 const DEFAULT_API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 const isCapacitor = window.location.protocol === 'capacitor:';
 
 export const getApiBase = () => {
-  let base = localStorage.getItem('hub_api_base_url');
+  let base = storage.get('hub_api_base_url');
 
   if (!base) {
     base = DEFAULT_API_BASE;
@@ -21,9 +23,9 @@ export const getApiBase = () => {
 
 export const setApiBase = (url) => {
   if (url) {
-    localStorage.setItem('hub_api_base_url', url);
+    storage.set('hub_api_base_url', url);
   } else {
-    localStorage.removeItem('hub_api_base_url');
+    storage.remove('hub_api_base_url');
   }
 };
 

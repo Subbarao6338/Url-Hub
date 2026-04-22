@@ -2,7 +2,6 @@ const CACHE_NAME = 'url-hub-v9';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './css/style.css',
   './assets/favicon.svg',
   './assets/urlhub.png',
   'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap',
