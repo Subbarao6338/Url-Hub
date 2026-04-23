@@ -117,7 +117,10 @@ function App() {
   const [openInNewTab, setOpenInNewTab] = useState(storage.get('hub_open_newtab') !== 'false');
   const [startupTab, setStartupTab] = useState(storage.get('hub_startup_tab', 'toolbox'));
   const [hideRecentTools, setHideRecentTools] = useState(storage.getBoolean('hub_hide_recent_tools', false));
-  const [recentTools, setRecentTools] = useState(storage.getJSON('hub_recent_tools', []));
+
+  // Ensure recentTools is always an array to avoid crashes
+  const initialRecentTools = storage.getJSON('hub_recent_tools', []);
+  const [recentTools, setRecentTools] = useState(Array.isArray(initialRecentTools) ? initialRecentTools : []);
 
   const clearRecentTools = () => {
     setRecentTools([]);
@@ -336,7 +339,7 @@ function App() {
       if (res.ok) {
         if ('caches' in window) {
           try {
-            const cache = await caches.open('url-hub-v9');
+            const cache = await caches.open('url-hub-v10');
             const keys = await cache.keys();
             for (const request of keys) {
               if (request.url.includes('/api/')) {
@@ -360,7 +363,7 @@ function App() {
           if (res.ok) {
             if ('caches' in window) {
               try {
-                const cache = await caches.open('url-hub-v9');
+                const cache = await caches.open('url-hub-v10');
                 const keys = await cache.keys();
                 for (const request of keys) {
                   if (request.url.includes('/api/')) {

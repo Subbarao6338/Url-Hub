@@ -37,22 +37,29 @@ const FlashlightTool = () => {
   const trackRef = useRef(null);
 
   const toggleFlash = async () => {
+    if (!navigator.mediaDevices) {
+      setPermissionError("Media devices not supported in this browser/context.");
+      return;
+    }
     try {
       setPermissionError(null);
       if (!isOn) {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
         const track = stream.getVideoTracks()[0];
-        const capabilities = track.getCapabilities();
+        const capabilities = typeof track.getCapabilities === 'function' ? track.getCapabilities() : {};
         if (capabilities.torch) {
           await track.applyConstraints({ advanced: [{ torch: true }] });
           trackRef.current = track;
           setIsOn(true);
         } else {
           setPermissionError("Torch not supported on this device.");
+          track.stop();
         }
       } else {
         if (trackRef.current) {
-          await trackRef.current.applyConstraints({ advanced: [{ torch: false }] });
+          try {
+            await trackRef.current.applyConstraints({ advanced: [{ torch: false }] });
+          } catch (e) {}
           trackRef.current.stop();
         }
         setIsOn(false);
@@ -289,11 +296,20 @@ const SoundMeterTool = ({ onResultChange }) => {
   const streamRef = useRef(null);
 
   const startMeter = async () => {
+    if (!navigator.mediaDevices) {
+      setError("Microphone access not supported in this environment.");
+      return;
+    }
     try {
       setError(null);
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      const audioCtx = new AudioContext();
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) {
+          setError("AudioContext not supported.");
+          return;
+      }
+      const audioCtx = new AudioContextClass();
       audioCtxRef.current = audioCtx;
       const source = audioCtx.createMediaStreamSource(stream);
       const analyser = audioCtx.createAnalyser();
