@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE from '../../api';
 
 const SocialTools = ({ toolId }) => {
   const [activeTab, setActiveTab] = useState('downloader');
@@ -37,7 +38,7 @@ const SocialTools = ({ toolId }) => {
     setStatus('downloading');
     setError('');
     try {
-      const response = await fetch('/api/social/download', {
+      const response = await fetch(`${API_BASE}/social/download`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -54,10 +54,13 @@ const Measurements = ({ onResultChange, toolId }) => {
     } catch (e) { console.warn("Magnetometer not available:", e); }
 
     let audioContext, analyser, microphone, scriptProcessor, audioStream;
-    if (activeTab === 'soundmeter') {
+    if (activeTab === 'soundmeter' && navigator.mediaDevices) {
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
             audioStream = stream;
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return;
+
+            audioContext = new AudioContextClass();
             analyser = audioContext.createAnalyser();
             microphone = audioContext.createMediaStreamSource(stream);
             scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1);
@@ -74,7 +77,7 @@ const Measurements = ({ onResultChange, toolId }) => {
                 const average = values / array.length;
                 setNoise(Math.round(average));
             };
-        }).catch(err => console.error(err));
+        }).catch(err => console.error("Soundmeter error:", err));
     }
 
     return () => {
