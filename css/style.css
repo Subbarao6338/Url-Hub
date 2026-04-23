@@ -992,9 +992,17 @@ body.no-aurora::after {
   transition: all 0.2s ease;
 }
 
-.card:hover .card-actions {
+.card:hover .card-actions,
+.card:has(.pin-btn.active) .card-actions {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .card-actions {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card-actions button {

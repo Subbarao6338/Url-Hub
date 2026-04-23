@@ -28,6 +28,9 @@ def migrate(db_path=None):
     cursor.execute("SELECT id, name FROM profiles")
     profiles = {name: id for id, name in cursor.fetchall()}
 
+    # Add unique constraint to links if it doesn't exist
+    cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_links_unique ON links(profile_id, title, url)')
+
     # Helper to find data files
     def get_data_path(filename):
         # Try relative to script

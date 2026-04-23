@@ -34,6 +34,7 @@ def setup_db():
             is_internal BOOLEAN DEFAULT 0,
             tool_id TEXT,
             is_pinned BOOLEAN DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (profile_id) REFERENCES profiles (id)
         )
     ''')

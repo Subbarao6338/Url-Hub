@@ -290,7 +290,6 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
       newPinned = [id, ...pinnedTools];
     }
     setPinnedTools(newPinned);
-    localStorage.setItem('hub_pinned_tools', JSON.stringify(newPinned));
   };
 
   const openTool = (id, skipHistory = false) => {

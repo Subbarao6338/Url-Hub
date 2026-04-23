@@ -35,9 +35,13 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
   const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
   const [collapsedCategories, setCollapsedCategories] = useState({});
+  const prevProfileIdRef = React.useRef(profileId);
 
   useEffect(() => {
     if (!profileId) return;
+    const isProfileChange = prevProfileIdRef.current !== profileId;
+    prevProfileIdRef.current = profileId;
+
     setLoading(true);
     Promise.all([
       fetch(`${API_BASE}/links?profile_id=${profileId}`).then(res => res.json()),
@@ -50,7 +54,9 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
       }
       setCategories(catsMap);
       setLoading(false);
-      setActiveCategory('All');
+      if (isProfileChange) {
+        setActiveCategory('All');
+      }
     }).catch(err => {
       console.error("Failed to fetch bookmarks:", err);
       setLoading(false);
