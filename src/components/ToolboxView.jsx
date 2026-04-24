@@ -74,6 +74,9 @@ const SocialTools = lazy(() => import('./tools/SocialTools'));
 const WebToMarkdown = lazy(() => import('./tools/WebToMarkdown'));
 const NatureSounds = lazy(() => import('./tools/NatureSounds'));
 const WaterReminder = lazy(() => import('./tools/WaterReminder'));
+const HardwareTools = lazy(() => import('./tools/HardwareTools'));
+const HealthTools = lazy(() => import('./tools/HealthTools'));
+const PrivacyDashboard = lazy(() => import('./tools/PrivacyDashboard'));
 
 const TOOLS = [
     // Measurements (6 Tools)
@@ -81,7 +84,7 @@ const TOOLS = [
     { id: 'level-pendulum', title: 'Level & Pendulum', icon: 'vibration', category: 'Measurements', component: Measurements },
     { id: 'protractor', title: 'Protractor', icon: 'architecture', category: 'Measurements', component: Measurements },
     { id: 'luxmeter', title: 'Luxmeter', icon: 'light_mode', category: 'Measurements', component: Measurements },
-    { id: 'soundmeter', title: 'Soundmeter', icon: 'volume_up', category: 'Measurements', component: Measurements },
+    { id: 'soundmeter', title: 'Soundmeter', icon: 'volume_up', category: 'Measurements', component: HardwareTools },
     { id: 'magnetic-tester', title: 'Magnetic Tester', icon: 'explore', category: 'Measurements', component: Measurements },
 
     // Productivity
@@ -102,7 +105,7 @@ const TOOLS = [
     { id: 'chess960', title: 'Chess960', icon: 'grid_view', category: 'Games', component: Games },
     { id: 'darts-scoreboard', title: 'Darts Scoreboard', icon: 'ads_click', category: 'Games', component: Games },
 
-    // Text (9 Tools)
+    // Text (12 Tools)
     { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Text', component: LoremIpsum },
     { id: 'url-shortener', title: 'URL Shortener', icon: 'link', category: 'Text', component: TextUtils },
     { id: 'character-counter', title: 'Character Counter', icon: 'format_list_numbered', category: 'Text', component: WordCounter },
@@ -112,8 +115,11 @@ const TOOLS = [
     { id: 'text-repeater', title: 'Text Repeater', icon: 'repeat', category: 'Text', component: TextUtils },
     { id: 'list-sorter', title: 'List Sorter', icon: 'sort', category: 'Text', component: TextUtils },
     { id: 'reverse-text', title: 'Reverse Text', icon: 'settings_backup_restore', category: 'Text', component: TextUtils },
+    { id: 'binary-conv', title: 'Binary Converter', icon: 'data_object', category: 'Text', component: TextUtils },
+    { id: 'hex-conv', title: 'Hex Converter', icon: 'hexagon', category: 'Text', component: TextUtils },
+    { id: 'caesar-cipher', title: 'Caesar Cipher', icon: 'lock_open', category: 'Text', component: TextUtils },
 
-    // Math (9 Tools)
+    // Math (11 Tools)
     { id: 'percentages', title: 'Percentages', icon: 'percent', category: 'Math', component: MathTools },
     { id: 'geometry', title: 'Geometry', icon: 'architecture', category: 'Math', component: MathTools },
     { id: 'pythagoras', title: 'Pythagoras', icon: 'change_history', category: 'Math', component: MathTools },
@@ -123,6 +129,8 @@ const TOOLS = [
     { id: 'fractions', title: 'Fractions', icon: 'vertical_align_center', category: 'Math', component: MathTools },
     { id: 'gcd-lcm', title: 'GCD & LCM', icon: 'format_list_numbered', category: 'Math', component: MathTools },
     { id: 'prime-factors', title: 'Prime Factors', icon: 'grid_3x3', category: 'Math', component: MathTools },
+    { id: 'fibonacci', title: 'Fibonacci Series', icon: 'reorder', category: 'Math', component: MathTools },
+    { id: 'statistics', title: 'Statistics', icon: 'bar_chart', category: 'Math', component: MathTools },
 
     // Generators
     { id: 'qr-gen', title: 'QR Code', icon: 'qr_code_2', category: 'Generators', component: QrGen },
@@ -161,7 +169,7 @@ const TOOLS = [
     { id: 'compass', title: 'Compass', icon: 'explore', category: 'Outdoor', component: OutdoorTools },
     { id: 'gps-info', title: 'Altitude & GPS', icon: 'location_on', category: 'Outdoor', component: OutdoorTools },
     { id: 'freq-gen', title: 'Frequency Gen', icon: 'waves', category: 'Outdoor', component: OutdoorTools },
-    { id: 'magnifier', title: 'Magnifying Glass', icon: 'zoom_in', category: 'Outdoor', component: OutdoorTools },
+    { id: 'magnifier', title: 'Magnifying Glass', icon: 'zoom_in', category: 'Outdoor', component: HardwareTools },
     { id: 'mirror', title: 'Mirror', icon: 'face', category: 'Outdoor', component: OutdoorTools },
 
     // Colors (7 Tools)
@@ -239,10 +247,18 @@ const TOOLS = [
     { id: 'hash-gen', title: 'Hash Gen', icon: 'security', category: 'Security', component: HashGenerator },
     { id: 'uuid-gen', title: 'UUID Gen', icon: 'fingerprint', category: 'Security', component: UuidGenerator },
     { id: 'security-info', title: 'Security Info', icon: 'verified_user', category: 'Security', component: SecurityInfo },
+    { id: 'privacy-audit', title: 'Privacy Auditor', icon: 'shield', category: 'Security', component: PrivacyDashboard },
+    { id: 'password-strength', title: 'Password Strength', icon: 'password', category: 'Security', component: PrivacyDashboard },
 
     // System
     { id: 'device-info', title: 'Device Info', icon: 'memory', category: 'System', component: DeviceInfo },
     { id: 'android-sensors', title: 'Sensors', icon: 'sensors', category: 'System', component: AndroidSensors },
+    { id: 'flashlight', title: 'Flashlight', icon: 'flashlight_on', category: 'System', component: HardwareTools },
+    { id: 'vibrometer', title: 'Vibrometer', icon: 'vibration', category: 'System', component: HardwareTools },
+
+    // Health
+    { id: 'bmr-calc', title: 'BMR Calculator', icon: 'monitor_heart', category: 'Health', component: HealthTools },
+    { id: 'calorie-calc', title: 'Calorie Needs', icon: 'local_fire_department', category: 'Health', component: HealthTools },
 
     // Time
     { id: 'age-calculator', title: 'Age Calculator', icon: 'calendar_today', category: 'Time', component: AgeCalculator },
@@ -659,6 +675,7 @@ const getCategoryIcon = (cat) => {
         'Time': 'schedule',
         'Security': 'security',
         'Productivity': 'assignment',
+        'Health': 'monitor_heart',
     };
     return icons[cat] || 'folder';
 };

@@ -2322,7 +2322,7 @@ body.no-hover-effects .pill:hover {
 [data-theme="sunset"] {
   --primary-rgb: 190, 24, 93; /* Rose 700 */
   --primary: rgb(var(--primary-rgb));
-  --primary-glow: rgba(var(--primary-rgb), 0.2);
+  --primary-glow: rgba(var(--primary-rgb), 0.4);
   --bg-gradient: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
 
   --surface: rgba(255, 255, 255, 0.7);
@@ -2757,4 +2757,15 @@ body.no-hover-effects .pill:hover {
   height: 100%;
   background: var(--primary);
   transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* PWA Additions */
+.shortcut-badge {
+    background: var(--nature-gold);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
 }

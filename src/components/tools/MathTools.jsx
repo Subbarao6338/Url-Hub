@@ -23,6 +23,8 @@ const MathTools = ({ onResultChange, toolId }) => {
           <button className={`pill ${activeTab === 'fractions' ? 'active' : ''}`} onClick={() => setActiveTab('fractions')}>Fractions</button>
           <button className={`pill ${activeTab === 'gcd-lcm' ? 'active' : ''}`} onClick={() => setActiveTab('gcd-lcm')}>GCD/LCM</button>
           <button className={`pill ${activeTab === 'primes' ? 'active' : ''}`} onClick={() => setActiveTab('primes')}>Primes</button>
+          <button className={`pill ${activeTab === 'fibonacci' ? 'active' : ''}`} onClick={() => setActiveTab('fibonacci')}>Fibonacci</button>
+          <button className={`pill ${activeTab === 'statistics' ? 'active' : ''}`} onClick={() => setActiveTab('statistics')}>Statistics</button>
         </div>
       )}
 
@@ -35,6 +37,8 @@ const MathTools = ({ onResultChange, toolId }) => {
       {activeTab === 'fractions' && <FractionsTool />}
       {activeTab === 'gcd-lcm' && <GcdLcmTool />}
       {activeTab === 'primes' && <PrimesTool />}
+      {activeTab === 'fibonacci' && <FibonacciTool />}
+      {activeTab === 'statistics' && <StatisticsTool />}
     </div>
   );
 };
@@ -292,6 +296,62 @@ const PrimesTool = () => {
             <input value={num} onChange={e => setNum(e.target.value)} placeholder="Number" className="pill" style={{ width: '100%', marginBottom: '10px' }} />
             <button className="btn-primary" onClick={factorize} style={{ width: '100%' }}>Prime Factorization</button>
             {res && <div style={{ marginTop: '15px' }}>Factors: {res.join(' × ')}</div>}
+        </div>
+    );
+};
+
+const FibonacciTool = () => {
+    const [num, setNum] = useState(10);
+    const [res, setRes] = useState([]);
+    const calc = () => {
+        let n = parseInt(num);
+        let series = [0, 1];
+        for (let i = 2; i < n; i++) series.push(series[i - 1] + series[i - 2]);
+        setRes(series.slice(0, n));
+    };
+    return (
+        <div style={{ textAlign: 'center' }}>
+            <input type="number" value={num} onChange={e => setNum(e.target.value)} placeholder="Count" className="pill w-full mb-10" />
+            <button className="btn-primary w-full" onClick={calc}>Generate Series</button>
+            {res.length > 0 && <div className="mt-20 scrollable-x p-10 card" style={{ fontSize: '1.1rem' }}>{res.join(', ')}</div>}
+        </div>
+    );
+};
+
+const StatisticsTool = () => {
+    const [input, setInput] = useState('');
+    const [res, setRes] = useState(null);
+    const calc = () => {
+        const nums = input.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n)).sort((a, b) => a - b);
+        if (nums.length === 0) return;
+        const mean = nums.reduce((a, b) => a + b, 0) / nums.length;
+        const median = nums.length % 2 === 0 ? (nums[nums.length/2 - 1] + nums[nums.length/2]) / 2 : nums[Math.floor(nums.length/2)];
+        const counts = {};
+        nums.forEach(n => counts[n] = (counts[n] || 0) + 1);
+        let maxCount = 0;
+        let mode = [];
+        for (let n in counts) {
+            if (counts[n] > maxCount) {
+                maxCount = counts[n];
+                mode = [n];
+            } else if (counts[n] === maxCount) {
+                mode.push(n);
+            }
+        }
+        setRes({ mean, median, mode: mode.join(', '), min: nums[0], max: nums[nums.length-1], range: nums[nums.length-1] - nums[0] });
+    };
+    return (
+        <div style={{ textAlign: 'center' }}>
+            <input value={input} onChange={e => setInput(e.target.value)} placeholder="Numbers (comma separated)" className="pill w-full mb-10" />
+            <button className="btn-primary w-full" onClick={calc}>Calculate Stats</button>
+            {res && (
+                <div className="grid-2 mt-20" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div className="card p-10"><div className="opacity-6">Mean</div>{res.mean.toFixed(2)}</div>
+                    <div className="card p-10"><div className="opacity-6">Median</div>{res.median}</div>
+                    <div className="card p-10"><div className="opacity-6">Mode</div>{res.mode}</div>
+                    <div className="card p-10"><div className="opacity-6">Range</div>{res.range}</div>
+                </div>
+            )}
         </div>
     );
 };

@@ -58,6 +58,37 @@ export const STRINGS = {
       accY: "Acc Y",
       accZ: "Acc Z",
       light: "Light"
+    },
+    health: {
+      bmrTitle: "BMR Calculator",
+      caloriesTitle: "Daily Calories",
+      weight: "Weight (kg)",
+      height: "Height (cm)",
+      age: "Age",
+      calculate: "Calculate",
+      maintenance: "Maintenance Calories",
+      weightLoss: "Weight Loss",
+      weightGain: "Weight Gain"
+    },
+    security: {
+      privacyAuditor: "Privacy Auditor",
+      strengthMeter: "Password Strength",
+      veryWeak: "Very Weak",
+      weak: "Weak",
+      fair: "Fair",
+      good: "Good",
+      strong: "Strong",
+      excellent: "Excellent"
+    },
+    text: {
+        binary: "Binary",
+        hex: "Hex",
+        caesar: "Caesar Cipher",
+        slugify: "Slugify",
+        reverse: "Reverse",
+        upper: "UPPERCASE",
+        lower: "lowercase",
+        capitalize: "Capitalize"
     }
   }
 };

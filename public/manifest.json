@@ -29,17 +29,31 @@
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     },
     {
-      "name": "Notes",
-      "short_name": "Notes",
-      "description": "Open notes",
-      "url": "/?tab=toolbox&tool=notes",
+      "name": "Flashlight",
+      "short_name": "Flashlight",
+      "description": "Device Flashlight",
+      "url": "/?tab=toolbox&tool=flashlight",
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     },
     {
-      "name": "Password Generator",
-      "short_name": "Pass Gen",
-      "description": "Generate secure passwords",
-      "url": "/?tab=toolbox&tool=password-gen",
+      "name": "Sound Meter",
+      "short_name": "Sound Meter",
+      "description": "Decibel Meter",
+      "url": "/?tab=toolbox&tool=soundmeter",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "SOS",
+      "short_name": "SOS",
+      "description": "Emergency SOS Flasher",
+      "url": "/?tab=toolbox&tool=sos",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Compass",
+      "short_name": "Compass",
+      "description": "Digital Compass",
+      "url": "/?tab=toolbox&tool=compass",
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     }
   ],
