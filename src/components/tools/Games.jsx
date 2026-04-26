@@ -22,6 +22,7 @@ const Games = ({ onResultChange, toolId }) => {
         <button className={`pill ${activeTab === 'chess-clock' ? 'active' : ''}`} onClick={() => setActiveTab('chess-clock')}>Chess Clock</button>
         <button className={`pill ${activeTab === 'chess-960' ? 'active' : ''}`} onClick={() => setActiveTab('chess-960')}>Chess960</button>
         <button className={`pill ${activeTab === 'darts' ? 'active' : ''}`} onClick={() => setActiveTab('darts')}>Darts</button>
+        <button className={`pill ${activeTab === 'tictactoe' ? 'active' : ''}`} onClick={() => setActiveTab('tictactoe')}>Tic-Tac-Toe</button>
       </div>)}
 
       {activeTab === 'spin-wheel' && <SpinWheelTool />}
@@ -32,6 +33,7 @@ const Games = ({ onResultChange, toolId }) => {
       {activeTab === 'chess-clock' && <ChessClockTool />}
       {activeTab === 'chess-960' && <Chess960Tool />}
       {activeTab === 'darts' && <DartsScoreboardTool />}
+      {activeTab === 'tictactoe' && <TicTacToeTool />}
     </div>
   );
 };
@@ -336,6 +338,56 @@ const DartsScoreboardTool = () => {
             <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
                 {history.map((h, i) => <div key={i} style={{ opacity: 0.6 }}>-{h}</div>)}
             </div>
+        </div>
+    );
+};
+
+const TicTacToeTool = () => {
+    const [board, setBoard] = useState(Array(9).fill(null));
+    const [xIsNext, setXIsNext] = useState(true);
+
+    const calculateWinner = (squares) => {
+        const lines = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+        for (let i = 0; i < lines.length; i++) {
+            const [a, b, c] = lines[i];
+            if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) return squares[a];
+        }
+        return null;
+    };
+
+    const handleClick = (i) => {
+        if (calculateWinner(board) || board[i]) return;
+        const newBoard = [...board];
+        newBoard[i] = xIsNext ? 'X' : 'O';
+        setBoard(newBoard);
+        setXIsNext(!xIsNext);
+    };
+
+    const winner = calculateWinner(board);
+    const status = winner ? `Winner: ${winner}` : board.every(Boolean) ? 'Draw!' : `Next player: ${xIsNext ? 'X' : 'O'}`;
+
+    return (
+        <div className="text-center">
+            <div className="mb-20 font-bold" style={{ fontSize: '1.5rem' }}>{status}</div>
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '10px',
+                maxWidth: '300px',
+                margin: '0 auto'
+            }}>
+                {board.map((cell, i) => (
+                    <button
+                        key={i}
+                        className="pill"
+                        onClick={() => handleClick(i)}
+                        style={{ height: '80px', fontSize: '2rem', background: cell ? 'var(--primary)' : 'var(--surface)', color: cell ? 'white' : 'inherit' }}
+                    >
+                        {cell}
+                    </button>
+                ))}
+            </div>
+            <button className="btn-primary mt-20 w-full" onClick={() => { setBoard(Array(9).fill(null)); setXIsNext(true); }}>Reset Game</button>
         </div>
     );
 };

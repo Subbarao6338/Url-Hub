@@ -15,6 +15,7 @@ import subprocess
 import socket
 import dns.resolver
 import yt_dlp
+import yaml
 
 # Add the project root to sys.path so we can import from scripts
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -228,6 +229,14 @@ class ProjectUpdate(BaseModel):
 
 class Project(ProjectBase):
     id: str
+
+class ConvertRequest(BaseModel):
+    data: str
+    from_format: str
+    to_format: str
+
+class SentimentRequest(BaseModel):
+    text: str
 
 @app.middleware("http")
 async def ensure_db_initialized(request, call_next):
@@ -552,3 +561,41 @@ def delete_project(project_id: str):
     conn.commit()
     conn.close()
     return {"message": "Project deleted"}
+
+@app.post("/api/data/convert")
+def convert_data(request: ConvertRequest):
+    try:
+        if request.from_format == "json" and request.to_format == "yaml":
+            obj = json.loads(request.data)
+            return {"result": yaml.dump(obj, sort_keys=False)}
+        elif request.from_format == "yaml" and request.to_format == "json":
+            obj = yaml.safe_load(request.data)
+            return {"result": json.dumps(obj, indent=2)}
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported conversion")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Conversion error: {str(e)}")
+
+@app.post("/api/text/analyze")
+def analyze_text(request: SentimentRequest):
+    # Extremely basic sentiment analysis without external heavy libraries
+    positive_words = {'good', 'great', 'excellent', 'happy', 'love', 'amazing', 'positive', 'nice', 'awesome'}
+    negative_words = {'bad', 'terrible', 'awful', 'sad', 'hate', 'negative', 'poor', 'worst', 'ugly'}
+
+    text = request.text.lower()
+    words = text.split()
+    pos_count = sum(1 for w in words if w in positive_words)
+    neg_count = sum(1 for w in words if w in negative_words)
+
+    sentiment = "neutral"
+    if pos_count > neg_count:
+        sentiment = "positive"
+    elif neg_count > pos_count:
+        sentiment = "negative"
+
+    return {
+        "sentiment": sentiment,
+        "positive_score": pos_count,
+        "negative_score": neg_count,
+        "word_count": len(words)
+    }

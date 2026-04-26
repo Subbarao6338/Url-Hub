@@ -25,6 +25,7 @@ const MathTools = ({ onResultChange, toolId }) => {
           <button className={`pill ${activeTab === 'primes' ? 'active' : ''}`} onClick={() => setActiveTab('primes')}>Primes</button>
           <button className={`pill ${activeTab === 'fibonacci' ? 'active' : ''}`} onClick={() => setActiveTab('fibonacci')}>Fibonacci</button>
           <button className={`pill ${activeTab === 'statistics' ? 'active' : ''}`} onClick={() => setActiveTab('statistics')}>Statistics</button>
+          <button className={`pill ${activeTab === 'matrix' ? 'active' : ''}`} onClick={() => setActiveTab('matrix')}>Matrix</button>
         </div>
       )}
 
@@ -39,6 +40,7 @@ const MathTools = ({ onResultChange, toolId }) => {
       {activeTab === 'primes' && <PrimesTool />}
       {activeTab === 'fibonacci' && <FibonacciTool />}
       {activeTab === 'statistics' && <StatisticsTool />}
+      {activeTab === 'matrix' && <MatrixTool />}
     </div>
   );
 };
@@ -350,6 +352,84 @@ const StatisticsTool = () => {
                     <div className="card p-10"><div className="opacity-6">Median</div>{res.median}</div>
                     <div className="card p-10"><div className="opacity-6">Mode</div>{res.mode}</div>
                     <div className="card p-10"><div className="opacity-6">Range</div>{res.range}</div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const MatrixTool = () => {
+    const [size, setSize] = useState(2);
+    const [matrixA, setMatrixA] = useState([[0,0], [0,0]]);
+    const [matrixB, setMatrixB] = useState([[0,0], [0,0]]);
+    const [result, setResult] = useState(null);
+
+    useEffect(() => {
+        const newArr = Array.from({ length: size }, () => Array(size).fill(0));
+        setMatrixA(newArr);
+        setMatrixB(newArr);
+    }, [size]);
+
+    const multiply = () => {
+        const res = Array.from({ length: size }, () => Array(size).fill(0));
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+                for (let k = 0; k < size; k++) {
+                    res[i][j] += matrixA[i][k] * matrixB[k][j];
+                }
+            }
+        }
+        setResult(res);
+    };
+
+    const updateCell = (matrix, setMatrix, row, col, val) => {
+        const newMatrix = [...matrix];
+        newMatrix[row][col] = parseFloat(val) || 0;
+        setMatrix(newMatrix);
+    };
+
+    return (
+        <div>
+            <div className="flex-center mb-20 gap-10">
+                <button className={`pill ${size === 2 ? 'active' : ''}`} onClick={() => setSize(2)}>2x2</button>
+                <button className={`pill ${size === 3 ? 'active' : ''}`} onClick={() => setSize(3)}>3x3</button>
+            </div>
+
+            <div className="grid gap-20" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                <div>
+                    <label className="uppercase font-semibold opacity-6 mb-10 block">Matrix A</label>
+                    {matrixA.map((row, i) => (
+                        <div key={i} className="flex-gap mb-5">
+                            {row.map((cell, j) => (
+                                <input key={j} type="number" value={cell} onChange={e => updateCell(matrixA, setMatrixA, i, j, e.target.value)} className="pill w-full p-8-16" />
+                            ))}
+                        </div>
+                    ))}
+                </div>
+                <div>
+                    <label className="uppercase font-semibold opacity-6 mb-10 block">Matrix B</label>
+                    {matrixB.map((row, i) => (
+                        <div key={i} className="flex-gap mb-5">
+                            {row.map((cell, j) => (
+                                <input key={j} type="number" value={cell} onChange={e => updateCell(matrixB, setMatrixB, i, j, e.target.value)} className="pill w-full p-8-16" />
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <button className="btn-primary w-full mt-20" onClick={multiply}>Multiply A × B</button>
+
+            {result && (
+                <div className="mt-20 text-center">
+                    <label className="uppercase font-semibold opacity-6 mb-10 block">Result</label>
+                    {result.map((row, i) => (
+                        <div key={i} className="flex-center gap-10 mb-5">
+                            {row.map((cell, j) => (
+                                <div key={j} className="pill active p-8-16 min-w-50">{cell}</div>
+                            ))}
+                        </div>
+                    ))}
                 </div>
             )}
         </div>

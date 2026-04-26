@@ -3,3 +3,4 @@ uvicorn
 pydantic
 yt-dlp
 dnspython
+PyYAML

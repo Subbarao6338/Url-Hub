@@ -22,10 +22,24 @@
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     },
     {
-      "name": "Calculator",
-      "short_name": "Calculator",
+      "name": "QR Code",
+      "short_name": "QR Code",
+      "description": "Generate QR Codes",
+      "url": "/?tab=toolbox&tool=qr-gen",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Scientific Calc",
+      "short_name": "Calc",
       "description": "Open scientific calculator",
       "url": "/?tab=toolbox&tool=calculator-main",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Security Info",
+      "short_name": "Security",
+      "description": "Check security info",
+      "url": "/?tab=toolbox&tool=security-info",
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     },
     {

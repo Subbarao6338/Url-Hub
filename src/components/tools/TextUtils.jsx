@@ -33,6 +33,26 @@ const TextUtils = ({ onResultChange }) => {
             return String.fromCharCode(((char.charCodeAt(0) - start + caesarShift) % 26) + start);
         });
     }
+    else if (type === 'braille') {
+        const brailleMap = {
+            'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
+            'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
+            'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵', ' ': ' ',
+            '1': '⠼⠁', '2': '⠼⠃', '3': '⠼⠉', '4': '⠼⠙', '5': '⠼⠑', '6': '⠼⠋', '7': '⠼⠛', '8': '⠼⠓', '9': '⠼⠊', '0': '⠼⠚'
+        };
+        val = val.toLowerCase().split('').map(c => brailleMap[c] || c).join('');
+    }
+    else if (type === 'ascii') {
+        const art = `
+  _   _       _
+ | \ | | __ _| |_ _   _ _ __ ___
+ |  \| |/ _' | __| | | | '__/ _ \\
+ | |\  | (_| | |_| |_| | | |  __/
+ |_| \_|\__,_|\__|\__,_|_|  \___|
+
+        `;
+        val = art + "\n\n" + val;
+    }
     setInput(val);
   };
 
@@ -71,6 +91,8 @@ const TextUtils = ({ onResultChange }) => {
         <button className="pill" onClick={() => modifyText('binary')}>Binary</button>
         <button className="pill" onClick={() => modifyText('hex')}>Hex</button>
         <button className="pill" onClick={() => modifyText('caesar')}>Caesar Cipher</button>
+        <button className="pill" onClick={() => modifyText('braille')}>Braille</button>
+        <button className="pill" onClick={() => modifyText('ascii')}>ASCII Art</button>
       </div>
     </div>
   );

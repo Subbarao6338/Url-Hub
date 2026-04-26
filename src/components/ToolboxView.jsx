@@ -80,6 +80,8 @@ const PrivacyDashboard = lazy(() => import('./tools/PrivacyDashboard'));
 const NetworkingTools = lazy(() => import('./tools/NetworkingTools'));
 const DevOpsTools = lazy(() => import('./tools/DevOpsTools'));
 const DataScienceTools = lazy(() => import('./tools/DataScienceTools'));
+const AudioTools = lazy(() => import('./tools/AudioTools'));
+const SecurityTools = lazy(() => import('./tools/SecurityTools'));
 
 const TOOLS = [
     // Measurements (6 Tools)
@@ -107,6 +109,7 @@ const TOOLS = [
     { id: 'chess-clock', title: 'Chess Clock', icon: 'timer', category: 'Games', component: Games },
     { id: 'chess960', title: 'Chess960', icon: 'grid_view', category: 'Games', component: Games },
     { id: 'darts-scoreboard', title: 'Darts Scoreboard', icon: 'ads_click', category: 'Games', component: Games },
+    { id: 'tictactoe', title: 'Tic-Tac-Toe', icon: 'grid_view', category: 'Games', component: Games },
 
     // Text (12 Tools)
     { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Text', component: LoremIpsum },
@@ -121,6 +124,8 @@ const TOOLS = [
     { id: 'binary-conv', title: 'Binary Converter', icon: 'data_object', category: 'Text', component: TextUtils },
     { id: 'hex-conv', title: 'Hex Converter', icon: 'hexagon', category: 'Text', component: TextUtils },
     { id: 'caesar-cipher', title: 'Caesar Cipher', icon: 'lock_open', category: 'Text', component: TextUtils },
+    { id: 'braille', title: 'Braille Translator', icon: 'pattern', category: 'Text', component: TextUtils },
+    { id: 'ascii-art', title: 'ASCII Art', icon: 'font_download', category: 'Text', component: TextUtils },
 
     // Math (11 Tools)
     { id: 'percentages', title: 'Percentages', icon: 'percent', category: 'Math', component: MathTools },
@@ -134,6 +139,7 @@ const TOOLS = [
     { id: 'prime-factors', title: 'Prime Factors', icon: 'grid_3x3', category: 'Math', component: MathTools },
     { id: 'fibonacci', title: 'Fibonacci Series', icon: 'reorder', category: 'Math', component: MathTools },
     { id: 'statistics', title: 'Statistics', icon: 'bar_chart', category: 'Math', component: MathTools },
+    { id: 'matrix', title: 'Matrix Multiply', icon: 'grid_on', category: 'Math', component: MathTools },
 
     // Generators
     { id: 'qr-gen', title: 'QR Code', icon: 'qr_code_2', category: 'Generators', component: QrGen },
@@ -171,7 +177,8 @@ const TOOLS = [
     { id: 'sos', title: 'SOS', icon: 'warning', category: 'Outdoor', component: OutdoorTools },
     { id: 'compass', title: 'Compass', icon: 'explore', category: 'Outdoor', component: OutdoorTools },
     { id: 'gps-info', title: 'Altitude & GPS', icon: 'location_on', category: 'Outdoor', component: OutdoorTools },
-    { id: 'freq-gen', title: 'Frequency Gen', icon: 'waves', category: 'Outdoor', component: OutdoorTools },
+    { id: 'frequency-gen', title: 'Frequency Gen', icon: 'waves', category: 'Audio', component: AudioTools },
+    { id: 'tuner', title: 'Instrument Tuner', icon: 'music_note', category: 'Audio', component: AudioTools },
     { id: 'magnifier', title: 'Magnifying Glass', icon: 'zoom_in', category: 'Outdoor', component: HardwareTools },
     { id: 'mirror', title: 'Mirror', icon: 'face', category: 'Outdoor', component: OutdoorTools },
 
@@ -262,6 +269,8 @@ const TOOLS = [
 
     // Security (Integration)
     { id: 'hash-gen', title: 'Hash Gen', icon: 'security', category: 'Security', component: HashGenerator },
+    { id: 'rsa-gen', title: 'RSA Key Gen', icon: 'vpn_key', category: 'Security', component: SecurityTools },
+    { id: 'hmac-calc', title: 'HMAC Calculator', icon: 'enhanced_encryption', category: 'Security', component: SecurityTools },
     { id: 'uuid-gen', title: 'UUID Gen', icon: 'fingerprint', category: 'Security', component: UuidGenerator },
     { id: 'security-info', title: 'Security Info', icon: 'verified_user', category: 'Security', component: SecurityInfo },
     { id: 'privacy-audit', title: 'Privacy Auditor', icon: 'shield', category: 'Security', component: PrivacyDashboard },
@@ -689,6 +698,7 @@ const getCategoryIcon = (cat) => {
         'Dev Tools': 'terminal',
         'Networking': 'router',
         'Data Science': 'insights',
+        'Audio': 'audiotrack',
         'Misc': 'auto_fix_high',
         'Specialized': 'insights',
         'Time': 'schedule',

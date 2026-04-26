@@ -105,7 +105,10 @@ self.addEventListener('fetch', (event) => {
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
           }
           return response;
-        }).catch(() => caches.match('./assets/favicon.svg'));
+        }).catch(() => {
+          // If offline and image not in cache, try local assets
+          return caches.match('./assets/urlhub.png') || caches.match('./assets/favicon.svg');
+        });
       })
     );
   }

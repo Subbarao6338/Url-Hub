@@ -35,6 +35,8 @@ const ImageTools = ({ onResultChange, toolId }) => {
         <button className={`pill ${activeTab === 'blur' ? 'active' : ''}`} onClick={() => setActiveTab('blur')}>Privacy Blur</button>
         <button className={`pill ${activeTab === 'metadata' ? 'active' : ''}`} onClick={() => setActiveTab('metadata')}>Clean Meta</button>
         <button className={`pill ${activeTab === 'bw' ? 'active' : ''}`} onClick={() => setActiveTab('bw')}>B&W Filter</button>
+        <button className={`pill ${activeTab === 'sepia' ? 'active' : ''}`} onClick={() => setActiveTab('sepia')}>Sepia</button>
+        <button className={`pill ${activeTab === 'invert' ? 'active' : ''}`} onClick={() => setActiveTab('invert')}>Invert</button>
       </div>)}
 
       <input type="file" onChange={handleUpload} accept="image/*" className="pill" style={{ width: '100%', marginBottom: '20px' }} />
@@ -49,6 +51,8 @@ const ImageTools = ({ onResultChange, toolId }) => {
       {image && activeTab === 'blur' && <PrivacyBlur imgRef={imgRef} image={image} onResultChange={onResultChange} />}
       {image && activeTab === 'metadata' && <MetadataCleaner imgRef={imgRef} image={image} onResultChange={onResultChange} />}
       {image && activeTab === 'bw' && <BlackWhiteFilter imgRef={imgRef} image={image} onResultChange={onResultChange} />}
+      {image && activeTab === 'sepia' && <SepiaFilter imgRef={imgRef} image={image} onResultChange={onResultChange} />}
+      {image && activeTab === 'invert' && <InvertFilter imgRef={imgRef} image={image} onResultChange={onResultChange} />}
     </div>
   );
 };
@@ -154,6 +158,40 @@ const BlackWhiteFilter = ({ imgRef, image, onResultChange }) => {
         });
     };
     return <button className="btn-primary" onClick={apply} style={{ width: '100%' }}>Apply B&W Filter</button>;
+};
+
+const SepiaFilter = ({ imgRef, image, onResultChange }) => {
+    const apply = () => {
+        const canvas = document.createElement('canvas');
+        const img = imgRef.current;
+        if (!img) return;
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.filter = 'sepia(100%)';
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob(blob => {
+            onResultChange({ text: 'Applied Sepia Filter', blob, filename: 'sepia.png' });
+        });
+    };
+    return <button className="btn-primary" onClick={apply} style={{ width: '100%' }}>Apply Sepia Filter</button>;
+};
+
+const InvertFilter = ({ imgRef, image, onResultChange }) => {
+    const apply = () => {
+        const canvas = document.createElement('canvas');
+        const img = imgRef.current;
+        if (!img) return;
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.filter = 'invert(100%)';
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob(blob => {
+            onResultChange({ text: 'Applied Invert Filter', blob, filename: 'invert.png' });
+        });
+    };
+    return <button className="btn-primary" onClick={apply} style={{ width: '100%' }}>Apply Invert Filter</button>;
 };
 
 export default ImageTools;
