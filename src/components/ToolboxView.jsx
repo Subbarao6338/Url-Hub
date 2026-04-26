@@ -146,6 +146,7 @@ const TOOLS = [
     { id: 'barcode-gen', title: 'Barcode Generator', icon: 'barcode_reader', category: 'Generators', component: Generators },
     { id: 'password-gen', title: 'Password', icon: 'vpn_key', category: 'Generators', component: PasswordGenerator },
     { id: 'random-numbers', title: 'Random Numbers', icon: 'pin', category: 'Generators', component: Generators },
+    { id: 'fake-data', title: 'Fake Data', icon: 'reorder', category: 'Generators', component: Generators },
     { id: 'heads-tails', title: 'Heads or Tails', icon: 'monetization_on', category: 'Games', component: CoinFlipper },
     { id: 'magic-8ball', title: 'Magic 8-Ball', icon: 'filter_8', category: 'Games', component: Generators },
 

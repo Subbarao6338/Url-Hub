@@ -9,6 +9,7 @@ const Generators = ({ onResultChange, toolId }) => {
         if (toolId === 'barcode-gen') setActiveTab('barcode');
         else if (toolId === 'random-numbers') setActiveTab('random');
         else if (toolId === 'magic-8ball') setActiveTab('magic8');
+        else if (toolId === 'fake-data') setActiveTab('fake-data');
         else setActiveTab(toolId);
     }
   }, [toolId]);
@@ -20,12 +21,14 @@ const Generators = ({ onResultChange, toolId }) => {
           <button className={`pill ${activeTab === 'barcode' ? 'active' : ''}`} onClick={() => setActiveTab('barcode')}>Barcode</button>
           <button className={`pill ${activeTab === 'random' ? 'active' : ''}`} onClick={() => setActiveTab('random')}>Random Numbers</button>
           <button className={`pill ${activeTab === 'magic8' ? 'active' : ''}`} onClick={() => setActiveTab('magic8')}>Magic 8-Ball</button>
+          <button className={`pill ${activeTab === 'fake-data' ? 'active' : ''}`} onClick={() => setActiveTab('fake-data')}>Fake Data</button>
         </div>
       )}
 
       {activeTab === 'barcode' && <BarcodeTool onResultChange={onResultChange} />}
       {activeTab === 'random' && <RandomNumbersTool />}
       {activeTab === 'magic8' && <Magic8BallTool />}
+      {activeTab === 'fake-data' && <FakeDataGenerator onResultChange={onResultChange} />}
     </div>
   );
 };
@@ -73,6 +76,67 @@ const BarcodeTool = ({ onResultChange }) => {
             </select>
             <div className="barcode-canvas-container">
                 <canvas ref={canvasRef}></canvas>
+            </div>
+        </div>
+    );
+};
+
+const FakeDataGenerator = ({ onResultChange }) => {
+    const [count, setCount] = useState(5);
+    const [results, setResults] = useState([]);
+    const [type, setType] = useState('user');
+
+    const firstNames = ['James', 'Mary', 'Robert', 'Patricia', 'John', 'Jennifer', 'Michael', 'Linda', 'William', 'Elizabeth'];
+    const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'];
+    const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'example.com', 'nature.org'];
+    const cities = ['Oak Creek', 'Pine Ridge', 'Maple Grove', 'Cedar Falls', 'Willow Bend'];
+
+    const generate = () => {
+        const newResults = [];
+        for (let i = 0; i < count; i++) {
+            const fName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const lName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            const email = `${fName.toLowerCase()}.${lName.toLowerCase()}@${domains[Math.floor(Math.random() * domains.length)]}`;
+            const city = cities[Math.floor(Math.random() * cities.length)];
+
+            if (type === 'user') {
+                newResults.push({ name: `${fName} ${lName}`, email, city });
+            } else {
+                newResults.push({ id: Math.random().toString(36).substr(2, 9), status: 'active', value: Math.floor(Math.random() * 1000) });
+            }
+        }
+        setResults(newResults);
+        onResultChange({ text: JSON.stringify(newResults, null, 2), filename: 'fake_data.json' });
+    };
+
+    return (
+        <div className="text-center">
+            <div className="flex-gap mb-10">
+                <select value={type} onChange={e => setType(e.target.value)} className="pill flex-1">
+                    <option value="user">User Profiles</option>
+                    <option value="data">Generic Data</option>
+                </select>
+                <input type="number" value={count} onChange={e => setCount(e.target.value)} placeholder="Count" className="pill flex-1" />
+            </div>
+            <button className="btn-primary w-full mb-20" onClick={generate}>Generate</button>
+            <div className="grid gap-10">
+                {results.map((res, i) => (
+                    <div key={i} className="card p-10 text-left bg-primary-light" style={{ fontSize: '0.8rem' }}>
+                        {type === 'user' ? (
+                            <>
+                                <div><strong>{res.name}</strong></div>
+                                <div className="opacity-7">{res.email}</div>
+                                <div className="opacity-5">{res.city}</div>
+                            </>
+                        ) : (
+                            <>
+                                <div>ID: {res.id}</div>
+                                <div>Status: {res.status}</div>
+                                <div>Value: {res.value}</div>
+                            </>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     );
