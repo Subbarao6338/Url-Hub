@@ -1,4 +1,4 @@
-const CACHE_NAME = 'url-hub-v12';
+const CACHE_NAME = 'url-hub-v14';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

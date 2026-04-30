@@ -1,64 +1,44 @@
 {
   "name": "Nature toolbox",
-  "short_name": "Nature toolbox",
-  "description": "A personal dashboard to organize and access your favorite websites, projects, and tools.",
+  "short_name": "Nature Hub",
+  "description": "A nature-inspired personal dashboard to organize and access your favorite websites, projects, and tools.",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#f1f5f9",
-  "theme_color": "#6366f1",
+  "background_color": "#fdfbf7",
+  "theme_color": "#2d6a4f",
   "shortcuts": [
     {
       "name": "Toolbox",
-      "short_name": "Toolbox",
+      "short_name": "Tools",
       "url": "/?tab=toolbox",
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     },
     {
-      "name": "Bookmarks",
-      "short_name": "Bookmarks",
-      "url": "/?tab=bookmarks",
-      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
-    },
-    {
       "name": "QR Scanner",
-      "short_name": "Scanner",
-      "description": "Scan QR codes offline with your camera",
+      "short_name": "Scan",
+      "description": "Scan QR codes offline",
       "url": "/?tab=toolbox&tool=qr-scan",
-      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
-    },
-    {
-      "name": "Notes",
-      "short_name": "Notes",
-      "description": "Quick offline notes and lists",
-      "url": "/?tab=toolbox&tool=notes",
-      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
-    },
-    {
-      "name": "Flashcards",
-      "short_name": "Learn",
-      "description": "Create and study flashcard sets",
-      "url": "/?tab=toolbox&tool=flashcards",
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     },
     {
       "name": "World Clock",
       "short_name": "Clock",
-      "description": "Check time across the globe",
+      "description": "Check global timezones",
       "url": "/?tab=toolbox&tool=world-clock",
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     },
     {
-      "name": "Flashlight",
-      "short_name": "Light",
-      "description": "Use your phone's camera torch",
-      "url": "/?tab=toolbox&tool=flashlight",
+      "name": "RSA Generator",
+      "short_name": "Security",
+      "description": "Secure client-side key generation",
+      "url": "/?tab=toolbox&tool=rsa-gen",
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     },
     {
-      "name": "SOS",
-      "short_name": "SOS",
-      "description": "Emergency Morse code and strobe light",
-      "url": "/?tab=toolbox&tool=sos",
+      "name": "VAT Calculator",
+      "short_name": "Finance",
+      "description": "Calculate taxes and totals",
+      "url": "/?tab=toolbox&tool=vat-calc",
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
     }
   ],
@@ -83,25 +63,7 @@
     },
     {
       "src": "assets/urlhub.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "assets/urlhub.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "assets/urlhub.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "assets/urlhub.png",
-      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"
     }

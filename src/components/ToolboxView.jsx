@@ -39,6 +39,7 @@ const Inspect = lazy(() => import('./tools/Inspect'));
 const UrlTool = lazy(() => import('./tools/UrlTool'));
 const SecurityInfo = lazy(() => import('./tools/SecurityInfo'));
 const UserScripts = lazy(() => import('./tools/UserScripts'));
+const TravelTools = lazy(() => import('./tools/TravelTools'));
 const DiffViewer = lazy(() => import('./tools/DiffViewer'));
 const AnomalyDetection = lazy(() => import('./tools/AnomalyDetection'));
 const HashGenerator = lazy(() => import('./tools/HashGenerator'));
@@ -263,10 +264,12 @@ const TOOLS = [
     { id: 'base64-converter', title: 'Base64', icon: 'transform', category: 'Dev Tools', component: Base64Converter },
     { id: 'user-scripts', title: 'User Scripts', icon: 'add', category: 'Dev Tools', component: UserScripts },
     { id: 'cron-desc', title: 'Cron Explainer', icon: 'event_repeat', category: 'Dev Tools', component: CronExpressionDescriptor },
-    { id: 'devops-main', title: 'DevOps Tools', icon: 'terminal', category: 'Dev Tools', component: DevOpsTools },
+    { id: 'devops-main', title: 'DevOps Hub', icon: 'terminal', category: 'Dev Tools', component: DevOpsTools },
     { id: 'jwt-decoder', title: 'JWT Decoder', icon: 'api', category: 'Dev Tools', component: DevOpsTools },
     { id: 'cron-gen', title: 'Cron Generator', icon: 'schedule', category: 'Dev Tools', component: DevOpsTools },
     { id: 'sql-format', title: 'SQL Formatter', icon: 'storage', category: 'Dev Tools', component: DevOpsTools },
+    { id: 'http-client', title: 'HTTP Client', icon: 'sync_alt', category: 'Dev Tools', component: DevOpsTools },
+    { id: 'regex-tester', title: 'Regex Tester', icon: 'find_replace', category: 'Dev Tools', component: DevOpsTools },
 
     // Data Science
     { id: 'regression', title: 'Linear Regression', icon: 'show_chart', category: 'Data Science', component: DataScienceTools },
@@ -296,9 +299,15 @@ const TOOLS = [
     { id: 'timestamp-conv', title: 'Timestamp', icon: 'schedule', category: 'Time', component: TimestampConverter },
     { id: 'stopwatch', title: 'Stopwatch', icon: 'timer', category: 'Time', component: Stopwatch },
     { id: 'pomodoro-timer', title: 'Pomodoro Timer', icon: 'schedule', category: 'Time', component: PomodoroTimer },
-    { id: 'metronome', title: 'Metronome', icon: 'timer', category: 'Time', component: Measurements },
+    { id: 'metronome', title: 'Metronome', icon: 'timer', category: 'Audio', component: AudioTools },
     { id: 'reaction-time', title: 'Reaction Time', icon: 'bolt', category: 'Time', component: Measurements },
     { id: 'tabata-timer', title: 'Tabata Timer', icon: 'fitness_center', category: 'Time', component: Measurements },
+
+    // Travel
+    { id: 'travel-main', title: 'Travel Hub', icon: 'travel_explore', category: 'Travel', component: TravelTools },
+    { id: 'world-clock', title: 'World Clock', icon: 'public', category: 'Travel', component: TravelTools },
+    { id: 'timezone-conv', title: 'Timezone Conv', icon: 'schedule', category: 'Travel', component: TravelTools },
+    { id: 'packing-list', title: 'Packing List', icon: 'checklist', category: 'Travel', component: TravelTools },
 
     // Misc
     { id: 'panchangam', title: 'Panchangam', icon: 'auto_awesome', category: 'Misc', component: TeluguPanchangam },
