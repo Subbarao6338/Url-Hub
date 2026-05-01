@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, memo, lazy, Suspense } from 'react
 import { storage } from '../utils/storage';
 import CategoryNav from './CategoryNav';
 import NatureEmptyState from './NatureEmptyState';
+import { highlightText } from '../utils/helpers';
 
 // Lazy Loaded Tools
 const Calculator = lazy(() => import('./tools/Calculator'));
@@ -461,12 +462,6 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
   TOOLS.forEach(t => {
     stats[t.category] = (stats[t.category] || 0) + 1;
   });
-
-  const highlightText = (text, query) => {
-    if (!query) return text;
-    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    return text.replace(regex, '<mark>$1</mark>');
-  };
 
   const handleCopyResult = () => {
     if (!currentResult?.text) return;

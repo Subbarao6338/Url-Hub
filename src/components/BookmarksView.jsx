@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CategoryNav from './CategoryNav';
 import NatureEmptyState from './NatureEmptyState';
 import API_BASE from '../api';
-
-const highlightText = (text, query) => {
-  if (!query) return text;
-  const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-  return text.replace(regex, '<mark>$1</mark>');
-};
+import { highlightText } from '../utils/helpers';
 
 const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refreshTrigger, hideUrls, hideIcons, showStats, openInNewTab }) => {
   const [links, setLinks] = useState([]);
