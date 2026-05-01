@@ -230,7 +230,8 @@ const SettingsModal = ({
                 onClick={() => {
                   const themes = [
                     'light', 'dark', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter',
-                    'autumn', 'lavender', 'spring', 'galaxy', 'blackhole', 'midnight', 'aurora', 'blossom', 'canyon', 'glacier'
+                    'autumn', 'lavender', 'spring', 'galaxy', 'blackhole', 'midnight', 'aurora', 'blossom', 'canyon', 'glacier',
+                    'meadow', 'sunlight', 'breeze', 'seedling', 'mist'
                   ];
                   const randomTheme = themes[Math.floor(Math.random() * themes.length)];
                   setTheme(randomTheme);
@@ -244,7 +245,8 @@ const SettingsModal = ({
             <div className="pill-group">
               {[
                 'light', 'dark', 'system', 'nature', 'forest', 'ocean', 'earth', 'mountain', 'desert', 'sunset', 'winter',
-                'autumn', 'lavender', 'spring', 'galaxy', 'blackhole', 'midnight', 'aurora', 'blossom', 'canyon', 'glacier'
+                'autumn', 'lavender', 'spring', 'galaxy', 'blackhole', 'midnight', 'aurora', 'blossom', 'canyon', 'glacier',
+                'meadow', 'sunlight', 'breeze', 'seedling', 'mist'
               ].map(t => {
                 const icons = {
                   light: 'light_mode', dark: 'dark_mode', system: 'settings_brightness', nature: 'eco', forest: 'forest',
@@ -252,7 +254,8 @@ const SettingsModal = ({
                   sunset: 'wb_twilight', winter: 'ac_unit', autumn: 'park', lavender: 'spa',
                   spring: 'local_florist', galaxy: 'auto_awesome', blackhole: 'cyclone',
                   midnight: 'nights_stay', aurora: 'waves', blossom: 'filter_vintage',
-                  canyon: 'terrain', glacier: 'ac_unit'
+                  canyon: 'terrain', glacier: 'ac_unit', meadow: 'grass', sunlight: 'wb_sunny',
+                  breeze: 'air', seedling: 'nature', mist: 'cloud'
                 };
                 return (
                   <button
@@ -288,13 +291,13 @@ const SettingsModal = ({
                 <span className="material-icons">view_module</span>
                 <span>Compact Mode</span>
               </button>
-              <button className={`pill ${disableGlass ? 'active' : ''}`} onClick={() => setDisableGlass(!disableGlass)}>
-                <span className="material-icons">{disableGlass ? 'blur_on' : 'blur_off'}</span>
-                <span>{disableGlass ? 'Enable' : 'Disable'} Glass</span>
+              <button className={`pill ${!disableGlass ? 'active' : ''}`} onClick={() => setDisableGlass(!disableGlass)}>
+                <span className="material-icons">{!disableGlass ? 'blur_on' : 'blur_off'}</span>
+                <span>Glass Effect</span>
               </button>
               <button className={`pill ${enableAurora ? 'active' : ''}`} onClick={() => setEnableAurora(!enableAurora)}>
                 <span className="material-icons">auto_awesome</span>
-                <span>Aurora BG</span>
+                <span>Aurora Background</span>
               </button>
               <button className={`pill ${reducedMotion ? 'active' : ''}`} onClick={() => setReducedMotion(!reducedMotion)}>
                 <span className="material-icons">motion_photos_off</span>
@@ -449,7 +452,7 @@ const SettingsModal = ({
       </div>
 
       <div className="form-actions" style={{marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border)'}}>
-        <button type="button" className="btn-primary" onClick={onClose} style={{width: '100%', padding: '12px'}}>Close</button>
+        <button type="button" className="btn-primary" onClick={onClose}>Close</button>
       </div>
     </div>
   );
