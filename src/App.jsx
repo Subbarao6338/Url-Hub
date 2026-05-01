@@ -388,14 +388,8 @@ function App() {
           appName={appName}
           currentProfile={enableProfiles ? currentProfileName : 'Default'}
           profiles={profiles}
-          currentTab={currentTab}
           setView={(view) => setTab(view)}
           onSettingsClick={() => setIsSettingsOpen(true)}
-          onSearchToggle={handleSearchToggle}
-          searchActive={searchActive}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onSearchClear={handleSearchClear}
           hideBookmarks={hideBookmarks}
         >
           <SearchOverlay
@@ -403,7 +397,6 @@ function App() {
             query={searchQuery}
             onChange={setSearchQuery}
             onClear={handleSearchClear}
-            onToggle={handleSearchToggle}
             currentTab={currentTab}
           />
         </Header>

@@ -95,17 +95,11 @@ const SoundMeter = () => {
 
     return (
         <div className="text-center">
-            {error && <div className="danger mb-20 p-10 font-semibold" style={{ border: '1px solid var(--error)', borderRadius: '12px' }}>{error}</div>}
+            {error && <div className="danger-box">{error}</div>}
             <div className="sensor-circle" style={{
-                margin: '20px auto',
                 width: '180px',
                 height: '180px',
-                borderRadius: '50%',
-                border: '8px solid var(--bg-secondary)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
+                border: '8px solid var(--border)',
                 background: `conic-gradient(var(--primary) ${decibels * 3.6}deg, transparent 0deg)`
             }}>
                 <div style={{ fontSize: '3rem', fontWeight: 'bold' }}>{decibels}</div>
@@ -158,14 +152,13 @@ const Flashlight = () => {
 
     return (
         <div className="text-center">
-            {error && <div className="danger mb-20 p-10 font-semibold" style={{ border: '1px solid var(--error)', borderRadius: '12px' }}>{error}</div>}
+            {error && <div className="danger-box">{error}</div>}
             <div className={`sensor-circle ${on ? 'active' : ''}`} onClick={toggle} style={{
-                margin: '20px auto',
                 width: '150px',
                 height: '150px',
                 cursor: 'pointer',
-                background: on ? 'var(--sunlight)' : 'var(--bg-secondary)',
-                boxShadow: on ? '0 0 40px var(--sunlight)' : 'none'
+                background: on ? 'var(--nature-gold)' : 'var(--nature-mist)',
+                boxShadow: on ? '0 0 40px var(--nature-gold)' : 'none'
             }}>
                 <span className="material-icons" style={{ fontSize: '5rem', color: on ? 'white' : 'var(--text-muted)' }}>
                     {on ? 'flashlight_on' : 'flashlight_off'}
@@ -239,10 +232,10 @@ const Magnifier = () => {
 
     return (
         <div className="text-center">
-            {error ? <p className="danger">{error}</p> : (
+            {error ? <p className="danger-box">{error}</p> : (
                 <>
-                    <div style={{ width: '100%', height: '300px', borderRadius: '24px', overflow: 'hidden', position: 'relative', background: '#000' }}>
-                        <video ref={videoRef} autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${zoom})` }} />
+                    <div className="magnifier-preview">
+                        <video ref={videoRef} autoPlay playsInline className="magnifier-video" style={{ transform: `scale(${zoom})` }} />
                     </div>
                     <div className="mt-20">
                         <label className="flex-between">
@@ -288,8 +281,8 @@ const Luxmeter = () => {
 
     return (
         <div className="text-center p-20">
-            {error && <div className="danger mb-20 p-10 font-semibold" style={{ border: '1px solid var(--error)', borderRadius: '12px' }}>{error}</div>}
-            <div className="sensor-circle" style={{ margin: '20px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            {error && <div className="danger-box">{error}</div>}
+            <div className="sensor-circle">
                 <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--primary)' }}>{light.toFixed(0)}</div>
                 <div style={{ fontSize: '1rem', opacity: 0.6 }}>lux</div>
             </div>
@@ -333,8 +326,8 @@ const Magnetic = () => {
 
     return (
         <div className="text-center p-20">
-            {error && <div className="danger mb-20 p-10 font-semibold" style={{ border: '1px solid var(--error)', borderRadius: '12px' }}>{error}</div>}
-            <div className="sensor-circle" style={{ margin: '20px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            {error && <div className="danger-box">{error}</div>}
+            <div className="sensor-circle">
                 <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--primary)' }}>{total}</div>
                 <div style={{ fontSize: '1rem', opacity: 0.6 }}>µT</div>
             </div>
