@@ -23,6 +23,8 @@ const Games = ({ onResultChange, toolId }) => {
         <button className={`pill ${activeTab === 'chess-960' ? 'active' : ''}`} onClick={() => setActiveTab('chess-960')}>Chess960</button>
         <button className={`pill ${activeTab === 'darts' ? 'active' : ''}`} onClick={() => setActiveTab('darts')}>Darts</button>
         <button className={`pill ${activeTab === 'tictactoe' ? 'active' : ''}`} onClick={() => setActiveTab('tictactoe')}>Tic-Tac-Toe</button>
+        <button className={`pill ${activeTab === 'snake' ? 'active' : ''}`} onClick={() => setActiveTab('snake')}>Snake</button>
+        <button className={`pill ${activeTab === '2048' ? 'active' : ''}`} onClick={() => setActiveTab('2048')}>2048</button>
       </div>)}
 
       {activeTab === 'spin-wheel' && <SpinWheelTool />}
@@ -34,6 +36,8 @@ const Games = ({ onResultChange, toolId }) => {
       {activeTab === 'chess-960' && <Chess960Tool />}
       {activeTab === 'darts' && <DartsScoreboardTool />}
       {activeTab === 'tictactoe' && <TicTacToeTool />}
+      {activeTab === 'snake' && <SnakeGame />}
+      {activeTab === '2048' && <Game2048 />}
     </div>
   );
 };
@@ -419,6 +423,218 @@ const TicTacToeTool = () => {
                 ))}
             </div>
             <button className="btn-primary mt-20 w-full" onClick={() => { setBoard(Array(9).fill(null)); setXIsNext(true); }}>Reset Game</button>
+        </div>
+    );
+};
+
+const SnakeGame = () => {
+    const [snake, setSnake] = useState([{ x: 10, y: 10 }]);
+    const [food, setFood] = useState({ x: 5, y: 5 });
+    const [dir, setDir] = useState({ x: 0, y: -1 });
+    const [gameOver, setGameOver] = useState(false);
+    const [score, setScore] = useState(0);
+
+    useEffect(() => {
+        if (gameOver) return;
+        const move = setInterval(() => {
+            setSnake(s => {
+                const head = { x: s[0].x + dir.x, y: s[0].y + dir.y };
+                if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || s.find(p => p.x === head.x && p.y === head.y)) {
+                    setGameOver(true);
+                    return s;
+                }
+                const newSnake = [head, ...s];
+                if (head.x === food.x && head.y === food.y) {
+                    setScore(sc => sc + 1);
+                    setFood({ x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) });
+                } else {
+                    newSnake.pop();
+                }
+                return newSnake;
+            });
+        }, 150);
+        return () => clearInterval(move);
+    }, [dir, food, gameOver]);
+
+    const handleKey = (e) => {
+        if (e.key === 'ArrowUp' && dir.y === 0) setDir({ x: 0, y: -1 });
+        if (e.key === 'ArrowDown' && dir.y === 0) setDir({ x: 0, y: 1 });
+        if (e.key === 'ArrowLeft' && dir.x === 0) setDir({ x: -1, y: 0 });
+        if (e.key === 'ArrowRight' && dir.x === 0) setDir({ x: 1, y: 0 });
+    };
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKey);
+        return () => window.removeEventListener('keydown', handleKey);
+    }, [dir]);
+
+    return (
+        <div className="text-center">
+            <div className="mb-10 font-bold">Score: {score}</div>
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(20, 1fr)',
+                width: '300px',
+                height: '300px',
+                margin: '0 auto',
+                background: 'var(--surface)',
+                border: '4px solid var(--border)',
+                borderRadius: '12px',
+                position: 'relative'
+            }}>
+                {snake.map((p, i) => <div key={i} style={{ gridColumn: p.x + 1, gridRow: p.y + 1, background: 'var(--primary)', borderRadius: '4px' }} />)}
+                <div style={{ gridColumn: food.x + 1, gridRow: food.y + 1, background: '#ef4444', borderRadius: '50%' }} />
+                {gameOver && <div className="flex-center" style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.7)', color: 'white', flexDirection: 'column' }}>
+                    <h2>GAME OVER</h2>
+                    <button className="pill active" onClick={() => { setSnake([{ x: 10, y: 10 }]); setGameOver(false); setScore(0); }}>Restart</button>
+                </div>}
+            </div>
+            <div className="grid grid-3 mt-20" style={{ maxWidth: '200px', margin: '20px auto' }}>
+                <div /> <button className="pill" onClick={() => setDir({ x: 0, y: -1 })}><span className="material-icons">arrow_upward</span></button> <div />
+                <button className="pill" onClick={() => setDir({ x: -1, y: 0 })}><span className="material-icons">arrow_back</span></button>
+                <button className="pill" onClick={() => setDir({ x: 0, y: 1 })}><span className="material-icons">arrow_downward</span></button>
+                <button className="pill" onClick={() => setDir({ x: 1, y: 0 })}><span className="material-icons">arrow_forward</span></button>
+            </div>
+        </div>
+    );
+};
+
+const Game2048 = () => {
+    const [grid, setGrid] = useState(Array(16).fill(0));
+    const [score, setScore] = useState(0);
+    const [gameOver, setGameOver] = useState(false);
+
+    const init = () => {
+        let newGrid = Array(16).fill(0);
+        addRandom(newGrid);
+        addRandom(newGrid);
+        setGrid(newGrid);
+        setScore(0);
+        setGameOver(false);
+    };
+
+    const addRandom = (g) => {
+        const empties = g.map((v, i) => v === 0 ? i : null).filter(v => v !== null);
+        if (empties.length > 0) {
+            g[empties[Math.floor(Math.random() * empties.length)]] = Math.random() > 0.9 ? 4 : 2;
+        }
+    };
+
+    const move = (direction) => {
+        if (gameOver) return;
+        let newGrid = [...grid];
+        let moved = false;
+
+        const rotate = (g) => {
+            let res = Array(16).fill(0);
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    res[c * 4 + (3 - r)] = g[r * 4 + c];
+                }
+            }
+            return res;
+        };
+
+        let rotCount = { 'left': 0, 'up': 3, 'right': 2, 'down': 1 }[direction];
+        for (let i = 0; i < rotCount; i++) newGrid = rotate(newGrid);
+
+        for (let r = 0; r < 4; r++) {
+            let row = newGrid.slice(r * 4, r * 4 + 4).filter(v => v !== 0);
+            for (let i = 0; i < row.length - 1; i++) {
+                if (row[i] === row[i + 1]) {
+                    row[i] *= 2;
+                    setScore(s => s + row[i]);
+                    row.splice(i + 1, 1);
+                    moved = true;
+                }
+            }
+            while (row.length < 4) row.push(0);
+            for (let c = 0; c < 4; c++) {
+                if (newGrid[r * 4 + c] !== row[c]) moved = true;
+                newGrid[r * 4 + c] = row[c];
+            }
+        }
+
+        for (let i = 0; i < (4 - rotCount) % 4; i++) newGrid = rotate(newGrid);
+
+        if (moved) {
+            addRandom(newGrid);
+            setGrid(newGrid);
+            if (!canMove(newGrid)) setGameOver(true);
+        }
+    };
+
+    const canMove = (g) => {
+        if (g.includes(0)) return true;
+        for (let r = 0; r < 4; r++) {
+            for (let c = 0; c < 4; c++) {
+                let v = g[r * 4 + c];
+                if (c < 3 && v === g[r * 4 + (c + 1)]) return true;
+                if (r < 3 && v === g[(r + 1) * 4 + c]) return true;
+            }
+        }
+        return false;
+    };
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'ArrowLeft') move('left');
+            if (e.key === 'ArrowRight') move('right');
+            if (e.key === 'ArrowUp') move('up');
+            if (e.key === 'ArrowDown') move('down');
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [grid, gameOver]);
+
+    useEffect(init, []);
+
+    return (
+        <div className="text-center">
+             <div className="flex-between mb-10 px-20">
+                <div className="font-bold">2048 Nature</div>
+                <div className="pill active">Score: {score}</div>
+             </div>
+             <div style={{
+                 display: 'grid',
+                 gridTemplateColumns: 'repeat(4, 1fr)',
+                 gap: '8px',
+                 width: '280px',
+                 height: '280px',
+                 margin: '0 auto',
+                 background: 'var(--border)',
+                 padding: '8px',
+                 borderRadius: '16px',
+                 position: 'relative'
+             }}>
+                 {grid.map((v, i) => (
+                     <div key={i} style={{
+                         background: v === 0 ? 'rgba(var(--primary-rgb), 0.05)' : `rgba(var(--primary-rgb), ${Math.min(0.9, 0.1 + Math.log2(v)/12)})`,
+                         color: v > 4 ? 'white' : 'var(--on-surface)',
+                         display: 'flex',
+                         alignItems: 'center',
+                         justifyContent: 'center',
+                         fontSize: v > 100 ? '1rem' : '1.2rem',
+                         fontWeight: '800',
+                         borderRadius: '10px',
+                         transition: 'all 0.1s ease-in-out'
+                     }}>
+                         {v > 0 ? v : ''}
+                     </div>
+                 ))}
+                 {gameOver && (
+                     <div className="flex-center" style={{ position: 'absolute', inset: 0, background: 'rgba(var(--surface-rgb), 0.8)', borderRadius: '16px', flexDirection: 'column', backdropFilter: 'blur(4px)' }}>
+                         <h2 className="mb-10">Game Over!</h2>
+                         <button className="btn-primary" onClick={init}>Try Again</button>
+                     </div>
+                 )}
+             </div>
+             <div className="grid grid-3 mt-20" style={{ maxWidth: '180px', margin: '20px auto' }}>
+                <div /> <button className="pill" onClick={() => move('up')}><span className="material-icons">arrow_upward</span></button> <div />
+                <button className="pill" onClick={() => move('left')}><span className="material-icons">arrow_back</span></button>
+                <button className="pill" onClick={() => move('down')}><span className="material-icons">arrow_downward</span></button>
+                <button className="pill" onClick={() => move('right')}><span className="material-icons">arrow_forward</span></button>
+            </div>
         </div>
     );
 };

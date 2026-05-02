@@ -1,10 +1,10 @@
-const CACHE_NAME = 'url-hub-v14';
+const CACHE_NAME = 'url-hub-v15';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './assets/favicon.svg',
   './assets/urlhub.png',
-  'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap',
+  'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap',
   'https://fonts.googleapis.com/icon?family=Material+Icons'
 ];
 
@@ -71,12 +71,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Stale-while-revalidate for cachable assets
+  // Cache First for static assets, Stale-while-revalidate for fonts
   if (isCachable) {
     event.respondWith(
       caches.open(CACHE_NAME).then((cache) => {
         const matchOptions = isLocal ? { ignoreSearch: true } : {};
         return cache.match(event.request, matchOptions).then((cachedResponse) => {
+          if (cachedResponse && !isFont) return cachedResponse;
+
           const fetchPromise = fetch(event.request).then((networkResponse) => {
             if (networkResponse.ok) {
               cache.put(event.request, networkResponse.clone());

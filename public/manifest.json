@@ -40,6 +40,37 @@
       "description": "Calculate taxes and totals",
       "url": "/?tab=toolbox&tool=vat-calc",
       "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Habit Tracker",
+      "short_name": "Habits",
+      "description": "Track your daily habits",
+      "url": "/?tab=toolbox&tool=habit-tracker",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Canvas Draw",
+      "short_name": "Draw",
+      "description": "Quick offline drawing",
+      "url": "/?tab=toolbox&tool=canvas-draw",
+      "icons": [{ "src": "assets/favicon.svg", "sizes": "any" }]
+    }
+  ],
+  "categories": ["productivity", "utilities", "education", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "assets/screenshot-mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Nature Hub on Mobile"
+    },
+    {
+      "src": "assets/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Nature Hub on Desktop"
     }
   ],
   "icons": [

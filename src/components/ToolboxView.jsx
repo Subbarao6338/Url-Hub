@@ -86,6 +86,10 @@ const DevOpsTools = lazy(() => import('./tools/DevOpsTools'));
 const DataScienceTools = lazy(() => import('./tools/DataScienceTools'));
 const AudioTools = lazy(() => import('./tools/AudioTools'));
 const SecurityTools = lazy(() => import('./tools/SecurityTools'));
+const CreativeTools = lazy(() => import('./tools/CreativeTools'));
+const EducationTools = lazy(() => import('./tools/EducationTools'));
+const AccessibilityTools = lazy(() => import('./tools/AccessibilityTools'));
+const ProductivityTools = lazy(() => import('./tools/ProductivityTools'));
 
 const TOOLS = [
     // Measurements (6 Tools)
@@ -103,6 +107,8 @@ const TOOLS = [
     { id: 'ai-summary', title: 'AI Summary', icon: 'auto_fix_high', category: 'Productivity', component: AiSummary },
     { id: 'water-reminder', title: 'Water Reminder', icon: 'local_drink', category: 'Productivity', component: WaterReminder },
     { id: 'nature-sounds', title: 'Nature Sounds', icon: 'filter_drama', category: 'Productivity', component: NatureSounds },
+    { id: 'habit-tracker', title: 'Habit Tracker', icon: 'event_available', category: 'Productivity', component: ProductivityTools },
+    { id: 'sticky-notes', title: 'Sticky Notes', icon: 'note_alt', category: 'Productivity', component: ProductivityTools },
 
     // Games (11 Tools)
     { id: 'dice-roller', title: 'Dice Roller', icon: 'casino', category: 'Games', component: DiceRoller },
@@ -115,6 +121,8 @@ const TOOLS = [
     { id: 'chess960', title: 'Chess960', icon: 'grid_view', category: 'Games', component: Games },
     { id: 'darts-scoreboard', title: 'Darts Scoreboard', icon: 'ads_click', category: 'Games', component: Games },
     { id: 'tictactoe', title: 'Tic-Tac-Toe', icon: 'grid_view', category: 'Games', component: Games },
+    { id: 'snake', title: 'Nature Snake', icon: 'pest_control', category: 'Games', component: Games },
+    { id: '2048', title: 'Nature 2048', icon: 'grid_4x4', category: 'Games', component: Games },
 
     // Text (12 Tools)
     { id: 'lorem-ipsum', title: 'Lorem Ipsum', icon: 'notes', category: 'Text', component: LoremIpsum },
@@ -197,6 +205,12 @@ const TOOLS = [
     { id: 'color-harm', title: 'Color Harmonizer', icon: 'style', category: 'Colors', component: ColorTools },
     { id: 'color-blend', title: 'Color Blender', icon: 'format_color_fill', category: 'Colors', component: ColorTools },
     { id: 'color-picker-std', title: 'Color Picker', icon: 'palette', category: 'Colors', component: ColorPicker },
+    { id: 'canvas-draw', title: 'Canvas Draw', icon: 'gesture', category: 'Creative', component: CreativeTools },
+    { id: 'palette-gen', title: 'Palette Gen', icon: 'color_lens', category: 'Creative', component: CreativeTools },
+    { id: 'periodic-table', title: 'Periodic Table', icon: 'grid_view', category: 'Education', component: EducationTools },
+    { id: 'unit-circle', title: 'Unit Circle', icon: 'architecture', category: 'Education', component: EducationTools },
+    { id: 'contrast-checker', title: 'Contrast Checker', icon: 'contrast', category: 'Accessibility', component: AccessibilityTools },
+    { id: 'screen-reader', title: 'Screen Reader Sim', icon: 'record_voice_over', category: 'Accessibility', component: AccessibilityTools },
 
     // PDF Tools (Edit, Optimize, Secure)
     { id: 'pdf-merge', title: 'Merge PDF', icon: 'merge_type', category: 'PDF Tools', component: PdfEdit },
@@ -290,6 +304,8 @@ const TOOLS = [
     { id: 'android-sensors', title: 'Sensors', icon: 'sensors', category: 'System', component: AndroidSensors },
     { id: 'flashlight', title: 'Flashlight', icon: 'flashlight_on', category: 'System', component: HardwareTools },
     { id: 'vibrometer', title: 'Vibrometer', icon: 'vibration', category: 'System', component: HardwareTools },
+    { id: 'battery', title: 'Battery Health', icon: 'battery_full', category: 'System', component: HardwareTools },
+    { id: 'cpu', title: 'CPU Monitor', icon: 'speed', category: 'System', component: HardwareTools },
 
     // Health
     { id: 'bmr-calc', title: 'BMR Calculator', icon: 'monitor_heart', category: 'Health', component: HealthTools },
@@ -340,6 +356,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
 
   const togglePin = (e, id) => {
     e.stopPropagation();
+    if (navigator.vibrate) navigator.vibrate(10);
     let newPinned;
     if (pinnedTools.includes(id)) {
       newPinned = pinnedTools.filter(t => t !== id);
@@ -350,6 +367,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
   };
 
   const openTool = (id, skipHistory = false) => {
+    if (navigator.vibrate) navigator.vibrate(15);
     setActiveToolId(id);
     setCurrentResult(null);
 
@@ -589,7 +607,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
                       const tool = TOOLS.find(t => t.id === id);
                       if (!tool) return null;
                       return (
-                        <div key={id} className="card p-15 min-h-unset no-animation" onClick={() => openTool(tool.id)}>
+                        <div key={id} className="card p-15 min-h-unset no-animation" onClick={() => openTool(tool.id)} tabIndex="0" onKeyDown={(e) => e.key === 'Enter' && openTool(tool.id)}>
                           <div className="card-header m-0 gap-12">
                             <span className="material-icons" style={{ color: 'var(--primary)' }}>{tool.icon}</span>
                             <span className="font-semibold">{tool.title}</span>
@@ -613,7 +631,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
                       const tool = TOOLS.find(t => t.id === id);
                       if (!tool) return null;
                       return (
-                        <div key={id} className="card p-15 min-h-unset no-animation" onClick={() => openTool(tool.id)}>
+                        <div key={id} className="card p-15 min-h-unset no-animation" onClick={() => openTool(tool.id)} tabIndex="0" onKeyDown={(e) => e.key === 'Enter' && openTool(tool.id)}>
                           <div className="card-header m-0 gap-12">
                             <span className="material-icons" style={{ color: 'var(--text-muted)' }}>{tool.icon}</span>
                             <span className="font-semibold">{tool.title}</span>
@@ -692,7 +710,7 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
 };
 
 const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, searchQuery, highlightText }) => (
-    <div id={`card-${tool.id}`} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)}>
+    <div id={`card-${tool.id}`} className="card" style={{'--delay': idx}} onClick={() => openTool(tool.id)} tabIndex="0" onKeyDown={(e) => e.key === 'Enter' && openTool(tool.id)}>
        <div className="card-actions">
             <button className={`pin-btn ${isPinned ? 'active' : ''}`} onClick={(e) => togglePin(e, tool.id)} title="Pin Tool">
                 <span className="material-icons">push_pin</span>
@@ -735,6 +753,9 @@ const getCategoryIcon = (cat) => {
         'Security': 'security',
         'Productivity': 'assignment',
         'Health': 'monitor_heart',
+        'Creative': 'brush',
+        'Education': 'school',
+        'Accessibility': 'accessibility',
     };
     return icons[cat] || 'folder';
 };

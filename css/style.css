@@ -488,7 +488,10 @@ body::before {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  transition: all 0.4s var(--transition-bounce);
+  transition: transform var(--transition-speed) var(--transition-bounce),
+              box-shadow var(--transition-speed) ease,
+              background var(--transition-speed) ease,
+              border-color var(--transition-speed) ease;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -496,11 +499,12 @@ body::before {
   box-shadow: var(--shadow-sm);
 }
 
-.card:hover {
+.card:hover, .card:focus {
   transform: translateY(-8px) scale(1.02);
   background: var(--surface-hover);
   box-shadow: var(--shadow-lg);
   border-color: var(--primary);
+  outline: none;
 }
 
 .card-header {
@@ -799,7 +803,7 @@ body::before {
   color: var(--on-surface);
   cursor: pointer;
   font-weight: 700;
-  transition: all 0.2s;
+  transition: all var(--transition-speed) var(--transition-bounce);
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -856,7 +860,9 @@ input.pill:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--pri
   border: none;
   cursor: pointer;
   box-shadow: 0 8px 16px var(--primary-glow);
-  transition: all 0.3s;
+  transition: transform var(--transition-speed) var(--transition-bounce),
+              box-shadow var(--transition-speed) ease,
+              opacity var(--transition-speed) ease;
 }
 
 .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 20px var(--primary-glow); }

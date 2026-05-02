@@ -25,6 +25,8 @@ const HardwareTools = ({ toolId }) => {
           <button className={`pill ${activeTab === 'magnifier' ? 'active' : ''}`} onClick={() => setActiveTab('magnifier')}>Magnifier</button>
           <button className={`pill ${activeTab === 'luxmeter' ? 'active' : ''}`} onClick={() => setActiveTab('luxmeter')}>Luxmeter</button>
           <button className={`pill ${activeTab === 'magnetic' ? 'active' : ''}`} onClick={() => setActiveTab('magnetic')}>Magnetic</button>
+          <button className={`pill ${activeTab === 'battery' ? 'active' : ''}`} onClick={() => setActiveTab('battery')}>Battery</button>
+          <button className={`pill ${activeTab === 'cpu' ? 'active' : ''}`} onClick={() => setActiveTab('cpu')}>CPU</button>
         </div>
       )}
 
@@ -34,6 +36,8 @@ const HardwareTools = ({ toolId }) => {
       {activeTab === 'magnifier' && <Magnifier />}
       {activeTab === 'luxmeter' && <Luxmeter />}
       {activeTab === 'magnetic' && <Magnetic />}
+      {activeTab === 'battery' && <BatteryHealth />}
+      {activeTab === 'cpu' && <CpuMonitor />}
     </div>
   );
 };
@@ -339,6 +343,79 @@ const Magnetic = () => {
             <button className={`btn-primary w-full ${active ? 'danger' : ''}`} onClick={active ? stop : start}>
                 {active ? 'Stop Sensor' : 'Start Sensor'}
             </button>
+        </div>
+    );
+};
+
+const BatteryHealth = () => {
+    const [info, setInfo] = useState(null);
+
+    useEffect(() => {
+        if (navigator.getBattery) {
+            navigator.getBattery().then(batt => {
+                const update = () => {
+                    setInfo({
+                        level: batt.level,
+                        charging: batt.charging,
+                        chargingTime: batt.chargingTime,
+                        dischargingTime: batt.dischargingTime
+                    });
+                };
+                update();
+                batt.addEventListener('levelchange', update);
+                batt.addEventListener('chargingchange', update);
+            });
+        }
+    }, []);
+
+    if (!info) return <div className="text-center p-20">Battery API not supported or loading...</div>;
+
+    return (
+        <div className="text-center">
+            <div className="sensor-circle" style={{
+                width: '150px',
+                height: '150px',
+                border: '8px solid var(--border)',
+                background: `linear-gradient(to top, var(--primary) ${info.level * 100}%, transparent 0%)`
+            }}>
+                <div style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>{Math.round(info.level * 100)}%</div>
+            </div>
+            <div className="grid gap-10 mt-20">
+                <div className="card p-10 flex-between"><span>Status:</span> <b>{info.charging ? 'Charging' : 'Discharging'}</b></div>
+                <div className="card p-10 flex-between"><span>Time Left:</span> <b>{info.charging ? (info.chargingTime === Infinity ? 'Full' : info.chargingTime + 's') : (info.dischargingTime === Infinity ? 'N/A' : info.dischargingTime + 's')}</b></div>
+            </div>
+        </div>
+    );
+};
+
+const CpuMonitor = () => {
+    const [load, setLoad] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            // Web standard doesn't have direct CPU load, simulating via performance.now
+            const start = performance.now();
+            setTimeout(() => {
+                const end = performance.now();
+                const delta = end - start - 100; // Expected 100ms
+                setLoad(Math.min(100, Math.max(0, delta * 10)));
+            }, 100);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="text-center">
+             <div className="sensor-circle" style={{
+                width: '180px',
+                height: '180px',
+                border: '8px solid var(--border)',
+                background: `conic-gradient(var(--primary) ${load * 3.6}deg, transparent 0deg)`
+            }}>
+                <div style={{ fontSize: '3rem', fontWeight: 'bold' }}>{Math.round(load)}%</div>
+                <div style={{ fontSize: '0.8rem', opacity: 0.6 }}>Estimated Load</div>
+            </div>
+            <p className="mt-20 opacity-6">Based on event loop latency</p>
         </div>
     );
 };

@@ -50,6 +50,7 @@ function App() {
   const [showProjectsTab, setShowProjectsTab] = useState(storage.getBoolean('hub_show_projects_tab', false));
 
   const setTab = (tab, skipHistory = false) => {
+    if (navigator.vibrate) navigator.vibrate(10);
     setCurrentTab(tab);
     if (!skipHistory) {
       window.history.pushState({ tab }, '', `?tab=${tab}`);
