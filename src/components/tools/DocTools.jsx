@@ -8,6 +8,8 @@ import TextHub from './subtools/TextHub';
 import MarkdownEditor from './subtools/MarkdownEditor';
 import DocTranslator from './subtools/DocTranslator';
 import BatchConverter from './subtools/BatchConverter';
+import DocxToMd from './subtools/DocxToMd';
+import OcrTool from './subtools/OcrTool';
 
 const DOC_TABS = [
   { id: 'pdf', label: 'PDF Hub', icon: 'picture_as_pdf' },
@@ -15,7 +17,9 @@ const DOC_TABS = [
   { id: 'text', label: 'Text Hub', icon: 'text_fields' },
   { id: 'md-editor', label: 'Markdown Editor', icon: 'edit_note' },
   { id: 'doc-translator', label: 'Doc Translator', icon: 'translate' },
-  { id: 'batch', label: 'Batch Converter', icon: 'layers' }
+  { id: 'batch', label: 'Batch Converter', icon: 'layers' },
+  { id: 'docx-md', label: 'Word to MD', icon: 'description' },
+  { id: 'ocr', label: 'Image OCR', icon: 'document_scanner' }
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 const DocTools = ({ toolId, onSubtoolChange }) => {
@@ -93,6 +97,8 @@ const DocTools = ({ toolId, onSubtoolChange }) => {
         {activeTab === 'md-editor' && <MarkdownEditor />}
         {activeTab === 'doc-translator' && <DocTranslator />}
         {activeTab === 'batch' && <BatchConverter />}
+        {activeTab === 'docx-md' && <DocxToMd />}
+        {activeTab === 'ocr' && <OcrTool />}
       </div>
     </div>
   );

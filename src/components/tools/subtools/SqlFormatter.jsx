@@ -19,11 +19,13 @@ const SqlFormatter = () => {
 
             const reservedWords = [
                 'SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'GROUP BY', 'ORDER BY',
-                'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM',
+                'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM', 'DELETE',
                 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'CROSS JOIN', 'OUTER JOIN',
                 'ON', 'LIMIT', 'OFFSET', 'HAVING', 'JOIN', 'UNION', 'UNION ALL',
                 'DISTINCT', 'AS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'IN', 'NOT IN',
-                'BETWEEN', 'LIKE', 'IS NULL', 'IS NOT NULL', 'INTERSECT', 'EXCEPT', 'WITH'
+                'BETWEEN', 'LIKE', 'IS NULL', 'IS NOT NULL', 'INTERSECT', 'EXCEPT', 'WITH',
+                'CREATE TABLE', 'DROP TABLE', 'ALTER TABLE', 'TRUNCATE TABLE', 'DESCRIBE',
+                'EXPLAIN', 'INDEX', 'TRIGGER', 'PROCEDURE', 'FUNCTION', 'VIEW', 'DATABASE'
             ];
 
             // Sort reserved words by length descending to match multi-word keywords first
@@ -31,13 +33,17 @@ const SqlFormatter = () => {
 
             // Normalize keywords to uppercase
             sortedReservedWords.forEach(word => {
-                const regex = new RegExp(`\\b${word}\\b`, 'gi');
+                const regex = new RegExp(`\\b${word.replace(/\s+/g, '\\s+')}\\b`, 'gi');
                 sql = sql.replace(regex, word.toUpperCase());
             });
 
             // Advanced formatting logic
-            const blockKeywords = ['SELECT', 'FROM', 'WHERE', 'GROUP BY', 'ORDER BY', 'SET', 'VALUES', 'INSERT INTO', 'UPDATE', 'HAVING', 'UNION', 'UNION ALL', 'INTERSECT', 'EXCEPT', 'WITH'];
-            const inlineKeywords = ['AND', 'OR', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'CROSS JOIN', 'OUTER JOIN'];
+            const blockKeywords = [
+                'SELECT', 'FROM', 'WHERE', 'GROUP BY', 'ORDER BY', 'SET', 'VALUES',
+                'INSERT INTO', 'UPDATE', 'DELETE FROM', 'DELETE', 'HAVING', 'UNION', 'UNION ALL',
+                'INTERSECT', 'EXCEPT', 'WITH', 'CREATE TABLE', 'ALTER TABLE', 'DROP TABLE', 'TRUNCATE TABLE'
+            ];
+            const inlineKeywords = ['AND', 'OR', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'CROSS JOIN', 'OUTER JOIN', 'ON'];
 
             blockKeywords.forEach(word => {
                 const regex = new RegExp(`\\b${word}\\b`, 'g');
@@ -49,8 +55,9 @@ const SqlFormatter = () => {
                 sql = sql.replace(regex, `\n  ${word}`);
             });
 
-            // Handle commas
-            sql = sql.replace(/,/g, ',\n  ');
+            // Handle commas (not inside parentheses to avoid breaking function calls)
+            // This is a simple approximation
+            sql = sql.replace(/,(?![^(]*\))/g, ',\n  ');
 
             // Restore strings
             strings.forEach((str, i) => {

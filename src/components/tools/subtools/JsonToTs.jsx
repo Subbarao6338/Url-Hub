@@ -36,36 +36,37 @@ const JsonToTs = () => {
             };
 
             const getTypeName = (val, key) => {
-                const type = typeof val;
                 if (val === null) return 'any';
-                if (type === 'string') return 'string';
-                if (type === 'number') return 'number';
-                if (type === 'boolean') return 'boolean';
                 if (Array.isArray(val)) {
                     if (val.length === 0) return 'any[]';
 
-                    // Check if it's an array of objects (not nested arrays)
-                    if (typeof val[0] === 'object' && val[0] !== null && !Array.isArray(val[0])) {
+                    const types = new Set();
+                    const objects = [];
+                    val.forEach(item => {
+                        if (item === null) types.add('null');
+                        else if (Array.isArray(item)) types.add('any[]');
+                        else if (typeof item === 'object') objects.push(item);
+                        else types.add(typeof item);
+                    });
+
+                    if (objects.length > 0) {
                         const merged = {};
-                        val.forEach(item => {
-                            if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
-                                deepMerge(merged, item);
-                            }
-                        });
+                        objects.forEach(item => deepMerge(merged, item));
                         const subName = key.charAt(0).toUpperCase() + key.slice(1);
-                        generateInterface(merged, subName, val);
-                        return `${subName}[]`;
+                        generateInterface(merged, subName, objects);
+                        types.add(subName);
                     }
 
-                    const subType = getTypeName(val[0], key);
-                    return `${subType}[]`;
+                    const typeArray = Array.from(types);
+                    if (typeArray.length === 1) return `${typeArray[0]}[]`;
+                    return `(${typeArray.join(' | ')})[]`;
                 }
-                if (type === 'object') {
+                if (typeof val === 'object') {
                     const subName = key.charAt(0).toUpperCase() + key.slice(1);
                     generateInterface(val, subName);
                     return subName;
                 }
-                return 'any';
+                return typeof val;
             };
 
             const generateInterface = (o, name, originalArray = null) => {
