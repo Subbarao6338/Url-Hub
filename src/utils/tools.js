@@ -15,7 +15,7 @@ const OpsTools = lazy(() => import('../components/tools/OpsTools'));
 export const TOOLS = [
     { id: 'ai-main', title: 'AI Hub', icon: 'auto_awesome', category: 'AI & Agents', component: AiTools, subTools: ['image-gen', 'chat', 'local'] },
     { id: 'agent-main', title: 'Agent Lab', icon: 'psychology', category: 'AI & Agents', component: AgentTools, subTools: ['ingest', 'generate', 'results', 'setup'] },
-    { id: 'doc-main', title: 'Media & Docs', icon: 'description', category: 'Media & Documents', component: DocTools, subTools: ['pdf', 'image', 'text', 'md-editor', 'doc-translator', 'batch'] },
+    { id: 'doc-main', title: 'Media & Docs', icon: 'description', category: 'Media & Documents', component: DocTools, subTools: ['pdf', 'image', 'text', 'md-editor', 'doc-translator', 'batch', 'docx-md', 'ocr'] },
     { id: 'web-main', title: 'Web Tools', icon: 'public', category: 'Web Tools', component: WebTools, subTools: ['social', 'social-downloader', 'archive', 'url2pdf', 'userscripts', 'bookmarklets'] },
     { id: 'data-main', title: 'Data Science', icon: 'insights', category: 'Data & Analytics', component: DataTools, subTools: ['viewer', 'science', 'adv-data', 'reconcile', 'synthetic', 'image-lab', 'anonymizer', 'json-csv', 'mock', 'finance'] },
     { id: 'dev-main', title: 'Dev Hub', icon: 'terminal', category: 'Developer Tools', component: DevTools, subTools: ['json-fmt', 'sql', 'diff', 'converter', 'security', 'regex', 'otp', 'kusto', 'base64', 'jwt', 'cron', 'url', 'word-rank', 'yaml', 'minifier', 'xml-json', 'xml-fmt', 'json-ts', 'color', 'qr-barcode'] },

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 
 const DataViewer = ({ setGlobalData, setRawFile }) => {
     const [data, setData] = useState([]);
@@ -11,36 +12,54 @@ const DataViewer = ({ setGlobalData, setRawFile }) => {
         if (!file) return;
         setFileName(file.name);
         setRawFile(file);
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const content = event.target.result;
-            if (file.name.endsWith('.csv')) {
-                Papa.parse(content, { header: true, complete: (results) => {
-                    setHeaders(results.meta.fields || []);
-                    setData(results.data);
-                    setGlobalData(results.data);
-                }});
-            } else if (file.name.endsWith('.json')) {
-                try {
-                    const jsonData = JSON.parse(content);
-                    const formattedData = Array.isArray(jsonData) ? jsonData : [jsonData];
-                    if (formattedData.length > 0) {
-                        setHeaders(Object.keys(formattedData[0]));
-                        setData(formattedData);
-                        setGlobalData(formattedData);
-                    }
-                } catch (e) {}
-            }
-        };
-        reader.readAsText(file);
+
+        if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                if (jsonData.length > 0) {
+                    setHeaders(Object.keys(jsonData[0]));
+                    setData(jsonData);
+                    setGlobalData(jsonData);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        } else {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const content = event.target.result;
+                if (file.name.endsWith('.csv')) {
+                    Papa.parse(content, { header: true, complete: (results) => {
+                        setHeaders(results.meta.fields || []);
+                        setData(results.data);
+                        setGlobalData(results.data);
+                    }});
+                } else if (file.name.endsWith('.json')) {
+                    try {
+                        const jsonData = JSON.parse(content);
+                        const formattedData = Array.isArray(jsonData) ? jsonData : [jsonData];
+                        if (formattedData.length > 0) {
+                            setHeaders(Object.keys(formattedData[0]));
+                            setData(formattedData);
+                            setGlobalData(formattedData);
+                        }
+                    } catch (e) {}
+                }
+            };
+            reader.readAsText(file);
+        }
     };
 
     return (
         <div className="grid gap-15">
             <div className="card p-30 glass-card grid gap-15 text-center">
                 <div className="file-input-wrapper">
-                    <input type="file" id="data-file" onChange={handleFileUpload} accept=".csv,.json" />
-                    <label htmlFor="data-file" className="file-input-label">{fileName || 'Choose CSV or JSON'}</label>
+                    <input type="file" id="data-file" onChange={handleFileUpload} accept=".csv,.json,.xlsx,.xls" />
+                    <label htmlFor="data-file" className="file-input-label">{fileName || 'Choose CSV, JSON or Excel'}</label>
                 </div>
             </div>
             {data.length > 0 && (
