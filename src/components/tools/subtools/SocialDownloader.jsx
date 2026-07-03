@@ -8,6 +8,7 @@ const SocialDownloader = () => {
     const [data, setData] = useState(null);
     const [result, setResult] = useState(null);
     const [summary, setSummary] = useState(null);
+    const [sponsors, setSponsors] = useState(null);
 
     const fetchInfo = async () => {
         if (!url) return;
@@ -15,11 +16,13 @@ const SocialDownloader = () => {
         setData(null);
         setResult(null);
         setSummary(null);
+        setSponsors(null);
         try {
             const res = await fetch(`/api/social/info?url=${encodeURIComponent(url)}`);
             const json = await res.json();
             if (res.ok) {
                 setData(json);
+                if (json.id) fetchSponsors(json.id);
             } else {
                 throw new Error(json.detail || 'Failed to fetch media info.');
             }
@@ -62,6 +65,18 @@ const SocialDownloader = () => {
             unitIndex++;
         }
         return `${size.toFixed(1)} ${units[unitIndex]}`;
+    };
+
+    const fetchSponsors = async (videoId) => {
+        try {
+            const res = await fetch(`/api/social/sponsor-segments?video_id=${videoId}`);
+            const json = await res.json();
+            if (json.success) {
+                setSponsors(json.segments);
+            }
+        } catch (e) {
+            console.error("Failed to fetch sponsors:", e);
+        }
     };
 
     const summarizeVideo = async () => {
@@ -108,17 +123,37 @@ const SocialDownloader = () => {
                         </button>
                     </div>
 
-                    {summary && (
-                        <div className="card p-20 bg-surface-variant border-none animate-fadeIn">
-                            <h5 className="mb-10 flex-center gap-10" style={{justifyContent: 'flex-start'}}>
-                                <span className="material-icons color-primary">description</span>
-                                AI Video Summary
-                            </h5>
-                            <div className="smallest opacity-8" style={{lineHeight: '1.6', whiteSpace: 'pre-wrap'}}>
-                                {summary}
+                    <div className="grid grid-2-cols gap-15">
+                        {summary && (
+                            <div className="card p-20 bg-surface-variant border-none animate-fadeIn">
+                                <h5 className="mb-10 flex-center gap-10" style={{justifyContent: 'flex-start'}}>
+                                    <span className="material-icons color-primary">description</span>
+                                    AI Video Summary
+                                </h5>
+                                <div className="smallest opacity-8" style={{lineHeight: '1.6', whiteSpace: 'pre-wrap'}}>
+                                    {summary}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+
+                        {sponsors && sponsors.length > 0 && (
+                            <div className="card p-20 bg-surface-variant border-none animate-fadeIn">
+                                <h5 className="mb-10 flex-center gap-10" style={{justifyContent: 'flex-start'}}>
+                                    <span className="material-icons color-warning">skip_next</span>
+                                    SponsorBlock Segments
+                                </h5>
+                                <div className="smallest opacity-8">
+                                    <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                                        {sponsors.map((s, i) => (
+                                            <li key={i} className="mb-5">
+                                                <strong className="capitalize">{s.category}</strong>: {s.segment[0].toFixed(1)}s - {s.segment[1].toFixed(1)}s
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
                     <div className="overflow-auto" style={{ maxHeight: '400px', border: '1px solid var(--border)', borderRadius: '12px' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>

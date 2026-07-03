@@ -45,19 +45,39 @@ const SqlFormatter = () => {
             ];
             const inlineKeywords = ['AND', 'OR', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'CROSS JOIN', 'OUTER JOIN', 'ON'];
 
-            blockKeywords.forEach(word => {
-                const regex = new RegExp(`\\b${word}\\b`, 'g');
-                sql = sql.replace(regex, `\n${word}\n  `);
-            });
+            const lines = [];
+            let currentLine = "";
+            let depth = 0;
 
-            inlineKeywords.forEach(word => {
-                const regex = new RegExp(`\\b${word}\\b`, 'g');
-                sql = sql.replace(regex, `\n  ${word}`);
+            const tokens = sql.split(/\s+/);
+            tokens.forEach(token => {
+                const upperToken = token.toUpperCase();
+                if (blockKeywords.includes(upperToken)) {
+                    if (currentLine.trim()) lines.push(currentLine.trimEnd());
+                    lines.push("  ".repeat(depth) + upperToken);
+                    currentLine = "  ".repeat(depth + 1);
+                } else if (inlineKeywords.includes(upperToken)) {
+                    if (currentLine.trim()) lines.push(currentLine.trimEnd());
+                    currentLine = "  ".repeat(depth + 1) + upperToken + " ";
+                } else {
+                    if (token.includes('(')) {
+                        currentLine += token + " ";
+                        depth++;
+                    } else if (token.includes(')')) {
+                        depth = Math.max(0, depth - 1);
+                        currentLine += token + " ";
+                    } else if (token.endsWith(',') && depth === 0) {
+                        currentLine += token;
+                        lines.push(currentLine.trimEnd());
+                        currentLine = "  ".repeat(depth + 1);
+                    } else {
+                        currentLine += token + " ";
+                    }
+                }
             });
+            if (currentLine.trim()) lines.push(currentLine.trimEnd());
 
-            // Handle commas (not inside parentheses to avoid breaking function calls)
-            // This is a simple approximation
-            sql = sql.replace(/,(?![^(]*\))/g, ',\n  ');
+            sql = lines.join('\n');
 
             // Restore strings
             strings.forEach((str, i) => {

@@ -48,18 +48,20 @@ Use the navigation bar at the bottom (or side on desktop) to switch between the 
 ## 🚀 Recent Improvements & Bug Fixes
 
 - **Developer Hub**:
-    - Improved **SQL Formatter** with string literal protection and enhanced block/inline indentation logic.
+    - Refined **SQL Formatter** with a new token-based engine and depth-tracking indentation for complex nested queries.
+    - Optimized **KQL Formatter** using segment-based formatting for precise pipe alignment and cleaner multi-line clauses.
+    - Enhanced **JSON to TypeScript** interface generator with exhaustive array schema merging to capture all possible optional fields across all objects in a collection.
     - Completely re-implemented **XML Formatter** using `DOMParser` for reliable formatting of tags, attributes, and comments.
-    - Upgraded **JSON to TypeScript** converter with robust deep-merging for arrays of objects and automatic identification of optional fields.
-    - Optimized **KQL Formatter** and expanded the **Code Inspiration** hub with modern snippets.
 - **Media & Web**:
+    - Integrated **SponsorBlock** support into the **Social Downloader**, allowing users to identify and view sponsor segments in YouTube videos.
     - Integrated **AI Video Summarization** into the Social Downloader hub (requires Gemini API).
     - Expanded the offline **Doc Translator** dictionary and improved case-insensitive matching.
     - Optimized **Code Minifier** with new support for HTML minification.
-    - Significantly expanded **Unit Converter** with Area, Volume, and Time categories.
+- **Utilities**:
+    - Significantly expanded **Unit Converter** with new **Digital Storage** (Bytes, KB, MB, GB, TB, PB) and **Speed** (m/s, km/h, mph, knots) categories.
 - **Data Science**:
+    - Stabilized **Multivariate Anomaly Detection** using Tikhonov regularization (epsilon-addition) to prevent mathematical errors with singular covariance matrices during Mahalanobis distance calculations.
     - Optimized performance for the **Data Science Hub** and **Advanced Data Hub** using iterative statistical calculations to handle large datasets without stack overflow.
-    - Enhanced Multivariate Anomaly Detection using Mahalanobis Distance for high-dimensional data.
 - **Infrastructure**:
     - Refactored core **Tool Configuration** into a centralized utility for better maintenance and dynamic tool discovery.
     - Fixed Notion Integration validation bug (moved to POST requests).

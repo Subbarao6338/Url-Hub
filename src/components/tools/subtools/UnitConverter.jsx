@@ -48,6 +48,20 @@ const UnitConverter = () => {
             days: 1/86400,
             weeks: 1/604800
         },
+        digital: {
+            bytes: 1,
+            kilobytes: 1/1024,
+            megabytes: 1/Math.pow(1024, 2),
+            gigabytes: 1/Math.pow(1024, 3),
+            terabytes: 1/Math.pow(1024, 4),
+            petabytes: 1/Math.pow(1024, 5)
+        },
+        speed: {
+            meters_per_second: 1,
+            kilometers_per_hour: 3.6,
+            miles_per_hour: 2.23694,
+            knots: 1.94384
+        },
         temp: { celsius: 'c', fahrenheit: 'f', kelvin: 'k' }
     };
 
@@ -91,6 +105,8 @@ const UnitConverter = () => {
                     <option value="area">🌍 Area</option>
                     <option value="volume">🧪 Volume</option>
                     <option value="time">⏱️ Time</option>
+                    <option value="digital">💾 Digital Storage</option>
+                    <option value="speed">🚀 Speed</option>
                     <option value="temp">🌡️ Temperature</option>
                 </select>
             </div>

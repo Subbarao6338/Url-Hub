@@ -36,7 +36,12 @@ export const detectMultivariateAnomalies = (data, contamination = 0.05) => {
             })
         );
 
-        const invCov = math.inv(cov);
+        // Tikhonov regularization: add small epsilon to diagonal to ensure invertibility
+        const epsilon = 1e-6;
+        const regularizedCov = cov.map((row, i) =>
+            row.map((val, j) => i === j ? val + epsilon : val)
+        );
+        const invCov = math.inv(regularizedCov);
 
         // Calculate Mahalanobis Distance for each point
         const scores = matrix.map(row => {
