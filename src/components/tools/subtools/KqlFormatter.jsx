@@ -8,33 +8,38 @@ const KqlFormatter = () => {
     const formatKql = () => {
         if (!input.trim()) return;
         try {
-            // Normalize spaces around pipes
-            let kql = input.replace(/\s*\|\s*/g, '\n| ').trim();
-
-            // Standard KQL operators to capitalize
             const operators = [
                 'where', 'project', 'summarize', 'extend', 'sort by', 'take', 'top',
                 'join', 'union', 'render', 'distinct', 'parse', 'mvexpand', 'evaluate',
                 'lookup', 'make-series', 'mv-expand', 'order by', 'count', 'limit'
             ];
 
-            operators.forEach(op => {
-                const regex = new RegExp(`\\|\\s+${op}\\b`, 'gi');
-                kql = kql.replace(regex, `| ${op.toLowerCase()}`);
-            });
+            // Split into pipe segments
+            const segments = input.split(/\s*\|\s*/);
+            const formattedSegments = segments.map((seg, index) => {
+                let s = seg.trim();
+                if (index === 0) return s;
 
-            // Special handling for commas inside clauses (like project or summarize)
-            const lines = kql.split('\n').flatMap(line => {
-                if (line.match(/\|\s*(project|summarize|extend|where|order by|sort by)\b/i)) {
-                    const parts = line.split(/,\s*/);
+                // Capitalize operator if it's in our list
+                operators.forEach(op => {
+                    const regex = new RegExp(`^${op}\\b`, 'i');
+                    if (s.match(regex)) {
+                        s = op.toLowerCase() + s.substring(op.length);
+                    }
+                });
+
+                // Handle indentation for common multi-line operators
+                if (s.match(/^(project|summarize|extend|where|order by|sort by)/i)) {
+                    const parts = s.split(/,\s*/);
                     if (parts.length > 1) {
-                        return [parts[0], ...parts.slice(1).map(p => `    ${p}`)];
+                        return [parts[0], ...parts.slice(1).map(p => `    ${p.trim()}`)].join('\n  ');
                     }
                 }
-                return [line];
+                return s;
             });
 
-            setResult({ text: lines.join('\n'), filename: 'formatted.kql' });
+            const finalKql = formattedSegments.join('\n| ');
+            setResult({ text: finalKql, filename: 'formatted.kql' });
         } catch (e) {
             setResult({ error: e.message });
         }

@@ -19,14 +19,16 @@ const JsonToTs = () => {
                         deepMerge(target[key], source[key]);
                     } else if (Array.isArray(source[key])) {
                         if (!target[key]) target[key] = [];
-                        // For arrays, we just want to know if there's an object inside for the next step
+                        // For arrays, merge schemas of all objects inside to capture all possible fields
                         if (source[key].length > 0) {
-                            if (typeof source[key][0] === 'object' && source[key][0] !== null && !Array.isArray(source[key][0])) {
-                                if (target[key].length === 0) target[key].push({});
-                                deepMerge(target[key][0], source[key][0]);
-                            } else {
-                                target[key] = source[key];
-                            }
+                            source[key].forEach(item => {
+                                if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
+                                    if (target[key].length === 0) target[key].push({});
+                                    deepMerge(target[key][0], item);
+                                } else if (target[key].indexOf(item) === -1) {
+                                    target[key].push(item);
+                                }
+                            });
                         }
                     } else {
                         target[key] = source[key];
