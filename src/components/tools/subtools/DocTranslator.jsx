@@ -47,7 +47,17 @@ const DICTIONARY = {
     "fire": "aggu (అగ్ని)",
     "air": "gali (గాలి)",
     "tree": "chettu (చెట్టు)",
-    "flower": "puvvu (పువ్వు)"
+    "flower": "puvvu (పువ్వు)",
+    "student": "vidyarthi (విద్యార్థి)",
+    "teacher": "upadhyayudu (ఉపాధ్యాయుడు)",
+    "life": "jivitham (జీవితం)",
+    "dream": "kala (కల)",
+    "truth": "nijam (నిజం)",
+    "help": "sahayam (సహాయం)",
+    "road": "dari (దారి)",
+    "travel": "prayanam (ప్రయాణం)",
+    "success": "vijayam (విజయం)",
+    "strength": "balam (బలం)"
 };
 
 const DocTranslator = () => {
@@ -63,14 +73,10 @@ const DocTranslator = () => {
         const sortedKeys = Object.keys(DICTIONARY).sort((a, b) => b.length - a.length);
 
         sortedKeys.forEach(key => {
-            // Case-insensitive replacement with preserving original casing logic is hard for mapping to different script,
-            // so we use a regex that matches the word and replaces it with the mapping.
-            const regex = new RegExp(`\\b${key}\\b`, 'gi');
+            // Regex to match the word while considering punctuation and ignoring case
+            const regex = new RegExp(`(?<=\\s|^|[.,!?;])${key}(?=\\s|$|[.,!?;])`, 'gi');
             translated = translated.replace(regex, (matched) => {
-                const translation = DICTIONARY[key];
-                // If the original word was all caps, we might want to uppercase the English part of translation?
-                // For simplicity, we just use the dictionary value as is.
-                return translation;
+                return DICTIONARY[key.toLowerCase()];
             });
         });
 
@@ -84,7 +90,7 @@ const DocTranslator = () => {
     return (
         <div className="card p-30 glass-card text-center grid gap-15">
             <h3>Common Phrase Translator (Offline)</h3>
-            <p className="smallest opacity-6">Instant English to Telugu phrase mapping. Powered by an expanded local dictionary.</p>
+            <p className="smallest opacity-6">Instant English to Telugu phrase mapping. Powered by an expanded local dictionary with punctuation support.</p>
             <textarea className="pill w-full" rows="6" style={{borderRadius: '16px', padding: '15px'}} value={input} onChange={e=>setInput(e.target.value)} placeholder="Type 'hello friend, how are you? My mother is at home'..." />
             <div className="flex-center gap-10">
                 <button className="btn-primary flex-1" onClick={offlineTranslate}>
@@ -97,7 +103,7 @@ const DocTranslator = () => {
             <div className="mt-10 p-15 bg-surface rounded-lg border text-left">
                 <span className="smallest uppercase opacity-6 block mb-10 font-bold">Supported Phrases (Sample):</span>
                 <div className="flex-wrap gap-5 flex">
-                    {Object.keys(DICTIONARY).slice(0, 15).map(k => <span key={k} className="badge smallest" style={{background: 'var(--primary-glow)'}}>{k}</span>)}
+                    {Object.keys(DICTIONARY).slice(0, 20).map(k => <span key={k} className="badge smallest" style={{background: 'var(--primary-glow)'}}>{k}</span>)}
                     <span className="badge smallest">...and many more</span>
                 </div>
             </div>
