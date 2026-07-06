@@ -27,30 +27,57 @@ const FinanceHub = () => {
             const A = P * Math.pow(1 + r/n, n * t);
             const interest = A - P;
             setResult({ text: `Final Amount: ${A.toFixed(2)}\nTotal Interest: ${interest.toFixed(2)}` });
+        } else if (activeCalc === 'vat') {
+            const netAmount = amt;
+            const vatRate = rate;
+            const vatAmount = netAmount * (vatRate / 100);
+            const totalAmount = netAmount + vatAmount;
+            setResult({ text: `VAT Amount: ${vatAmount.toFixed(2)}\nTotal Amount: ${totalAmount.toFixed(2)}` });
+        } else if (activeCalc === 'inflation') {
+            const currentAmount = amt;
+            const inflationRate = rate / 100;
+            const futureValue = currentAmount * Math.pow(1 + inflationRate, yrs);
+            setResult({ text: `Future Value: ${futureValue.toFixed(2)}\nBuying Power Decrease: ${(futureValue - currentAmount).toFixed(2)}` });
         }
+    };
+
+    const CALC_CONFIG = {
+        emi: { label: 'EMI', principal: 'Principal Amount', rate: 'Interest Rate (%)' },
+        compound: { label: 'Compound Interest', principal: 'Principal Amount', rate: 'Interest Rate (%)' },
+        mortgage: { label: 'Mortgage', principal: 'Principal Amount', rate: 'Interest Rate (%)' },
+        cagr: { label: 'CAGR', principal: 'Final Value', rate: 'Initial Value' },
+        vat: { label: 'VAT', principal: 'Net Amount', rate: 'VAT Rate (%)' },
+        inflation: { label: 'Inflation', principal: 'Current Amount', rate: 'Inflation Rate (%)' }
     };
 
     return (
         <div className="card p-30 glass-card grid gap-15">
             <div className="pill-group scrollable-x">
-                <button className={`pill ${activeCalc === 'emi' ? 'active' : ''}`} onClick={() => setActiveCalc('emi')}>EMI</button>
-                <button className={`pill ${activeCalc === 'compound' ? 'active' : ''}`} onClick={() => setActiveCalc('compound')}>Compound Interest</button>
-                <button className={`pill ${activeCalc === 'mortgage' ? 'active' : ''}`} onClick={() => setActiveCalc('mortgage')}>Mortgage</button>
-                <button className={`pill ${activeCalc === 'cagr' ? 'active' : ''}`} onClick={() => setActiveCalc('cagr')}>CAGR</button>
+                {Object.keys(CALC_CONFIG).map(id => (
+                    <button
+                        key={id}
+                        className={`pill ${activeCalc === id ? 'active' : ''}`}
+                        onClick={() => setActiveCalc(id)}
+                    >
+                        {CALC_CONFIG[id].label}
+                    </button>
+                ))}
             </div>
             <div className="grid gap-10">
                 <div className="form-group">
-                    <label>{activeCalc === 'cagr' ? 'Final Value' : 'Principal Amount'}</label>
+                    <label>{CALC_CONFIG[activeCalc].principal}</label>
                     <input type="number" className="pill w-full" value={amt} onChange={e => setAmt(parseFloat(e.target.value) || 0)} />
                 </div>
                 <div className="form-group">
-                    <label>{activeCalc === 'cagr' ? 'Initial Value' : 'Interest Rate (%)'}</label>
+                    <label>{CALC_CONFIG[activeCalc].rate}</label>
                     <input type="number" className="pill w-full" value={rate} onChange={e => setRate(parseFloat(e.target.value) || 0)} />
                 </div>
-                <div className="form-group">
-                    <label>Period (Years)</label>
-                    <input type="number" className="pill w-full" value={yrs} onChange={e => setYrs(parseFloat(e.target.value) || 0)} />
-                </div>
+                {activeCalc !== 'vat' && (
+                    <div className="form-group">
+                        <label>Period (Years)</label>
+                        <input type="number" className="pill w-full" value={yrs} onChange={e => setYrs(parseFloat(e.target.value) || 0)} />
+                    </div>
+                )}
                 {activeCalc === 'compound' && (
                     <div className="form-group">
                         <label>Compounding Frequency</label>
