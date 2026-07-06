@@ -25,6 +25,7 @@ const CodeMinifier = () => {
                     .replace(/ ?([:;{},]) ?/g, '$1') // remove spaces around punctuations
                     .replace(/: /g, ':')
                     .replace(/;}/g, '}') // remove last semicolon
+                    .replace(/#([0-9a-f])\1([0-9a-f])\2([0-9a-f])\3/gi, '#$1$2$3') // hex compression
                     .replace(/0px/g, '0') // optimize 0px to 0
                     .replace(/0\./g, '.') // optimize 0.5 to .5
                     .trim();

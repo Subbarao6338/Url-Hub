@@ -22,6 +22,8 @@ import YamlJsonConverter from './subtools/YamlJsonConverter';
 import OtpGenerator from './subtools/OtpGenerator';
 import WordRankCalculator from './subtools/WordRankCalculator';
 import UrlTool from './subtools/UrlTool';
+import PasswordTool from './subtools/PasswordTool';
+import RsaTool from './subtools/RsaTool';
 
 const DEV_TABS = [
   { id: 'json-fmt', label: 'JSON Formatter', icon: 'data_object' },
@@ -29,6 +31,8 @@ const DEV_TABS = [
   { id: 'diff', label: 'Diff Viewer', icon: 'difference' },
   { id: 'converter', label: 'Unit Converter', icon: 'straighten' },
   { id: 'security', label: 'Hash & HMAC', icon: 'security' },
+  { id: 'password', label: 'Password Tool', icon: 'lock' },
+  { id: 'rsa', label: 'RSA Key Gen', icon: 'vpn_key' },
   { id: 'regex', label: 'Regex Tester', icon: 'find_replace' },
   { id: 'otp', label: 'OTP Generator', icon: 'password' },
   { id: 'kusto', label: 'KQL Formatter', icon: 'filter_alt' },
@@ -132,6 +136,8 @@ const DevTools = ({ toolId, onSubtoolChange }) => {
         {activeTab === 'base64' && <Base64Tool />}
         {activeTab === 'yaml' && <YamlJsonConverter />}
         {activeTab === 'otp' && <OtpGenerator />}
+        {activeTab === 'password' && <PasswordTool />}
+        {activeTab === 'rsa' && <RsaTool />}
         {activeTab === 'word-rank' && <WordRankCalculator />}
         {activeTab === 'inspiration' && <CodeInspiration />}
       </div>
