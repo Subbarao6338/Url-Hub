@@ -89,6 +89,23 @@ const UnitConverter = () => {
             horsepower: 0.00134102,
             btu_per_hour: 3.41214
         },
+        data_transfer: {
+            bps: 1,
+            kbps: 1/1000,
+            Mbps: 1/Math.pow(1000, 2),
+            Gbps: 1/Math.pow(1000, 3),
+            Tbps: 1/Math.pow(1000, 4),
+            KiBps: 1/1024,
+            MiBps: 1/Math.pow(1024, 2),
+            GiBps: 1/Math.pow(1024, 3)
+        },
+        angle: {
+            degrees: 1,
+            radians: Math.PI / 180,
+            gradians: 400 / 360,
+            arcminutes: 60,
+            arcseconds: 3600
+        },
         temp: { celsius: 'c', fahrenheit: 'f', kelvin: 'k' }
     };
 
@@ -133,11 +150,13 @@ const UnitConverter = () => {
                     <option value="volume">🧪 Volume</option>
                     <option value="time">⏱️ Time</option>
                     <option value="digital">💾 Digital Storage</option>
+                    <option value="data_transfer">📡 Data Transfer Rate</option>
                     <option value="speed">🚀 Speed</option>
                     <option value="force">💥 Force</option>
                     <option value="pressure">🌬️ Pressure</option>
                     <option value="energy">🔋 Energy</option>
                     <option value="power">⚡ Power</option>
+                    <option value="angle">📐 Angle</option>
                     <option value="temp">🌡️ Temperature</option>
                 </select>
             </div>
