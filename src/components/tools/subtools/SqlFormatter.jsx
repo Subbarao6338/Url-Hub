@@ -61,17 +61,32 @@ const SqlFormatter = () => {
                     if (currentLine.trim()) lines.push(currentLine.trimEnd());
                     currentLine = "  ".repeat(depth) + upperToken + " ";
                 } else if (token === '(') {
-                    currentLine += "( ";
-                    depth++;
-                    lines.push(currentLine.trimEnd());
-                    currentLine = "  ".repeat(depth);
+                    // Check if it's a subquery or just a list
+                    const nextToken = tokens[idx + 1]?.toUpperCase();
+                    const isSubquery = nextToken === 'SELECT';
+
+                    if (isSubquery) {
+                        if (currentLine.trim()) lines.push(currentLine.trimEnd());
+                        lines.push("  ".repeat(depth) + "(");
+                        depth++;
+                        currentLine = "  ".repeat(depth);
+                    } else {
+                        currentLine += "( ";
+                        depth++;
+                    }
                 } else if (token === ')') {
-                    if (currentLine.trim()) lines.push(currentLine.trimEnd());
                     depth = Math.max(0, depth - 1);
+                    if (currentLine.trim()) lines.push(currentLine.trimEnd());
                     currentLine = "  ".repeat(depth) + ") ";
+                    if (depth === 0 || tokens[idx + 1] === ',') {
+                        // Keep on same line if it's followed by a comma or at top level
+                    } else {
+                        lines.push(currentLine.trimEnd());
+                        currentLine = "  ".repeat(depth);
+                    }
                 } else if (token === ',') {
                     currentLine = currentLine.trimEnd() + ",";
-                    if (depth === 1) { // Common in SELECT or GROUP BY at top level of block
+                    if (depth <= 1) { // Common in SELECT or GROUP BY at top level of block
                         lines.push(currentLine);
                         currentLine = "  ".repeat(depth);
                     } else {
