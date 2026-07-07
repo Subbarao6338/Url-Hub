@@ -17,25 +17,44 @@ const AiLocal = () => {
                 'wonderful', 'fantastic', 'perfect', 'brilliant', 'glad', 'joy', 'excited',
                 'pleased', 'satisfied', 'thanks', 'thank', 'beautiful', 'nice', 'cool',
                 'superb', 'outstanding', 'impressive', 'lovely', 'fabulous', 'terrific',
-                'recommend', 'worthy', 'solid', 'reliable', 'helpful', 'fast', 'smooth'
+                'recommend', 'worthy', 'solid', 'reliable', 'helpful', 'fast', 'smooth',
+                'delighted', 'super', 'cool', 'stellar', 'top', 'quality', 'efficient',
+                'effective', 'friendly', 'kind', 'warm', 'smart', 'clever', 'genius',
+                'easy', 'simple', 'intuitive', 'polished', 'refined', 'premium', 'gold',
+                'winner', 'victory', 'plus', 'pro', 'advantage', 'benefit', 'safe',
+                'secure', 'trusted', 'honored', 'proud', 'lucky', 'blessed', 'thrive'
             ];
             const negativeWords = [
                 'bad', 'awful', 'sad', 'hate', 'terrible', 'worst', 'poor', 'stupid',
                 'disappointed', 'angry', 'annoyed', 'horrible', 'miserable', 'nasty',
                 'useless', 'broken', 'failure', 'sucks', 'boring', 'weird', 'wrong',
                 'difficult', 'hard', 'painful', 'scary', 'ugly', 'unhappy', 'rubbish',
-                'slow', 'laggy', 'buggy', 'expensive', 'useless', 'mess', 'avoid'
+                'slow', 'laggy', 'buggy', 'expensive', 'useless', 'mess', 'avoid',
+                'garbage', 'trash', 'failure', 'reject', 'deny', 'refuse', 'cancel',
+                'stop', 'dead', 'crash', 'freeze', 'hang', 'stuck', 'complex',
+                'confusing', 'vague', 'weak', 'flimsy', 'shady', 'risky', 'scam',
+                'fraud', 'lie', 'false', 'fake', 'cheap', 'clunky', 'gross', 'evil'
             ];
-            const negations = ['not', 'no', 'never', 'neither', 'none', "can't", "don't", "won't", "isn't", "wasn't", "couldn't", 'hardly', 'barely'];
+            const negations = ['not', 'no', 'never', 'neither', 'none', "can't", "don't", "won't", "isn't", "wasn't", "couldn't", 'hardly', 'barely', 'without', 'lack', 'lacking'];
 
             const tokens = input.toLowerCase().split(/\s+/).map(t => t.replace(/[^a-z']/g, ''));
             let score = 0;
-            let isNegated = false;
+            let isNegated = 0;
 
-            tokens.forEach((token, index) => {
+            for (let i = 0; i < tokens.length; i++) {
+                const token = tokens[i];
+
+                // Special handling for "not only... but also"
+                if (token === 'not' && tokens[i+1] === 'only') {
+                    // "Not only" usually precedes a positive thing that is also followed by another
+                    // For simplicity, we just skip the negation effect here
+                    i++;
+                    continue;
+                }
+
                 if (negations.includes(token)) {
                     isNegated = 3; // Negation effect lasts for 3 following tokens
-                    return;
+                    continue;
                 }
 
                 let currentScore = 0;
@@ -52,13 +71,7 @@ const AiLocal = () => {
                 } else if (isNegated > 0) {
                     isNegated--;
                 }
-
-                // Reset negation if it was set but didn't apply to a sentiment word (very basic logic)
-                if (isNegated && !positiveWords.includes(token) && !negativeWords.includes(token) && token.length > 0) {
-                    // if we have multiple words after negation, we might want to keep it or clear it.
-                    // For this simple version, we clear it if it's not immediately preceding.
-                }
-            });
+            }
 
             const result = score > 0.5 ? 'Positive' : score < -0.5 ? 'Negative' : 'Neutral';
             setSentiment(result);

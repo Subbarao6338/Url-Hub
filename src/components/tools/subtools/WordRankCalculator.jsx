@@ -8,7 +8,7 @@ const WordRankCalculator = () => {
     const run = () => {
         const word = input.toUpperCase().replace(/[^A-Z]/g, '');
         if (!word) return setResult({ error: "Please enter a valid word." });
-        if (word.length > 50) return setResult({ error: "Word too long for browser-side calculation." });
+        if (word.length > 100) return setResult({ error: "Word too long for browser-side calculation." });
 
         try {
             const factorials = [BigInt(1)];
@@ -44,7 +44,11 @@ const WordRankCalculator = () => {
                 charCount[word[i]]--;
                 if (charCount[word[i]] === 0n) delete charCount[word[i]];
             }
-            setResult({ text: `Lexicographical rank of "${word}":\n${rank.toLocaleString()}` });
+            const rankStr = rank.toString();
+            setResult({
+                text: `Lexicographical rank of "${word}":\n${rank.toLocaleString()}`,
+                copyText: rankStr
+            });
         } catch (e) {
             setResult({ error: e.message });
         }

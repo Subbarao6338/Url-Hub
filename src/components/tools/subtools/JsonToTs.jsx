@@ -54,7 +54,7 @@ const JsonToTs = () => {
                     if (objects.length > 0) {
                         const merged = {};
                         objects.forEach(item => deepMerge(merged, item));
-                        const subName = key.charAt(0).toUpperCase() + key.slice(1);
+                        const subName = getUniqueInterfaceName(key);
                         generateInterface(merged, subName, objects);
                         types.add(subName);
                     }
@@ -64,21 +64,45 @@ const JsonToTs = () => {
                     return `(${typeArray.join(' | ')})[]`;
                 }
                 if (typeof val === 'object') {
-                    const subName = key.charAt(0).toUpperCase() + key.slice(1);
+                    const subName = getUniqueInterfaceName(key);
                     generateInterface(val, subName);
                     return subName;
                 }
                 return typeof val;
             };
 
+            const getUniqueInterfaceName = (key) => {
+                let name = key.charAt(0).toUpperCase() + key.slice(1);
+                // Remove non-alphanumeric for interface name
+                name = name.replace(/[^a-zA-Z0-0]/g, '');
+                if (!name) name = 'Item';
+
+                let uniqueName = name;
+                let counter = 1;
+                while (interfaces.has(uniqueName)) {
+                    uniqueName = `${name}${counter}`;
+                    counter++;
+                }
+                return uniqueName;
+            };
+
             const generateInterface = (o, name, originalArray = null) => {
                 if (interfaces.has(name)) return;
+                // Add a placeholder to handle circular references if they were possible (though JSON isn't circular)
+                interfaces.set(name, '');
+
                 let str = `interface ${name} {\n`;
-                Object.entries(o).forEach(([k, v]) => {
-                    const type = getTypeName(v, k);
-                    const isOptional = originalArray && originalArray.some(item => item && typeof item === 'object' && item[k] === undefined);
-                    str += `  ${k}${isOptional ? '?' : ''}: ${type};\n`;
-                });
+                const entries = Object.entries(o);
+
+                if (entries.length === 0) {
+                    str += '  [key: string]: any;\n';
+                } else {
+                    entries.forEach(([k, v]) => {
+                        const type = getTypeName(v, k);
+                        const isOptional = originalArray && originalArray.some(item => item && typeof item === 'object' && item[k] === undefined);
+                        str += `  ${k}${isOptional ? '?' : ''}: ${type};\n`;
+                    });
+                }
                 str += '}\n';
                 interfaces.set(name, str);
             };

@@ -62,6 +62,33 @@ const UnitConverter = () => {
             miles_per_hour: 2.23694,
             knots: 1.94384
         },
+        force: {
+            newtons: 1,
+            kilonewtons: 0.001,
+            pound_force: 0.224809,
+            dynes: 100000
+        },
+        pressure: {
+            pascals: 1,
+            kilopascals: 0.001,
+            bar: 0.00001,
+            psi: 0.000145038,
+            atmospheres: 9.8692e-6
+        },
+        energy: {
+            joules: 1,
+            kilojoules: 0.001,
+            calories: 0.239006,
+            kilocalories: 0.000239006,
+            watt_hours: 0.000277778,
+            kilowatt_hours: 2.7778e-7
+        },
+        power: {
+            watts: 1,
+            kilowatts: 0.001,
+            horsepower: 0.00134102,
+            btu_per_hour: 3.41214
+        },
         temp: { celsius: 'c', fahrenheit: 'f', kelvin: 'k' }
     };
 
@@ -107,6 +134,10 @@ const UnitConverter = () => {
                     <option value="time">⏱️ Time</option>
                     <option value="digital">💾 Digital Storage</option>
                     <option value="speed">🚀 Speed</option>
+                    <option value="force">💥 Force</option>
+                    <option value="pressure">🌬️ Pressure</option>
+                    <option value="energy">🔋 Energy</option>
+                    <option value="power">⚡ Power</option>
                     <option value="temp">🌡️ Temperature</option>
                 </select>
             </div>

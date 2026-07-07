@@ -7,13 +7,14 @@ const ToolResult = ({ result, title = 'Result', showPreview = true, onClear }) =
     if (!result) return null;
 
     const text = typeof result === 'string' ? result : (result.text || '');
+    const copyText = (result && result.copyText) || text;
     const filename = result.filename || 'result';
     const blob = result.blob;
     const url = result.url;
     const error = result.error;
 
     const handleCopy = () => {
-        copyToClipboard(text, () => {
+        copyToClipboard(copyText, () => {
             setCopySuccess(true);
             setTimeout(() => setCopySuccess(false), 2000);
         });
@@ -24,7 +25,7 @@ const ToolResult = ({ result, title = 'Result', showPreview = true, onClear }) =
             try {
                 await navigator.share({
                     title: `Epic Toolbox - ${title}`,
-                    text: text.length > 200 ? text.substring(0, 200) + '...' : text,
+                    text: copyText.length > 200 ? copyText.substring(0, 200) + '...' : copyText,
                     url: url || window.location.href
                 });
             } catch (err) {

@@ -1,10 +1,4 @@
 import { detectMultivariateAnomalies, runDataQualitySuite, generateSyntheticData } from './dataAnalysis';
-import { describe, it, expect, vi } from 'vitest';
-
-// Note: This test file assumes a Vitest-like environment.
-// Since we are in a Playwright environment, I will create a simple test runner
-// or use Playwright for component testing if needed, but for now, I'll provide
-// the logic that can be executed.
 
 describe('Data Analysis Utilities', () => {
     const sampleData = [
