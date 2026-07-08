@@ -1,5 +1,41 @@
 [
   {
+    "title": "QRCode show",
+    "url": "https://qrcode.show",
+    "urls": ["https://qrcode.show"],
+    "category": "Tools & Utilities"
+  },
+  {
+    "title": "Siak Play",
+    "url": "https://play.siak.in",
+    "urls": ["https://play.siak.in"],
+    "category": "Games"
+  },
+  {
+    "title": "kil0bit",
+    "url": "https://kil0bit.blogspot.com",
+    "urls": ["https://kil0bit.blogspot.com"],
+    "category": "News"
+  },
+  {
+    "title": "Datalab",
+    "url": "https://datalab.to/playground/documents/new",
+    "urls": ["https://datalab.to/playground/documents/new"],
+    "category": "Documents"
+  },
+  {
+    "title": "markitdown online",
+    "url": "https://markitdown.online",
+    "urls": ["https://markitdown.online"],
+    "category": "Documents"
+  },
+  {
+    "title": "simpleghar hindi",
+    "url": "https://simpleghar.com/hindi",
+    "urls": ["https://simpleghar.com/hindi"],
+    "category": "Shopping"
+  },
+  {
     "title": "NotebookLM",
     "url": "https://notebooklm.google.com",
     "urls": [
