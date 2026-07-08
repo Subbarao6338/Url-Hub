@@ -48,31 +48,21 @@ Use the navigation bar at the bottom (or side on desktop) to switch between the 
 ## 🚀 Recent Improvements & Bug Fixes
 
 - **Developer Hub**:
-    - Enhanced **SQL Formatter** with robust indentation for subqueries and complex JOINs by tracking parentheses depth.
-    - Optimized **JSON to TypeScript** interface generator with unique interface naming and support for deeply nested objects and empty object schemas.
-    - Optimized **KQL Formatter** using segment-based formatting for precise pipe alignment and cleaner multi-line clauses.
-    - Completely re-implemented **XML Formatter** using `DOMParser` for reliable formatting of tags, attributes, and comments.
+    - **Enhanced SQL Formatter**: Re-engineered with robust subquery detection and improved parentheses depth tracking to handle complex nested queries correctly.
+    - **Refined KQL Formatter**: Standardized function casing and improved multi-line alignment for pipe segments with smarter comma-splitting.
+    - **Improved JSON to TypeScript**: Optimized interface generator with unique interface naming and support for deeply nested objects.
 - **Media & Web**:
-    - Integrated **SponsorBlock** support into the **Social Downloader**, allowing users to identify and view sponsor segments in YouTube videos.
-    - Integrated **AI Video Summarization** into the Social Downloader hub (requires Gemini API).
-    - Expanded the offline **Doc Translator** dictionary with 30+ additional common English-Telugu mappings and improved case-insensitive matching.
-    - Optimized **Code Minifier** with new support for HTML minification.
-- **AI & Analytics**:
-    - Expanded **Local Sentiment Analysis** dictionary with 50+ additional words and improved negation handling for complex sentences like "not only... but also".
-    - Added **Force**, **Pressure**, **Energy**, and **Power** categories to the **Unit Converter**.
-    - Added **Copy to Clipboard** support for **Word Rank Calculator** results and improved lexicographical rank calculation for words up to 100 characters.
-- **Infrastructure**:
-    - Standardized test environment with **Vitest** and **Playwright**, including full unit and integration test support.
-- **Data Science**:
-    - Stabilized **Multivariate Anomaly Detection** using Tikhonov regularization (epsilon-addition) to prevent mathematical errors with singular covariance matrices during Mahalanobis distance calculations.
-    - Optimized performance for the **Data Science Hub** and **Advanced Data Hub** using iterative statistical calculations to handle large datasets without stack overflow.
-- **Infrastructure**:
-    - Refactored core **Tool Configuration** into a centralized utility for better maintenance and dynamic tool discovery.
-    - Fixed Notion Integration validation bug (moved to POST requests).
-    - Improved sub-tool mapping and deep linking for AI tools.
-    - Enhanced **Ops Center** lineage tracking with dynamic tool metadata integration.
-- **Projects**:
-    - Updated project showcase with real-world repositories: Epic Bookmarx, Omni Toolbox, and Omni Web.
+    - **Upgraded Image Processing**: Replaced static filters with real-time range sliders for Brightness, Contrast, and Saturation using the Canvas API. Added a new "Reset" feature for quick adjustments.
+    - **Integrated SponsorBlock**: Support in Social Downloader for identifying sponsor segments.
+    - **AI Video Summarization**: Integrated into Social Downloader (requires Gemini API).
+- **Analytics & Math**:
+    - **Advanced Text Analytics**: Implemented **Flesch Reading Ease** and **Flesch-Kincaid Grade Level** algorithms. Added a "Copy to Clipboard" feature for analysis results.
+    - **Expanded Unit Converter**: Added new categories for **Data Transfer Rate** (bps to Tbps) and **Angle** (Degrees, Radians, Gradians).
+    - **Optimized Data Science Hub**: Hardened covariance matrix calculations against zero variance and optimized Mahalanobis distance loops for better performance on larger datasets.
+- **AI & Local Tools**:
+    - Expanded **Local Sentiment Analysis** dictionary and improved negation handling.
+    - Standardized test environment with **Vitest** and **Playwright**.
+    - Fixed Notion Integration validation bug.
 
 ---
 *Epic Toolbox is built to simplify your digital life. Start exploring and boost your productivity today!*

@@ -26,7 +26,8 @@ const SqlFormatter = () => {
                 'DISTINCT', 'AS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'IN', 'NOT IN',
                 'BETWEEN', 'LIKE', 'IS NULL', 'IS NOT NULL', 'INTERSECT', 'EXCEPT', 'WITH',
                 'CREATE TABLE', 'DROP TABLE', 'ALTER TABLE', 'TRUNCATE TABLE', 'DESCRIBE',
-                'EXPLAIN', 'INDEX', 'TRIGGER', 'PROCEDURE', 'FUNCTION', 'VIEW', 'DATABASE'
+                'EXPLAIN', 'INDEX', 'TRIGGER', 'PROCEDURE', 'FUNCTION', 'VIEW', 'DATABASE',
+                'COALESCE', 'IFNULL', 'NULLIF', 'ISNULL', 'CAST', 'CONVERT', 'TRIM', 'SUBSTRING'
             ];
 
             const sortedReservedWords = [...reservedWords].sort((a, b) => b.length - a.length);
@@ -61,7 +62,6 @@ const SqlFormatter = () => {
                     if (currentLine.trim()) lines.push(currentLine.trimEnd());
                     currentLine = "  ".repeat(depth) + upperToken + " ";
                 } else if (token === '(') {
-                    // Check if it's a subquery or just a list
                     const nextToken = tokens[idx + 1]?.toUpperCase();
                     const isSubquery = nextToken === 'SELECT';
 
@@ -77,16 +77,31 @@ const SqlFormatter = () => {
                 } else if (token === ')') {
                     depth = Math.max(0, depth - 1);
                     if (currentLine.trim()) lines.push(currentLine.trimEnd());
-                    currentLine = "  ".repeat(depth) + ") ";
-                    if (depth === 0 || tokens[idx + 1] === ',') {
-                        // Keep on same line if it's followed by a comma or at top level
+
+                    // If it was a subquery, close on new line
+                    const prevTokens = tokens.slice(0, idx);
+                    let openCount = 0;
+                    let lastOpenSelectIdx = -1;
+                    for(let i = idx - 1; i >= 0; i--) {
+                        if (tokens[i] === ')') openCount++;
+                        if (tokens[i] === '(') {
+                            if (openCount === 0) {
+                                if (tokens[i+1]?.toUpperCase() === 'SELECT') lastOpenSelectIdx = i;
+                                break;
+                            }
+                            openCount--;
+                        }
+                    }
+
+                    if (lastOpenSelectIdx !== -1) {
+                        lines.push("  ".repeat(depth) + ")");
+                        currentLine = "  ".repeat(depth) + " ";
                     } else {
-                        lines.push(currentLine.trimEnd());
-                        currentLine = "  ".repeat(depth);
+                        currentLine = currentLine.trimEnd() + ") ";
                     }
                 } else if (token === ',') {
                     currentLine = currentLine.trimEnd() + ",";
-                    if (depth <= 1) { // Common in SELECT or GROUP BY at top level of block
+                    if (depth <= 1) {
                         lines.push(currentLine);
                         currentLine = "  ".repeat(depth);
                     } else {
@@ -120,9 +135,9 @@ const SqlFormatter = () => {
         <div className="grid gap-15">
             <div className="alert-info smallest p-10 rounded-lg opacity-8">
                 <span className="material-icons v-middle mr-5" style={{fontSize:'1rem'}}>info</span>
-                Refined SQL formatter with better subquery and multi-column support.
+                Refined SQL formatter with robust subquery and nested parentheses support.
             </div>
-            <textarea className="pill w-full font-mono text-sm" rows="12" style={{lineHeight: '1.5', borderRadius: '16px', padding: '15px'}} placeholder="SELECT * FROM users WHERE active = 1..." value={input} onChange={e=>setInput(e.target.value)} />
+            <textarea className="pill w-full font-mono text-sm" rows="12" style={{lineHeight: '1.5', borderRadius: '16px', padding: '15px'}} placeholder="SELECT * FROM (SELECT id FROM users) u WHERE id IN (1, 2, 3)..." value={input} onChange={e=>setInput(e.target.value)} />
             <div className="flex gap-10">
                 <button className="btn-primary flex-1" onClick={formatSql}>
                     <span className="material-icons mr-10">format_align_left</span>

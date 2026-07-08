@@ -14,8 +14,17 @@ const KqlFormatter = () => {
                 'lookup', 'make-series', 'mv-expand', 'order by', 'count', 'limit'
             ];
 
+            const functions = ['bin', 'count', 'now', 'ago', 'datetime', 'tostring', 'toint', 'tolong', 'todatetime', 'extract', 'split', 'strcat', 'iff', 'case', 'format_datetime'];
+
+            let kql = input;
+            // Standardize function casing
+            functions.forEach(fn => {
+                const regex = new RegExp(`\\b${fn}\\b(?=\\s*\\()`, 'gi');
+                kql = kql.replace(regex, fn.toLowerCase());
+            });
+
             // Split into pipe segments
-            const segments = input.split(/\s*\|\s*/);
+            const segments = kql.split(/\s*\|\s*/);
             const formattedSegments = segments.map((seg, index) => {
                 let s = seg.trim();
                 if (index === 0) return s;
@@ -30,9 +39,25 @@ const KqlFormatter = () => {
 
                 // Handle indentation for common multi-line operators
                 if (s.match(/^(project|summarize|extend|where|order by|sort by)/i)) {
-                    const parts = s.split(/,\s*/);
+                    // Try to split by commas that are not inside parentheses
+                    const parts = [];
+                    let currentPart = "";
+                    let depth = 0;
+                    for (let i = 0; i < s.length; i++) {
+                        const char = s[i];
+                        if (char === '(') depth++;
+                        if (char === ')') depth--;
+                        if (char === ',' && depth === 0) {
+                            parts.push(currentPart.trim());
+                            currentPart = "";
+                        } else {
+                            currentPart += char;
+                        }
+                    }
+                    parts.push(currentPart.trim());
+
                     if (parts.length > 1) {
-                        return [parts[0], ...parts.slice(1).map(p => `    ${p.trim()}`)].join('\n  ');
+                        return [parts[0], ...parts.slice(1).map(p => `    ${p}`)].join('\n  ');
                     }
                 }
                 return s;
@@ -49,7 +74,7 @@ const KqlFormatter = () => {
         <div className="grid gap-15">
             <div className="alert-info smallest p-10 rounded-lg opacity-8">
                 <span className="material-icons v-middle mr-5" style={{fontSize:'1rem'}}>info</span>
-                Kusto Query Language (KQL) formatter for Azure Data Explorer / Log Analytics.
+                Kusto Query Language (KQL) formatter with function normalization and improved indentation.
             </div>
             <textarea className="pill w-full font-mono text-sm" rows="12" style={{lineHeight: '1.6', borderRadius: '16px', padding: '15px'}} placeholder="SecurityEvent | where EventID == 4624 | project TimeGenerated, Account..." value={input} onChange={e=>setInput(e.target.value)} />
             <div className="flex gap-10">

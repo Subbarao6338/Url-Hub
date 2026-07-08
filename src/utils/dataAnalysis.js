@@ -7,52 +7,60 @@ import * as math from 'mathjs';
 
 /**
  * Ported Multivariate Anomaly Detection logic.
- * Uses a robust Mahalanobis Distance approach for statistical anomaly detection,
- * which is a strong alternative to Isolation Forest for multivariate data
- * when transpiling from Python/Sklearn.
+ * Uses a robust Mahalanobis Distance approach for statistical anomaly detection.
  */
 export const detectMultivariateAnomalies = (data, contamination = 0.05) => {
     if (!data || data.length === 0) return [];
 
     const keys = Object.keys(data[0]).filter(k => !isNaN(parseFloat(data[0][k])));
-    if (keys.length < 2) return []; // Needs at least 2 dimensions for multivariate
+    if (keys.length < 2) return [];
 
-    // Extract numeric matrix
     const matrix = data.map(row => keys.map(k => parseFloat(row[k]) || 0));
+    const n = matrix.length;
+    if (n < 2) return [];
 
     try {
-        const meanVector = keys.map((_, i) => math.mean(matrix.map(row => row[i])));
+        const meanVector = keys.map((_, i) => {
+            let sum = 0;
+            for (let j = 0; j < n; j++) sum += matrix[j][i];
+            return sum / n;
+        });
 
-        // Calculate Covariance Matrix
-        const n = matrix.length;
-        const transposed = math.transpose(matrix);
-        const cov = keys.map((_, i) =>
-            keys.map((_, j) => {
-                const xi = transposed[i];
-                const xj = transposed[j];
-                const mi = meanVector[i];
-                const mj = meanVector[j];
-                return math.sum(xi.map((x, idx) => (x - mi) * (xj[idx] - mj))) / (n - 1);
+        // Calculate Covariance Matrix optimized
+        const cov = Array(keys.length).fill(0).map(() => Array(keys.length).fill(0));
+        for (let i = 0; i < keys.length; i++) {
+            for (let j = i; j < keys.length; j++) {
+                let sum = 0;
+                for (let k = 0; k < n; k++) {
+                    sum += (matrix[k][i] - meanVector[i]) * (matrix[k][j] - meanVector[j]);
+                }
+                const val = sum / (n - 1);
+                cov[i][j] = val;
+                cov[j][i] = val;
+            }
+        }
+
+        // Tikhonov regularization: add small epsilon to diagonal to ensure invertibility
+        // Also handle zero variance columns by adding a larger epsilon if variance is near zero
+        const regularizedCov = cov.map((row, i) =>
+            row.map((val, j) => {
+                if (i === j) {
+                    return val + Math.max(1e-6, val * 1e-9);
+                }
+                return val;
             })
         );
 
-        // Tikhonov regularization: add small epsilon to diagonal to ensure invertibility
-        const epsilon = 1e-6;
-        const regularizedCov = cov.map((row, i) =>
-            row.map((val, j) => i === j ? val + epsilon : val)
-        );
         const invCov = math.inv(regularizedCov);
 
-        // Calculate Mahalanobis Distance for each point
+        // Calculate Mahalanobis Distance for each point - vectorized approach via mathjs
         const scores = matrix.map(row => {
             const diff = row.map((v, i) => v - meanVector[i]);
-            // dist = diff * invCov * diffT
             const intermediate = math.multiply(diff, invCov);
-            const dist = math.multiply(intermediate, math.transpose(diff));
-            return Math.sqrt(dist);
+            const dist = math.multiply(intermediate, diff); // diff is already a vector
+            return Math.sqrt(Math.abs(dist));
         });
 
-        // Determine threshold based on contamination
         const sortedScores = [...scores].sort((a, b) => b - a);
         const thresholdIdx = Math.max(0, Math.min(scores.length - 1, Math.floor(scores.length * contamination)));
         const threshold = sortedScores[thresholdIdx];
@@ -66,18 +74,18 @@ export const detectMultivariateAnomalies = (data, contamination = 0.05) => {
             }));
     } catch (e) {
         console.error("Multivariate calculation error:", e);
-        // Fallback to simpler Euclidean Z-score if covariance is singular
+        // Fallback to robust Z-score
         return matrix.map((row, idx) => {
             let dist = 0;
             row.forEach((val, i) => {
                 const col = matrix.map(r => r[i]);
                 const m = math.mean(col);
-                const s = math.std(col) || 1;
+                const s = math.std(col) || 1e-6;
                 dist += Math.pow((val - m) / s, 2);
             });
             return { score: Math.sqrt(dist), idx };
         }).sort((a, b) => b.score - a.score)
-          .slice(0, Math.floor(data.length * contamination))
+          .slice(0, Math.max(1, Math.floor(data.length * contamination)))
           .map(s => ({ row: s.idx, data: data[s.idx], score: s.score.toFixed(2) }));
     }
 };
@@ -105,13 +113,14 @@ export const runDataQualitySuite = (data) => {
 
         const numericValues = values.map(v => parseFloat(v)).filter(v => !isNaN(v));
         if (numericValues.length > 0) {
+            const n = numericValues.length;
             let sum = 0;
-            for (let i = 0; i < numericValues.length; i++) sum += numericValues[i];
-            const mean = sum / numericValues.length;
+            for (let i = 0; i < n; i++) sum += numericValues[i];
+            const mean = sum / n;
 
             let sqDiffSum = 0;
-            for (let i = 0; i < numericValues.length; i++) sqDiffSum += Math.pow(numericValues[i] - mean, 2);
-            const std = Math.sqrt(sqDiffSum / numericValues.length);
+            for (let i = 0; i < n; i++) sqDiffSum += Math.pow(numericValues[i] - mean, 2);
+            const std = Math.sqrt(sqDiffSum / n);
 
             const min = mean - 3 * std;
             const max = mean + 3 * std;
@@ -139,11 +148,10 @@ export const generateSyntheticData = (data, numRows = 100) => {
     const keys = Object.keys(data[0]);
     const synthetic = [];
 
-    // Analyze correlations for better sampling (simplified)
     const stats = {};
     keys.forEach(k => {
         const vals = data.map(r => r[k]).filter(v => v !== undefined && v !== null);
-        const isNumeric = vals.every(v => !isNaN(parseFloat(v)));
+        const isNumeric = vals.length > 0 && vals.every(v => !isNaN(parseFloat(v)));
         stats[k] = {
             vals,
             isNumeric,
@@ -153,17 +161,18 @@ export const generateSyntheticData = (data, numRows = 100) => {
 
     for (let i = 0; i < numRows; i++) {
         const mockRow = {};
-        // To maintain relational-like integrity, we sometimes pick a whole row from seed
-        // and sometimes shuffle. This is a hybrid approach.
         const seedRow = data[Math.floor(Math.random() * data.length)];
 
         keys.forEach(col => {
-            if (Math.random() > 0.3) { // 70% chance to keep correlation from seed row
+            if (Math.random() > 0.3) {
                 mockRow[col] = seedRow[col];
             } else {
-                // 30% chance to sample from the marginal distribution of that column
                 const colStats = stats[col];
-                mockRow[col] = colStats.vals[Math.floor(Math.random() * colStats.vals.length)];
+                if (colStats.vals.length > 0) {
+                    mockRow[col] = colStats.vals[Math.floor(Math.random() * colStats.vals.length)];
+                } else {
+                    mockRow[col] = null;
+                }
             }
         });
         synthetic.push(mockRow);
