@@ -1,5 +1,17 @@
 [
   {
+    "title": "Character.AI",
+    "url": "https://character.ai",
+    "urls": ["https://character.ai"],
+    "category": "AI"
+  },
+  {
+    "title": "Chess",
+    "url": "https://perchance.org/w7umxb0o8u",
+    "urls": ["https://perchance.org/w7umxb0o8u"],
+    "category": "Games"
+  },
+  {
     "title": "QRCode show",
     "url": "https://qrcode.show",
     "urls": ["https://qrcode.show"],
