@@ -119,11 +119,11 @@ const LifestyleTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        {activeTab === 'size-guide' && <SizeGuide />}
-        {activeTab === 'shoes' && <SizeGuide initialTab="shoes" />}
-        {activeTab === 'accessories' && <SizeGuide initialTab="rings" />}
-        {activeTab === 'fashion-guide' && <FashionGuide />}
-        {activeTab === 'clothes-guide' && <FashionGuide initialTab="style-types" />}
+        {activeTab === 'size-guide' && <SizeGuide allowedTabs={['clothing', 'traditional', 'inners', 'body']} />}
+        {activeTab === 'shoes' && <SizeGuide initialTab="shoes" allowedTabs={['shoes']} />}
+        {activeTab === 'accessories' && <SizeGuide initialTab="rings" allowedTabs={['rings']} />}
+        {activeTab === 'fashion-guide' && <FashionGuide allowedTabs={['body-shape', 'style-types']} />}
+        {activeTab === 'clothes-guide' && <FashionGuide initialTab="fabrics" allowedTabs={['fabrics']} />}
         {activeTab === 'traditional-guide' && <TraditionalGuide />}
         {activeTab === 'worldwide' && <TraditionalGuide initialRegion="Middle East & North Africa" />}
       </div>
