@@ -11,6 +11,7 @@ const AiTools = lazy(() => import('../components/tools/AiTools'));
 const AgentTools = lazy(() => import('../components/tools/AgentTools'));
 const NotionTools = lazy(() => import('../components/tools/NotionTools'));
 const OpsTools = lazy(() => import('../components/tools/OpsTools'));
+const LifestyleTools = lazy(() => import('../components/tools/LifestyleTools'));
 
 export const TOOLS = [
     { id: 'ai-main', title: 'AI Hub', icon: 'auto_awesome', category: 'AI & Agents', component: AiTools, subTools: ['image-gen', 'chat', 'local'] },
@@ -23,4 +24,5 @@ export const TOOLS = [
     { id: 'ops-main', title: 'Ops Center', icon: 'settings_input_component', category: 'Networking & Ops', component: OpsTools, subTools: ['status', 'telemetry', 'lineage'] },
     { id: 'notion-main', title: 'Notion Hub', icon: 'auto_stories', category: 'Productivity', component: NotionTools, subTools: ['ingest', 'folder', 'scraper', 'history', 'setup'] },
     { id: 'time-main', title: 'Date & Time', icon: 'schedule', category: 'Productivity', component: DateTimeTools, subTools: ['age', 'timestamp', 'stopwatch', 'pomodoro', 'worldclock', 'timezone', 'datediff', 'countdown', 'panchangam'] },
+    { id: 'lifestyle-main', title: 'Lifestyle Hub', icon: 'style', category: 'Productivity', component: LifestyleTools, subTools: ['size-guide'] },
 ];
