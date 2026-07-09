@@ -21,6 +21,15 @@ const SIZE_CHARTS = {
             { label: "XL", us: "16-18", eu: "48-50", bust: 109, waist: 91 },
             { label: "XXL", us: "20", eu: "52", bust: 119, waist: 101 }
         ],
+        outerwear: [
+            { label: "XXS", us: "00", eu: "30", bust: 82, waist: 64 },
+            { label: "XS", us: "0-2", eu: "32-34", bust: 86, waist: 68 },
+            { label: "S", us: "4-6", eu: "36-38", bust: 91, waist: 73 },
+            { label: "M", us: "8-10", eu: "40-42", bust: 97, waist: 79 },
+            { label: "L", us: "12-14", eu: "44-46", bust: 104, waist: 86 },
+            { label: "XL", us: "16-18", eu: "48-50", bust: 113, waist: 95 },
+            { label: "XXL", us: "20", eu: "52", bust: 123, waist: 105 }
+        ],
         bottoms: [
             { label: "XXS", us: "24", eu: "30", waist: 60, hips: 86 },
             { label: "XS", us: "25-26", eu: "32-34", waist: 64, hips: 90 },
@@ -40,6 +49,14 @@ const SIZE_CHARTS = {
             { label: "XL", us: "46-48", chest: 121, waist: 106 },
             { label: "XXL", us: "50-52", chest: 132, waist: 117 }
         ],
+        outerwear: [
+            { label: "XS", us: "36", chest: 91, waist: 76 },
+            { label: "S", us: "38", chest: 96, waist: 81 },
+            { label: "M", us: "40-42", chest: 106, waist: 91 },
+            { label: "L", us: "44-46", chest: 116, waist: 101 },
+            { label: "XL", us: "48-50", chest: 126, waist: 111 },
+            { label: "XXL", us: "52-54", chest: 137, waist: 122 }
+        ],
         bottoms: [
             { label: "XS", us: "28", waist: 71, hips: 86 },
             { label: "S", us: "30-32", waist: 81, hips: 96 },
@@ -48,18 +65,36 @@ const SIZE_CHARTS = {
             { label: "XL", us: "42-44", waist: 111, hips: 126 },
             { label: "XXL", us: "46", waist: 121, hips: 136 }
         ]
+    },
+    traditional: {
+        indian_women: [
+            { label: "XS", us: "0-2", bust: 81, waist: 66, hips: 91, kurta: "32" },
+            { label: "S", us: "4-6", bust: 86, waist: 71, hips: 96, kurta: "34" },
+            { label: "M", us: "8-10", bust: 91, waist: 76, hips: 101, kurta: "36" },
+            { label: "L", us: "12-14", bust: 96, waist: 81, hips: 106, kurta: "38" },
+            { label: "XL", us: "16-18", bust: 101, waist: 86, hips: 111, kurta: "40" },
+            { label: "XXL", us: "20-22", bust: 106, waist: 91, hips: 116, kurta: "42" }
+        ],
+        indian_men: [
+            { label: "XS", chest: 86, waist: 76, kurta: "34" },
+            { label: "S", chest: 91, waist: 81, kurta: "36" },
+            { label: "M", chest: 96, waist: 86, kurta: "38" },
+            { label: "L", chest: 101, waist: 91, kurta: "40" },
+            { label: "XL", chest: 106, waist: 96, kurta: "42" },
+            { label: "XXL", chest: 111, waist: 101, kurta: "44" }
+        ],
+        general: [
+            { label: "S", us: "4-6", bust: 86, waist: 71, hips: 96, kurta: "N/A" },
+            { label: "M", us: "8-10", bust: 91, waist: 76, hips: 101, kurta: "N/A" },
+            { label: "L", us: "12-14", bust: 96, waist: 81, hips: 106, kurta: "N/A" }
+        ]
     }
 };
 
 const SizeGuide = () => {
     const [activeTab, setActiveTab] = useState('clothing');
-    const [subType, setSubType] = useState('dresses');
-import React, { useState } from 'react';
-import ToolResult from '../ToolResult';
-
-const SizeGuide = () => {
-    const [activeTab, setActiveTab] = useState('clothing');
     const [gender, setGender] = useState('women');
+    const [subType, setSubType] = useState('dresses');
     const [unit, setUnit] = useState('cm');
     const [measurements, setMeasurements] = useState({
         bust: 90,
@@ -72,8 +107,9 @@ const SizeGuide = () => {
         ringDiameter: 17,
         wristCircumference: 160,
         neckCircumference: 38,
-        inseam: 76
-        neckCircumference: 38
+        inseam: 76,
+        headCircumference: 57,
+        handCircumference: 20
     });
     const [result, setResult] = useState(null);
 
@@ -88,6 +124,8 @@ const SizeGuide = () => {
             setSubType(gender === 'women' ? 'dresses' : 'tops');
         } else if (tab === 'inners') {
             setSubType('bras');
+        } else if (tab === 'traditional') {
+            setSubType(gender === 'women' ? 'indian_women' : 'indian_men');
         }
     };
 
@@ -95,7 +133,62 @@ const SizeGuide = () => {
         setGender(val);
         if (activeTab === 'clothing') {
             setSubType(val === 'women' ? 'dresses' : 'tops');
+        } else if (activeTab === 'traditional') {
+            setSubType(val === 'women' ? 'indian_women' : 'indian_men');
         }
+    };
+
+    const getRecommendedSize = (chart, m) => {
+        if (!chart || chart.length === 0) return { label: "N/A" };
+        let bestFit = chart[0];
+        for (const entry of chart) {
+            let matches = true;
+            if (entry.bust && m.bust > entry.bust + 2) matches = false;
+            if (entry.chest && m.chest > entry.chest + 2) matches = false;
+            if (entry.waist && m.waist > entry.waist + 2) matches = false;
+            if (entry.hips && m.hips > entry.hips + 2) matches = false;
+
+            if (matches) {
+                bestFit = entry;
+                break;
+            }
+            bestFit = entry;
+        }
+        return bestFit;
+    };
+
+    const convertClothingSize = () => {
+        const { bust, waist, hips, height } = measurements;
+        const m = {
+            bust: unit === 'inch' ? bust * 2.54 : bust,
+            chest: unit === 'inch' ? bust * 2.54 : bust,
+            waist: unit === 'inch' ? waist * 2.54 : waist,
+            hips: unit === 'inch' ? hips * 2.54 : hips,
+            height: unit === 'inch' ? height * 2.54 : height
+        };
+
+        let sizeData = "";
+        if (activeTab === 'traditional') {
+            const chart = SIZE_CHARTS.traditional[subType];
+            const recommendation = getRecommendedSize(chart, m);
+            sizeData = `Recommended Size: ${recommendation.label}\nKurta/Regional Size: ${recommendation.kurta}\nUS approx: ${recommendation.us || 'N/A'}`;
+        } else if (gender === 'children') {
+            if (m.height < 80) sizeData = "Age: 9-12 Months (Size 80)";
+            else if (m.height < 92) sizeData = "Age: 1-2 Years (Size 92)";
+            else if (m.height < 104) sizeData = "Age: 3-4 Years (Size 104)";
+            else if (m.height < 116) sizeData = "Age: 5-6 Years (Size 116)";
+            else if (m.height < 128) sizeData = "Age: 7-8 Years (Size 128)";
+            else if (m.height < 140) sizeData = "Age: 9-10 Years (Size 140)";
+            else sizeData = "Age: 11+ Years (Size 152+)";
+        } else {
+            const chart = SIZE_CHARTS[gender][subType] || SIZE_CHARTS[gender]['tops'];
+            const recommendation = getRecommendedSize(chart, m);
+            sizeData = `Recommended Size: ${recommendation.label}\nUS: ${recommendation.us || 'N/A'}\nEU: ${recommendation.eu || 'N/A'}`;
+        }
+
+        setResult({
+            text: `${subType.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Guide (${gender}):\n${sizeData}\n\nMeasurements: ${m.bust.toFixed(1)}/${m.waist.toFixed(1)}/${m.hips.toFixed(1)} cm`
+        });
     };
 
     const calculateInnerSize = () => {
@@ -113,9 +206,7 @@ const SizeGuide = () => {
                 text: `Bra Size Prediction:\nUS/UK: ${calcBand}${cup}\nEU: ${euBand}${cup}\n\nNote: Inners fit vary greatly by brand and style.`
             });
         } else {
-            // Briefs/Panties/Shapewear
             const { waist, hips } = measurements;
-            const w = unit === 'inch' ? waist * 2.54 : waist;
             const h = unit === 'inch' ? hips * 2.54 : hips;
             let size = "M";
             if (h < 90) size = "XS";
@@ -129,30 +220,6 @@ const SizeGuide = () => {
                 text: `${subType.charAt(0).toUpperCase() + subType.slice(1)} Size Prediction:\nRecommended: ${size}\n\nBased on Hips: ${h.toFixed(1)}cm`
             });
         }
-    const calculateBraSize = () => {
-        const { bust, underbust } = measurements;
-        let bandSize, cupSize, standard;
-
-        // Simplified Bra Calculation (Standard US/UK method)
-        // Convert to inches if in cm
-        const bustInch = unit === 'cm' ? bust / 2.54 : bust;
-        const underbustInch = unit === 'cm' ? underbust / 2.54 : underbust;
-
-        // Band size: round underbust to nearest even number and add 4 if even, 5 if odd (traditional)
-        // Modern fitting often uses underbust + 0-2 inches, but we'll use a common standard.
-        const roundedUnderbust = Math.round(underbustInch);
-        const calcBand = roundedUnderbust % 2 === 0 ? roundedUnderbust + 4 : roundedUnderbust + 5;
-
-        const diff = Math.round(bustInch - calcBand);
-        const cups = ['AA', 'A', 'B', 'C', 'D', 'DD/E', 'DDD/F', 'G', 'H', 'I', 'J'];
-        const cup = diff >= 0 && diff < cups.length ? cups[diff] : (diff < 0 ? 'AA' : 'K+');
-
-        // EU Band is roughly underbust in cm rounded to nearest 5
-        const euBand = Math.round(underbust / 5) * 5;
-
-        setResult({
-            text: `Calculated Bra Size:\nUS/UK: ${calcBand}${cup}\nEU: ${euBand}${cup}\n\nNote: This is a guide. Actual fit may vary by brand.`
-        });
     };
 
     const convertShoeSize = () => {
@@ -161,181 +228,122 @@ const SizeGuide = () => {
         const eu = (cm * 1.5) + 2;
         const uk = gender === 'men' ? (cm / 2.54) * 3 - 25 : (cm / 2.54) * 3 - 23;
         const us = gender === 'men' ? (cm / 2.54) * 3 - 24 : (cm / 2.54) * 3 - 21;
+        const jp = cm;
         setResult({
-            text: `Estimated Shoe Sizes (${gender}):\nEU: ${Math.round(eu)}\nUK: ${uk.toFixed(1)}\nUS: ${us.toFixed(1)}\nFoot Length: ${cm.toFixed(1)}cm`
+            text: `Estimated Shoe Sizes (${gender}):\nEU: ${Math.round(eu)}\nUK: ${uk.toFixed(1)}\nUS: ${us.toFixed(1)}\nJP: ${jp.toFixed(1)}cm\nFoot Length: ${cm.toFixed(1)}cm`
         });
-    };
-
-    const getRecommendedSize = (chart, m) => {
-        // Find best fit in chart.
-        // We prioritize the largest required size among multiple measurements.
-        let bestFit = chart[0];
-        for (const entry of chart) {
-            let matches = true;
-            if (entry.bust && m.bust > entry.bust + 2) matches = false;
-            if (entry.chest && m.chest > entry.chest + 2) matches = false;
-            if (entry.waist && m.waist > entry.waist + 2) matches = false;
-            if (entry.hips && m.hips > entry.hips + 2) matches = false;
-
-            if (matches) {
-                bestFit = entry;
-                break;
-            }
-            bestFit = entry; // Keep updating to last if none match
-        }
-        return bestFit;
-    };
-
-    const convertClothingSize = () => {
-        const { bust, waist, hips, inseam, height } = measurements;
-        const m = {
-            bust: unit === 'inch' ? bust * 2.54 : bust,
-            chest: unit === 'inch' ? bust * 2.54 : bust,
-            waist: unit === 'inch' ? waist * 2.54 : waist,
-            hips: unit === 'inch' ? hips * 2.54 : hips,
-            inseam: unit === 'inch' ? inseam * 2.54 : inseam,
-            height: unit === 'inch' ? height * 2.54 : height
-        };
-
-        let sizeData = "";
-        if (gender === 'children') {
-            if (m.height < 80) sizeData = "Age: 9-12 Months (Size 80)";
-            else if (m.height < 92) sizeData = "Age: 1-2 Years (Size 92)";
-            else if (m.height < 104) sizeData = "Age: 3-4 Years (Size 104)";
-            else if (m.height < 116) sizeData = "Age: 5-6 Years (Size 116)";
-            else if (m.height < 128) sizeData = "Age: 7-8 Years (Size 128)";
-            else if (m.height < 140) sizeData = "Age: 9-10 Years (Size 140)";
-            else sizeData = "Age: 11+ Years (Size 152+)";
-        } else {
-            const chart = SIZE_CHARTS[gender][subType] || SIZE_CHARTS[gender]['tops'];
-            const recommendation = getRecommendedSize(chart, m);
-            sizeData = `Recommended Size: ${recommendation.label}\nUS: ${recommendation.us || 'N/A'}\nEU: ${recommendation.eu || 'N/A'}`;
-        }
-
-        setResult({
-            text: `${subType.charAt(0).toUpperCase() + subType.slice(1)} Guide (${gender}):\n${sizeData}\n\nMeasurements used: ${m.bust}/${m.waist}/${m.hips} cm`
-        });
-
-        // Formulas (approximate)
-        const eu = (cm * 1.5) + 2;
-        const uk = gender === 'men' ? (cm / 2.54) * 3 - 25 : (cm / 2.54) * 3 - 23;
-        const us = gender === 'men' ? (cm / 2.54) * 3 - 24 : (cm / 2.54) * 3 - 21;
-
-        setResult({
-            text: `Estimated Shoe Sizes for ${gender}:\nEU: ${Math.round(eu)}\nUK: ${uk.toFixed(1)}\nUS: ${us.toFixed(1)}\nCM: ${cm.toFixed(1)}`
-        });
-    };
-
-    const convertClothingSize = () => {
-        const { bust, waist, hips } = measurements;
-        const b = unit === 'inch' ? bust * 2.54 : bust;
-        const w = unit === 'inch' ? waist * 2.54 : waist;
-        const h = unit === 'inch' ? hips * 2.54 : hips;
-
-        let sizeData = "";
-        if (gender === 'women') {
-            if (b < 80) sizeData = "Size: XXS / US 00 / EU 30";
-            else if (b < 84) sizeData = "Size: XS / US 0-2 / EU 32-34";
-            else if (b < 90) sizeData = "Size: S / US 4-6 / EU 36-38";
-            else if (b < 97) sizeData = "Size: M / US 8-10 / EU 40-42";
-            else if (b < 104) sizeData = "Size: L / US 12-14 / EU 44-46";
-            else if (b < 114) sizeData = "Size: XL / US 16-18 / EU 48-50";
-            else sizeData = "Size: XXL+ / US 20+ / EU 52+";
-        } else if (gender === 'men') {
-            if (w < 75) sizeData = "Size: XS / US 28";
-            else if (w < 82) sizeData = "Size: S / US 30-32";
-            else if (w < 90) sizeData = "Size: M / US 34-36";
-            else if (w < 98) sizeData = "Size: L / US 38-40";
-            else if (w < 106) sizeData = "Size: XL / US 42-44";
-            else sizeData = "Size: XXL+ / US 46+";
-        } else { // Children
-            const height = measurements.height;
-            if (height < 80) sizeData = "Age: 9-12 Months (Size 80)";
-            else if (height < 92) sizeData = "Age: 1-2 Years (Size 92)";
-            else if (height < 104) sizeData = "Age: 3-4 Years (Size 104)";
-            else if (height < 116) sizeData = "Age: 5-6 Years (Size 116)";
-            else if (height < 128) sizeData = "Age: 7-8 Years (Size 128)";
-            else if (height < 140) sizeData = "Age: 9-10 Years (Size 140)";
-            else sizeData = "Age: 11+ Years (Size 152+)";
-        }
-
-        setResult({ text: `Clothing Guide (${gender}):\n${sizeData}\nBased on measurements: ${unit === 'cm' ? `${b}/${w}/${h} cm` : `${bust}/${waist}/${hips} inch`}` });
     };
 
     const convertAccessories = () => {
-        const { ringDiameter, wristCircumference, neckCircumference } = measurements;
+        const { ringDiameter, wristCircumference, neckCircumference, headCircumference, handCircumference } = measurements;
         const d = unit === 'inch' ? ringDiameter * 25.4 : ringDiameter;
         const wrist = unit === 'inch' ? wristCircumference * 25.4 : wristCircumference;
         const neck = unit === 'inch' ? neckCircumference * 25.4 : neckCircumference;
+        const head = unit === 'inch' ? headCircumference * 2.54 : headCircumference;
+        const hand = unit === 'inch' ? handCircumference * 2.54 : handCircumference;
+
+        // Ring Size
         const usRing = (d * 3.14159 - 36.5) / 2.55;
+
+        // Wrist Size
         let wristSize = wrist < 140 ? "Very Small" : wrist < 160 ? "Small" : wrist < 180 ? "Medium" : wrist < 200 ? "Large" : "Extra Large";
+
+        // Hat Size (US)
+        const hatSizeUS = (head / 2.54) / Math.PI;
+        let hatLabel = "M";
+        if (head < 54) hatLabel = "XS";
+        else if (head < 56) hatLabel = "S";
+        else if (head < 58) hatLabel = "M";
+        else if (head < 60) hatLabel = "L";
+        else if (head < 62) hatLabel = "XL";
+        else hatLabel = "XXL";
+
+        // Glove Size
+        const gloveSizeInch = hand / 2.54;
+        let gloveLabel = "M";
+        if (gloveSizeInch < 7) gloveLabel = "XS";
+        else if (gloveSizeInch < 8) gloveLabel = "S";
+        else if (gloveSizeInch < 9) gloveLabel = "M";
+        else if (gloveSizeInch < 10) gloveLabel = "L";
+        else gloveLabel = "XL";
+
+        // Belt Size
+        const waistInch = unit === 'cm' ? measurements.waist / 2.54 : measurements.waist;
+        const beltSize = Math.ceil(waistInch) + 2;
+
         setResult({
-            text: `Accessories Sizes:\n💍 Ring (US): ${usRing.toFixed(1)}\n⌚ Wrist: ${wristSize} (${wrist.toFixed(1)}mm)\n👔 Neck: ${(neck/25.4).toFixed(1)}in / ${neck.toFixed(0)}mm`
-
-        // US Ring Size approx
-        const usRing = (d * 3.14159 - 36.5) / 2.55;
-
-        let wristSize = "";
-        if (wrist < 140) wristSize = "Very Small / Petites";
-        else if (wrist < 160) wristSize = "Small";
-        else if (wrist < 180) wristSize = "Medium";
-        else if (wrist < 200) wristSize = "Large";
-        else wristSize = "Extra Large";
-
-        setResult({
-            text: `Accessories & Ornaments:\n\n` +
-                  `💍 Ring Size (US): ${usRing.toFixed(1)} (Diam: ${d.toFixed(1)}mm)\n` +
-                  `⌚ Wrist Size: ${wristSize} (${wrist.toFixed(1)}mm)\n` +
-                  `👔 Neck Size: ${neck.toFixed(1)}mm / ${(neck/25.4).toFixed(1)}in\n\n` +
-                  `Bracelet length typically wrist + 1-2cm.`
+            text: `Accessories & Headwear:\n💍 Ring (US): ${usRing.toFixed(1)}\n⌚ Wrist: ${wristSize} (${wrist.toFixed(1)}mm)\n👔 Neck: ${(neck / 25.4).toFixed(1)}in / ${neck.toFixed(0)}mm\n👒 Hat Size: ${hatLabel} (US ${hatSizeUS.toFixed(2)})\n🧤 Glove Size: ${gloveLabel} (${gloveSizeInch.toFixed(1)}in)\n👖 Belt Size: ${beltSize}in / ${Math.round(beltSize * 2.54)}cm`
         });
     };
 
     const calculateBodyIndices = () => {
-        const { weight, height, waist, hips } = measurements;
+        const { weight, height, waist, hips, bust } = measurements;
+        const b = unit === 'inch' ? bust * 2.54 : bust;
+        const w = unit === 'inch' ? waist * 2.54 : waist;
+        const h = unit === 'inch' ? hips * 2.54 : hips;
+
         const hMeters = unit === 'inch' ? (height * 2.54) / 100 : height / 100;
         const wKg = unit === 'inch' ? weight * 0.453592 : weight;
         const bmi = hMeters > 0 ? wKg / (hMeters * hMeters) : 0;
         const whr = hips > 0 ? waist / hips : 0;
         let bmiCat = bmi < 18.5 ? "Underweight" : bmi < 25 ? "Normal" : bmi < 30 ? "Overweight" : "Obese";
+
+        // Body Shape Logic (Simplified)
+        let bodyShape = "Not determined";
+        if (gender === 'women') {
+            const bustHipDiff = Math.abs(b - h);
+            const isHourglass = bustHipDiff <= 5 && (b - w) >= 20 && (h - w) >= 20;
+            const isPear = (h - b) > 5 && (h - w) >= 20;
+            const isInvertedTriangle = (b - h) > 5 && (b - w) >= 20;
+            const isRectangle = bustHipDiff <= 5 && (b - w) < 20 && (h - w) < 20;
+            const isApple = (w >= b) && (w >= h);
+
+            if (isHourglass) bodyShape = "Hourglass";
+            else if (isPear) bodyShape = "Pear (Triangle)";
+            else if (isInvertedTriangle) bodyShape = "Inverted Triangle";
+            else if (isApple) bodyShape = "Apple (Round)";
+            else if (isRectangle) bodyShape = "Rectangle (Straight)";
+        } else if (gender === 'men') {
+            if (b > h * 1.05) bodyShape = "Inverted Triangle / V-Taper";
+            else if (w > b && w > h) bodyShape = "Oval / Apple";
+            else if (Math.abs(b - h) < 5 && Math.abs(b - w) < 5) bodyShape = "Rectangle";
+            else if (h > b) bodyShape = "Triangle";
+            else bodyShape = "Trapezoid (Standard)";
+        }
+
         setResult({
-            text: `Body Stats:\nBMI: ${bmi.toFixed(1)} (${bmiCat})\nWaist-to-Hip: ${whr.toFixed(2)}\n\nRecommended WHR: <0.9 (M), <0.85 (W)`
-        const wKg = weight; // Assume weight is in kg for now
-
-        const bmi = hMeters > 0 ? wKg / (hMeters * hMeters) : 0;
-        const whr = hips > 0 ? waist / hips : 0;
-
-        let bmiCat = "";
-        if (bmi < 18.5) bmiCat = "Underweight";
-        else if (bmi < 25) bmiCat = "Normal weight";
-        else if (bmi < 30) bmiCat = "Overweight";
-        else bmiCat = "Obese";
-
-        setResult({
-            text: `Body Indices:\nBMI: ${bmi.toFixed(1)} (${bmiCat})\nWaist-to-Hip Ratio: ${whr.toFixed(2)}\n\nWHR > 0.90 (men) or > 0.85 (women) indicates abdominal obesity.`
+            text: `Body Stats & Shape:\nBMI: ${bmi.toFixed(1)} (${bmiCat})\nWaist-to-Hip: ${whr.toFixed(2)}\nEstimated Shape: ${bodyShape}\n\nNote: Shapes are estimates based on standard ratios.`
         });
+    };
+
+    const getStyleTips = () => {
+        if (activeTab === 'traditional') {
+            return "Traditional styles often use natural fabrics like Silk or Cotton. For a perfect fit, prioritize the bust/chest measurement as it determines the drape.";
+        }
+        if (activeTab === 'clothing') {
+            return "Modern fashion varies by brand. If you are between sizes, consider the fabric elasticity; go for the smaller size for stretchy knits and the larger for structured woven fabrics.";
+        }
+        if (activeTab === 'body') {
+            return "Dressing for your body shape: Hourglass looks great with waist definition. Pear shapes benefit from structured shoulders. Inverted triangles look balanced with wide-leg pants.";
+        }
+        return null;
     };
 
     return (
         <div className="card p-20 glass-card grid gap-20">
             <div className="pill-group scrollable-x">
                 <button className={`pill ${activeTab === 'clothing' ? 'active' : ''}`} onClick={() => handleTabChange('clothing')}>Clothing</button>
+                <button className={`pill ${activeTab === 'traditional' ? 'active' : ''}`} onClick={() => handleTabChange('traditional')}>Traditional</button>
                 <button className={`pill ${activeTab === 'inners' ? 'active' : ''}`} onClick={() => handleTabChange('inners')}>Inners</button>
                 <button className={`pill ${activeTab === 'shoes' ? 'active' : ''}`} onClick={() => handleTabChange('shoes')}>Shoes</button>
                 <button className={`pill ${activeTab === 'rings' ? 'active' : ''}`} onClick={() => handleTabChange('rings')}>Accessories</button>
                 <button className={`pill ${activeTab === 'body' ? 'active' : ''}`} onClick={() => handleTabChange('body')}>Body Stats</button>
-                <button className={`pill ${activeTab === 'clothing' ? 'active' : ''}`} onClick={() => setActiveTab('clothing')}>Clothing</button>
-                <button className={`pill ${activeTab === 'shoes' ? 'active' : ''}`} onClick={() => setActiveTab('shoes')}>Shoes</button>
-                <button className={`pill ${activeTab === 'bra' ? 'active' : ''}`} onClick={() => setActiveTab('bra')}>Bra & Inners</button>
-                <button className={`pill ${activeTab === 'rings' ? 'active' : ''}`} onClick={() => setActiveTab('rings')}>Accessories</button>
-                <button className={`pill ${activeTab === 'body' ? 'active' : ''}`} onClick={() => setActiveTab('body')}>Body Stats</button>
             </div>
 
             <div className="grid grid-2-cols gap-15">
                 <div className="form-group">
                     <label className="smallest opacity-6 uppercase ml-10">Target</label>
                     <select className="pill w-full" value={gender} onChange={e => handleGenderChange(e.target.value)}>
-                    <select className="pill w-full" value={gender} onChange={e => setGender(e.target.value)}>
                         <option value="women">Women</option>
                         <option value="men">Men</option>
                         <option value="children">Children</option>
@@ -351,9 +359,9 @@ const SizeGuide = () => {
             </div>
 
             <div className="grid gap-10">
-                {activeTab === 'clothing' && (
+                {(activeTab === 'clothing' || activeTab === 'traditional') && (
                     <>
-                        {gender !== 'children' && (
+                        {gender !== 'children' && activeTab === 'clothing' && (
                             <div className="form-group">
                                 <label className="smallest opacity-6 uppercase ml-10">Clothing Type</label>
                                 <select className="pill w-full" value={subType} onChange={e => setSubType(e.target.value)}>
@@ -361,6 +369,16 @@ const SizeGuide = () => {
                                     <option value="tops">Tops & Blouses</option>
                                     <option value="bottoms">Pants & Skirts</option>
                                     <option value="outerwear">Outerwear & Coats</option>
+                                </select>
+                            </div>
+                        )}
+
+                        {activeTab === 'traditional' && (
+                            <div className="form-group">
+                                <label className="smallest opacity-6 uppercase ml-10">Traditional Type</label>
+                                <select className="pill w-full" value={subType} onChange={e => setSubType(e.target.value)}>
+                                    <option value={gender === 'women' ? 'indian_women' : 'indian_men'}>Indian (Kurta/Saree)</option>
+                                    <option value="general">Global Traditional (General)</option>
                                 </select>
                             </div>
                         )}
@@ -383,30 +401,13 @@ const SizeGuide = () => {
                                     <input type="number" name="hips" className="pill w-full" value={measurements.hips} onChange={handleInputChange} />
                                 </div>
                             )}
-                            {subType === 'bottoms' && gender === 'men' && (
+                            {gender === 'children' && (
                                 <div className="form-group">
-                                    <label>Inseam ({unit})</label>
-                                    <input type="number" name="inseam" className="pill w-full" value={measurements.inseam} onChange={handleInputChange} />
+                                    <label>Height ({unit})</label>
+                                    <input type="number" name="height" className="pill w-full" value={measurements.height} onChange={handleInputChange} />
                                 </div>
                             )}
-                        <div className="form-group">
-                            <label>Bust/Chest ({unit})</label>
-                            <input type="number" name="bust" className="pill w-full" value={measurements.bust} onChange={handleInputChange} />
                         </div>
-                        <div className="form-group">
-                            <label>Waist ({unit})</label>
-                            <input type="number" name="waist" className="pill w-full" value={measurements.waist} onChange={handleInputChange} />
-                        </div>
-                        <div className="form-group">
-                            <label>Hips ({unit})</label>
-                            <input type="number" name="hips" className="pill w-full" value={measurements.hips} onChange={handleInputChange} />
-                        </div>
-                        {gender === 'children' && (
-                            <div className="form-group">
-                                <label>Height ({unit})</label>
-                                <input type="number" name="height" className="pill w-full" value={measurements.height} onChange={handleInputChange} />
-                            </div>
-                        )}
                         <button className="btn-primary" onClick={convertClothingSize}>Get Clothing Size</button>
                     </>
                 )}
@@ -455,52 +456,34 @@ const SizeGuide = () => {
                             <input type="number" name="footLength" className="pill w-full" value={measurements.footLength} onChange={handleInputChange} />
                         </div>
                         <button className="btn-primary" onClick={convertShoeSize}>Convert Shoe Size</button>
-                {activeTab === 'shoes' && (
-                    <>
-                        <div className="form-group">
-                            <label>Foot Length ({unit})</label>
-                            <input type="number" name="footLength" className="pill w-full" value={measurements.footLength} onChange={handleInputChange} />
-                        </div>
-                        <button className="btn-primary" onClick={convertShoeSize}>Convert Shoe Size</button>
-                    </>
-                )}
-
-                {activeTab === 'bra' && (
-                    <>
-                        <div className="form-group">
-                            <label>Full Bust ({unit})</label>
-                            <input type="number" name="bust" className="pill w-full" value={measurements.bust} onChange={handleInputChange} />
-                        </div>
-                        <div className="form-group">
-                            <label>Underbust ({unit})</label>
-                            <input type="number" name="underbust" className="pill w-full" value={measurements.underbust} onChange={handleInputChange} />
-                        </div>
-                        <button className="btn-primary" onClick={calculateBraSize}>Calculate Bra Size</button>
                     </>
                 )}
 
                 {activeTab === 'rings' && (
                     <>
-                        <div className="form-group">
-                            <label>Ring Internal Diameter (mm)</label>
-                            <input type="number" name="ringDiameter" className="pill w-full" value={measurements.ringDiameter} onChange={handleInputChange} />
-                        </div>
                         <div className="grid grid-2-cols gap-10">
+                            <div className="form-group">
+                                <label>Ring Diameter (mm)</label>
+                                <input type="number" name="ringDiameter" className="pill w-full" value={measurements.ringDiameter} onChange={handleInputChange} />
+                            </div>
                             <div className="form-group">
                                 <label>Wrist ({unit})</label>
                                 <input type="number" name="wristCircumference" className="pill w-full" value={measurements.wristCircumference} onChange={handleInputChange} />
                             </div>
+                        </div>
+                        <div className="grid grid-2-cols gap-10">
                             <div className="form-group">
                                 <label>Neck ({unit})</label>
                                 <input type="number" name="neckCircumference" className="pill w-full" value={measurements.neckCircumference} onChange={handleInputChange} />
                             </div>
-                        <div className="form-group">
-                            <label>Wrist Circumference ({unit})</label>
-                            <input type="number" name="wristCircumference" className="pill w-full" value={measurements.wristCircumference} onChange={handleInputChange} />
+                            <div className="form-group">
+                                <label>Head Circ. ({unit})</label>
+                                <input type="number" name="headCircumference" className="pill w-full" value={measurements.headCircumference} onChange={handleInputChange} />
+                            </div>
                         </div>
                         <div className="form-group">
-                            <label>Neck Circumference ({unit})</label>
-                            <input type="number" name="neckCircumference" className="pill w-full" value={measurements.neckCircumference} onChange={handleInputChange} />
+                            <label>Hand Circ. ({unit})</label>
+                            <input type="number" name="handCircumference" className="pill w-full" value={measurements.handCircumference} onChange={handleInputChange} />
                         </div>
                         <button className="btn-primary" onClick={convertAccessories}>Calculate Accessory Sizes</button>
                     </>
@@ -534,6 +517,12 @@ const SizeGuide = () => {
             </div>
 
             <ToolResult result={result} />
+
+            {getStyleTips() && (
+                <div className="p-15 border-top opacity-8 smallest italic">
+                    <strong>Style Tip:</strong> {getStyleTips()}
+                </div>
+            )}
         </div>
     );
 };
