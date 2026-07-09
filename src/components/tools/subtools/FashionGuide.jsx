@@ -35,7 +35,7 @@ const FASHION_DATA = {
   ]
 };
 
-const FashionGuide = ({ initialTab = 'body-shape' }) => {
+const FashionGuide = ({ initialTab = 'body-shape', allowedTabs = null }) => {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [gender, setGender] = useState('women');
   const [result, setResult] = useState(null);
@@ -52,13 +52,29 @@ const FashionGuide = ({ initialTab = 'body-shape' }) => {
     });
   };
 
+  const TABS = [
+    { id: 'body-shape', label: 'Body Shape Guide' },
+    { id: 'style-types', label: 'Style Profiles' },
+    { id: 'fabrics', label: 'Fabric Encyclopedia' }
+  ];
+
+  const filteredTabs = allowedTabs ? TABS.filter(t => allowedTabs.includes(t.id)) : TABS;
+
   return (
     <div className="card p-20 glass-card grid gap-20">
-      <div className="pill-group scrollable-x">
-        <button className={`pill ${activeTab === 'body-shape' ? 'active' : ''}`} onClick={() => { setActiveTab('body-shape'); setResult(null); }}>Body Shape Guide</button>
-        <button className={`pill ${activeTab === 'style-types' ? 'active' : ''}`} onClick={() => { setActiveTab('style-types'); setResult(null); }}>Style Profiles</button>
-        <button className={`pill ${activeTab === 'fabrics' ? 'active' : ''}`} onClick={() => { setActiveTab('fabrics'); setResult(null); }}>Fabric Encyclopedia</button>
-      </div>
+      {filteredTabs.length > 1 && (
+        <div className="pill-group scrollable-x">
+          {filteredTabs.map(tab => (
+            <button
+              key={tab.id}
+              className={`pill ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => { setActiveTab(tab.id); setResult(null); }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {activeTab === 'body-shape' && (
         <>

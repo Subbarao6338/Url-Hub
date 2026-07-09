@@ -91,7 +91,7 @@ const SIZE_CHARTS = {
     }
 };
 
-const SizeGuide = ({ initialTab = 'clothing' }) => {
+const SizeGuide = ({ initialTab = 'clothing', allowedTabs = null }) => {
     const [activeTab, setActiveTab] = useState(initialTab);
     const [gender, setGender] = useState('women');
     const [subType, setSubType] = useState('dresses');
@@ -330,16 +330,32 @@ const SizeGuide = ({ initialTab = 'clothing' }) => {
         return null;
     };
 
+    const TABS = [
+        { id: 'clothing', label: 'Clothing' },
+        { id: 'traditional', label: 'Traditional' },
+        { id: 'inners', label: 'Inners' },
+        { id: 'shoes', label: 'Shoes' },
+        { id: 'rings', label: 'Accessories' },
+        { id: 'body', label: 'Body Stats' }
+    ];
+
+    const filteredTabs = allowedTabs ? TABS.filter(t => allowedTabs.includes(t.id)) : TABS;
+
     return (
         <div className="card p-20 glass-card grid gap-20">
-            <div className="pill-group scrollable-x">
-                <button className={`pill ${activeTab === 'clothing' ? 'active' : ''}`} onClick={() => handleTabChange('clothing')}>Clothing</button>
-                <button className={`pill ${activeTab === 'traditional' ? 'active' : ''}`} onClick={() => handleTabChange('traditional')}>Traditional</button>
-                <button className={`pill ${activeTab === 'inners' ? 'active' : ''}`} onClick={() => handleTabChange('inners')}>Inners</button>
-                <button className={`pill ${activeTab === 'shoes' ? 'active' : ''}`} onClick={() => handleTabChange('shoes')}>Shoes</button>
-                <button className={`pill ${activeTab === 'rings' ? 'active' : ''}`} onClick={() => handleTabChange('rings')}>Accessories</button>
-                <button className={`pill ${activeTab === 'body' ? 'active' : ''}`} onClick={() => handleTabChange('body')}>Body Stats</button>
-            </div>
+            {filteredTabs.length > 1 && (
+                <div className="pill-group scrollable-x">
+                    {filteredTabs.map(tab => (
+                        <button
+                            key={tab.id}
+                            className={`pill ${activeTab === tab.id ? 'active' : ''}`}
+                            onClick={() => handleTabChange(tab.id)}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
+            )}
 
             <div className="grid grid-2-cols gap-15">
                 <div className="form-group">
