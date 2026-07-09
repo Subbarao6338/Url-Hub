@@ -86,7 +86,45 @@ const DICTIONARY = {
     "write": "rayi (రాయి)",
     "read": "chaduuvu (చదువు)",
     "give": "ivvu (ఇవ్వు)",
-    "take": "teesuko (తీసుకో)"
+    "take": "teesuko (తీసుకో)",
+    // 30+ New Mappings
+    "where is": "ekkada undi? (ఎక్కడ ఉంది?)",
+    "what is": "emiటి? (ఏమిటి?)",
+    "who is": "evaru? (ఎవరు?)",
+    "when": "eppudu? (ఎప్పుడు?)",
+    "why": "enduku? (ఎందుకు?)",
+    "how": "ela? (ఎలా?)",
+    "name": "peru (పేరు)",
+    "my name is": "na peru (నా పేరు)",
+    "i am": "nenu (నేను)",
+    "you are": "nuvvu (నువ్వు)",
+    "they are": "varu (వారు)",
+    "we are": "memu (మేము)",
+    "come here": "ikkadiki ra (ఇక్కడికి రా)",
+    "go there": "akkadiki vellu (అక్కడికి వెళ్ళు)",
+    "sit down": "koorchondi (కూర్చోండి)",
+    "stand up": "nilabudu (నిలబడు)",
+    "don't": "vadu (వద్దు)",
+    "stop": "apu (ఆపు)",
+    "start": "modalupettu (మొదలుపెట్టు)",
+    "wait": "agu (ఆగు)",
+    "today": "ee roju (ఈ రోజు)",
+    "tomorrow": "repu (రేపు)",
+    "yesterday": "ninna (నిన్న)",
+    "now": "ippudu (ఇప్పుడు)",
+    "later": "taruvata (తరువాత)",
+    "always": "eppudu (ఎప్పుడూ)",
+    "never": "eppudu kadu (ఎప్పుడూ కాదు)",
+    "maybe": "bahusha (బహుశా)",
+    "beautiful": "andhamaina (అందమైన)",
+    "strong": "balamaina (బలమైన)",
+    "weak": "neersanga (నీరసంగా)",
+    "happy": "santoshamga (సంతోషంగా)",
+    "sad": "vicharangaa (విచారంగా)",
+    "angry": "kopamga (కోపంగా)",
+    "tired": "alasata (అలసట)",
+    "hungry": "akali (ఆకలి)",
+    "thirsty": "dappika (దప్పిక)"
 };
 
 const DocTranslator = () => {
@@ -132,7 +170,7 @@ const DocTranslator = () => {
             <div className="mt-10 p-15 bg-surface rounded-lg border text-left">
                 <span className="smallest uppercase opacity-6 block mb-10 font-bold">Supported Phrases (Sample):</span>
                 <div className="flex-wrap gap-5 flex">
-                    {Object.keys(DICTIONARY).slice(0, 20).map(k => <span key={k} className="badge smallest" style={{background: 'var(--primary-glow)'}}>{k}</span>)}
+                    {Object.keys(DICTIONARY).slice(0, 30).map(k => <span key={k} className="badge smallest" style={{background: 'var(--primary-glow)'}}>{k}</span>)}
                     <span className="badge smallest">...and many more</span>
                 </div>
             </div>

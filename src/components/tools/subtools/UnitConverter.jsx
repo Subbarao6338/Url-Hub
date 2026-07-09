@@ -106,6 +106,18 @@ const UnitConverter = () => {
             arcminutes: 60,
             arcseconds: 3600
         },
+        frequency: {
+            hertz: 1,
+            kilohertz: 0.001,
+            megahertz: 1e-6,
+            gigahertz: 1e-9,
+            terahertz: 1e-12
+        },
+        fuel_consumption: {
+            km_per_liter: 'km/l',
+            liters_per_100km: 'l/100km',
+            miles_per_gallon: 'mpg'
+        },
         temp: { celsius: 'c', fahrenheit: 'f', kelvin: 'k' }
     };
 
@@ -120,13 +132,23 @@ const UnitConverter = () => {
             if (toUnit === 'celsius') res = celsius;
             else if (toUnit === 'fahrenheit') res = (celsius * 9/5) + 32;
             else res = celsius + 273.15;
+        } else if (category === 'fuel_consumption') {
+            // Base unit: km/l
+            let kml;
+            if (fromUnit === 'km_per_liter') kml = value;
+            else if (fromUnit === 'liters_per_100km') kml = value === 0 ? 0 : 100 / value;
+            else if (fromUnit === 'miles_per_gallon') kml = value * 0.425144;
+
+            if (toUnit === 'km_per_liter') res = kml;
+            else if (toUnit === 'liters_per_100km') res = kml === 0 ? 0 : 100 / kml;
+            else if (toUnit === 'miles_per_gallon') res = kml / 0.425144;
         } else {
             const base = value / units[category][fromUnit];
             res = base * units[category][toUnit];
         }
 
-        const formattedFrom = fromUnit.replace('_', ' ');
-        const formattedTo = toUnit.replace('_', ' ');
+        const formattedFrom = fromUnit.replace(/_/g, ' ');
+        const formattedTo = toUnit.replace(/_/g, ' ');
         setResult({
             text: `${value} ${formattedFrom} = ${res.toLocaleString(undefined, { maximumFractionDigits: 6 })} ${formattedTo}`,
             value: res
@@ -157,6 +179,8 @@ const UnitConverter = () => {
                     <option value="energy">🔋 Energy</option>
                     <option value="power">⚡ Power</option>
                     <option value="angle">📐 Angle</option>
+                    <option value="frequency">📻 Frequency</option>
+                    <option value="fuel_consumption">🚗 Fuel Consumption</option>
                     <option value="temp">🌡️ Temperature</option>
                 </select>
             </div>
@@ -170,13 +194,13 @@ const UnitConverter = () => {
                 <div className="form-group">
                     <label className="smallest opacity-6 uppercase ml-10">From</label>
                     <select className="pill w-full" value={fromUnit} onChange={e=>setFromUnit(e.target.value)}>
-                        {Object.keys(units[category]).map(u=><option key={u} value={u}>{u.replace('_', ' ')}</option>)}
+                        {Object.keys(units[category]).map(u=><option key={u} value={u}>{u.replace(/_/g, ' ')}</option>)}
                     </select>
                 </div>
                 <div className="form-group">
                     <label className="smallest opacity-6 uppercase ml-10">To</label>
                     <select className="pill w-full" value={toUnit} onChange={e=>setToUnit(e.target.value)}>
-                        {Object.keys(units[category]).map(u=><option key={u} value={u}>{u.replace('_', ' ')}</option>)}
+                        {Object.keys(units[category]).map(u=><option key={u} value={u}>{u.replace(/_/g, ' ')}</option>)}
                     </select>
                 </div>
             </div>
