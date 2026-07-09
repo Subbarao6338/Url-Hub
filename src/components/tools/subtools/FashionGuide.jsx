@@ -24,6 +24,14 @@ const FASHION_DATA = {
     { name: "Streetwear", description: "Casual, comfortable clothing inspired by urban culture." },
     { name: "Preppy", description: "Classic, neat style inspired by university uniforms." },
     { name: "Avant-Garde", description: "Experimental, bold, and artistic fashion that pushes boundaries." }
+  ],
+  fabrics: [
+    { name: "Cotton", description: "Natural, breathable, and durable. Ideal for everyday wear.", care: "Machine wash cold, tumble dry low. Iron while slightly damp." },
+    { name: "Linen", description: "Lightweight, breathable, made from flax fibers. High moisture absorbency.", care: "Hand wash or machine wash on delicate. Air dry. Iron on high heat with steam." },
+    { name: "Silk", description: "Luxurious, natural protein fiber. Temperature regulating.", care: "Dry clean preferred. Hand wash with cool water and mild detergent. Never wring." },
+    { name: "Wool", description: "Warm, moisture-wicking, and wrinkle-resistant.", care: "Hand wash in cool water or dry clean. Lay flat to dry. Avoid high heat." },
+    { name: "Polyester", description: "Synthetic, durable, wrinkle-resistant, and quick-drying.", care: "Machine wash warm, tumble dry low. Low heat iron if needed." },
+    { name: "Denim", description: "Sturdy cotton twill fabric, typically indigo-dyed.", care: "Wash inside out in cold water. Air dry to prevent shrinkage and fading." }
   ]
 };
 
@@ -46,9 +54,10 @@ const FashionGuide = ({ initialTab = 'body-shape' }) => {
 
   return (
     <div className="card p-20 glass-card grid gap-20">
-      <div className="pill-group">
+      <div className="pill-group scrollable-x">
         <button className={`pill ${activeTab === 'body-shape' ? 'active' : ''}`} onClick={() => { setActiveTab('body-shape'); setResult(null); }}>Body Shape Guide</button>
         <button className={`pill ${activeTab === 'style-types' ? 'active' : ''}`} onClick={() => { setActiveTab('style-types'); setResult(null); }}>Style Profiles</button>
+        <button className={`pill ${activeTab === 'fabrics' ? 'active' : ''}`} onClick={() => { setActiveTab('fabrics'); setResult(null); }}>Fabric Encyclopedia</button>
       </div>
 
       {activeTab === 'body-shape' && (
@@ -75,6 +84,18 @@ const FashionGuide = ({ initialTab = 'body-shape' }) => {
           {FASHION_DATA.styleTypes.map(style => (
             <div key={style.name} className="card p-15 text-center" onClick={() => getStyleAdvice(style)}>
               <div className="card-title">{style.name}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'fabrics' && (
+        <div className="category-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
+          {FASHION_DATA.fabrics.map(fabric => (
+            <div key={fabric.name} className="card p-15 text-center" onClick={() => setResult({
+              text: `Fabric: ${fabric.name}\n\nDescription: ${fabric.description}\n\nCare Instructions: ${fabric.care}`
+            })}>
+              <div className="card-title">{fabric.name}</div>
             </div>
           ))}
         </div>

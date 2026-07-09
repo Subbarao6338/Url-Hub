@@ -34,6 +34,31 @@ const TRADITIONAL_DATA = {
         { name: "Kente Cloth (West Africa)", description: "A silk and cotton fabric of interwoven cloth strips, native to the Akan ethnic group of South Ghana." },
         { name: "Native American Regalia", description: "Traditional clothing worn for ceremonial purposes, varying significantly by tribe." }
       ]
+    },
+    {
+      name: "Europe",
+      styles: [
+        { name: "Dirndl (Germany/Austria)", description: "A traditional feminine dress with a tight bodice, blouse, full skirt, and apron." },
+        { name: "Lederhosen (Germany/Austria)", description: "Short or knee-length breeches made of leather, traditionally worn by men." },
+        { name: "Kilts (Scotland)", description: "A knee-length non-bifurcated skirt-type garment with pleats at the back, originating in the traditional dress of Gaelic men and boys." },
+        { name: "Flamenco Dress (Spain)", description: "A tight-fitting dress to the hip, which then spreads out in several ruffles to the ankle." }
+      ]
+    },
+    {
+      name: "Americas",
+      styles: [
+        { name: "Poncho (South America)", description: "A well-known garment designed to keep the body warm or dry, consisting of a large sheet of fabric with an opening in the center for the head." },
+        { name: "Guayabera (Caribbean/Latin America)", description: "A men's summer shirt, worn outside the trousers, distinguished by two vertical rows of closely sewn pleats." },
+        { name: "Huipil (Mexico/Central America)", description: "A traditional, loose-fitting tunic, generally made from two or three rectangular pieces of fabric which are then joined together with stitching." }
+      ]
+    },
+    {
+      name: "Southeast Asia",
+      styles: [
+        { name: "Batik (Indonesia/Malaysia)", description: "A technique of wax-resist dyeing applied to whole cloth, or cloth made using this technique." },
+        { name: "Áo Dài (Vietnam)", description: "A Vietnamese national garment, worn by both sexes but now most commonly by women, consisting of a long tunic that is split on the sides and worn over trousers." },
+        { name: "Barong Tagalog (Philippines)", description: "An embroidered formal shirt and considered the national dress of the Philippines. It is lightweight and worn untucked over an undershirt." }
+      ]
     }
   ]
 };

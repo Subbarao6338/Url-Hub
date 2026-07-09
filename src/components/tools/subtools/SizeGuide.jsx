@@ -229,8 +229,9 @@ const SizeGuide = ({ initialTab = 'clothing' }) => {
         const uk = gender === 'men' ? (cm / 2.54) * 3 - 25 : (cm / 2.54) * 3 - 23;
         const us = gender === 'men' ? (cm / 2.54) * 3 - 24 : (cm / 2.54) * 3 - 21;
         const jp = cm;
+        const kr = cm * 10; // Korean size is usually mm
         setResult({
-            text: `Estimated Shoe Sizes (${gender}):\nEU: ${Math.round(eu)}\nUK: ${uk.toFixed(1)}\nUS: ${us.toFixed(1)}\nJP: ${jp.toFixed(1)}cm\nFoot Length: ${cm.toFixed(1)}cm`
+            text: `Estimated Shoe Sizes (${gender}):\nEU: ${Math.round(eu)}\nUK: ${uk.toFixed(1)}\nUS: ${us.toFixed(1)}\nJP: ${jp.toFixed(1)}cm\nKR: ${kr.toFixed(0)}mm\nFoot Length: ${cm.toFixed(1)}cm`
         });
     };
 
