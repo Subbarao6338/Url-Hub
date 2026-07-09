@@ -365,7 +365,8 @@ const getCategoryIcon = (cat) => {
         'Developer Tools': 'terminal',
         'Networking & Ops': 'router',
         'Productivity': 'assignment',
-        'Data & Analytics': 'insights'
+        'Data & Analytics': 'insights',
+        'Lifestyle': 'style'
     };
     return icons[cat] || 'folder';
 };
