@@ -25,4 +25,5 @@ export const TOOLS = [
     { id: 'notion-main', title: 'Notion Hub', icon: 'auto_stories', category: 'Productivity', component: NotionTools, subTools: ['ingest', 'folder', 'scraper', 'history', 'setup'] },
     { id: 'time-main', title: 'Date & Time', icon: 'schedule', category: 'Productivity', component: DateTimeTools, subTools: ['age', 'timestamp', 'stopwatch', 'pomodoro', 'worldclock', 'timezone', 'datediff', 'countdown', 'panchangam'] },
     { id: 'lifestyle-main', title: 'Lifestyle Hub', icon: 'style', category: 'Productivity', component: LifestyleTools, subTools: ['size-guide'] },
+    { id: 'lifestyle-main', title: 'Lifestyle Hub', icon: 'style', category: 'Lifestyle', component: LifestyleTools, subTools: ['size-guide'] },
 ];
