@@ -91,8 +91,8 @@ const SIZE_CHARTS = {
     }
 };
 
-const SizeGuide = () => {
-    const [activeTab, setActiveTab] = useState('clothing');
+const SizeGuide = ({ initialTab = 'clothing' }) => {
+    const [activeTab, setActiveTab] = useState(initialTab);
     const [gender, setGender] = useState('women');
     const [subType, setSubType] = useState('dresses');
     const [unit, setUnit] = useState('cm');

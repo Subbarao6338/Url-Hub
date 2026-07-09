@@ -885,7 +885,9 @@ input.pill:focus {
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   border-left: 4px solid var(--primary);
-  word-break: break-all;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
   overflow-x: auto;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.9rem;

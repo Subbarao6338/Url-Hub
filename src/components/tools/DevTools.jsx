@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ToolResult from './ToolResult';
 
 // Import subtools
 import SqlFormatter from './subtools/SqlFormatter';
@@ -25,38 +24,60 @@ import UrlTool from './subtools/UrlTool';
 import PasswordTool from './subtools/PasswordTool';
 import RsaTool from './subtools/RsaTool';
 
-const DEV_TABS = [
-  { id: 'json-fmt', label: 'JSON Formatter', icon: 'data_object' },
-  { id: 'sql', label: 'SQL Formatter', icon: 'storage' },
-  { id: 'diff', label: 'Diff Viewer', icon: 'difference' },
-  { id: 'converter', label: 'Unit Converter', icon: 'straighten' },
-  { id: 'security', label: 'Hash & HMAC', icon: 'security' },
-  { id: 'password', label: 'Password Tool', icon: 'lock' },
-  { id: 'rsa', label: 'RSA Key Gen', icon: 'vpn_key' },
-  { id: 'regex', label: 'Regex Tester', icon: 'find_replace' },
-  { id: 'otp', label: 'OTP Generator', icon: 'password' },
-  { id: 'kusto', label: 'KQL Formatter', icon: 'filter_alt' },
-  { id: 'base64', label: 'Base64', icon: 'code' },
-  { id: 'jwt', label: 'JWT Debugger', icon: 'verified_user' },
-  { id: 'cron', label: 'Cron Parser', icon: 'today' },
-  { id: 'url', label: 'URL Tool', icon: 'link' },
-  { id: 'word-rank', label: 'Word Rank', icon: 'sort_by_alpha' },
-  { id: 'yaml', label: 'YAML ↔ JSON', icon: 'swap_horiz' },
-  { id: 'minifier', label: 'Code Minifier', icon: 'compress' },
-  { id: 'xml-json', label: 'XML ↔ JSON', icon: 'transform' },
-  { id: 'xml-fmt', label: 'XML Formatter', icon: 'format_align_left' },
-  { id: 'json-ts', label: 'JSON to TS', icon: 'code' },
-  { id: 'color', label: 'Color Picker', icon: 'palette' },
-  { id: 'qr-barcode', label: 'QR & Barcode', icon: 'qr_code' },
-  { id: 'inspiration', label: 'Code Inspiration', icon: 'lightbulb' }
-].sort((a, b) => a.label.localeCompare(b.label));
+const DEV_CATEGORIES = [
+  {
+    id: 'web-data',
+    title: 'Web & Data',
+    tools: [
+      { id: 'json-fmt', label: 'JSON Formatter', icon: 'data_object', description: 'Prettify and validate JSON data.' },
+      { id: 'sql', label: 'SQL Formatter', icon: 'storage', description: 'Format SQL queries for better readability.' },
+      { id: 'xml-fmt', label: 'XML Formatter', icon: 'format_align_left', description: 'Format and validate XML documents.' },
+      { id: 'xml-json', label: 'XML ↔ JSON', icon: 'transform', description: 'Convert between XML and JSON formats.' },
+      { id: 'yaml', label: 'YAML ↔ JSON', icon: 'swap_horiz', description: 'Convert between YAML and JSON.' },
+      { id: 'json-ts', label: 'JSON to TS', icon: 'code', description: 'Generate TypeScript interfaces from JSON.' },
+      { id: 'kusto', label: 'KQL Formatter', icon: 'filter_alt', description: 'Format Kusto Query Language (KQL).' },
+    ]
+  },
+  {
+    id: 'security',
+    title: 'Security & Auth',
+    tools: [
+      { id: 'security', label: 'Hash & HMAC', icon: 'security', description: 'Generate MD5, SHA-1, SHA-256 hashes.' },
+      { id: 'password', label: 'Password Tool', icon: 'lock', description: 'Generate secure passwords.' },
+      { id: 'rsa', label: 'RSA Key Gen', icon: 'vpn_key', description: 'Generate RSA public/private key pairs.' },
+      { id: 'jwt', label: 'JWT Debugger', icon: 'verified_user', description: 'Decode and verify JSON Web Tokens.' },
+      { id: 'otp', label: 'OTP Generator', icon: 'password', description: 'Generate One-Time Passwords.' },
+    ]
+  },
+  {
+    id: 'utilities',
+    title: 'Utilities & Misc',
+    tools: [
+      { id: 'diff', label: 'Diff Viewer', icon: 'difference', description: 'Compare two pieces of text or code.' },
+      { id: 'regex', label: 'Regex Tester', icon: 'find_replace', description: 'Test and debug regular expressions.' },
+      { id: 'base64', label: 'Base64', icon: 'code', description: 'Encode and decode Base64 strings.' },
+      { id: 'url', label: 'URL Tool', icon: 'link', description: 'Encode, decode, and parse URLs.' },
+      { id: 'cron', label: 'Cron Parser', icon: 'today', description: 'Parse and explain cron expressions.' },
+      { id: 'minifier', label: 'Code Minifier', icon: 'compress', description: 'Minify CSS, JS, and HTML.' },
+      { id: 'word-rank', label: 'Word Rank', icon: 'sort_by_alpha', description: 'Analyze word frequency in text.' },
+      { id: 'converter', label: 'Unit Converter', icon: 'straighten', description: 'Convert between various units.' },
+      { id: 'color', label: 'Color Picker', icon: 'palette', description: 'Pick and convert colors.' },
+      { id: 'qr-barcode', label: 'QR & Barcode', icon: 'qr_code', description: 'Generate QR codes and barcodes.' },
+      { id: 'inspiration', label: 'Code Inspiration', icon: 'lightbulb', description: 'Get random coding tips and quotes.' },
+    ]
+  }
+];
 
 const DevTools = ({ toolId, onSubtoolChange }) => {
   const [activeTab, setActiveTab] = useState(null);
 
   useEffect(() => {
     if (activeTab) {
-      const current = DEV_TABS.find(t => t.id === activeTab);
+      let current = null;
+      for (const cat of DEV_CATEGORIES) {
+        current = cat.tools.find(t => t.id === activeTab);
+        if (current) break;
+      }
       if (current && onSubtoolChange) onSubtoolChange(current.label);
     } else {
       if (onSubtoolChange) onSubtoolChange(null);
@@ -64,7 +85,10 @@ const DevTools = ({ toolId, onSubtoolChange }) => {
   }, [activeTab, onSubtoolChange]);
 
   useEffect(() => {
-    if (toolId && DEV_TABS.some(t => t.id === toolId)) setActiveTab(toolId);
+    if (toolId) {
+      const exists = DEV_CATEGORIES.some(cat => cat.tools.some(t => t.id === toolId));
+      if (exists) setActiveTab(toolId);
+    }
   }, [toolId]);
 
   const goBack = () => setActiveTab(null);
@@ -80,26 +104,37 @@ const DevTools = ({ toolId, onSubtoolChange }) => {
       <div className="tool-form mt-20">
         <div className="flex-between mb-20">
           <div className="pill disabled" style={{opacity: 0.5}}>
-            <span className="material-icons" style={{fontSize: '1.1rem'}}>dashboard</span>
-            Category Grid
+            <span className="material-icons" style={{fontSize: '1.1rem'}}>terminal</span>
+            Dev Hub
           </div>
           <button className="pill" onClick={closeHub}>
             <span className="material-icons" style={{fontSize: '1.1rem'}}>close</span>
             Exit Category
           </button>
         </div>
-        <div className="category-grid">
-          {DEV_TABS.map(tab => (
-            <div key={tab.id} className="card cursor-pointer" onClick={() => setActiveTab(tab.id)}>
-              <div className="card-body">
-                <div className="card-icon flex-center">
-                  <span className="material-icons">{tab.icon}</span>
-                </div>
-                <div className="card-title">{tab.label}</div>
-              </div>
+
+        {DEV_CATEGORIES.map(category => (
+          <div key={category.id} className="category-section mb-20">
+            <div className="category-title mb-10 opacity-6 uppercase smallest font-bold tracking-wider">
+              {category.title}
             </div>
-          ))}
-        </div>
+            <div className="category-grid">
+              {category.tools.map(tab => (
+                <div key={tab.id} className="card cursor-pointer" onClick={() => setActiveTab(tab.id)}>
+                  <div className="card-body">
+                    <div className="card-icon flex-center">
+                      <span className="material-icons">{tab.icon}</span>
+                    </div>
+                    <div className="card-title-group">
+                      <div className="card-title">{tab.label}</div>
+                      <div className="card-subtitle small opacity-6">{tab.description}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
