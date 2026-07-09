@@ -366,7 +366,7 @@ const getCategoryIcon = (cat) => {
         'Networking & Ops': 'router',
         'Productivity': 'assignment',
         'Data & Analytics': 'insights',
-        'Lifestyle': 'style'
+        'Fashion': 'checkroom'
     };
     return icons[cat] || 'folder';
 };
