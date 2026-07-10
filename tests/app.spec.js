@@ -21,11 +21,11 @@ test.describe('Epic Toolbox Basic Navigation', () => {
   });
 
   test('should open a tool category', async ({ page }) => {
-    // Click on Developer Tools category
-    const devToolsCard = page.locator('.card', { hasText: 'Dev Hub' });
+    // Click on JSON Formatter card
+    const devToolsCard = page.locator('.card', { hasText: 'JSON Formatter' });
     await devToolsCard.click();
 
-    // Check if breadcrumb shows Dev Hub
-    await expect(page.locator('.breadcrumb-item.active', { hasText: 'Dev Hub' })).toBeVisible();
+    // Check if breadcrumb shows JSON Formatter
+    await expect(page.locator('.breadcrumb-item.active', { hasText: 'JSON Formatter' })).toBeVisible();
   });
 });

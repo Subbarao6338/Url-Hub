@@ -29,8 +29,11 @@ const NotionTools = ({ toolId, onSubtoolChange }) => {
     }, [activeTab, onSubtoolChange]);
 
     useEffect(() => {
-        if (toolId && NOTION_TABS.some(t => t.id === toolId)) {
-            setActiveTab(toolId);
+        if (toolId) {
+            const cleanId = toolId.startsWith('notion-') ? toolId.replace('notion-', '') : toolId;
+            if (NOTION_TABS.some(t => t.id === cleanId)) {
+                setActiveTab(cleanId);
+            }
         }
     }, [toolId]);
 
