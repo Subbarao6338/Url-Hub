@@ -50,9 +50,13 @@ const AiAgentHub = ({ toolId, onSubtoolChange }) => {
         'ai-sentiment': 'local',
         'local': 'local',
         'sentiment': 'local',
+        'agent-ingest': 'ingest',
         'ingest': 'ingest',
+        'agent-generate': 'generate',
         'generate': 'generate',
+        'agent-results': 'results',
         'results': 'results',
+        'agent-setup': 'setup',
         'setup': 'setup'
       };
       if (mapping[toolId]) setActiveTab(mapping[toolId]);
