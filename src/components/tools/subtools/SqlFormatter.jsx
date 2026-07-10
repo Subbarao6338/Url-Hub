@@ -27,7 +27,9 @@ const SqlFormatter = () => {
                 'BETWEEN', 'LIKE', 'IS NULL', 'IS NOT NULL', 'INTERSECT', 'EXCEPT', 'WITH',
                 'CREATE TABLE', 'DROP TABLE', 'ALTER TABLE', 'TRUNCATE TABLE', 'DESCRIBE',
                 'EXPLAIN', 'INDEX', 'TRIGGER', 'PROCEDURE', 'FUNCTION', 'VIEW', 'DATABASE',
-                'COALESCE', 'IFNULL', 'NULLIF', 'ISNULL', 'CAST', 'CONVERT', 'TRIM', 'SUBSTRING'
+                'COALESCE', 'IFNULL', 'NULLIF', 'ISNULL', 'CAST', 'CONVERT', 'TRIM', 'SUBSTRING',
+                'ST_DISTANCE', 'ST_INTERSECTS', 'ST_CONTAINS', 'ST_WITHIN', 'ST_BUFFER', // Spatial
+                'PARTITION BY', 'OVER', 'RANK', 'DENSE_RANK', 'ROW_NUMBER', 'LEAD', 'LAG' // Window functions
             ];
 
             const sortedReservedWords = [...reservedWords].sort((a, b) => b.length - a.length);

@@ -64,5 +64,13 @@ Use the navigation bar at the bottom (or side on desktop) to switch between the 
     - Standardized test environment with **Vitest** and **Playwright**.
     - Fixed Notion Integration validation bug.
 
+### Latest Updates:
+- **Image Privacy & Edit Lab**: Now supports simultaneous multi-filter adjustments including Brightness, Contrast, Saturation, Hue, and Blur.
+- **SQL Formatter**: Added support for spatial and window functions, with refined indentation for complex subqueries.
+- **Offline Translator**: Significantly expanded the English-to-Telugu dictionary with 30+ new common phrases and greetings.
+- **Unit Converter**: Introduced new categories for **Frequency** and **Fuel Consumption** with specialized non-linear conversion logic.
+- **Markdown Editor**: Added a new interactive toolbar for rapid formatting (Bold, Italic, Lists, Links, etc.).
+- **Data Science Hub**: Improved stability of multivariate anomaly detection and expanded the Data Quality Suite with more comprehensive audits.
+
 ---
 *Epic Toolbox is built to simplify your digital life. Start exploring and boost your productivity today!*

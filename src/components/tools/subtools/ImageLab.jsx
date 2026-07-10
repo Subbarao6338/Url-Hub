@@ -6,6 +6,18 @@ const ImageLab = () => {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
     const [brightness, setBrightness] = useState(100);
+    const [contrast, setContrast] = useState(100);
+    const [saturation, setSaturation] = useState(100);
+    const [hue, setHue] = useState(0);
+    const [blur, setBlur] = useState(0);
+
+    const resetFilters = () => {
+        setBrightness(100);
+        setContrast(100);
+        setSaturation(100);
+        setHue(0);
+        setBlur(0);
+    };
 
     const runTransform = (type) => {
         if (!file) return setResult({ error: 'Select image.' });
@@ -18,11 +30,11 @@ const ImageLab = () => {
                 const ctx = canvas.getContext('2d');
                 canvas.width = img.width; canvas.height = img.height;
 
-                let filter = '';
-                if (type === 'grayscale') filter = 'grayscale(100%)';
-                else if (type === 'sepia') filter = 'sepia(100%)';
-                else if (type === 'brightness') filter = `brightness(${brightness}%)`;
-                else if (type === 'invert') filter = 'invert(100%)';
+                let filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) hue-rotate(${hue}deg) blur(${blur}px)`;
+
+                if (type === 'grayscale') filter += ' grayscale(100%)';
+                else if (type === 'sepia') filter += ' sepia(100%)';
+                else if (type === 'invert') filter += ' invert(100%)';
 
                 if (type === 'rotate') {
                     canvas.width = img.height; canvas.height = img.width;
@@ -35,12 +47,12 @@ const ImageLab = () => {
                     const bx = canvas.width * 0.1, by = canvas.height * 0.1, bw = canvas.width * 0.8, bh = canvas.height * 0.8;
                     ctx.drawImage(img, bx, by, bw, bh, bx, by, bw, bh); ctx.filter = 'none';
                 } else {
-                    if (filter) ctx.filter = filter;
+                    ctx.filter = filter;
                     ctx.drawImage(img, 0, 0);
                 }
 
                 const url = canvas.toDataURL('image/png');
-                setResult({ text: `Applied ${type} transformation`, url, filename: `transformed_${type}.png` });
+                setResult({ text: `Applied ${type || 'adjustments'} transformation`, url, filename: `transformed_${type || 'adjust'}.png` });
                 setLoading(false);
             };
             img.src = e.target.result;
@@ -64,12 +76,35 @@ const ImageLab = () => {
                 <button className="pill" onClick={()=>runTransform('grayscale')} disabled={loading}>Gray</button>
                 <button className="pill" onClick={()=>runTransform('sepia')} disabled={loading}>Sepia</button>
                 <button className="pill" onClick={()=>runTransform('invert')} disabled={loading}>Invert</button>
-                <button className="pill" onClick={()=>runTransform('brightness')} disabled={loading}>Apply Brightness</button>
+                <button className="btn-primary" onClick={()=>runTransform('adjust')} disabled={loading}>Apply Adjustments</button>
             </div>
 
-            <div className="form-group">
-                <label className="smallest opacity-6 uppercase ml-10">Brightness ({brightness}%)</label>
-                <input type="range" min="0" max="200" value={brightness} onChange={e=>setBrightness(e.target.value)} className="w-full" />
+            <div className="grid gap-10 p-10 bg-surface rounded-lg border">
+                <div className="flex-between">
+                    <span className="smallest uppercase opacity-6 font-bold">Adjustments</span>
+                    <button className="pill smallest" onClick={resetFilters} style={{padding: '2px 8px'}}>Reset</button>
+                </div>
+
+                <div className="form-group">
+                    <label className="smallest opacity-6">Brightness ({brightness}%)</label>
+                    <input type="range" min="0" max="200" value={brightness} onChange={e=>setBrightness(e.target.value)} className="w-full" />
+                </div>
+                <div className="form-group">
+                    <label className="smallest opacity-6">Contrast ({contrast}%)</label>
+                    <input type="range" min="0" max="200" value={contrast} onChange={e=>setContrast(e.target.value)} className="w-full" />
+                </div>
+                <div className="form-group">
+                    <label className="smallest opacity-6">Saturation ({saturation}%)</label>
+                    <input type="range" min="0" max="200" value={saturation} onChange={e=>setSaturation(e.target.value)} className="w-full" />
+                </div>
+                <div className="form-group">
+                    <label className="smallest opacity-6">Hue ({hue}°)</label>
+                    <input type="range" min="0" max="360" value={hue} onChange={e=>setHue(e.target.value)} className="w-full" />
+                </div>
+                <div className="form-group">
+                    <label className="smallest opacity-6">Blur ({blur}px)</label>
+                    <input type="range" min="0" max="20" value={blur} onChange={e=>setBlur(e.target.value)} className="w-full" />
+                </div>
             </div>
 
             <ToolResult result={result} />
