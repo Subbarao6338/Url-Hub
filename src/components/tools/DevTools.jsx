@@ -10,6 +10,7 @@ import JsonToTs from './subtools/JsonToTs';
 import ColorPicker from './subtools/ColorPicker';
 import UnitConverter from './subtools/UnitConverter';
 import KqlFormatter from './subtools/KqlFormatter';
+import CurrencyConverter from './subtools/CurrencyConverter';
 import JwtDebugger from './subtools/JwtDebugger';
 import CronParser from './subtools/CronParser';
 import CodeMinifier from './subtools/CodeMinifier';
@@ -61,6 +62,7 @@ const DEV_CATEGORIES = [
       { id: 'minifier', label: 'Code Minifier', icon: 'compress', description: 'Minify CSS, JS, and HTML.' },
       { id: 'word-rank', label: 'Word Rank', icon: 'sort_by_alpha', description: 'Analyze word frequency in text.' },
       { id: 'converter', label: 'Unit Converter', icon: 'straighten', description: 'Convert between various units.' },
+      { id: 'currency', label: 'Currency Converter', icon: 'currency_exchange', description: 'Real-time exchange rate calculations.' },
       { id: 'color', label: 'Color Picker', icon: 'palette', description: 'Pick and convert colors.' },
       { id: 'qr-barcode', label: 'QR & Barcode', icon: 'qr_code', description: 'Generate QR codes and barcodes.' },
       { id: 'inspiration', label: 'Code Inspiration', icon: 'lightbulb', description: 'Get random coding tips and quotes.' },
@@ -162,6 +164,7 @@ const DevTools = ({ toolId, onSubtoolChange }) => {
         {activeTab === 'json-ts' && <JsonToTs />}
         {activeTab === 'color' && <ColorPicker />}
         {activeTab === 'converter' && <UnitConverter />}
+        {activeTab === 'currency' && <CurrencyConverter />}
         {activeTab === 'kusto' && <KqlFormatter />}
         {activeTab === 'jwt' && <JwtDebugger />}
         {activeTab === 'cron' && <CronParser />}

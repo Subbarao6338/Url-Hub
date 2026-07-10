@@ -156,6 +156,11 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
     let effectiveToolId = activeToolId;
 
     if (!tool) {
+        tool = TOOLS.find(t => t.category === activeToolId);
+        effectiveToolId = null;
+    }
+
+    if (!tool) {
         tool = TOOLS.find(t => t.subTools?.includes(activeToolId));
     }
 
@@ -170,9 +175,17 @@ const ToolboxView = ({ searchQuery, groupToolbox, showStats, recentTools, setRec
                   <span>Toolbox</span>
               </div>
               <span className="breadcrumb-separator material-icons">chevron_right</span>
-              <div className={`breadcrumb-item ${!activeSubtoolLabel ? 'active' : ''}`} onClick={() => { if(activeSubtoolLabel) { setActiveSubtoolLabel(null); setActiveToolId(tool.id); } }}>
-                  <span className="material-icons" style={{fontSize: '1.2rem'}}>{tool.icon}</span>
-                  <span>{tool.title}</span>
+              <div className={`breadcrumb-item ${!activeSubtoolLabel ? 'active' : 'cursor-pointer'}`} onClick={() => {
+                  if (activeSubtoolLabel) {
+                      setActiveSubtoolLabel(null);
+                      setActiveToolId(tool.category);
+                      const url = new URL(window.location);
+                      url.searchParams.set('tool', tool.category);
+                      window.history.pushState({ toolId: tool.category, tab: 'toolbox' }, '', url.toString());
+                  }
+              }}>
+                  <span className="material-icons" style={{fontSize: '1.2rem'}}>{getCategoryIcon(tool.category)}</span>
+                  <span>{tool.category}</span>
               </div>
               {activeSubtoolLabel && (
                   <>
@@ -325,7 +338,7 @@ const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, 
             tabIndex="0"
             onKeyDown={onKeyDown}
             role="button"
-            aria-label={`Open ${tool.title} hub with ${tool.subTools?.length || 0} tools`}
+            aria-label={tool.subTools && tool.subTools.length > 0 ? `Open ${tool.title} hub with ${tool.subTools.length} tools` : `Open ${tool.title}`}
         >
             <div className="card-body">
                 {!hideIcons && (
@@ -340,10 +353,12 @@ const ToolCard = memo(({ tool, idx, isPinned, togglePin, handleShare, openTool, 
                 </div>
             </div>
             <div className="card-footer">
-                <span className="fallback-badge" title={`${tool.subTools?.length || 0} sub-tools available`} aria-label={`${tool.subTools?.length || 0} sub-tools`}>
-                    <span className="material-icons" aria-hidden="true">apps</span>
-                    {tool.subTools?.length || 0}
-                </span>
+                {tool.subTools && tool.subTools.length > 0 && (
+                    <span className="fallback-badge" title={`${tool.subTools?.length || 0} sub-tools available`} aria-label={`${tool.subTools?.length || 0} sub-tools`}>
+                        <span className="material-icons" aria-hidden="true">apps</span>
+                        {tool.subTools?.length || 0}
+                    </span>
+                )}
                 <button
                     className={`pin-btn ${isPinned ? 'active' : ''}`}
                     onClick={(e) => togglePin(e, tool.id)}
