@@ -36,6 +36,7 @@ export const TOOLS = [
 
     // 6. Converters
     { id: 'converter', title: 'Unit Converter', icon: 'straighten', category: 'Converters', component: DevTools, subTools: [] },
+    { id: 'currency', title: 'Currency Converter', icon: 'currency_exchange', category: 'Converters', component: DevTools, subTools: [] },
     { id: 'json-csv', title: 'JSON ↔ CSV Converter', icon: 'swap_calls', category: 'Converters', component: DataTools, subTools: [] },
     { id: 'xml-json', title: 'XML ↔ JSON Converter', icon: 'transform', category: 'Converters', component: DevTools, subTools: [] },
     { id: 'yaml', title: 'YAML ↔ JSON Converter', icon: 'swap_horiz', category: 'Converters', component: DevTools, subTools: [] },

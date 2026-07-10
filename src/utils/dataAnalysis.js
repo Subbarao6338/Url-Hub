@@ -115,7 +115,7 @@ export const runDataQualitySuite = (data) => {
         // Completeness Check
         report.push({
             column: col,
-            expectation: "expect_column_values_to_not_be_null",
+            expectation: "not_null",
             success: nulls === 0,
             unexpected_count: nulls,
             unexpected_percent: ((nulls / total) * 100).toFixed(2) + "%"

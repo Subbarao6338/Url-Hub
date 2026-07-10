@@ -10,7 +10,7 @@ const DICTIONARY = {
     "water": "neeru (నీరు)",
     "food": "aharam (ఆహారం)",
     "good": "manchi (మంచి)",
-    "bad": "chedu (చెడు)",
+    "bad": "chedu (చేడు)",
     "time": "samayam (సమయం)",
     "day": "roju (రోజు)",
     "night": "ratri (రాత్రి)",
@@ -87,7 +87,6 @@ const DICTIONARY = {
     "read": "chaduuvu (చదువు)",
     "give": "ivvu (ఇవ్వు)",
     "take": "teesuko (తీసుకో)",
-    // 30+ New Mappings
     "where is": "ekkada undi? (ఎక్కడ ఉంది?)",
     "what is": "emiటి? (ఏమిటి?)",
     "who is": "evaru? (ఎవరు?)",
@@ -127,20 +126,65 @@ const DICTIONARY = {
     "thirsty": "dappika (దప్పిక)"
 };
 
+const LANGUAGES = [
+    { code: 'te', name: 'Telugu (తెలుగు)' },
+    { code: 'es', name: 'Spanish (Español)' },
+    { code: 'fr', name: 'French (Français)' },
+    { code: 'de', name: 'German (Deutsch)' },
+    { code: 'it', name: 'Italian (Italiano)' },
+    { code: 'hi', name: 'Hindi (हिन्दी)' },
+    { code: 'ja', name: 'Japanese (日本語)' },
+    { code: 'zh', name: 'Chinese (中文)' }
+];
+
 const DocTranslator = () => {
     const [input, setInput] = useState('');
+    const [targetLang, setTargetLang] = useState('te');
     const [result, setResult] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const offlineTranslate = () => {
+    const translateOnline = async () => {
         if (!input.trim()) return;
+        setLoading(true);
+        setResult(null);
 
+        try {
+            const encodedText = encodeURIComponent(input);
+            const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodedText}&langpair=en|${targetLang}`);
+            if (!response.ok) throw new Error('API request failed');
+
+            const data = await response.json();
+            if (data.responseData && data.responseData.translatedText) {
+                setResult({
+                    text: data.responseData.translatedText,
+                    filename: `translated_${targetLang}.txt`,
+                    meta: { source: 'MyMemory API (Online)' }
+                });
+            } else {
+                throw new Error('Translation data not found in response');
+            }
+        } catch (e) {
+            console.warn("Online translation failed, falling back to offline dictionary:", e.message);
+            // Fallback to offline translation if target language is Telugu
+            if (targetLang === 'te') {
+                runOfflineTranslation();
+            } else {
+                setResult({
+                    error: `Translation failed: ${e.message}. (Offline fallback is only supported for English to Telugu).`
+                });
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const runOfflineTranslation = () => {
         let translated = input;
 
         // Sort keys by length descending to match longest phrases first
         const sortedKeys = Object.keys(DICTIONARY).sort((a, b) => b.length - a.length);
 
         sortedKeys.forEach(key => {
-            // Regex to match the word while considering punctuation and ignoring case
             const regex = new RegExp(`(?<=\\s|^|[.,!?;])${key}(?=\\s|$|[.,!?;])`, 'gi');
             translated = translated.replace(regex, (matched) => {
                 return DICTIONARY[key.toLowerCase()];
@@ -148,29 +192,67 @@ const DocTranslator = () => {
         });
 
         if (translated === input) {
-            setResult({ text: "No matching phrases found in offline dictionary. Try common words or greetings.", isNote: true });
+            setResult({
+                text: translated,
+                isNote: true,
+                note: "No matching phrases found in offline dictionary. Offline fallback is only available for simple words/greetings."
+            });
         } else {
-            setResult({ text: translated, filename: 'translation.txt' });
+            setResult({
+                text: translated,
+                filename: 'offline_translation.txt',
+                meta: { source: 'Local Dictionary (Offline Fallback)' }
+            });
         }
     };
 
     return (
         <div className="card p-30 glass-card text-center grid gap-15">
-            <h3>Common Phrase Translator (Offline)</h3>
-            <p className="smallest opacity-6">Instant English to Telugu phrase mapping. Powered by an expanded local dictionary with punctuation support.</p>
-            <textarea className="pill w-full" rows="6" style={{borderRadius: '16px', padding: '15px'}} value={input} onChange={e=>setInput(e.target.value)} placeholder="Type 'hello friend, how are you? My mother is at home'..." />
-            <div className="flex-center gap-10">
-                <button className="btn-primary flex-1" onClick={offlineTranslate}>
-                    <span className="material-icons mr-10">translate</span>
-                    Translate Offline
-                </button>
-                <button className="pill" onClick={() => { setInput(''); setResult(null); }}>Clear</button>
+            <h3>Online Document Translator</h3>
+            <p className="smallest opacity-6">Translate English text into multiple languages using the public MyMemory Translation API, with local English-to-Telugu fallback.</p>
+
+            <div className="grid grid-2-cols gap-10 text-left">
+                <div className="form-group">
+                    <label className="smallest opacity-6 uppercase ml-10">Source Language</label>
+                    <select className="pill w-full" disabled>
+                        <option>English</option>
+                    </select>
+                </div>
+                <div className="form-group">
+                    <label className="smallest opacity-6 uppercase ml-10">Target Language</label>
+                    <select className="pill w-full" value={targetLang} onChange={e => setTargetLang(e.target.value)}>
+                        {LANGUAGES.map(lang => (
+                            <option key={lang.code} value={lang.code}>{lang.name}</option>
+                        ))}
+                    </select>
+                </div>
             </div>
+
+            <textarea
+                className="pill w-full"
+                rows="6"
+                style={{borderRadius: '16px', padding: '15px'}}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                placeholder="Type or paste English text to translate..."
+            />
+
+            <div className="flex-center gap-10">
+                <button className="btn-primary flex-1" onClick={translateOnline} disabled={loading}>
+                    <span className="material-icons mr-10">translate</span>
+                    {loading ? 'Translating...' : 'Translate'}
+                </button>
+                <button className="pill" onClick={() => { setInput(''); setResult(null); }} disabled={loading}>Clear</button>
+            </div>
+
             <ToolResult result={result} />
+
             <div className="mt-10 p-15 bg-surface rounded-lg border text-left">
-                <span className="smallest uppercase opacity-6 block mb-10 font-bold">Supported Phrases (Sample):</span>
+                <span className="smallest uppercase opacity-6 block mb-10 font-bold">Local Offline Dictionary Phrases (Telugu fallback):</span>
                 <div className="flex-wrap gap-5 flex">
-                    {Object.keys(DICTIONARY).slice(0, 30).map(k => <span key={k} className="badge smallest" style={{background: 'var(--primary-glow)'}}>{k}</span>)}
+                    {Object.keys(DICTIONARY).slice(0, 15).map(k => (
+                        <span key={k} className="badge smallest" style={{background: 'var(--primary-glow)'}}>{k}</span>
+                    ))}
                     <span className="badge smallest">...and many more</span>
                 </div>
             </div>
