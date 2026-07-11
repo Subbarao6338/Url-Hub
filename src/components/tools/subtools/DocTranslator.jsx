@@ -149,16 +149,27 @@ const DocTranslator = () => {
         setResult(null);
 
         try {
-            const encodedText = encodeURIComponent(input);
-            const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodedText}&langpair=en|${targetLang}`);
-            if (!response.ok) throw new Error('API request failed');
+            const response = await fetch('/api/doc-adv/translate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: input,
+                    target_lang: targetLang,
+                    source_lang: 'en'
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'API request failed');
+            }
 
             const data = await response.json();
-            if (data.responseData && data.responseData.translatedText) {
+            if (data.translated_text) {
                 setResult({
-                    text: data.responseData.translatedText,
+                    text: data.translated_text,
                     filename: `translated_${targetLang}.txt`,
-                    meta: { source: 'MyMemory API (Online)' }
+                    meta: { source: 'Google Translator API (via Backend)' }
                 });
             } else {
                 throw new Error('Translation data not found in response');
