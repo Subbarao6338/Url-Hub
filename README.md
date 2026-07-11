@@ -13,7 +13,7 @@ Organize your favorite links and resources efficiently.
 - **Privacy Profiles**: Manage different sets of bookmarks for different needs.
 
 ### 🛠️ Specialized Toolsets
-- **Document Tools**: Edit, convert, and translate documents (PDF, Image, Text) directly in your browser. Features an improved offline translator with an expanded dictionary.
+- **Document Tools**: Edit, convert, and translate documents (PDF, Image, Text) directly in your browser. Features a powerful online translator powered by Google Translate, with an improved offline fallback for Telugu.
 - **Web & Social**: Download media from social platforms and archive web content easily. Includes optimized URL to PDF and web archiving tools.
 - **Productivity**: Use built-in world clocks, Pomodoro timers, and stopwatches to manage your time.
 - **Data & Math**: Perform statistical analysis, generate mock data, and use various calculators. Enhanced multivariate anomaly detection and data quality audits.
