@@ -11,6 +11,7 @@ import TimezoneConverter from './subtools/TimezoneConverter';
 import DateDifference from './subtools/DateDifference';
 import Countdown from './subtools/Countdown';
 import PanchangamTool from './subtools/PanchangamTool';
+import WordRankCalculator from './subtools/WordRankCalculator';
 
 const DATETIME_TABS = [
   { id: 'age', label: 'Age Calculator', icon: 'cake' },
@@ -21,7 +22,8 @@ const DATETIME_TABS = [
   { id: 'timezone', label: 'TZ Converter', icon: 'event_repeat' },
   { id: 'datediff', label: 'Date Diff', icon: 'date_range' },
   { id: 'countdown', label: 'Countdown', icon: 'event' },
-  { id: 'panchangam', label: 'Telugu Panchangam', icon: 'auto_stories' }
+  { id: 'panchangam', label: 'Telugu Panchangam', icon: 'auto_stories' },
+  { id: 'word-rank', label: 'Word Rank Calculator', icon: 'sort_by_alpha' }
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 const DateTimeTools = ({ toolId, onSubtoolChange }) => {
@@ -102,6 +104,7 @@ const DateTimeTools = ({ toolId, onSubtoolChange }) => {
         {activeTab === 'datediff' && <DateDifference />}
         {activeTab === 'countdown' && <Countdown />}
         {activeTab === 'panchangam' && <PanchangamTool />}
+        {activeTab === 'word-rank' && <WordRankCalculator />}
       </div>
     </div>
   );

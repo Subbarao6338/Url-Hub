@@ -8,7 +8,7 @@ import OpsLineage from './subtools/OpsLineage';
 
 const OPS_TABS = [
   { id: 'status', label: 'System Status', icon: 'health_and_safety' },
-  { id: 'telemetry', label: 'Live Telemetry', icon: 'monitoring' },
+  { id: 'telemetry', label: 'Live Telemetry', icon: 'query_stats' },
   { id: 'lineage', label: 'Data Lineage', icon: 'account_tree' }
 ];
 
