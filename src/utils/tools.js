@@ -33,6 +33,7 @@ export const TOOLS = [
     { id: 'age', title: 'Age Calculator', icon: 'cake', category: 'Calculators', component: DateTimeTools, subTools: [] },
     { id: 'datediff', title: 'Date Difference', icon: 'date_range', category: 'Calculators', component: DateTimeTools, subTools: [] },
     { id: 'subnet', title: 'Subnet Calculator', icon: 'view_list', category: 'Calculators', component: NetworkTools, subTools: [] },
+    { id: 'word-rank', title: 'Word Rank Calculator', icon: 'sort_by_alpha', category: 'Calculators', component: DateTimeTools, subTools: [] },
 
     // 6. Converters
     { id: 'converter', title: 'Unit Converter', icon: 'straighten', category: 'Converters', component: DevTools, subTools: [] },
@@ -75,7 +76,6 @@ export const TOOLS = [
     { id: 'url', title: 'URL Tool', icon: 'link', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'cron', title: 'Cron Parser', icon: 'today', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'minifier', title: 'Code Minifier', icon: 'compress', category: 'Developer', component: DevTools, subTools: [] },
-    { id: 'word-rank', title: 'Word Rank Calculator', icon: 'sort_by_alpha', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'qr-barcode', title: 'QR & Barcode Generator', icon: 'qr_code', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'inspiration', title: 'Code Inspiration', icon: 'lightbulb', category: 'Developer', component: DevTools, subTools: [] },
 
@@ -127,7 +127,7 @@ export const TOOLS = [
 
     // 33. System Tools
     { id: 'status', title: 'System Status', icon: 'health_and_safety', category: 'System Tools', component: OpsTools, subTools: [] },
-    { id: 'telemetry', title: 'Live Telemetry', icon: 'monitoring', category: 'System Tools', component: OpsTools, subTools: [] },
+    { id: 'telemetry', title: 'Live Telemetry', icon: 'query_stats', category: 'System Tools', component: OpsTools, subTools: [] },
     { id: 'lineage', title: 'Data Lineage', icon: 'account_tree', category: 'System Tools', component: OpsTools, subTools: [] },
 
     // 38. Web Tools
@@ -135,6 +135,7 @@ export const TOOLS = [
     { id: 'url2pdf', title: 'URL to PDF', icon: 'picture_as_pdf', category: 'Web Tools', component: WebTools, subTools: [] },
     { id: 'userscripts', title: 'User Scripts', icon: 'code', category: 'Web Tools', component: WebTools, subTools: [] },
     { id: 'bookmarklets', title: 'Bookmarklets', icon: 'bookmarks', category: 'Web Tools', component: WebTools, subTools: [] },
+    { id: 'url2markdown', title: 'Web URL to Markdown', icon: 'summarize', category: 'Web Tools', component: WebTools, subTools: [] },
 
     // 39. Sensors
     { id: 'bluetooth', title: 'Bluetooth Scanner', icon: 'bluetooth', category: 'Sensors', component: NetworkTools, subTools: [] }

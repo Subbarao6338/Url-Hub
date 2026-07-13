@@ -8,6 +8,7 @@ import WebArchive from './subtools/WebArchive';
 import UrlToPdf from './subtools/UrlToPdf';
 import UserScripts from './subtools/UserScripts';
 import Bookmarklets from './subtools/Bookmarklets';
+import UrlToMarkdown from './subtools/UrlToMarkdown';
 
 const WEB_TABS = [
   { id: 'social', label: 'Social Audit', icon: 'share' },
@@ -15,7 +16,8 @@ const WEB_TABS = [
   { id: 'archive', label: 'Web Archive', icon: 'history' },
   { id: 'url2pdf', label: 'URL to PDF', icon: 'picture_as_pdf' },
   { id: 'userscripts', label: 'User Scripts', icon: 'code' },
-  { id: 'bookmarklets', label: 'Bookmarklets', icon: 'bookmarks' }
+  { id: 'bookmarklets', label: 'Bookmarklets', icon: 'bookmarks' },
+  { id: 'url2markdown', label: 'Web URL to Markdown', icon: 'summarize' }
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 const WebTools = ({ toolId, onSubtoolChange }) => {
@@ -93,6 +95,7 @@ const WebTools = ({ toolId, onSubtoolChange }) => {
         {activeTab === 'url2pdf' && <UrlToPdf />}
         {activeTab === 'userscripts' && <UserScripts />}
         {activeTab === 'bookmarklets' && <Bookmarklets />}
+        {activeTab === 'url2markdown' && <UrlToMarkdown />}
       </div>
     </div>
   );

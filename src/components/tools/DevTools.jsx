@@ -20,7 +20,6 @@ import JsonFormatter from './subtools/JsonFormatter';
 import Base64Tool from './subtools/Base64Tool';
 import YamlJsonConverter from './subtools/YamlJsonConverter';
 import OtpGenerator from './subtools/OtpGenerator';
-import WordRankCalculator from './subtools/WordRankCalculator';
 import UrlTool from './subtools/UrlTool';
 import PasswordTool from './subtools/PasswordTool';
 import RsaTool from './subtools/RsaTool';
@@ -60,7 +59,6 @@ const DEV_CATEGORIES = [
       { id: 'url', label: 'URL Tool', icon: 'link', description: 'Encode, decode, and parse URLs.' },
       { id: 'cron', label: 'Cron Parser', icon: 'today', description: 'Parse and explain cron expressions.' },
       { id: 'minifier', label: 'Code Minifier', icon: 'compress', description: 'Minify CSS, JS, and HTML.' },
-      { id: 'word-rank', label: 'Word Rank', icon: 'sort_by_alpha', description: 'Analyze word frequency in text.' },
       { id: 'converter', label: 'Unit Converter', icon: 'straighten', description: 'Convert between various units.' },
       { id: 'currency', label: 'Currency Converter', icon: 'currency_exchange', description: 'Real-time exchange rate calculations.' },
       { id: 'color', label: 'Color Picker', icon: 'palette', description: 'Pick and convert colors.' },
@@ -176,7 +174,6 @@ const DevTools = ({ toolId, onSubtoolChange }) => {
         {activeTab === 'otp' && <OtpGenerator />}
         {activeTab === 'password' && <PasswordTool />}
         {activeTab === 'rsa' && <RsaTool />}
-        {activeTab === 'word-rank' && <WordRankCalculator />}
         {activeTab === 'inspiration' && <CodeInspiration />}
       </div>
     </div>
