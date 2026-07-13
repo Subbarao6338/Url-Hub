@@ -105,6 +105,7 @@ const SocialDownloader = () => {
             <div className="flex gap-10">
                 <input className="pill w-full" placeholder="Paste Video URL (YouTube, Twitter, etc.)..." value={url} onChange={e=>setUrl(e.target.value)} />
                 <button className="btn-primary" onClick={fetchInfo} disabled={loading}>{loading ? 'Fetching...' : 'Get Links'}</button>
+                <button className="pill" onClick={() => { setUrl(''); setData(null); setResult(null); setSummary(null); setSponsors(null); }} disabled={loading}>Clear</button>
             </div>
 
             {data && (
