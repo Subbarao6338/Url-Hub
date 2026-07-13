@@ -74,7 +74,7 @@ const JsonToTs = () => {
             const getUniqueInterfaceName = (key) => {
                 let name = key.charAt(0).toUpperCase() + key.slice(1);
                 // Remove non-alphanumeric for interface name
-                name = name.replace(/[^a-zA-Z0-0]/g, '');
+                name = name.replace(/[^a-zA-Z0-9]/g, '');
                 if (!name) name = 'Item';
 
                 let uniqueName = name;
@@ -144,10 +144,13 @@ const JsonToTs = () => {
                 <input className="pill w-full mb-10" value={interfaceName} onChange={e=>setInterfaceName(e.target.value)} placeholder="RootObject" />
             </div>
             <textarea className="pill w-full font-mono text-sm" rows="10" style={{borderRadius: '16px', padding: '15px'}} placeholder="Paste JSON here..." value={input} onChange={e=>setInput(e.target.value)} />
-            <button className="btn-primary w-full" onClick={convert}>
-                <span className="material-icons mr-10">code</span>
-                Generate TypeScript Interfaces
-            </button>
+            <div className="flex gap-10">
+                <button className="btn-primary flex-1" onClick={convert}>
+                    <span className="material-icons mr-10">code</span>
+                    Generate TypeScript Interfaces
+                </button>
+                <button className="pill" onClick={() => { setInput(''); setInterfaceName('RootObject'); setResult(null); }}>Clear</button>
+            </div>
             <ToolResult result={result} />
         </div>
     );

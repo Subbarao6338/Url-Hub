@@ -20,44 +20,53 @@ export const detectMultivariateAnomalies = (data, contamination = 0.05) => {
 
     const matrix = data.map(row => keys.map(k => parseFloat(row[k]) || 0));
     const n = matrix.length;
-    if (n < keys.length + 1) {
+    const m = keys.length;
+
+    if (n < m + 1) {
         // Fallback for small datasets where covariance matrix might be singular
         return matrix.map((row, idx) => ({ score: 0, idx })).slice(0, Math.max(1, Math.floor(n * contamination)));
     }
 
     try {
-        const meanVector = keys.map((_, i) => {
-            let sum = 0;
-            for (let j = 0; j < n; j++) sum += matrix[j][i];
-            return sum / n;
-        });
+        // Calculate mean vector in a single pass
+        const meanVector = new Array(m).fill(0);
+        for (let j = 0; j < n; j++) {
+            for (let i = 0; i < m; i++) {
+                meanVector[i] += matrix[j][i];
+            }
+        }
+        for (let i = 0; i < m; i++) {
+            meanVector[i] /= n;
+        }
 
         // Calculate Covariance Matrix optimized
-        const cov = Array(keys.length).fill(0).map(() => Array(keys.length).fill(0));
-        for (let i = 0; i < keys.length; i++) {
-            for (let j = i; j < keys.length; j++) {
-                let sum = 0;
-                for (let k = 0; k < n; k++) {
-                    sum += (matrix[k][i] - meanVector[i]) * (matrix[k][j] - meanVector[j]);
+        const cov = Array(m).fill(0).map(() => Array(m).fill(0));
+        for (let k = 0; k < n; k++) {
+            const row = matrix[k];
+            for (let i = 0; i < m; i++) {
+                const diffI = row[i] - meanVector[i];
+                for (let j = i; j < m; j++) {
+                    cov[i][j] += diffI * (row[j] - meanVector[j]);
                 }
-                const val = sum / (n - 1);
+            }
+        }
+
+        const nMinusOne = n - 1;
+        for (let i = 0; i < m; i++) {
+            for (let j = i; j < m; j++) {
+                const val = cov[i][j] / nMinusOne;
                 cov[i][j] = val;
                 cov[j][i] = val;
             }
         }
 
         // Tikhonov regularization: add small epsilon to diagonal to ensure invertibility
-        const regularizedCov = cov.map((row, i) =>
-            row.map((val, j) => {
-                if (i === j) {
-                    // Adaptive epsilon based on variance
-                    return val + Math.max(1e-6, val * 1e-8);
-                }
-                return val;
-            })
-        );
+        for (let i = 0; i < m; i++) {
+            const val = cov[i][i];
+            cov[i][i] = val + Math.max(1e-6, val * 1e-8);
+        }
 
-        const invCov = math.inv(regularizedCov);
+        const invCov = math.inv(cov);
 
         // Calculate Mahalanobis Distance for each point - vectorized approach
         const scores = matrix.map(row => {
@@ -82,13 +91,18 @@ export const detectMultivariateAnomalies = (data, contamination = 0.05) => {
     } catch (e) {
         console.error("Multivariate calculation error:", e);
         // Fallback to robust Z-score (Euclidean distance on standardized data)
+        const stats = keys.map((_, i) => {
+            const col = matrix.map(r => r[i]);
+            return {
+                m: math.mean(col),
+                s: math.std(col) || 1e-6
+            };
+        });
+
         return matrix.map((row, idx) => {
             let distSq = 0;
             row.forEach((val, i) => {
-                const col = matrix.map(r => r[i]);
-                const m = math.mean(col);
-                const s = math.std(col) || 1e-6;
-                distSq += Math.pow((val - m) / s, 2);
+                distSq += Math.pow((val - stats[i].m) / stats[i].s, 2);
             });
             return { score: Math.sqrt(distSq), idx };
         }).sort((a, b) => b.score - a.score)
@@ -106,11 +120,34 @@ export const runDataQualitySuite = (data) => {
 
     const keys = Object.keys(data[0]);
     const report = [];
+    const total = data.length;
 
     keys.forEach(col => {
-        const values = data.map(r => r[col]);
-        const nulls = values.filter(v => v === null || v === undefined || v === '').length;
-        const total = values.length;
+        let nulls = 0;
+        let numericCount = 0;
+        let sum = 0;
+        let sumSq = 0;
+        let min = Infinity;
+        let max = -Infinity;
+        const uniqueSet = new Set();
+
+        data.forEach(row => {
+            const v = row[col];
+            uniqueSet.add(v);
+
+            if (v === null || v === undefined || v === '') {
+                nulls++;
+            } else {
+                const num = parseFloat(v);
+                if (!isNaN(num) && isFinite(num)) {
+                    numericCount++;
+                    sum += num;
+                    sumSq += num * num;
+                    if (num < min) min = num;
+                    if (num > max) max = num;
+                }
+            }
+        });
 
         // Completeness Check
         report.push({
@@ -121,29 +158,36 @@ export const runDataQualitySuite = (data) => {
             unexpected_percent: ((nulls / total) * 100).toFixed(2) + "%"
         });
 
-        const numericValues = values.map(v => parseFloat(v)).filter(v => !isNaN(v) && isFinite(v));
-        if (numericValues.length > 0) {
-            const n = numericValues.length;
-            const mean = math.mean(numericValues);
-            const std = math.std(numericValues) || 0;
+        if (numericCount > 0) {
+            const mean = sum / numericCount;
+            // Variance = (sumSq / n) - (mean^2)
+            const variance = Math.max(0, (sumSq / numericCount) - (mean * mean));
+            const std = Math.sqrt(variance);
 
             // Outlier Check (3-Sigma)
             const minBound = mean - 3 * std;
             const maxBound = mean + 3 * std;
-            const outliers = numericValues.filter(v => v < minBound || v > maxBound).length;
+
+            let outliers = 0;
+            if (std > 0) {
+                data.forEach(row => {
+                    const num = parseFloat(row[col]);
+                    if (!isNaN(num) && isFinite(num)) {
+                        if (num < minBound || num > maxBound) outliers++;
+                    }
+                });
+            }
 
             report.push({
                 column: col,
                 expectation: "expect_column_values_to_be_within_3_std",
                 success: outliers === 0,
                 unexpected_count: outliers,
-                unexpected_percent: ((outliers / n) * 100).toFixed(2) + "%",
+                unexpected_percent: ((outliers / numericCount) * 100).toFixed(2) + "%",
                 meta: { mean: mean.toFixed(2), std: std.toFixed(2) }
             });
 
             // Range Check
-            const min = math.min(numericValues);
-            const max = math.max(numericValues);
             report.push({
                 column: col,
                 expectation: "expect_column_values_to_be_between",
@@ -153,7 +197,7 @@ export const runDataQualitySuite = (data) => {
         }
 
         // Uniqueness Check
-        const uniqueValues = new Set(values).size;
+        const uniqueValues = uniqueSet.size;
         report.push({
             column: col,
             expectation: "expect_column_unique_value_count_to_be_between",

@@ -1,6 +1,29 @@
 import React, { useState } from 'react';
 import ToolResult from '../ToolResult';
 
+const RESERVED_WORDS = [
+    'SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'GROUP BY', 'ORDER BY',
+    'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM', 'DELETE',
+    'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'CROSS JOIN', 'OUTER JOIN',
+    'ON', 'LIMIT', 'OFFSET', 'HAVING', 'JOIN', 'UNION', 'UNION ALL',
+    'DISTINCT', 'AS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'IN', 'NOT IN',
+    'BETWEEN', 'LIKE', 'IS NULL', 'IS NOT NULL', 'INTERSECT', 'EXCEPT', 'WITH',
+    'CREATE TABLE', 'DROP TABLE', 'ALTER TABLE', 'TRUNCATE TABLE', 'DESCRIBE',
+    'EXPLAIN', 'INDEX', 'TRIGGER', 'PROCEDURE', 'FUNCTION', 'VIEW', 'DATABASE',
+    'COALESCE', 'IFNULL', 'NULLIF', 'ISNULL', 'CAST', 'CONVERT', 'TRIM', 'SUBSTRING',
+    'ST_DISTANCE', 'ST_INTERSECTS', 'ST_CONTAINS', 'ST_WITHIN', 'ST_BUFFER', // Spatial
+    'PARTITION BY', 'OVER', 'RANK', 'DENSE_RANK', 'ROW_NUMBER', 'LEAD', 'LAG' // Window functions
+];
+
+const SORTED_RESERVED_WORDS = [...RESERVED_WORDS].sort((a, b) => b.length - a.length);
+
+const BLOCK_KEYWORDS = [
+    'SELECT', 'FROM', 'WHERE', 'GROUP BY', 'ORDER BY', 'SET', 'VALUES',
+    'INSERT INTO', 'UPDATE', 'DELETE FROM', 'DELETE', 'HAVING', 'UNION', 'UNION ALL',
+    'INTERSECT', 'EXCEPT', 'WITH', 'CREATE TABLE', 'ALTER TABLE', 'DROP TABLE', 'TRUNCATE TABLE'
+];
+const INLINE_KEYWORDS = ['AND', 'OR', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'CROSS JOIN', 'OUTER JOIN', 'ON'];
+
 const SqlFormatter = () => {
     const [input, setInput] = useState('');
     const [result, setResult] = useState(null);
@@ -18,33 +41,10 @@ const SqlFormatter = () => {
             // Normalize whitespace
             sql = sql.replace(/\s+/g, ' ').trim();
 
-            const reservedWords = [
-                'SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'GROUP BY', 'ORDER BY',
-                'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM', 'DELETE',
-                'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'CROSS JOIN', 'OUTER JOIN',
-                'ON', 'LIMIT', 'OFFSET', 'HAVING', 'JOIN', 'UNION', 'UNION ALL',
-                'DISTINCT', 'AS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'IN', 'NOT IN',
-                'BETWEEN', 'LIKE', 'IS NULL', 'IS NOT NULL', 'INTERSECT', 'EXCEPT', 'WITH',
-                'CREATE TABLE', 'DROP TABLE', 'ALTER TABLE', 'TRUNCATE TABLE', 'DESCRIBE',
-                'EXPLAIN', 'INDEX', 'TRIGGER', 'PROCEDURE', 'FUNCTION', 'VIEW', 'DATABASE',
-                'COALESCE', 'IFNULL', 'NULLIF', 'ISNULL', 'CAST', 'CONVERT', 'TRIM', 'SUBSTRING',
-                'ST_DISTANCE', 'ST_INTERSECTS', 'ST_CONTAINS', 'ST_WITHIN', 'ST_BUFFER', // Spatial
-                'PARTITION BY', 'OVER', 'RANK', 'DENSE_RANK', 'ROW_NUMBER', 'LEAD', 'LAG' // Window functions
-            ];
-
-            const sortedReservedWords = [...reservedWords].sort((a, b) => b.length - a.length);
-
-            sortedReservedWords.forEach(word => {
+            SORTED_RESERVED_WORDS.forEach(word => {
                 const regex = new RegExp(`\\b${word.replace(/\s+/g, '\\s+')}\\b`, 'gi');
                 sql = sql.replace(regex, word.toUpperCase());
             });
-
-            const blockKeywords = [
-                'SELECT', 'FROM', 'WHERE', 'GROUP BY', 'ORDER BY', 'SET', 'VALUES',
-                'INSERT INTO', 'UPDATE', 'DELETE FROM', 'DELETE', 'HAVING', 'UNION', 'UNION ALL',
-                'INTERSECT', 'EXCEPT', 'WITH', 'CREATE TABLE', 'ALTER TABLE', 'DROP TABLE', 'TRUNCATE TABLE'
-            ];
-            const inlineKeywords = ['AND', 'OR', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'CROSS JOIN', 'OUTER JOIN', 'ON'];
 
             const lines = [];
             let currentLine = "";
@@ -56,11 +56,11 @@ const SqlFormatter = () => {
             tokens.forEach((token, idx) => {
                 const upperToken = token.toUpperCase();
 
-                if (blockKeywords.includes(upperToken)) {
+                if (BLOCK_KEYWORDS.includes(upperToken)) {
                     if (currentLine.trim()) lines.push(currentLine.trimEnd());
                     lines.push("  ".repeat(depth) + upperToken);
                     currentLine = "  ".repeat(depth + 1);
-                } else if (inlineKeywords.includes(upperToken)) {
+                } else if (INLINE_KEYWORDS.includes(upperToken)) {
                     if (currentLine.trim()) lines.push(currentLine.trimEnd());
                     currentLine = "  ".repeat(depth) + upperToken + " ";
                 } else if (token === '(') {
