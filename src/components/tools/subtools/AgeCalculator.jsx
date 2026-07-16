@@ -18,7 +18,21 @@ const AgeCalculator = () => {
   }, []);
 
   return (
-    <div ref={containerRef} x-data="ageCalculator" className="card p-30 glass-card grid gap-15 text-center">
+    <div
+      ref={containerRef}
+      x-data="{
+        dob: '',
+        ageText: '',
+        calculate() {
+          if (!this.dob) return;
+          const diff = new Date() - new Date(this.dob);
+          const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+          const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
+          this.ageText = years + ' Years, ' + months + ' Months';
+        }
+      }"
+      className="card p-30 glass-card grid gap-15 text-center"
+    >
       <h3>Age Calculator</h3>
       <input
         type="date"

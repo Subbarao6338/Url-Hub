@@ -44,7 +44,7 @@ const IpInfo = () => {
                     <button type="submit" className="btn-primary flex-1">
                         Get IP Info
                     </button>
-                    {(ip || document.getElementById('ip-result')?.innerHTML) && (
+                    {ip && (
                         <button type="button" className="pill" onClick={handleClear} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)' }}>
                             Clear
                         </button>

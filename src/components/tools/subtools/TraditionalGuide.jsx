@@ -80,7 +80,21 @@ const TraditionalGuide = ({ initialRegion = null }) => {
   }, []);
 
   return (
-    <div ref={containerRef} x-data={`traditionalGuide('${initialRegion || ""}')`} className="card p-20 glass-card grid gap-20">
+    <div
+      ref={containerRef}
+      x-data={`{
+        selectedRegion: '${initialRegion || ""}',
+        resultText: '',
+        selectRegion(regionName) {
+          this.selectedRegion = regionName;
+          this.resultText = '';
+        },
+        getStyleDetails(styleName, description) {
+          this.resultText = 'Traditional Style: ' + styleName + '\\n\\nDescription: ' + description;
+        }
+      }`}
+      className="card p-20 glass-card grid gap-20"
+    >
       <div className="pill-group scrollable-x">
         {TRADITIONAL_DATA.regions.map(region => (
           <button

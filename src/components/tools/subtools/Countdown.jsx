@@ -18,7 +18,38 @@ const Countdown = () => {
   }, []);
 
   return (
-    <div ref={containerRef} x-data="countdown" className="card p-30 glass-card text-center grid gap-15">
+    <div
+      ref={containerRef}
+      x-data="{
+        target: '',
+        left: 'Set Target',
+        intervalId: null,
+        init() {
+          this.intervalId = setInterval(() => {
+            if (!this.target) {
+              this.left = 'Set Target';
+              return;
+            }
+            const ms = new Date(this.target) - new Date();
+            if (ms < 0) {
+              this.left = 'Expired';
+            } else {
+              const d = Math.floor(ms / 86400000);
+              const h = Math.floor((ms % 86400000) / 3600000);
+              const m = Math.floor((ms % 3600000) / 60000);
+              const s = Math.floor((ms % 60000) / 1000);
+              this.left = d + 'd ' + h + 'h ' + m + 'm ' + s + 's';
+            }
+          }, 1000);
+        },
+        destroy() {
+          if (this.intervalId) {
+            clearInterval(this.intervalId);
+          }
+        }
+      }"
+      className="card p-30 glass-card text-center grid gap-15"
+    >
       <h3>Event Countdown</h3>
       <input
         type="datetime-local"
