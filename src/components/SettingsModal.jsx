@@ -56,6 +56,144 @@ const SettingsModal = ({
   resetData
 }) => {
   const [openSections, setOpenSections] = useState(['global']);
+  const [pbUrl, setPbUrl] = React.useState(localStorage.getItem('hub_pb_url') || 'http://127.0.0.1:8090');
+  const [pbStatus, setPbStatus] = React.useState('Disconnected');
+  const [pbLoading, setPbLoading] = React.useState(false);
+  const [pbMsg, setPbMsg] = React.useState('');
+  const [pbMsgColor, setPbMsgColor] = React.useState('var(--text-primary)');
+
+  React.useEffect(() => {
+    if (window.PocketBase) {
+      const pb = new window.PocketBase(pbUrl);
+      if (pb.authStore && pb.authStore.isValid) {
+        setPbStatus('Connected');
+      } else {
+        fetch(`${pbUrl}/api/health`)
+          .then(res => {
+            if (res.ok) setPbStatus('Connected');
+          })
+          .catch(() => {});
+      }
+    }
+  }, [pbUrl]);
+
+  const handlePbConnect = async () => {
+    if (!window.PocketBase) {
+      setPbStatus('Error');
+      setPbMsg('PocketBase SDK not loaded');
+      setPbMsgColor('var(--danger)');
+      return;
+    }
+    setPbLoading(true);
+    setPbStatus('Connecting');
+    setPbMsg('');
+
+    try {
+      const pb = new window.PocketBase(pbUrl);
+      const res = await fetch(`${pbUrl}/api/health`);
+      if (res.ok) {
+        setPbStatus('Connected');
+        setPbMsg('Connected successfully in anonymous mode.');
+        setPbMsgColor('var(--success)');
+      } else {
+        throw new Error('Unreachable health endpoint');
+      }
+    } catch (e) {
+      setPbStatus('Error');
+      setPbMsg('Connection failed: ' + e.message);
+      setPbMsgColor('var(--danger)');
+    } finally {
+      setPbLoading(false);
+    }
+  };
+
+  const handlePbBackup = async () => {
+    if (!window.PocketBase) return;
+    setPbLoading(true);
+    setPbMsg('Backing up local state...');
+    setPbMsgColor('var(--text-primary)');
+
+    try {
+      const pb = new window.PocketBase(pbUrl);
+      let bookmarksCount = 0;
+
+      for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('hub_links_p')) {
+              const val = localStorage.getItem(key);
+              if (val) {
+                  const list = JSON.parse(val);
+                  if (Array.isArray(list)) {
+                      for (const bm of list) {
+                          try {
+                              await pb.collection('bookmarks').create({
+                                  title: bm.title || 'Untitled',
+                                  url: bm.url || '',
+                                  category: bm.category || '',
+                                  is_pinned: bm.is_pinned || false,
+                                  profile_id: String(bm.profile_id || '1'),
+                                  original_id: bm.id || ''
+                              });
+                              bookmarksCount++;
+                          } catch (err) {}
+                      }
+                  }
+              }
+          }
+      }
+
+      setPbMsg(`Backup complete! Uploaded ${bookmarksCount} bookmarks.`);
+      setPbMsgColor('var(--success)');
+    } catch (e) {
+      setPbMsg('Backup failed: ' + e.message);
+      setPbMsgColor('var(--danger)');
+    } finally {
+      setPbLoading(false);
+    }
+  };
+
+  const handlePbRestore = async () => {
+    if (!window.PocketBase) return;
+    setPbLoading(true);
+    setPbMsg('Restoring bookmarks from cloud...');
+    setPbMsgColor('var(--text-primary)');
+
+    try {
+      const pb = new window.PocketBase(pbUrl);
+      const remoteBookmarks = await pb.collection('bookmarks').getFullList();
+      if (remoteBookmarks && remoteBookmarks.length > 0) {
+          const grouped = {};
+          remoteBookmarks.forEach(rb => {
+              const pid = rb.profile_id || '1';
+              if (!grouped[pid]) grouped[pid] = [];
+              grouped[pid].push({
+                  id: rb.original_id || rb.id,
+                  title: rb.title,
+                  url: rb.url,
+                  category: rb.category,
+                  is_pinned: rb.is_pinned,
+                  profile_id: pid
+              });
+          });
+
+          Object.keys(grouped).forEach(pid => {
+              localStorage.setItem(`hub_links_p${pid}`, JSON.stringify(grouped[pid]));
+          });
+
+          setPbMsg(`Restore finished! Loaded ${remoteBookmarks.length} bookmarks.`);
+          setPbMsgColor('var(--success)');
+          setTimeout(() => window.location.reload(), 1500);
+      } else {
+        setPbMsg('No remote bookmarks found to restore.');
+        setPbMsgColor('var(--amber)');
+      }
+    } catch (e) {
+      setPbMsg('Restore failed: ' + e.message);
+      setPbMsgColor('var(--danger)');
+    } finally {
+      setPbLoading(false);
+    }
+  };
 
   const toggleSection = (id) => {
     setOpenSections(prev =>
@@ -137,6 +275,67 @@ const SettingsModal = ({
           <Toggle label="Show Projects Tab" value={showProjectsTab} onChange={setShowProjectsTab} icon="visibility" />
           <Toggle label="Hide Project Icons" value={hideProjectIcons} onChange={setHideProjectIcons} icon="image_not_supported" />
           <Toggle label="Hide Project URLs" value={hideProjectUrls} onChange={setHideProjectUrls} icon="link_off" />
+        </CollapsibleSection>
+
+        <CollapsibleSection id="pocketbase" title="PocketBase Cloud Sync" icon="sync_alt" isOpen={openSections.includes('pocketbase')} onToggle={toggleSection}>
+          <div className="form-group">
+            <label>PocketBase URL</label>
+            <input
+              type="text"
+              className="pill"
+              value={pbUrl}
+              onChange={(e) => {
+                setPbUrl(e.target.value);
+                localStorage.setItem('hub_pb_url', e.target.value);
+              }}
+              placeholder="http://127.0.0.1:8090"
+            />
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px', flexDirection: 'column' }}>
+            <div className="flex-between">
+              <span className="small">Cloud Connection Status:</span>
+              <strong style={{ color: pbStatus === 'Connected' ? 'var(--success)' : 'var(--text-primary)', opacity: pbStatus === 'Connected' ? 1 : 0.6 }}>{pbStatus}</strong>
+            </div>
+
+            <button
+              type="button"
+              className="pill btn-primary w-full mt-5"
+              onClick={handlePbConnect}
+              disabled={pbLoading}
+            >
+              {pbLoading ? 'Connecting...' : 'Connect & Authenticate'}
+            </button>
+
+            {pbStatus === 'Connected' && (
+              <div className="grid grid-cols-2 gap-10 mt-5">
+                <button
+                  type="button"
+                  className="pill"
+                  onClick={handlePbBackup}
+                  disabled={pbLoading}
+                  style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}
+                >
+                  Backup to PB
+                </button>
+                <button
+                  type="button"
+                  className="pill"
+                  onClick={handlePbRestore}
+                  disabled={pbLoading}
+                  style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', fontSize: '0.85rem' }}
+                >
+                  Restore from PB
+                </button>
+              </div>
+            )}
+
+            {pbMsg && (
+              <div className="smallest mt-5 opacity-8" style={{ color: pbMsgColor, fontStyle: 'italic' }}>
+                {pbMsg}
+              </div>
+            )}
+          </div>
         </CollapsibleSection>
 
         <CollapsibleSection id="appearance" title="UI & Theme" icon="palette" isOpen={openSections.includes('appearance')} onToggle={toggleSection}>

@@ -12,6 +12,7 @@ import BookmarkModal from './components/BookmarkModal';
 import API_BASE from './api';
 import { storage } from './utils/storage';
 import { useLocalStorageState } from './utils/hooks';
+import { syncBookmarkToPocketBase } from './utils/pocketbaseSync';
 
 function App() {
   const [appName, setAppName] = useLocalStorageState('hub_app_name', 'Epic Toolbox');
@@ -292,9 +293,11 @@ function App() {
     let storedLinks = storage.getJSON(`hub_links_p${profileId}`);
     if (!storedLinks) return;
 
-    storedLinks = storedLinks.map(l => l.id === link.id ? { ...l, is_pinned: !l.is_pinned } : l);
+    const updatedLink = { ...link, is_pinned: !link.is_pinned };
+    storedLinks = storedLinks.map(l => l.id === link.id ? updatedLink : l);
     storage.setJSON(`hub_links_p${profileId}`, storedLinks);
     setRefreshTrigger(prev => prev + 1);
+    syncBookmarkToPocketBase('pin', updatedLink);
   }, []);
 
   const deleteLink = React.useCallback((id) => {
@@ -306,6 +309,7 @@ function App() {
         storedLinks = storedLinks.filter(l => l.id !== id);
         storage.setJSON(`hub_links_p${profileId}`, storedLinks);
         setRefreshTrigger(prev => prev + 1);
+        syncBookmarkToPocketBase('delete', id);
     }
   }, [confirmDelete, currentProfile.id]);
 
@@ -489,16 +493,20 @@ function App() {
           onSave={(savedLink) => {
             const profileId = savedLink.profile_id;
             let storedLinks = storage.getJSON(`hub_links_p${profileId}`) || [];
+            let targetLink = null;
 
             if (editingLink) {
-                storedLinks = storedLinks.map(l => l.id === editingLink.id ? { ...l, ...savedLink } : l);
+                targetLink = { ...editingLink, ...savedLink };
+                storedLinks = storedLinks.map(l => l.id === editingLink.id ? targetLink : l);
+                syncBookmarkToPocketBase('update', targetLink);
             } else {
-                const newLink = {
+                targetLink = {
                     id: `l-${profileId}-${Date.now()}`,
                     ...savedLink,
                     is_pinned: false
                 };
-                storedLinks = [newLink, ...storedLinks];
+                storedLinks = [targetLink, ...storedLinks];
+                syncBookmarkToPocketBase('create', targetLink);
             }
 
             storage.setJSON(`hub_links_p${profileId}`, storedLinks);

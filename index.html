@@ -8,6 +8,65 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script>
+      document.addEventListener('alpine:init', () => {
+        // Register traditionalGuide
+        window.Alpine.data('traditionalGuide', (initialRegion = '') => ({
+          selectedRegion: initialRegion,
+          resultText: '',
+          selectRegion(regionName) {
+            this.selectedRegion = regionName;
+            this.resultText = '';
+          },
+          getStyleDetails(styleName, description) {
+            this.resultText = `Traditional Style: ${styleName}\n\nDescription: ${description}`;
+          }
+        }));
+
+        // Register ageCalculator
+        window.Alpine.data('ageCalculator', () => ({
+          dob: '',
+          ageText: '',
+          calculate() {
+            if (!this.dob) return;
+            const diff = new Date() - new Date(this.dob);
+            const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+            const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
+            this.ageText = `${years} Years, ${months} Months`;
+          }
+        }));
+
+        // Register countdown
+        window.Alpine.data('countdown', () => ({
+          target: '',
+          left: 'Set Target',
+          intervalId: null,
+          init() {
+            this.intervalId = setInterval(() => {
+              if (!this.target) {
+                this.left = 'Set Target';
+                return;
+              }
+              const ms = new Date(this.target) - new Date();
+              if (ms < 0) {
+                this.left = 'Expired';
+              } else {
+                const d = Math.floor(ms / 86400000);
+                const h = Math.floor((ms % 86400000) / 3600000);
+                const m = Math.floor((ms % 3600000) / 60000);
+                const s = Math.floor((ms % 60000) / 1000);
+                this.left = `${d}d ${h}h ${m}m ${s}s`;
+              }
+            }, 1000);
+          },
+          destroy() {
+            if (this.intervalId) {
+              clearInterval(this.intervalId);
+            }
+          }
+        }));
+      });
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pocketbase@0.21.1/dist/pocketbase.umd.js"></script>
     <title>Epic Toolbox</title>
