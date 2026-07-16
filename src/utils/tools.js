@@ -67,6 +67,7 @@ export const TOOLS = [
     // 10. Developer
     { id: 'json-fmt', title: 'JSON Formatter', icon: 'data_object', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'sql', title: 'SQL Formatter', icon: 'storage', category: 'Developer', component: DevTools, subTools: [] },
+    { id: 'pocketbase', title: 'PocketBase Console', icon: 'sync_alt', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'xml-fmt', title: 'XML Formatter', icon: 'format_align_left', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'json-ts', title: 'JSON to TS Interface', icon: 'code', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'kusto', title: 'KQL Formatter', icon: 'filter_alt', category: 'Developer', component: DevTools, subTools: [] },
