@@ -1,21 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const AgeCalculator = () => {
-  const [dob, setDob] = useState('');
-  const [age, setAge] = useState(null);
-  const calculate = () => {
-    if (!dob) return;
-    const diff = new Date() - new Date(dob);
-    const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
-    const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
-    setAge({ years, months });
-  };
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (window.Alpine && containerRef.current) {
+      window.Alpine.initTree(containerRef.current);
+    } else {
+      const handleAlpine = () => {
+        if (containerRef.current) {
+          window.Alpine.initTree(containerRef.current);
+        }
+      };
+      document.addEventListener('alpine:init', handleAlpine);
+      return () => document.removeEventListener('alpine:init', handleAlpine);
+    }
+  }, []);
+
   return (
-    <div className="card p-30 glass-card grid gap-15 text-center">
+    <div ref={containerRef} x-data="ageCalculator" className="card p-30 glass-card grid gap-15 text-center">
       <h3>Age Calculator</h3>
-      <input type="date" className="pill w-full" value={dob} onChange={e=>setDob(e.target.value)} />
-      <button className="btn-primary" onClick={calculate}>Calculate Age</button>
-      {age && <div className="text-2xl font-bold">{age.years} Years, {age.months} Months</div>}
+      <input
+        type="date"
+        className="pill w-full"
+        x-model="dob"
+      />
+      <button
+        type="button"
+        className="btn-primary"
+        x-on:click="calculate()"
+      >
+        Calculate Age
+      </button>
+      <div
+        x-show="ageText"
+        className="text-2xl font-bold mt-10"
+        style={{ display: 'none' }}
+        x-text="ageText"
+      ></div>
     </div>
   );
 };

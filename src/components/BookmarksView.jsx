@@ -4,6 +4,7 @@ import CategoryNav from './CategoryNav';
 import EmptyState from './EmptyState';
 import SafeHighlight from './SafeHighlight';
 import { storage } from '../utils/storage';
+import { getPbInstance, syncJsonToPocketBase } from '../utils/pocketbaseSync';
 
 // Import initial data (Vite will bundle these)
 import defaultCats from '../../data/url_cat.json';
@@ -42,6 +43,7 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
   const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
   const [collapsedCategories, setCollapsedCategories] = useState({});
+  const [pbSynced, setPbSynced] = useState(false);
   const prevProfileIdRef = React.useRef(profileId);
 
   useEffect(() => {
@@ -51,31 +53,73 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
 
     setLoading(true);
 
-    // Load data from localStorage or initial JSONs
-    let storedLinks = storage.getJSON(`hub_links_p${profileId}`);
-    let storedCats = storage.getJSON(`hub_cats_p${profileId}`);
+    const loadData = async () => {
+      let storedLinks = null;
+      let isPbActive = false;
 
-    if (!storedLinks) {
-        storedLinks = defaultLinks;
+      const pb = getPbInstance();
+      if (pb) {
+        try {
+          // Sync any new or modified bookmarks from local JSON to PocketBase dynamically first
+          await syncJsonToPocketBase(defaultLinks);
 
-        // Add unique IDs if missing
-        storedLinks = storedLinks.map((l, index) => ({
-            id: l.id || `l-${profileId}-${index}-${Date.now()}`,
-            ...l,
-            profile_id: profileId,
-            is_pinned: l.is_pinned || false
-        }));
-        storage.setJSON(`hub_links_p${profileId}`, storedLinks);
-    }
+          const remoteBookmarks = await pb.collection('bookmarks').getFullList();
+          if (remoteBookmarks && remoteBookmarks.length > 0) {
+            const grouped = {};
+            remoteBookmarks.forEach(rb => {
+              const pid = rb.profile_id || '1';
+              if (!grouped[pid]) grouped[pid] = [];
+              grouped[pid].push({
+                id: rb.original_id || rb.id,
+                title: rb.title,
+                url: rb.url,
+                category: rb.category,
+                is_pinned: rb.is_pinned,
+                profile_id: pid
+              });
+            });
+            if (grouped[profileId]) {
+              storedLinks = grouped[profileId];
+              isPbActive = true;
+            }
+          }
+        } catch (err) {
+          console.warn("PocketBase background sync load failed:", err);
+        }
+      }
 
-    if (!storedCats) {
-        storedCats = defaultCats;
-        storage.setJSON(`hub_cats_p${profileId}`, storedCats);
-    }
+      setPbSynced(isPbActive);
 
-    setLinks(storedLinks);
-    setCategories(storedCats);
-    setLoading(false);
+      if (!storedLinks) {
+        storedLinks = storage.getJSON(`hub_links_p${profileId}`);
+      }
+
+      let storedCats = storage.getJSON(`hub_cats_p${profileId}`);
+
+      if (!storedLinks) {
+          storedLinks = defaultLinks;
+
+          // Add unique IDs if missing
+          storedLinks = storedLinks.map((l, index) => ({
+              id: l.id || `l-${profileId}-${index}-${Date.now()}`,
+              ...l,
+              profile_id: profileId,
+              is_pinned: l.is_pinned || false
+          }));
+          storage.setJSON(`hub_links_p${profileId}`, storedLinks);
+      }
+
+      if (!storedCats) {
+          storedCats = defaultCats;
+          storage.setJSON(`hub_cats_p${profileId}`, storedCats);
+      }
+
+      setLinks(storedLinks);
+      setCategories(storedCats);
+      setLoading(false);
+    };
+
+    loadData();
 
     if (isProfileChange) {
         setActiveCategory('All');
@@ -288,6 +332,20 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
       <div className="toolbox-page-header">
         <h2>Bookmarks</h2>
         <p>Access your favorite links and resources.</p>
+
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '10px', flexWrap: 'wrap', marginBottom: '15px' }}>
+          {pbSynced ? (
+            <div className="pill" style={{ background: 'rgba(40, 167, 69, 0.1)', color: 'var(--success)', borderColor: 'var(--success)', display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 12px', fontSize: '0.8rem' }}>
+              <span className="material-icons" style={{ fontSize: '1rem' }}>cloud_done</span>
+              PocketBase Synced
+            </div>
+          ) : (
+            <div className="pill" style={{ background: 'rgba(120, 120, 120, 0.1)', color: 'var(--text-primary)', opacity: 0.6, display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 12px', fontSize: '0.8rem' }} title="Connect via Dev Hub -> PocketBase Console to sync bookmarks to cloud">
+              <span className="material-icons" style={{ fontSize: '1rem' }}>cloud_off</span>
+              Local Only Mode
+            </div>
+          )}
+        </div>
 
         {activeCategory === 'All' && !searchQuery && pinnedCount > 0 && (
           <div className="p-0-10 mb-20 text-left">

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import ToolResult from '../ToolResult';
+import React, { useEffect, useRef } from 'react';
 
 const TRADITIONAL_DATA = {
   regions: [
@@ -64,42 +63,78 @@ const TRADITIONAL_DATA = {
 };
 
 const TraditionalGuide = ({ initialRegion = null }) => {
-  const [selectedRegion, setSelectedRegion] = useState(initialRegion);
-  const [result, setResult] = useState(null);
+  const containerRef = useRef(null);
 
-  const getStyleDetails = (style) => {
-    setResult({
-      text: `Traditional Style: ${style.name}\n\nDescription: ${style.description}`
-    });
-  };
+  useEffect(() => {
+    if (window.Alpine && containerRef.current) {
+      window.Alpine.initTree(containerRef.current);
+    } else {
+      const handleAlpine = () => {
+        if (containerRef.current) {
+          window.Alpine.initTree(containerRef.current);
+        }
+      };
+      document.addEventListener('alpine:init', handleAlpine);
+      return () => document.removeEventListener('alpine:init', handleAlpine);
+    }
+  }, []);
 
   return (
-    <div className="card p-20 glass-card grid gap-20">
+    <div ref={containerRef} x-data={`traditionalGuide('${initialRegion || ""}')`} className="card p-20 glass-card grid gap-20">
       <div className="pill-group scrollable-x">
         {TRADITIONAL_DATA.regions.map(region => (
           <button
             key={region.name}
-            className={`pill ${selectedRegion === region.name ? 'active' : ''}`}
-            onClick={() => { setSelectedRegion(region.name); setResult(null); }}
+            type="button"
+            className="pill"
+            x-bind:class={`selectedRegion === '${region.name}' ? 'active' : ''`}
+            x-on:click={`selectRegion('${region.name}')`}
           >
             {region.name}
           </button>
         ))}
       </div>
 
-      {selectedRegion ? (
-        <div className="category-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
-          {TRADITIONAL_DATA.regions.find(r => r.name === selectedRegion).styles.map(style => (
-            <div key={style.name} className="card p-15 text-center" onClick={() => getStyleDetails(style)}>
+      {TRADITIONAL_DATA.regions.map(region => (
+        <div
+          key={region.name}
+          x-show={`selectedRegion === '${region.name}'`}
+          className="category-grid"
+          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}
+        >
+          {region.styles.map(style => (
+            <div
+              key={style.name}
+              className="card p-15 text-center cursor-pointer"
+              x-on:click={`getStyleDetails('${style.name.replace(/'/g, "\\'")}', '${style.description.replace(/'/g, "\\'")}')`}
+            >
               <div className="card-title">{style.name}</div>
             </div>
           ))}
         </div>
-      ) : (
-        <div className="text-center opacity-6 p-20">Select a region to explore traditional styles.</div>
-      )}
+      ))}
 
-      <ToolResult result={result} />
+      <div x-show="!selectedRegion" className="text-center opacity-6 p-20">
+        Select a region to explore traditional styles.
+      </div>
+
+      {/* Dynamic results card managed by Alpine.js */}
+      <div x-show="resultText" className="animate-fadeIn mt-20" style={{ display: 'none' }}>
+        <div className="flex-between mb-5">
+          <span className="smallest opacity-6 uppercase font-bold tracking-wider">Style Detail</span>
+          <button
+            type="button"
+            className="pill smallest active"
+            style={{ background: 'var(--brand-accent)', borderColor: 'var(--brand-accent)' }}
+            x-on:click="navigator.clipboard.writeText(resultText); alert('Style details copied to clipboard!')"
+          >
+            <span className="material-icons" style={{ fontSize: '1rem' }}>content_copy</span> Copy Details
+          </button>
+        </div>
+        <div className="card p-20 text-left relative" style={{ background: 'var(--bg-surface)' }}>
+          <pre className="m-0 font-mono small" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: 'var(--text-primary)' }} x-text="resultText"></pre>
+        </div>
+      </div>
     </div>
   );
 };
