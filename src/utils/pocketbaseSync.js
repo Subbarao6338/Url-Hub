@@ -5,7 +5,7 @@ export const getPbInstance = () => {
     const pbUrl = localStorage.getItem('hub_pb_url') || 'http://127.0.0.1:8090';
     try {
       const pb = new window.PocketBase(pbUrl);
-      if (pb.authStore && pb.authStore.isValid) {
+      if ((pb.authStore && pb.authStore.isValid) || localStorage.getItem('hub_pb_connected') === 'true') {
         return pb;
       }
     } catch (e) {

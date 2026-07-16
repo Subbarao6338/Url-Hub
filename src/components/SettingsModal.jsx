@@ -67,12 +67,20 @@ const SettingsModal = ({
       const pb = new window.PocketBase(pbUrl);
       if (pb.authStore && pb.authStore.isValid) {
         setPbStatus('Connected');
-      } else {
+        localStorage.setItem('hub_pb_connected', 'true');
+      } else if (localStorage.getItem('hub_pb_connected') === 'true') {
         fetch(`${pbUrl}/api/health`)
           .then(res => {
             if (res.ok) setPbStatus('Connected');
+            else {
+              setPbStatus('Disconnected');
+              localStorage.removeItem('hub_pb_connected');
+            }
           })
-          .catch(() => {});
+          .catch(() => {
+            setPbStatus('Disconnected');
+            localStorage.removeItem('hub_pb_connected');
+          });
       }
     }
   }, [pbUrl]);
@@ -93,6 +101,8 @@ const SettingsModal = ({
       const res = await fetch(`${pbUrl}/api/health`);
       if (res.ok) {
         setPbStatus('Connected');
+        localStorage.setItem('hub_pb_url', pbUrl);
+        localStorage.setItem('hub_pb_connected', 'true');
         setPbMsg('Connected successfully in anonymous mode.');
         setPbMsgColor('var(--success)');
       } else {

@@ -98,10 +98,31 @@ const PocketBaseConsole = () => {
                         this.pb = new window.PocketBase(this.url);
                         if (this.pb.authStore && this.pb.authStore.isValid) {
                             this.status = 'Connected';
+                            localStorage.setItem('hub_pb_connected', 'true');
                             this.updateStatusColor();
                             this.syncMsg = 'Automatically authenticated using stored session.';
                             this.syncType = 'success';
                             this.loadCollections();
+                        } else if (localStorage.getItem('hub_pb_connected') === 'true') {
+                            fetch(`${this.url}/api/health`)
+                                .then(res => {
+                                    if (res.ok) {
+                                        this.status = 'Connected';
+                                        this.updateStatusColor();
+                                        this.syncMsg = 'Connected in anonymous mode!';
+                                        this.syncType = 'success';
+                                        this.loadCollections();
+                                    } else {
+                                        this.status = 'Disconnected';
+                                        localStorage.removeItem('hub_pb_connected');
+                                        this.updateStatusColor();
+                                    }
+                                })
+                                .catch(() => {
+                                    this.status = 'Disconnected';
+                                    localStorage.removeItem('hub_pb_connected');
+                                    this.updateStatusColor();
+                                });
                         }
                     } catch (e) {
                         console.log('Auto-connect skipped or failed:', e);
@@ -127,12 +148,14 @@ const PocketBaseConsole = () => {
                                 await this.pb.admins.authWithPassword(this.email, this.password);
                             }
                             this.status = 'Connected';
+                            localStorage.setItem('hub_pb_connected', 'true');
                             this.syncMsg = 'Authenticated successfully!';
                             this.syncType = 'success';
                         } else {
                             const res = await fetch(`${this.url}/api/health`);
                             if (res.ok) {
                                 this.status = 'Connected';
+                                localStorage.setItem('hub_pb_connected', 'true');
                                 this.syncMsg = 'Connected in anonymous mode!';
                                 this.syncType = 'success';
                             } else {
@@ -156,6 +179,7 @@ const PocketBaseConsole = () => {
                         this.pb.authStore.clear();
                     }
                     this.status = 'Disconnected';
+                    localStorage.removeItem('hub_pb_connected');
                     this.collections = [];
                     this.records = [];
                     this.selectedCollection = '';
