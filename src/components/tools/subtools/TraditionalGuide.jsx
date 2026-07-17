@@ -85,16 +85,44 @@ const TraditionalGuide = ({ initialRegion = null }) => {
       x-data={`{
         selectedRegion: '${initialRegion || ""}',
         resultText: '',
+        searchQuery: '',
         selectRegion(regionName) {
           this.selectedRegion = regionName;
           this.resultText = '';
+          this.searchQuery = '';
         },
         getStyleDetails(styleName, description) {
           this.resultText = 'Traditional Style: ' + styleName + '\\n\\nDescription: ' + description;
+        },
+        clearAll() {
+          this.selectedRegion = '';
+          this.resultText = '';
+          this.searchQuery = '';
         }
       }`}
-      className="card p-20 glass-card grid gap-20"
+      className="card p-25 glass-card grid gap-20"
     >
+      <div className="flex-between flex-wrap gap-10">
+        <h3 className="m-0 flex-center gap-10">
+          <span className="material-icons" style={{ color: 'var(--brand-accent)' }}>temple_hindu</span>
+          Traditional & Ethnic Guide
+        </h3>
+        <button
+          type="button"
+          className="pill small"
+          style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)' }}
+          x-show="selectedRegion"
+          x-on:click="clearAll()"
+        >
+          Reset View
+        </button>
+      </div>
+
+      <p className="smallest opacity-6 m-0">
+        Explore a curated library of historical, cultural, and regional styles from around the world.
+      </p>
+
+      {/* Region Selector Pills */}
       <div className="pill-group scrollable-x">
         {TRADITIONAL_DATA.regions.map(region => (
           <button
@@ -109,27 +137,46 @@ const TraditionalGuide = ({ initialRegion = null }) => {
         ))}
       </div>
 
+      {/* Dynamic Search Filter Bar (Visible when a region is selected) */}
+      <div x-show="selectedRegion" className="form-group text-left" style={{ display: 'none' }}>
+        <label className="smallest opacity-6 uppercase ml-10">Filter Styles</label>
+        <div className="relative">
+          <input
+            type="text"
+            x-model="searchQuery"
+            className="pill w-full text-center small"
+            placeholder="Search styles (e.g., Saree, Kimono)..."
+            style={{ paddingRight: '40px' }}
+          />
+          <span className="material-icons absolute opacity-4" style={{ right: '15px', top: '50%', transform: 'translateY(-50%)', fontSize: '1.2rem' }}>search</span>
+        </div>
+      </div>
+
+      {/* Style Grids per Region */}
       {TRADITIONAL_DATA.regions.map(region => (
         <div
           key={region.name}
           x-show={`selectedRegion === '${region.name}'`}
           className="category-grid"
-          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}
+          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', display: 'none' }}
         >
           {region.styles.map(style => (
             <div
               key={style.name}
-              className="card p-15 text-center cursor-pointer"
+              className="card p-15 text-center cursor-pointer hover-scale"
+              x-show={`!searchQuery || '${style.name.toLowerCase().replace(/'/g, "\\'")}'.includes(searchQuery.toLowerCase())`}
               x-on:click={`getStyleDetails('${style.name.replace(/'/g, "\\'")}', '${style.description.replace(/'/g, "\\'")}')`}
             >
-              <div className="card-title">{style.name}</div>
+              <div className="card-title font-bold" style={{ color: 'var(--brand-accent)' }}>{style.name}</div>
             </div>
           ))}
         </div>
       ))}
 
-      <div x-show="!selectedRegion" className="text-center opacity-6 p-20">
-        Select a region to explore traditional styles.
+      {/* Default Prompt when no region is selected */}
+      <div x-show="!selectedRegion" className="text-center opacity-6 p-20 border-radius-12" style={{ background: 'var(--bg-surface)', border: '1px dashed var(--border-color)' }}>
+        <span className="material-icons display-block mb-10" style={{ fontSize: '2.5rem', color: 'var(--brand-accent)' }}>explore</span>
+        <div>Select a region pill above to explore traditional and ethnic garments.</div>
       </div>
 
       {/* Dynamic results card managed by Alpine.js */}
@@ -145,8 +192,8 @@ const TraditionalGuide = ({ initialRegion = null }) => {
             <span className="material-icons" style={{ fontSize: '1rem' }}>content_copy</span> Copy Details
           </button>
         </div>
-        <div className="card p-20 text-left relative" style={{ background: 'var(--bg-surface)' }}>
-          <pre className="m-0 font-mono small" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: 'var(--text-primary)' }} x-text="resultText"></pre>
+        <div className="card p-20 text-left relative" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)' }}>
+          <pre className="m-0 font-mono small" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: 'var(--text-primary)', lineHeight: '1.5' }} x-text="resultText"></pre>
         </div>
       </div>
     </div>

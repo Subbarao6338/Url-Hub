@@ -441,18 +441,24 @@ async def get_ip_info(ip: Optional[str] = None, request: Request = None):
             return HTMLResponse(content=format_error_html(msg))
         raise HTTPException(status_code=400, detail=msg)
 
+import asyncio
+
 @router.get("/dns")
 async def dns_lookup(domain: str, request: Request = None):
     is_htmx = request is not None and request.headers.get("hx-request") is not None
     try:
         validate_domain(domain)
-        records = {
-            "A": query_doh(domain, "A"),
-            "AAAA": query_doh(domain, "AAAA"),
-            "MX": query_doh(domain, "MX"),
-            "TXT": query_doh(domain, "TXT"),
-            "NS": query_doh(domain, "NS")
-        }
+
+        loop = asyncio.get_running_loop()
+        record_types = ["A", "AAAA", "MX", "TXT", "NS"]
+
+        tasks = [
+            loop.run_in_executor(None, query_doh, domain, rtype)
+            for rtype in record_types
+        ]
+        results = await asyncio.gather(*tasks)
+        records = dict(zip(record_types, results))
+
         if is_htmx:
             return HTMLResponse(content=format_dns_html(domain, records))
         return {"domain": domain, "records": records}
