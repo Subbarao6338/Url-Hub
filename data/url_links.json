@@ -570,7 +570,7 @@
     "optional_icon": "https://www.irctc.co.in/favicon.ico",
     "category": "Travel",
     "urls": [
-      "https://www.irctc.co.in/"
+      "https://www.irctc.co.in/", "https://www.irctc.co.in/nget/train-search", "https://www.irctc.co.in/eticket/train-search"
     ]
   },
   {
@@ -2336,9 +2336,9 @@
     "category": "Productivity"
   },
   {
-    "title": "XSN GitBook",
-    "url": "https://xsn.gitbook.io/xsn",
-    "urls": ["https://xsn.gitbook.io/xsn"],
+    "title": "XSN Lite",
+    "url": "https://xsnlite.app/",
+    "urls": ["https://xsnlite.app/home"],
     "category": "Android"
   },
   {
@@ -2354,9 +2354,9 @@
     "category": "Google"
   },
   {
-    "title": "FckSignups",
-    "url": "https://fcksignups.com/",
-    "urls": ["https://fcksignups.com/"],
+    "title": "NoSignups",
+    "url": "https://nosignups.net/",
+    "urls": ["https://nosignups.net", "https://fcksignups.com/"],
     "category": "Tools & Utilities"
   },
   {
@@ -2592,5 +2592,107 @@
     "url": "https://perchance.org/web-search",
     "urls": ["https://perchance.org/web-search"],
     "category": "Search"
+  },
+  {
+    "title": "PyNote",
+    "url": "https://pynote-notebook.vercel.app/",
+    "urls": ["https://pynote-notebook.vercel.app/"],
+    "category": "Documents"
+  },
+  {
+    "title": "District",
+    "url": "https://www.district.in/",
+    "urls": ["https://www.district.in/"],
+    "category": "Shopping"
+  },
+  {
+    "title": "Purplle",
+    "url": "https://www.purplle.com/",
+    "urls": ["https://www.purplle.com/"],
+    "category": "Shopping"
+  },
+  {
+    "title": "Plum Goodness",
+    "url": "https://plumgoodness.com/",
+    "urls": ["https://plumgoodness.com/"],
+    "category": "Shopping"
+  },
+  {
+    "title": "Aqualogica",
+    "url": "https://aqualogica.in/",
+    "urls": ["https://aqualogica.in/"],
+    "category": "Shopping"
+  },
+  {
+    "title": "Clashdrive",
+    "url": "https://clashdrive.pages.dev/",
+    "urls": ["https://clashdrive.pages.dev/"],
+    "category": "Storage"
+  },
+  {
+    "title": "Mini QR Code Generator",
+    "url": "https://mini-qr-code-generator.vercel.app/",
+    "urls": ["https://mini-qr-code-generator.vercel.app/"],
+    "category": "Tools & Utilities"
+  },
+  {
+    "title": "Wan Video",
+    "url": "https://create.wan.video/",
+    "urls": ["https://create.wan.video/"],
+    "category": "AI"
+  },
+  {
+    "title": "Qwen AI",
+    "url": "https://qwen.ai/home",
+    "urls": ["https://qwen.ai/home"],
+    "category": "AI"
+  },
+  {
+    "title": "Meta AI",
+    "url": "https://meta.ai/",
+    "urls": ["https://meta.ai/"],
+    "category": "AI"
+  },
+  {
+    "title": "Obtainium Apps",
+    "url": "https://apps.obtainium.imranr.dev/",
+    "urls": ["https://apps.obtainium.imranr.dev/"],
+    "category": "Android"
+  },
+  {
+    "title": "Savvy Time",
+    "url": "https://savvytime.com/",
+    "urls": ["https://savvytime.com/"],
+    "category": "Date & Time"
+  },
+  {
+    "title": "PicWish",
+    "url": "https://picwish.com/create",
+    "urls": ["https://picwish.com/create"],
+    "category": "Media"
+  },
+  {
+    "title": "Remini AI",
+    "url": "https://app.remini.ai/",
+    "urls": ["https://app.remini.ai/"],
+    "category": "Media"
+  },
+  {
+    "title": "Toolfinder",
+    "url": "https://toolfinder.com/",
+    "urls": ["https://toolfinder.com/"],
+    "category": "Tools & Utilities"
+  },
+  {
+    "title": "PDF Çevir",
+    "url": "https://pdfcevir.vercel.app/?lang=en",
+    "urls": ["https://pdfcevir.vercel.app/?lang=en"],
+    "category": "Documents"
+  },
+  {
+    "title": "Aglasem",
+    "url": "https://aglasem.com/",
+    "urls": ["https://aglasem.com/"],
+    "category": "Tools & Utilities"
   }
 ]
