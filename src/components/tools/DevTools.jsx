@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 // Import subtools
 import SqlFormatter from './subtools/SqlFormatter';
-import PocketBaseConsole from './subtools/PocketBaseConsole';
 import DiffViewer from './subtools/DiffViewer';
 import RegexTester from './subtools/RegexTester';
 import HashHmac from './subtools/HashHmac';
@@ -32,7 +31,6 @@ const DEV_CATEGORIES = [
     tools: [
       { id: 'json-fmt', label: 'JSON Formatter', icon: 'data_object', description: 'Prettify and validate JSON data.' },
       { id: 'sql', label: 'SQL Formatter', icon: 'storage', description: 'Format SQL queries for better readability.' },
-      { id: 'pocketbase', label: 'PocketBase Console', icon: 'sync_alt', description: 'Sync bookmarks & manage PocketBase DB with HTMX + Alpine + WASM.' },
       { id: 'xml-fmt', label: 'XML Formatter', icon: 'format_align_left', description: 'Format and validate XML documents.' },
       { id: 'xml-json', label: 'XML ↔ JSON', icon: 'transform', description: 'Convert between XML and JSON formats.' },
       { id: 'yaml', label: 'YAML ↔ JSON', icon: 'swap_horiz', description: 'Convert between YAML and JSON.' },
@@ -157,7 +155,6 @@ const DevTools = ({ toolId, onSubtoolChange }) => {
       <div className="hub-content animate-fadeIn">
         {activeTab === 'json-fmt' && <JsonFormatter />}
         {activeTab === 'sql' && <SqlFormatter />}
-        {activeTab === 'pocketbase' && <PocketBaseConsole />}
         {activeTab === 'diff' && <DiffViewer />}
         {activeTab === 'regex' && <RegexTester />}
         {activeTab === 'security' && <HashHmac />}
