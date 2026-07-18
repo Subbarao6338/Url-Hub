@@ -33,6 +33,26 @@ const Base64Tool = () => {
         return { valid: true };
     };
 
+    // Auto-detect if string is more likely Base64 encoded, or plain text
+    const getAutoDetectionMessage = (str) => {
+        if (!str) return null;
+        const cleaned = str.trim().replace(/\s+/g, '');
+        if (cleaned.length < 4) return null;
+
+        const validation = validateBase64(cleaned);
+        if (validation.valid) {
+            // It's technically valid Base64. Let's see if it looks encoded or like standard words.
+            // Pure ASCII words usually have spaces. If there are no spaces and only Base64 chars, suggest decode.
+            if (/^[a-zA-Z0-9+/=]+$/.test(cleaned)) {
+                // If contains symbols/equals or high randomness, suggest Decode.
+                if (cleaned.includes('=') || cleaned.length > 20) {
+                    return { type: 'decode', text: 'Detected Base64 format. You might want to Decode this.' };
+                }
+            }
+        }
+        return { type: 'encode', text: 'Detected Plain Text format. You might want to Encode this.' };
+    };
+
     const encodeText = () => {
         try {
             if (!input) return;
@@ -132,9 +152,10 @@ const Base64Tool = () => {
 
     const inputBytes = getByteSize(input);
     const resultBytes = result && result.text ? getByteSize(result.text) : 0;
+    const detection = getAutoDetectionMessage(input);
 
     return (
-        <div className="card p-30 glass-card grid gap-20">
+        <div className="card p-30 glass-card grid gap-20 animate-fadeIn">
             <h3 className="text-center">Base64 Text Tool</h3>
             <p className="smallest opacity-6 text-center mb-10">Encode regular text into secure Base64 format or decode existing Base64 back to raw text with full Unicode support.</p>
 
@@ -159,6 +180,17 @@ const Base64Tool = () => {
                     style={{ borderRadius: '16px', padding: '15px', minHeight: '120px' }}
                 />
             </div>
+
+            {detection && (
+                <div className="p-10 rounded text-center small animate-fadeIn" style={{
+                    background: 'rgba(var(--brand-accent-rgb), 0.08)',
+                    border: '1px solid var(--brand-accent)',
+                    color: 'var(--text-primary)'
+                }}>
+                    <span className="material-icons align-middle mr-5" style={{ fontSize: '1.1rem', color: 'var(--brand-accent)' }}>info</span>
+                    <span className="font-bold">{detection.text}</span>
+                </div>
+            )}
 
             <div className="flex gap-10">
                 <button className="btn-primary flex-1" onClick={encodeText} disabled={!input}>

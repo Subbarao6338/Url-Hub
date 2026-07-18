@@ -56,6 +56,19 @@ test.describe('Refactored Toolbox Subtools', () => {
     await expect(result).not.toBeVisible();
   });
 
+  test('should detect base64 inputs automatically', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'Base64' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    const textarea = page.locator('textarea[placeholder*="Enter text to encode"]');
+    // SGVsbG8gSnVsZXMhCg== is "Hello Jules!\n"
+    await textarea.fill('SGVsbG8gSnVsZXMhCg==');
+
+    const detectionBox = page.locator('text=Detected Base64 format. You might want to Decode this.');
+    await expect(detectionBox).toBeVisible();
+  });
+
   test('should navigate to Cron Expression Parser and explain preset', async ({ page }) => {
     const card = page.locator('.card', { hasText: 'Cron Parser' });
     await expect(card).toBeVisible();
@@ -91,5 +104,17 @@ test.describe('Refactored Toolbox Subtools', () => {
     const hostDetails = page.locator('.url-parser-results');
     await expect(hostDetails).toContainText('api.github.com');
     await expect(hostDetails).toContainText('Query Parameters (3)');
+  });
+
+  test('should navigate to Timestamp Tool and support live clock and custom inputs', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'Timestamp' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    const inputTs = page.locator('input[placeholder="e.g. 1700000000"]');
+    await inputTs.fill('1700000000');
+    await page.click('button:has-text("Convert") >> nth=0');
+
+    await expect(page.locator('text=2023-11-14')).toBeVisible();
   });
 });
