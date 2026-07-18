@@ -2694,5 +2694,17 @@
     "url": "https://aglasem.com/",
     "urls": ["https://aglasem.com/"],
     "category": "Tools & Utilities"
+  },
+  {
+    "title": "Blue Dart",
+    "url": "https://bluedart.com/",
+    "urls": ["https://bluedart.com/"],
+    "category": "Shopping"
+  },
+  {
+    "title": "Nykaa Fashion",
+    "url": "https://www.nykaafashion.com/",
+    "urls": ["https://www.nykaafashion.com/"],
+    "category": "Shopping"
   }
 ]
