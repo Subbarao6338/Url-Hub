@@ -12,7 +12,6 @@ import BookmarkModal from './components/BookmarkModal';
 import API_BASE from './api';
 import { storage } from './utils/storage';
 import { useLocalStorageState } from './utils/hooks';
-import { syncBookmarkToPocketBase } from './utils/pocketbaseSync';
 
 function App() {
   const [appName, setAppName] = useLocalStorageState('hub_app_name', 'Epic Toolbox');
@@ -297,7 +296,6 @@ function App() {
     storedLinks = storedLinks.map(l => l.id === link.id ? updatedLink : l);
     storage.setJSON(`hub_links_p${profileId}`, storedLinks);
     setRefreshTrigger(prev => prev + 1);
-    syncBookmarkToPocketBase('pin', updatedLink);
   }, []);
 
   const deleteLink = React.useCallback((id) => {
@@ -309,7 +307,6 @@ function App() {
         storedLinks = storedLinks.filter(l => l.id !== id);
         storage.setJSON(`hub_links_p${profileId}`, storedLinks);
         setRefreshTrigger(prev => prev + 1);
-        syncBookmarkToPocketBase('delete', id);
     }
   }, [confirmDelete, currentProfile.id]);
 
@@ -498,7 +495,6 @@ function App() {
             if (editingLink) {
                 targetLink = { ...editingLink, ...savedLink };
                 storedLinks = storedLinks.map(l => l.id === editingLink.id ? targetLink : l);
-                syncBookmarkToPocketBase('update', targetLink);
             } else {
                 targetLink = {
                     id: `l-${profileId}-${Date.now()}`,
@@ -506,7 +502,6 @@ function App() {
                     is_pinned: false
                 };
                 storedLinks = [targetLink, ...storedLinks];
-                syncBookmarkToPocketBase('create', targetLink);
             }
 
             storage.setJSON(`hub_links_p${profileId}`, storedLinks);
