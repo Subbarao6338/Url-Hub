@@ -5,8 +5,36 @@ const WhoisLookup = () => {
     const [domain, setDomain] = useState('');
 
     useEffect(() => {
-        if (window.htmx && formRef.current) {
-            window.htmx.process(formRef.current);
+        const element = formRef.current;
+        if (window.htmx && element) {
+            window.htmx.process(element);
+
+            const handleError = (evt) => {
+                const resultDiv = document.getElementById('whois-result');
+                if (resultDiv) {
+                    const statusText = evt.detail.xhr?.statusText || "Connection Refused";
+                    const status = evt.detail.xhr?.status || "Network Error";
+                    resultDiv.innerHTML = `
+                        <div class="result-container animate-fadeIn mt-20 text-left">
+                            <div class="card p-20 glass-card flex gap-15 align-center" style="border: 1px solid var(--error); background: rgba(220, 53, 69, 0.1); flex-direction: row; align-items: center;">
+                                <span class="material-icons text-danger" style="font-size: 2rem;">error_outline</span>
+                                <div>
+                                    <h5 class="text-danger" style="margin: 0; font-weight: bold;">WHOIS Lookup Failed (${status})</h5>
+                                    <p class="small" style="margin: 5px 0 0 0; color: var(--text-primary);">Failed to fetch WHOIS records: ${statusText}. Please verify backend service connectivity.</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            };
+
+            element.addEventListener('htmx:responseError', handleError);
+            element.addEventListener('htmx:sendError', handleError);
+
+            return () => {
+                element.removeEventListener('htmx:responseError', handleError);
+                element.removeEventListener('htmx:sendError', handleError);
+            };
         }
     }, []);
 
