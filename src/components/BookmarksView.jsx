@@ -381,7 +381,6 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
 
 const BookmarkCard = React.memo(({ link, idx, openInNewTab, onPin, onEdit, onDelete, handleShare, handleCopy, isCopied, onLongPress, categoryIcon, hideIcons, hideUrls, searchQuery, noAnimation }) => {
   const pressTimer = React.useRef(null);
-  const [isPressing, setIsPressing] = useState(false);
   const isLongPressActive = React.useRef(false);
   const cardRef = React.useRef(null);
 
@@ -396,16 +395,13 @@ const BookmarkCard = React.memo(({ link, idx, openInNewTab, onPin, onEdit, onDel
 
     cancelPress();
     isLongPressActive.current = false;
-    setIsPressing(true);
     pressTimer.current = setTimeout(() => {
       isLongPressActive.current = true;
       onLongPress(coords);
-      setIsPressing(false);
     }, 500);
   };
 
   const cancelPress = () => {
-    setIsPressing(false);
     if (pressTimer.current) {
       clearTimeout(pressTimer.current);
       pressTimer.current = null;
@@ -436,7 +432,7 @@ const BookmarkCard = React.memo(({ link, idx, openInNewTab, onPin, onEdit, onDel
   return (
     <div
       ref={cardRef}
-      className={`card ${noAnimation ? 'no-animation' : ''} ${isPressing ? 'is-pressing' : ''}`}
+      className={`card ${noAnimation ? 'no-animation' : ''}`}
       style={{'--delay': idx}}
       onClick={handleClick}
       onMouseDown={startPress}

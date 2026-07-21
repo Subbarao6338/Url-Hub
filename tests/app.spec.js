@@ -28,4 +28,26 @@ test.describe('Epic Toolbox Basic Navigation', () => {
     // Check if breadcrumb shows JSON Formatter
     await expect(page.locator('.breadcrumb-item.active', { hasText: 'JSON Formatter' })).toBeVisible();
   });
+
+  test('should open a bookmark card link', async ({ page }) => {
+    // Navigate to Bookmarks tab
+    const bookmarksTab = page.locator('button', { hasText: 'Bookmarks' });
+    await bookmarksTab.click();
+
+    // Check if Bookmarks header is visible
+    const bookmarksHeader = page.locator('h2', { hasText: 'Bookmarks' });
+    await expect(bookmarksHeader).toBeVisible();
+
+    // Locate the first bookmark card (e.g. Character.AI)
+    const card = page.locator('.card', { hasText: 'Character.AI' }).first();
+    await expect(card).toBeVisible();
+
+    // Set up a promise to listen for the popup/new tab
+    const popupPromise = page.waitForEvent('popup');
+    await card.click();
+
+    const popup = await popupPromise;
+    await expect(popup).toBeDefined();
+    expect(popup.url()).toContain('character.ai');
+  });
 });
