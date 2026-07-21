@@ -17,21 +17,33 @@ def is_public_ip(ip_str: str) -> bool:
     except ValueError:
         return False
 
-def validate_domain(domain: str):
+def validate_domain(domain: str) -> str:
     if not domain or not domain.strip():
         raise HTTPException(status_code=400, detail="Domain name cannot be empty")
+
+    # Strip protocol prefix if present
+    cleaned_domain = domain.strip().lower()
+    if cleaned_domain.startswith("http://"):
+        cleaned_domain = cleaned_domain[7:]
+    elif cleaned_domain.startswith("https://"):
+        cleaned_domain = cleaned_domain[8:]
+
+    # Strip paths, ports, or trailing slashes
+    cleaned_domain = cleaned_domain.split('/')[0].split(':')[0]
+
     try:
         # Resolve domain to IP
-        ip_list = socket.gethostbyname_ex(domain)[2]
+        ip_list = socket.gethostbyname_ex(cleaned_domain)[2]
         for ip in ip_list:
             if not is_public_ip(ip):
-                raise HTTPException(status_code=400, detail=f"Domain {domain} resolves to a non-public IP: {ip}")
+                raise HTTPException(status_code=400, detail=f"Domain {cleaned_domain} resolves to a non-public IP: {ip}")
     except socket.gaierror:
-        raise HTTPException(status_code=400, detail=f"Could not resolve domain: {domain}")
+        raise HTTPException(status_code=400, detail=f"Could not resolve domain: {cleaned_domain}")
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Validation error: {str(e)}")
+    return cleaned_domain
 
 def query_doh(domain: str, qtype: str) -> list:
     try:
@@ -447,21 +459,21 @@ import asyncio
 async def dns_lookup(domain: str, request: Request = None):
     is_htmx = request is not None and request.headers.get("hx-request") is not None
     try:
-        validate_domain(domain)
+        cleaned_domain = validate_domain(domain)
 
         loop = asyncio.get_running_loop()
         record_types = ["A", "AAAA", "MX", "TXT", "NS"]
 
         tasks = [
-            loop.run_in_executor(None, query_doh, domain, rtype)
+            loop.run_in_executor(None, query_doh, cleaned_domain, rtype)
             for rtype in record_types
         ]
         results = await asyncio.gather(*tasks)
         records = dict(zip(record_types, results))
 
         if is_htmx:
-            return HTMLResponse(content=format_dns_html(domain, records))
-        return {"domain": domain, "records": records}
+            return HTMLResponse(content=format_dns_html(cleaned_domain, records))
+        return {"domain": cleaned_domain, "records": records}
     except Exception as e:
         msg = e.detail if hasattr(e, 'detail') else str(e)
         if is_htmx:
@@ -472,15 +484,15 @@ async def dns_lookup(domain: str, request: Request = None):
 async def ssl_check(domain: str, request: Request = None):
     is_htmx = request is not None and request.headers.get("hx-request") is not None
     try:
-        validate_domain(domain)
+        cleaned_domain = validate_domain(domain)
         context = ssl.create_default_context()
-        with socket.create_connection((domain, 443), timeout=5) as sock:
-            with context.wrap_socket(sock, server_hostname=domain) as ssock:
+        with socket.create_connection((cleaned_domain, 443), timeout=5) as sock:
+            with context.wrap_socket(sock, server_hostname=cleaned_domain) as ssock:
                 cert = ssock.getpeercert()
                 if not cert:
                     raise Exception("No certificate returned by peer")
                 if is_htmx:
-                    return HTMLResponse(content=format_ssl_html(domain, cert))
+                    return HTMLResponse(content=format_ssl_html(cleaned_domain, cert))
                 return cert
     except Exception as e:
         msg = e.detail if hasattr(e, 'detail') else str(e)
@@ -492,13 +504,13 @@ async def ssl_check(domain: str, request: Request = None):
 async def whois_lookup(domain: str, request: Request = None):
     is_htmx = request is not None and request.headers.get("hx-request") is not None
     try:
-        validate_domain(domain)
-        res = requests.get(f"https://rdap.org/domain/{domain}", timeout=5)
+        cleaned_domain = validate_domain(domain)
+        res = requests.get(f"https://rdap.org/domain/{cleaned_domain}", timeout=5)
         if res.status_code != 200:
             raise Exception(f"RDAP query failed with status code {res.status_code}")
         data = res.json()
         if is_htmx:
-            return HTMLResponse(content=format_whois_html(domain, data))
+            return HTMLResponse(content=format_whois_html(cleaned_domain, data))
         return data
     except Exception as e:
         msg = e.detail if hasattr(e, 'detail') else str(e)

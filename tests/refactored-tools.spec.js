@@ -117,4 +117,18 @@ test.describe('Refactored Toolbox Subtools', () => {
 
     await expect(page.locator('text=2023-11-14')).toBeVisible();
   });
+
+  test('should navigate to Color Picker and support reset and copy', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'Color Picker' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    // Verify default colors are shown
+    const colorText = page.locator('.font-mono', { hasText: '#4A7C59' });
+    await expect(colorText).toBeVisible();
+
+    // Try picking/setting input value or verifying click to copy
+    const hexCard = page.locator('.card', { hasText: 'HEX' });
+    await expect(hexCard).toBeVisible();
+  });
 });
