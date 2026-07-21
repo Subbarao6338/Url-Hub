@@ -104,6 +104,26 @@
   --brand-bg-light: #0f172a;
 }
 
+[data-theme="nature"] {
+  --bg-gradient: radial-gradient(circle at 50% 50%, #f4f0e6 0%, #e6e2d3 100%);
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-hover: rgba(255, 255, 255, 0.9);
+  --surface-solid: #ffffff;
+  --on-surface: #1e2922;
+  --text-muted: #5f6e65;
+  --border: #e0dbcd;
+  --primary: #155e37;
+  --primary-rgb: 21, 94, 55;
+  --primary-glow: rgba(var(--primary-rgb), 0.12);
+  --primary-container: #dcfce7;
+  --on-primary-container: #155e37;
+  --brand-primary: #155e37;
+  --brand-secondary: #2d8a4e;
+  --brand-bg-light: #f5f2eb;
+  --brand-dark: #133b24;
+  --brand-muted: #7a8c80;
+}
+
 /* Base UI */
 body {
   font-family: 'Outfit', sans-serif;

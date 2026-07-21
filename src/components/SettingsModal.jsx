@@ -143,9 +143,9 @@ const SettingsModal = ({
           <div className="form-group">
             <label>Theme Mode</label>
             <div className="pill-group">
-              {['light', 'dark', 'system'].map(t => (
+              {['light', 'dark', 'nature', 'system'].map(t => (
                 <button key={t} className={`pill ${theme === t ? 'active' : ''}`} onClick={() => setTheme(t)}>
-                  <span className="material-icons mr-10" style={{fontSize: '1.1rem'}}>{t === 'light' ? 'light_mode' : t === 'dark' ? 'dark_mode' : 'settings_brightness'}</span>
+                  <span className="material-icons mr-10" style={{fontSize: '1.1rem'}}>{t === 'light' ? 'light_mode' : t === 'dark' ? 'dark_mode' : t === 'nature' ? 'eco' : 'settings_brightness'}</span>
                   {t.charAt(0).toUpperCase() + t.slice(1)}
                 </button>
               ))}
