@@ -32,7 +32,8 @@ const PRESETS = [
     { label: 'Every Day at Midnight', value: '0 0 * * *' },
     { label: 'Every Weekday', value: '0 0 * * 1-5' },
     { label: 'Every Weekend', value: '0 0 * * 0,6' },
-    { label: 'First Day of Month', value: '0 0 1 * *' }
+    { label: 'First Day of Month', value: '0 0 1 * *' },
+    { label: 'Every 10 Seconds (6-Field)', value: '*/10 * * * * *' }
 ];
 
 const CronParser = () => {
@@ -121,36 +122,55 @@ const CronParser = () => {
         return val === num;
     };
 
-    const matchesCron = (date, parts) => {
+    const matchesCron = (date, parts, hasSeconds) => {
+        const sec = date.getSeconds();
         const min = date.getMinutes();
         const hour = date.getHours();
         const dom = date.getDate();
         const month = date.getMonth() + 1;
         const dow = date.getDay();
 
-        return matchesCronField(min, parts[0]) &&
-               matchesCronField(hour, parts[1]) &&
-               matchesCronField(dom, parts[2]) &&
-               matchesCronField(month, parts[3]) &&
-               matchesCronField(dow, parts[4], true);
+        if (hasSeconds) {
+            return matchesCronField(sec, parts[0]) &&
+                   matchesCronField(min, parts[1]) &&
+                   matchesCronField(hour, parts[2]) &&
+                   matchesCronField(dom, parts[3]) &&
+                   matchesCronField(month, parts[4]) &&
+                   matchesCronField(dow, parts[5], true);
+        } else {
+            return matchesCronField(min, parts[0]) &&
+                   matchesCronField(hour, parts[1]) &&
+                   matchesCronField(dom, parts[2]) &&
+                   matchesCronField(month, parts[3]) &&
+                   matchesCronField(dow, parts[4], true);
+        }
     };
 
     const getNextExecutions = (cronExpr, count = 5) => {
         const parts = cronExpr.trim().split(/\s+/);
-        if (parts.length !== 5) return [];
+        if (parts.length !== 5 && parts.length !== 6) return [];
+        const hasSeconds = parts.length === 6;
 
         const list = [];
         let current = new Date();
-        current.setSeconds(0);
         current.setMilliseconds(0);
-        current.setMinutes(current.getMinutes() + 1);
+        if (hasSeconds) {
+            current.setSeconds(current.getSeconds() + 1);
+        } else {
+            current.setSeconds(0);
+            current.setMinutes(current.getMinutes() + 1);
+        }
 
         let iterations = 0;
         while (list.length < count && iterations < 100000) {
-            if (matchesCron(current, parts)) {
+            if (matchesCron(current, parts, hasSeconds)) {
                 list.push(new Date(current));
             }
-            current.setMinutes(current.getMinutes() + 1);
+            if (hasSeconds) {
+                current.setSeconds(current.getSeconds() + 1);
+            } else {
+                current.setMinutes(current.getMinutes() + 1);
+            }
             iterations++;
         }
         return list;
@@ -159,16 +179,33 @@ const CronParser = () => {
     const parseCron = () => {
         const cleaned = cron.trim().replace(/\s+/g, ' ');
         const parts = cleaned.split(' ');
-        if (parts.length !== 5) {
-            setResult({ error: 'Invalid Cron: Expected exactly 5 parts (minute, hour, day-of-month, month, day-of-week).' });
+        if (parts.length !== 5 && parts.length !== 6) {
+            setResult({ error: 'Invalid Cron: Expected exactly 5 or 6 fields (second, minute, hour, day-of-month, month, day-of-week).' });
             return;
         }
 
-        const mDesc = explainField(parts[0], 'minute');
-        const hDesc = explainField(parts[1], 'hour');
-        const domDesc = explainField(parts[2], 'day of month');
-        const monDesc = explainField(parts[3], 'month', MONTHS);
-        const dowDesc = explainField(parts[4], 'day of week', WEEKDAYS);
+        const hasSeconds = parts.length === 6;
+        let sDesc = '';
+        let mDesc = '';
+        let hDesc = '';
+        let domDesc = '';
+        let monDesc = '';
+        let dowDesc = '';
+
+        if (hasSeconds) {
+            sDesc = explainField(parts[0], 'second');
+            mDesc = explainField(parts[1], 'minute');
+            hDesc = explainField(parts[2], 'hour');
+            domDesc = explainField(parts[3], 'day of month');
+            monDesc = explainField(parts[4], 'month', MONTHS);
+            dowDesc = explainField(parts[5], 'day of week', WEEKDAYS);
+        } else {
+            mDesc = explainField(parts[0], 'minute');
+            hDesc = explainField(parts[1], 'hour');
+            domDesc = explainField(parts[2], 'day of month');
+            monDesc = explainField(parts[3], 'month', MONTHS);
+            dowDesc = explainField(parts[4], 'day of week', WEEKDAYS);
+        }
 
         // Generate next 5 schedules
         const nextRuns = getNextExecutions(cleaned, 5);
@@ -176,7 +213,7 @@ const CronParser = () => {
         if (nextRuns.length > 0) {
             scheduleStr = nextRuns.map((r, idx) => `${idx + 1}. 📅 **${r.toLocaleString()}**`).join('\n');
         } else {
-            scheduleStr = '*No matching executions found within next ~70 days.*';
+            scheduleStr = '*No matching executions found within standard window.*';
         }
 
         let output = `### Cron Expression Breakdown\n\n`;
@@ -184,6 +221,9 @@ const CronParser = () => {
 
         output += `| Field | Description |\n`;
         output += `| --- | --- |\n`;
+        if (hasSeconds) {
+            output += `| ⏱️ Second | ${sDesc} |\n`;
+        }
         output += `| ⏱️ Minute | ${mDesc} |\n`;
         output += `| 🕒 Hour | ${hDesc} |\n`;
         output += `| 📅 Day of Month | ${domDesc} |\n`;
@@ -205,6 +245,8 @@ const CronParser = () => {
         setResult(null);
     };
 
+    const currentPartsCount = cron.trim().replace(/\s+/g, ' ').split(' ').length;
+
     return (
         <div className="card p-30 glass-card grid gap-20">
             <h3 className="text-center">Cron Expression Parser</h3>
@@ -224,7 +266,7 @@ const CronParser = () => {
             </div>
 
             <div className="form-group text-left">
-                <label className="smallest opacity-6 uppercase ml-10 font-bold">Cron Expression (5 Fields)</label>
+                <label className="smallest opacity-6 uppercase ml-10 font-bold">Cron Expression (5 or 6 Fields)</label>
                 <input
                     className="pill w-full font-mono text-center mt-5"
                     value={cron}
@@ -232,14 +274,27 @@ const CronParser = () => {
                         setCron(e.target.value);
                         setResult(null);
                     }}
-                    placeholder="* * * * *"
+                    placeholder="* * * * * or * * * * * *"
                 />
                 <div className="flex-between smallest opacity-5 mt-5 px-10">
-                    <span>min</span>
-                    <span>hour</span>
-                    <span>dom</span>
-                    <span>month</span>
-                    <span>dow</span>
+                    {currentPartsCount === 6 ? (
+                        <>
+                            <span>sec</span>
+                            <span>min</span>
+                            <span>hour</span>
+                            <span>dom</span>
+                            <span>month</span>
+                            <span>dow</span>
+                        </>
+                    ) : (
+                        <>
+                            <span>min</span>
+                            <span>hour</span>
+                            <span>dom</span>
+                            <span>month</span>
+                            <span>dow</span>
+                        </>
+                    )}
                 </div>
             </div>
 
