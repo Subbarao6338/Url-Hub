@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import Header from './components/Header';
 import TabBar from './components/TabBar';
+import Sidebar from './components/Sidebar';
 import BookmarksView from './components/BookmarksView';
 import ToolboxView from './components/ToolboxView';
 import ProjectsView from './components/ProjectsView';
@@ -17,6 +18,15 @@ function App() {
   const [appName, setAppName] = useLocalStorageState('hub_app_name', 'Epic Toolbox');
   const enableProfiles = false;
   const [currentProfileName, setCurrentProfileName] = useLocalStorageState('hub_current_profile', storage.get('hub_startup_profile', 'Default'));
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const [profiles, setProfiles] = useState([
     { id: 1, name: 'Default', icon: 'home' }
   ]);
@@ -311,28 +321,48 @@ function App() {
   }, [confirmDelete, currentProfile.id]);
 
   return (
-    <div className="app-layout">
-      <div className="search-dismiss-overlay" onClick={() => setSearchActive(false)}></div>
-      <main className="main-content">
-        <Header
+    <div className={`app-layout ${isDesktop ? 'desktop-layout' : ''}`}>
+      {isDesktop && (
+        <Sidebar
           appName={appName}
-          currentProfile={enableProfiles ? currentProfileName : 'Default'}
-          profiles={profiles}
-          setView={(view) => setTab(view)}
+          currentTab={currentTab}
+          setTab={setTab}
           onSettingsClick={() => setIsSettingsOpen(true)}
           hideBookmarks={hideBookmarks}
           hideToolbox={hideToolbox}
-          currentTab={currentTab}
-        >
-          <SearchOverlay
-            active={searchActive}
-            setActive={setSearchActive}
-            query={searchQuery}
-            onChange={setSearchQuery}
-            onClear={handleSearchClear}
+          showProjectsTab={showProjectsTab}
+          onAddClick={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          setSearchActive={setSearchActive}
+          theme={theme}
+          setTheme={setTheme}
+          currentProfileName={enableProfiles ? currentProfileName : 'Default'}
+        />
+      )}
+      <div className="search-dismiss-overlay" onClick={() => setSearchActive(false)}></div>
+      <main className="main-content">
+        {!isDesktop && (
+          <Header
+            appName={appName}
+            currentProfile={enableProfiles ? currentProfileName : 'Default'}
+            profiles={profiles}
+            setView={(view) => setTab(view)}
+            onSettingsClick={() => setIsSettingsOpen(true)}
+            hideBookmarks={hideBookmarks}
+            hideToolbox={hideToolbox}
             currentTab={currentTab}
-          />
-        </Header>
+          >
+            <SearchOverlay
+              active={searchActive}
+              setActive={setSearchActive}
+              query={searchQuery}
+              onChange={setSearchQuery}
+              onClear={handleSearchClear}
+              currentTab={currentTab}
+            />
+          </Header>
+        )}
 
         <div
           id="content"
@@ -390,19 +420,21 @@ function App() {
         >
           <span className="material-icons">arrow_upward</span>
         </button>
-        <TabBar
-          currentTab={currentTab}
-          setTab={setTab}
-          onAddClick={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
-          onBookmarksLongPress={() => { if (enableProfiles) setIsProfileOpen(true); }}
-          onSettingsClick={() => setIsSettingsOpen(true)}
-          onSearchClick={handleSearchToggle}
-          searchActive={searchActive}
-          enableProfiles={enableProfiles}
-          hideBookmarks={hideBookmarks}
-          hideToolbox={hideToolbox}
-          showProjectsTab={showProjectsTab}
-        />
+        {!isDesktop && (
+          <TabBar
+            currentTab={currentTab}
+            setTab={setTab}
+            onAddClick={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
+            onBookmarksLongPress={() => { if (enableProfiles) setIsProfileOpen(true); }}
+            onSettingsClick={() => setIsSettingsOpen(true)}
+            onSearchClick={handleSearchToggle}
+            searchActive={searchActive}
+            enableProfiles={enableProfiles}
+            hideBookmarks={hideBookmarks}
+            hideToolbox={hideToolbox}
+            showProjectsTab={showProjectsTab}
+          />
+        )}
       </main>
 
       {(isSettingsOpen || isProfileOpen || isBookmarkOpen) && (
