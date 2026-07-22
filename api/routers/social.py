@@ -71,9 +71,9 @@ async def download_media(url: str, format_id: Optional[str] = None):
 @router.get("/sponsor-segments")
 async def get_sponsors(video_id: str):
     try:
-        res = requests.get(f"https://sponsor.ajay.app/api/skipSegments?videoID={video_id}")
+        res = requests.get(f"https://sponsor.ajay.app/api/skipSegments?videoID={video_id}", timeout=5)
         if res.status_code == 200:
             return {"success": True, "segments": res.json()}
         return {"success": False, "message": "No segments found"}
-    except:
+    except Exception:
         return {"success": False, "message": "API error"}

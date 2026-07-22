@@ -1,0 +1,13 @@
+# Exclude directories and files from clone/distribution packaging
+node_modules/
+.git/
+test-results/
+playwright-report/
+uvicorn.log
+*.pyc
+__pycache__/
+dist/
+build/
+.cache/
+.pytest_cache/
+test.txt
