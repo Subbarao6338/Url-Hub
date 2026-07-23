@@ -78,6 +78,8 @@ export const TOOLS = [
     { id: 'minifier', title: 'Code Minifier', icon: 'compress', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'qr-barcode', title: 'QR & Barcode Generator', icon: 'qr_code', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'inspiration', title: 'Code Inspiration', icon: 'lightbulb', category: 'Developer', component: DevTools, subTools: [] },
+    { id: 'md-table', title: 'Markdown Table', icon: 'grid_on', category: 'Developer', component: DevTools, subTools: [] },
+    { id: 'sql-builder', title: 'SQL Builder', icon: 'build', category: 'Developer', component: DevTools, subTools: [] },
 
     // 11. Documents
     { id: 'pdf', title: 'PDF Hub', icon: 'picture_as_pdf', category: 'Documents', component: DocTools, subTools: [] },

@@ -131,4 +131,45 @@ test.describe('Refactored Toolbox Subtools', () => {
     const hexCard = page.locator('.card', { hasText: 'HEX' });
     await expect(hexCard).toBeVisible();
   });
+
+  test('should navigate to Markdown Table Generator and support interactive visual creation', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'Markdown Table' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    // Wait for the table headers input to render
+    const firstHeaderInput = page.locator('table thead input').first();
+    await expect(firstHeaderInput).toHaveValue('Header 1');
+
+    // Verify first body cell input
+    const cellInput = page.locator('table tbody input').first();
+    await expect(cellInput).toHaveValue('Row 1 Col 1');
+
+    // Verify result contains Markdown table elements
+    const result = page.locator('.tool-result-container');
+    await expect(result).toBeVisible();
+    await expect(result).toContainText('| Header 1 | Header 2 | Header 3 |');
+  });
+
+  test('should navigate to SQL Builder and construct query visually', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'SQL Builder' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    // Verify default inputs
+    const selectFieldsInput = page.locator('label:has-text("SELECT Fields") + input');
+    await expect(selectFieldsInput).toHaveValue('*');
+
+    // Add a Join
+    await page.click('button:has-text("Add Join")');
+    await page.fill('input[placeholder="Table to join"]', 'profiles');
+    await page.fill('input[placeholder="e.g. users.id = posts.user_id"]', 'users.id = profiles.user_id');
+
+    // Verify query build output
+    const result = page.locator('.tool-result-container');
+    await expect(result).toBeVisible();
+    await expect(result).toContainText('SELECT *');
+    await expect(result).toContainText('FROM users');
+    await expect(result).toContainText('INNER JOIN profiles ON users.id = profiles.user_id');
+  });
 });
