@@ -116,19 +116,31 @@ def format_ip_info_html(data: dict) -> str:
             <div class="grid cols-2 gap-15" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">IP Address</div>
-                    <div class="font-mono text-lg font-bold" style="color: var(--brand-accent);">{ip}</div>
+                    <div class="font-mono text-lg font-bold flex align-center gap-5" style="color: var(--brand-accent);">
+                        <span id="field-ip">{ip}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{ip}'); alert('Copied IP Address!')" title="Copy IP">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">ISP / Organization</div>
-                    <div class="font-bold">{org}</div>
+                    <div class="font-bold flex align-center gap-5">
+                        <span>{org}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{org}'); alert('Copied ISP/Organization!')" title="Copy ISP">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Location</div>
-                    <div>{city}, {region}, {country} (Postal: {postal})</div>
+                    <div class="flex align-center gap-5">
+                        <span>{city}, {region}, {country} (Postal: {postal})</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{city}, {region}, {country} ({postal})'); alert('Copied Location!')" title="Copy Location">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Timezone & ASN</div>
-                    <div>{timezone} | {asn}</div>
+                    <div class="flex align-center gap-5">
+                        <span>{timezone} | {asn}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{timezone} | {asn}'); alert('Copied Timezone & ASN!')" title="Copy Info">content_copy</span>
+                    </div>
                 </div>
             </div>
             {map_html}
@@ -151,10 +163,16 @@ def format_dns_html(domain: str, records: dict) -> str:
         if vals:
             has_any = True
             for val in vals:
+                escaped_val = val.replace("'", "\\'")
                 rows.append(f"""
                 <tr style="border-bottom: 1px solid var(--border-color);">
                     <td class="font-bold py-10" style="padding: 10px 15px; color: var(--brand-accent);">{rtype}</td>
-                    <td class="font-mono py-10" style="padding: 10px 15px; word-break: break-all;">{val}</td>
+                    <td class="font-mono py-10" style="padding: 10px 15px; word-break: break-all;">
+                        <div class="flex align-center gap-10">
+                            <span>{val}</span>
+                            <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{escaped_val}'); alert('Copied DNS record value!')" title="Copy Value">content_copy</span>
+                        </div>
+                    </td>
                 </tr>
                 """)
 
@@ -248,6 +266,10 @@ def format_whois_html(domain: str, data: dict) -> str:
 
     raw_json = json.dumps(data, indent=2)
 
+    escaped_registrar = registrar.replace("'", "\\'")
+    escaped_status = status.replace("'", "\\'")
+    escaped_ns_str = ns_str.replace("'", "\\'")
+
     html = f"""
     <div class="result-container animate-fadeIn mt-20 text-left">
         <div class="flex-between mb-15">
@@ -262,27 +284,45 @@ def format_whois_html(domain: str, data: dict) -> str:
             <div class="grid cols-2 gap-15" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Registrar</div>
-                    <div class="font-bold">{registrar}</div>
+                    <div class="font-bold flex align-center gap-5">
+                        <span>{registrar}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{escaped_registrar}'); alert('Copied Registrar!')" title="Copy Registrar">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Domain Status</div>
-                    <div class="small text-truncate" title="{status}">{status}</div>
+                    <div class="small text-truncate flex align-center gap-5" title="{status}">
+                        <span>{status}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{escaped_status}'); alert('Copied Domain Status!')" title="Copy Status">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Registration Date</div>
-                    <div>{reg_date}</div>
+                    <div class="flex align-center gap-5">
+                        <span>{reg_date}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{reg_date}'); alert('Copied Registration Date!')" title="Copy Registration Date">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Expiration Date</div>
-                    <div class="font-bold text-success">{exp_date}</div>
+                    <div class="font-bold text-success flex align-center gap-5">
+                        <span>{exp_date}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{exp_date}'); alert('Copied Expiration Date!')" title="Copy Expiration Date">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Last Updated</div>
-                    <div>{upd_date}</div>
+                    <div class="flex align-center gap-5">
+                        <span>{upd_date}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{upd_date}'); alert('Copied Last Updated Date!')" title="Copy Last Updated">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Name Servers</div>
-                    <div class="small font-mono">{ns_str}</div>
+                    <div class="small font-mono flex align-center gap-5">
+                        <span>{ns_str}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{escaped_ns_str}'); alert('Copied Name Servers!')" title="Copy Name Servers">content_copy</span>
+                    </div>
                 </div>
             </div>
 
@@ -377,6 +417,10 @@ def format_ssl_html(domain: str, raw_cert: dict) -> str:
 
     raw_json = json.dumps(raw_cert, indent=2)
 
+    escaped_common_name = common_name.replace("'", "\\'")
+    escaped_issuer = issuer.replace("'", "\\'")
+    escaped_serial = serial.replace("'", "\\'")
+
     html = f"""
     <div class="result-container animate-fadeIn mt-20 text-left">
         <div class="flex-between mb-15">
@@ -397,19 +441,31 @@ def format_ssl_html(domain: str, raw_cert: dict) -> str:
             <div class="grid cols-2 gap-15" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Common Name (CN)</div>
-                    <div class="font-mono font-bold">{common_name}</div>
+                    <div class="font-mono font-bold flex align-center gap-5">
+                        <span>{common_name}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{escaped_common_name}'); alert('Copied Common Name!')" title="Copy CN">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Issuer (CA)</div>
-                    <div class="font-bold">{issuer}</div>
+                    <div class="font-bold flex align-center gap-5">
+                        <span>{issuer}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{escaped_issuer}'); alert('Copied Issuer!')" title="Copy CA">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Valid From</div>
-                    <div>{valid_from}</div>
+                    <div class="flex align-center gap-5">
+                        <span>{valid_from}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{valid_from}'); alert('Copied Valid From!')" title="Copy Date">content_copy</span>
+                    </div>
                 </div>
                 <div>
                     <div class="smallest opacity-6 uppercase font-bold">Expiration Date</div>
-                    <div class="font-bold">{valid_until}</div>
+                    <div class="font-bold flex align-center gap-5">
+                        <span>{valid_until}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{valid_until}'); alert('Copied Expiration Date!')" title="Copy Expiration Date">content_copy</span>
+                    </div>
                 </div>
                 <div style="grid-column: span 2;">
                     <div class="smallest opacity-6 uppercase font-bold">Subject Alternative Names (SANs)</div>
@@ -417,7 +473,10 @@ def format_ssl_html(domain: str, raw_cert: dict) -> str:
                 </div>
                 <div style="grid-column: span 2;">
                     <div class="smallest opacity-6 uppercase font-bold">Serial Number</div>
-                    <div class="small font-mono">{serial}</div>
+                    <div class="small font-mono flex align-center gap-5">
+                        <span>{serial}</span>
+                        <span class="material-icons cursor-pointer hover-scale opacity-6" style="font-size: 1.1rem;" onclick="navigator.clipboard.writeText('{escaped_serial}'); alert('Copied Serial Number!')" title="Copy Serial Number">content_copy</span>
+                    </div>
                 </div>
             </div>
 

@@ -6,6 +6,7 @@ const Base64Tool = () => {
     const [file, setFile] = useState(null);
     const [result, setResult] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState(null);
 
     // Helpers to compute byte size
     const getByteSize = (str) => {
@@ -53,6 +54,16 @@ const Base64Tool = () => {
         return { type: 'encode', text: 'Detected Plain Text format. You might want to Encode this.' };
     };
 
+    const handleAutoCopy = async (textToCopy) => {
+        if (navigator.clipboard && textToCopy) {
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+            } catch (err) {
+                console.warn('Auto-copy failed: ', err);
+            }
+        }
+    };
+
     const encodeText = () => {
         try {
             if (!input) return;
@@ -62,8 +73,33 @@ const Base64Tool = () => {
                 filename: 'encoded_base64.txt',
                 copyText: encoded
             });
+            setPreviewUrl(null);
+            handleAutoCopy(encoded);
         } catch (e) {
             setResult({ error: 'Text encoding failed: ' + e.message });
+        }
+    };
+
+    const detectAndSetPreview = (text) => {
+        const trimmed = text.trim();
+        // Check if the decoded text is an image data URL
+        if (trimmed.startsWith('data:image/')) {
+            setPreviewUrl(trimmed);
+        } else {
+            // Or maybe the input was a raw base64 string of an image without the data url prefix? Let's check common signatures
+            // PNG signature starts with iVBORw0KGgo
+            // JPEG starts with /9j/
+            if (trimmed.startsWith('iVBORw0KGgo')) {
+                setPreviewUrl(`data:image/png;base64,${trimmed}`);
+            } else if (trimmed.startsWith('/9j/')) {
+                setPreviewUrl(`data:image/jpeg;base64,${trimmed}`);
+            } else if (trimmed.startsWith('R0lGODlh') || trimmed.startsWith('R0lGODdh')) {
+                setPreviewUrl(`data:image/gif;base64,${trimmed}`);
+            } else if (trimmed.startsWith('UklGR')) {
+                setPreviewUrl(`data:image/webp;base64,${trimmed}`);
+            } else {
+                setPreviewUrl(null);
+            }
         }
     };
 
@@ -82,8 +118,11 @@ const Base64Tool = () => {
                         filename: 'decoded_text.txt',
                         copyText: decoded
                     });
+                    detectAndSetPreview(decoded);
+                    handleAutoCopy(decoded);
                 } catch (err) {
                     setResult({ error: `Text decoding failed. ${validation.reason}` });
+                    setPreviewUrl(null);
                 }
                 return;
             }
@@ -94,8 +133,21 @@ const Base64Tool = () => {
                 filename: 'decoded_text.txt',
                 copyText: decoded
             });
+            detectAndSetPreview(decoded);
+            handleAutoCopy(decoded);
         } catch (e) {
+            // Check if the input itself is a data image url
+            if (input.trim().startsWith('data:image/')) {
+                setPreviewUrl(input.trim());
+                setResult({
+                    text: 'Image Data URL detected! Image preview loaded below.',
+                    filename: 'decoded_image.txt',
+                    copyText: input.trim()
+                });
+                return;
+            }
             setResult({ error: 'Text decoding failed: ' + e.message + ' (Check if input is valid Base64)' });
+            setPreviewUrl(null);
         }
     };
 
@@ -103,6 +155,7 @@ const Base64Tool = () => {
         if (!selectedFile) return;
         setFile(selectedFile);
         setResult(null); // Clear previous results
+        setPreviewUrl(null);
     };
 
     const encodeFile = () => {
@@ -115,6 +168,12 @@ const Base64Tool = () => {
                 filename: `${file.name}_base64.txt`,
                 copyText: base64
             });
+            if (file.type.startsWith('image/')) {
+                setPreviewUrl(base64);
+            } else {
+                setPreviewUrl(null);
+            }
+            handleAutoCopy(base64);
         };
         reader.onerror = () => setResult({ error: 'File reading failed.' });
         reader.readAsDataURL(file);
@@ -123,11 +182,13 @@ const Base64Tool = () => {
     const clearTextSection = () => {
         setInput('');
         setResult(null);
+        setPreviewUrl(null);
     };
 
     const clearFileSection = () => {
         setFile(null);
         setResult(null);
+        setPreviewUrl(null);
         const fileInput = document.getElementById('b64-file');
         if (fileInput) fileInput.value = '';
     };
@@ -154,6 +215,8 @@ const Base64Tool = () => {
     const resultBytes = result && result.text ? getByteSize(result.text) : 0;
     const detection = getAutoDetectionMessage(input);
 
+    const isInputExtremelyLarge = inputBytes > 5 * 1024 * 1024; // 5MB warning limit
+
     return (
         <div className="card p-30 glass-card grid gap-20 animate-fadeIn">
             <h3 className="text-center">Base64 Text Tool</h3>
@@ -163,8 +226,9 @@ const Base64Tool = () => {
                 <div className="flex-between mb-5">
                     <span className="smallest opacity-6 uppercase ml-10">Input Text</span>
                     {input && (
-                        <span className="smallest opacity-6 mr-10 font-mono">
+                        <span className={`smallest mr-10 font-mono ${isInputExtremelyLarge ? 'text-danger font-bold' : 'opacity-6'}`}>
                             {input.length.toLocaleString()} chars | {formatBytes(inputBytes)}
+                            {isInputExtremelyLarge && ' (Performance warning: Input exceeds 5MB)'}
                         </span>
                     )}
                 </div>
@@ -176,6 +240,7 @@ const Base64Tool = () => {
                     onChange={e => {
                         setInput(e.target.value);
                         setResult(null);
+                        setPreviewUrl(null);
                     }}
                     style={{ borderRadius: '16px', padding: '15px', minHeight: '120px' }}
                 />
@@ -252,6 +317,15 @@ const Base64Tool = () => {
                 )}
             </div>
 
+            {previewUrl && (
+                <div className="mt-15 p-15 card bg-surface text-center animate-fadeIn" style={{ border: '1px solid var(--border-color)', borderRadius: '12px' }}>
+                    <div className="smallest opacity-6 uppercase font-bold mb-10">Image Preview</div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <img src={previewUrl} alt="Base64 Preview" style={{ maxWidth: '100%', maxHeight: '250px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }} />
+                    </div>
+                </div>
+            )}
+
             {result && result.text && (
                 <div className="mt-15 p-15 card bg-surface flex-between align-center" style={{ border: '1px solid var(--border-color)', borderRadius: '12px' }}>
                     <span className="smallest opacity-6 uppercase font-bold">Result Analytics</span>
@@ -261,7 +335,7 @@ const Base64Tool = () => {
                 </div>
             )}
 
-            <ToolResult result={result} onClear={() => setResult(null)} />
+            <ToolResult result={result} onClear={() => { setResult(null); setPreviewUrl(null); }} />
         </div>
     );
 };
