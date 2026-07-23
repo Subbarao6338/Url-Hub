@@ -23,6 +23,8 @@ import OtpGenerator from './subtools/OtpGenerator';
 import UrlTool from './subtools/UrlTool';
 import PasswordTool from './subtools/PasswordTool';
 import RsaTool from './subtools/RsaTool';
+import MarkdownTable from './subtools/MarkdownTable';
+import SqlBuilder from './subtools/SqlBuilder';
 
 const DEV_CATEGORIES = [
   {
@@ -64,6 +66,8 @@ const DEV_CATEGORIES = [
       { id: 'color', label: 'Color Picker', icon: 'palette', description: 'Pick and convert colors.' },
       { id: 'qr-barcode', label: 'QR & Barcode', icon: 'qr_code', description: 'Generate QR codes and barcodes.' },
       { id: 'inspiration', label: 'Code Inspiration', icon: 'lightbulb', description: 'Get random coding tips and quotes.' },
+      { id: 'md-table', label: 'Markdown Table', icon: 'grid_on', description: 'Create and parse Markdown tables visually.' },
+      { id: 'sql-builder', label: 'SQL Builder', icon: 'build', description: 'Visually construct complex SQL queries.' },
     ]
   }
 ];
@@ -175,6 +179,8 @@ const DevTools = ({ toolId, onSubtoolChange }) => {
         {activeTab === 'password' && <PasswordTool />}
         {activeTab === 'rsa' && <RsaTool />}
         {activeTab === 'inspiration' && <CodeInspiration />}
+        {activeTab === 'md-table' && <MarkdownTable />}
+        {activeTab === 'sql-builder' && <SqlBuilder />}
       </div>
     </div>
   );
