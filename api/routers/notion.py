@@ -104,7 +104,9 @@ def background_folder_scan(folder_path, database_id, token, workspace_id):
 @router.post("/validate")
 async def validate_notion(token: str, workspace_id: Optional[str] = None):
     try:
-        notion = Client(auth=token); notion.users.me()
+        import anyio
+        notion = Client(auth=token)
+        await anyio.to_thread.run_sync(notion.users.me)
         return {"valid": True}
     except Exception as e: return {"valid": False, "error": str(e)}
 
