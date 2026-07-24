@@ -58,6 +58,14 @@ const TRADITIONAL_DATA = {
         { name: "Áo Dài (Vietnam)", description: "A Vietnamese national garment, worn by both sexes but now most commonly by women, consisting of a long tunic that is split on the sides and worn over trousers." },
         { name: "Barong Tagalog (Philippines)", description: "An embroidered formal shirt and considered the national dress of the Philippines. It is lightweight and worn untucked over an undershirt." }
       ]
+    },
+    {
+      name: "Oceania",
+      styles: [
+        { name: "Sulu (Fiji)", description: "A kilt-like garment worn by both men and women in Fiji for formal, business, or everyday activities." },
+        { name: "Taʻovala (Tonga)", description: "A traditional woven mat worn around the waist by Tongan men and women for formal or official occasions." },
+        { name: "Lavalava (Samoa)", description: "A single rectangular cloth worn like a sarong or kilt, common in Samoa and other Polynesian islands." }
+      ]
     }
   ]
 };
@@ -79,6 +87,8 @@ const TraditionalGuide = ({ initialRegion = null }) => {
     }
   }, []);
 
+  const escapedRegionsData = JSON.stringify(TRADITIONAL_DATA.regions).replace(/'/g, "\\'");
+
   return (
     <div
       ref={containerRef}
@@ -86,6 +96,7 @@ const TraditionalGuide = ({ initialRegion = null }) => {
         selectedRegion: '${initialRegion || ""}',
         resultText: '',
         searchQuery: '',
+        regionsData: ${escapedRegionsData},
         selectRegion(regionName) {
           this.selectedRegion = regionName;
           this.resultText = '';
@@ -153,19 +164,19 @@ const TraditionalGuide = ({ initialRegion = null }) => {
       </div>
 
       {/* Style Grids per Region */}
-      {TRADITIONAL_DATA.regions.map(region => (
+      {TRADITIONAL_DATA.regions.map((region, regionIdx) => (
         <div
           key={region.name}
           x-show={`selectedRegion === '${region.name}'`}
           className="category-grid"
           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', display: 'none' }}
         >
-          {region.styles.map(style => (
+          {region.styles.map((style, styleIdx) => (
             <div
               key={style.name}
               className="card p-15 text-center cursor-pointer hover-scale"
-              x-show={`!searchQuery || '${style.name.toLowerCase().replace(/'/g, "\\'")}'.includes(searchQuery.toLowerCase())`}
-              x-on:click={`getStyleDetails('${style.name.replace(/'/g, "\\'")}', '${style.description.replace(/'/g, "\\'")}')`}
+              x-show={`!searchQuery || regionsData[${regionIdx}].styles[${styleIdx}].name.toLowerCase().includes(searchQuery.toLowerCase())`}
+              x-on:click={`getStyleDetails(regionsData[${regionIdx}].styles[${styleIdx}].name, regionsData[${regionIdx}].styles[${styleIdx}].description)`}
             >
               <div className="card-title font-bold" style={{ color: 'var(--brand-accent)' }}>{style.name}</div>
             </div>
