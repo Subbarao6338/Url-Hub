@@ -115,7 +115,7 @@ const DICTIONARY = {
     "always": "eppudu (ఎప్పుడూ)",
     "never": "eppudu kadu (ఎప్పుడూ కాదు)",
     "maybe": "bahusha (బహుశా)",
-    "beautiful": "andhamaina (అందమైన)",
+    "beautiful": "andhamaina (అんだమైన)",
     "strong": "balamaina (బలమైన)",
     "weak": "neersanga (నీరసంగా)",
     "happy": "santoshamga (సంతోషంగా)",
@@ -139,9 +139,13 @@ const LANGUAGES = [
 
 const DocTranslator = () => {
     const [input, setInput] = useState('');
+    const [sourceLang, setSourceLang] = useState('en');
     const [targetLang, setTargetLang] = useState('te');
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+
+    const maxChars = 5000;
 
     const translateOnline = async () => {
         if (!input.trim()) return;
@@ -155,7 +159,7 @@ const DocTranslator = () => {
                 body: JSON.stringify({
                     text: input,
                     target_lang: targetLang,
-                    source_lang: 'en'
+                    source_lang: sourceLang
                 })
             });
 
@@ -176,8 +180,8 @@ const DocTranslator = () => {
             }
         } catch (e) {
             console.warn("Online translation failed, falling back to offline dictionary:", e.message);
-            // Fallback to offline translation if target language is Telugu
-            if (targetLang === 'te') {
+            // Fallback to offline translation if target language is Telugu and source is English
+            if (targetLang === 'te' && sourceLang === 'en') {
                 runOfflineTranslation();
             } else {
                 setResult({
@@ -217,39 +221,144 @@ const DocTranslator = () => {
         }
     };
 
-    return (
-        <div className="card p-30 glass-card text-center grid gap-15">
-            <h3>Online Document Translator</h3>
-            <p className="smallest opacity-6">Translate English text into multiple languages using the public MyMemory Translation API, with local English-to-Telugu fallback.</p>
+    const handleQuickSwap = () => {
+        if (targetLang === 'te' && sourceLang === 'en') {
+            // We can only swap to Spanish/etc if targetLang is en, let's toggle sourceLang and targetLang if possible
+            const temp = sourceLang;
+            setSourceLang(targetLang);
+            setTargetLang(temp);
+            setResult(null);
+        } else if (sourceLang === 'te' && targetLang === 'en') {
+            setSourceLang('en');
+            setTargetLang('te');
+            setResult(null);
+        } else {
+            // General toggle
+            const temp = sourceLang;
+            setSourceLang(targetLang);
+            setTargetLang(temp);
+            setResult(null);
+        }
+    };
 
-            <div className="grid grid-2-cols gap-10 text-left">
+    // Parse files (like plain .txt files) dropped or selected by the user
+    const handleFileLoad = (file) => {
+        if (!file) return;
+        if (file.type === "text/plain" || file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                setInput(text.slice(0, maxChars));
+                setResult(null);
+            };
+            reader.readAsText(file);
+        } else {
+            alert("Only plain text (.txt, .md) files are supported for instant translation input.");
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = () => {
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            handleFileLoad(e.dataTransfer.files[0]);
+        }
+    };
+
+    const remainingChars = maxChars - input.length;
+    const isOverLimit = remainingChars < 0;
+
+    return (
+        <div
+            className="card p-30 glass-card text-center grid gap-15"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            style={{
+                border: isDragging ? '2px dashed var(--brand-accent)' : '1px solid var(--border-color)',
+                backgroundColor: isDragging ? 'rgba(var(--brand-accent-rgb), 0.03)' : 'transparent',
+                transition: 'all 0.2s ease-in-out'
+            }}
+        >
+            <h3>Online Document Translator</h3>
+            <p className="smallest opacity-6">Translate text into multiple languages using the public MyMemory Translation API, with local English-to-Telugu fallback. You can also drag & drop plain text (.txt) files here to import content.</p>
+
+            <div className="grid grid-3-cols gap-10 text-left align-center" style={{ gridTemplateColumns: '1fr auto 1fr', alignItems: 'center' }}>
                 <div className="form-group">
-                    <label className="smallest opacity-6 uppercase ml-10">Source Language</label>
-                    <select className="pill w-full" disabled>
-                        <option>English</option>
+                    <label className="smallest opacity-6 uppercase ml-10 font-bold">Source Language</label>
+                    <select className="pill w-full" value={sourceLang} onChange={e => { setSourceLang(e.target.value); setResult(null); }}>
+                        <option value="en">English</option>
+                        <option value="te">Telugu (తెలుగు)</option>
+                        <option value="es">Spanish (Español)</option>
+                        <option value="fr">French (Français)</option>
+                        <option value="de">German (Deutsch)</option>
+                        <option value="it">Italian (Italiano)</option>
+                        <option value="hi">Hindi (हिन्दी)</option>
+                        <option value="ja">Japanese (日本語)</option>
+                        <option value="zh">Chinese (中文)</option>
                     </select>
                 </div>
+
+                <button
+                    className="pill flex-center"
+                    onClick={handleQuickSwap}
+                    title="Swap Languages"
+                    style={{
+                        height: '42px',
+                        width: '42px',
+                        marginTop: '20px',
+                        borderRadius: '50%',
+                        padding: 0,
+                        border: '1px solid var(--border-color)',
+                        background: 'var(--bg-surface)',
+                        cursor: 'pointer'
+                    }}
+                >
+                    <span className="material-icons" style={{ fontSize: '1.2rem', color: 'var(--brand-accent)' }}>swap_horiz</span>
+                </button>
+
                 <div className="form-group">
-                    <label className="smallest opacity-6 uppercase ml-10">Target Language</label>
-                    <select className="pill w-full" value={targetLang} onChange={e => setTargetLang(e.target.value)}>
+                    <label className="smallest opacity-6 uppercase ml-10 font-bold">Target Language</label>
+                    <select className="pill w-full" value={targetLang} onChange={e => { setTargetLang(e.target.value); setResult(null); }}>
                         {LANGUAGES.map(lang => (
                             <option key={lang.code} value={lang.code}>{lang.name}</option>
                         ))}
+                        <option value="en">English</option>
                     </select>
                 </div>
             </div>
 
-            <textarea
-                className="pill w-full"
-                rows="6"
-                style={{borderRadius: '16px', padding: '15px'}}
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                placeholder="Type or paste English text to translate..."
-            />
+            <div className="form-group relative">
+                <textarea
+                    className="pill w-full"
+                    rows="6"
+                    style={{borderRadius: '16px', padding: '15px'}}
+                    value={input}
+                    onChange={e => {
+                        setInput(e.target.value.slice(0, maxChars));
+                        setResult(null);
+                    }}
+                    placeholder="Type, paste, or drop a text (.txt) file here..."
+                />
+                <div className="flex-between mt-5 px-10">
+                    <span className="smallest opacity-6">Supports Drag & Drop</span>
+                    <span className={`smallest font-mono ${isOverLimit ? 'text-danger font-bold' : 'opacity-6'}`}>
+                        {input.length} / {maxChars} characters remaining
+                    </span>
+                </div>
+            </div>
 
             <div className="flex-center gap-10">
-                <button className="btn-primary flex-1" onClick={translateOnline} disabled={loading}>
+                <button className="btn-primary flex-1" onClick={translateOnline} disabled={loading || !input.trim()}>
                     <span className="material-icons mr-10">translate</span>
                     {loading ? 'Translating...' : 'Translate'}
                 </button>
