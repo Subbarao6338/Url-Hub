@@ -7,6 +7,8 @@ import ssl
 from typing import Optional
 import json
 from datetime import datetime
+import anyio
+import asyncio
 
 router = APIRouter()
 
@@ -489,6 +491,10 @@ def format_ssl_html(domain: str, raw_cert: dict) -> str:
     """
     return html
 
+def sync_get_ip_info(url: str):
+    res = requests.get(url, timeout=5)
+    return res.json()
+
 @router.get("/ip-info")
 async def get_ip_info(ip: Optional[str] = None, request: Request = None):
     is_htmx = request is not None and request.headers.get("hx-request") is not None
@@ -499,8 +505,7 @@ async def get_ip_info(ip: Optional[str] = None, request: Request = None):
         raise HTTPException(status_code=400, detail=msg)
     try:
         url = f"https://ipapi.co/{ip}/json/" if ip else "https://ipapi.co/json/"
-        res = requests.get(url, timeout=5)
-        data = res.json()
+        data = await anyio.to_thread.run_sync(sync_get_ip_info, url)
         if "error" in data:
             raise Exception(data.get("reason", "Unknown API error"))
         if is_htmx:
@@ -511,8 +516,6 @@ async def get_ip_info(ip: Optional[str] = None, request: Request = None):
         if is_htmx:
             return HTMLResponse(content=format_error_html(msg))
         raise HTTPException(status_code=400, detail=msg)
-
-import asyncio
 
 @router.get("/dns")
 async def dns_lookup(domain: str, request: Request = None):
@@ -539,35 +542,42 @@ async def dns_lookup(domain: str, request: Request = None):
             return HTMLResponse(content=format_error_html(msg))
         raise HTTPException(status_code=400, detail=msg)
 
+def sync_ssl_check(domain: str):
+    context = ssl.create_default_context()
+    with socket.create_connection((domain, 443), timeout=5) as sock:
+        with context.wrap_socket(sock, server_hostname=domain) as ssock:
+            cert = ssock.getpeercert()
+            if not cert:
+                raise Exception("No certificate returned by peer")
+            return cert
+
 @router.get("/ssl")
 async def ssl_check(domain: str, request: Request = None):
     is_htmx = request is not None and request.headers.get("hx-request") is not None
     try:
         cleaned_domain = validate_domain(domain)
-        context = ssl.create_default_context()
-        with socket.create_connection((cleaned_domain, 443), timeout=5) as sock:
-            with context.wrap_socket(sock, server_hostname=cleaned_domain) as ssock:
-                cert = ssock.getpeercert()
-                if not cert:
-                    raise Exception("No certificate returned by peer")
-                if is_htmx:
-                    return HTMLResponse(content=format_ssl_html(cleaned_domain, cert))
-                return cert
+        cert = await anyio.to_thread.run_sync(sync_ssl_check, cleaned_domain)
+        if is_htmx:
+            return HTMLResponse(content=format_ssl_html(cleaned_domain, cert))
+        return cert
     except Exception as e:
         msg = e.detail if hasattr(e, 'detail') else str(e)
         if is_htmx:
             return HTMLResponse(content=format_error_html(msg))
         raise HTTPException(status_code=400, detail=msg)
 
+def sync_whois_lookup(domain: str):
+    res = requests.get(f"https://rdap.org/domain/{domain}", timeout=5)
+    if res.status_code != 200:
+        raise Exception(f"RDAP query failed with status code {res.status_code}")
+    return res.json()
+
 @router.get("/whois")
 async def whois_lookup(domain: str, request: Request = None):
     is_htmx = request is not None and request.headers.get("hx-request") is not None
     try:
         cleaned_domain = validate_domain(domain)
-        res = requests.get(f"https://rdap.org/domain/{cleaned_domain}", timeout=5)
-        if res.status_code != 200:
-            raise Exception(f"RDAP query failed with status code {res.status_code}")
-        data = res.json()
+        data = await anyio.to_thread.run_sync(sync_whois_lookup, cleaned_domain)
         if is_htmx:
             return HTMLResponse(content=format_whois_html(cleaned_domain, data))
         return data
