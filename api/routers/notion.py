@@ -6,6 +6,7 @@ from api.core.notion.parsers import process_uploaded_document
 from api.core.notion.scraper import ForumCrawler
 from api.core.notion.scanner import FolderScanner
 from notion_client import Client
+import anyio
 
 router = APIRouter()
 UPLOAD_FOLDER = "/tmp/hub_cache"
@@ -104,11 +105,16 @@ def background_folder_scan(folder_path, database_id, token, workspace_id):
 @router.post("/validate")
 async def validate_notion(token: str, workspace_id: Optional[str] = None):
     try:
-        import anyio
         notion = Client(auth=token)
         await anyio.to_thread.run_sync(notion.users.me)
         return {"valid": True}
     except Exception as e: return {"valid": False, "error": str(e)}
+
+def sync_process_and_ingest(file_path: str, ext: str, filename: str, token: str, workspace_id: str, database_id: Optional[str]):
+    chunks = process_uploaded_document(file_path, ext)
+    engine = NotionEngine(token, workspace_id)
+    entry_id = engine.ingest_content(filename, chunks, {"path": filename, "extension": ext.replace('.','')}, database_id)
+    return entry_id
 
 @router.post("/upload")
 async def upload_document(token: str = Form(...), workspace_id: str = Form(...), database_id: Optional[str] = Form(None), file: UploadFile = File(...)):
@@ -117,9 +123,10 @@ async def upload_document(token: str = Form(...), workspace_id: str = Form(...),
     with open(file_path, "wb") as b: shutil.copyfileobj(file.file, b)
     try:
         _, ext = os.path.splitext(file.filename)
-        chunks = process_uploaded_document(file_path, ext)
-        engine = NotionEngine(token, workspace_id)
-        entry_id = engine.ingest_content(file.filename, chunks, {"path": file.filename, "extension": ext.replace('.','')}, database_id)
+        entry_id = await anyio.to_thread.run_sync(
+            sync_process_and_ingest,
+            file_path, ext, file.filename, token, workspace_id, database_id
+        )
         add_to_history("Upload", f"File: {file.filename}", "success")
         return {"success": True, "page_id": entry_id}
     except Exception as e:

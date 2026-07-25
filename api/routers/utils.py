@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 import random, string, requests, re
 from bs4 import BeautifulSoup, Comment
 from api.core.data_adv.kusto import generate_kusto_query
+import anyio
 
 router = APIRouter()
 
@@ -98,6 +99,15 @@ async def kusto_gen(data: dict):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+def sync_url_to_markdown(url: str):
+    res = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"}, timeout=15)
+    res.raise_for_status()
+
+    soup = BeautifulSoup(res.content, 'html.parser')
+    title = soup.title.string if soup.title else url
+    markdown = html_to_gfm(soup)
+    return title, markdown
+
 @router.post("/url-to-markdown")
 async def url_to_markdown_api(url: str = Form(...)):
     if not url.strip():
@@ -108,12 +118,7 @@ async def url_to_markdown_api(url: str = Form(...)):
         if not url.startswith('http://') and not url.startswith('https://'):
             url = 'https://' + url
 
-        res = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"}, timeout=15)
-        res.raise_for_status()
-
-        soup = BeautifulSoup(res.content, 'html.parser')
-        title = soup.title.string if soup.title else url
-        markdown = html_to_gfm(soup)
+        title, markdown = await anyio.to_thread.run_sync(sync_url_to_markdown, url)
 
         full_markdown = f"# {title.strip()}\n\nConverted from: {url}\n\n---\n\n{markdown}"
 
