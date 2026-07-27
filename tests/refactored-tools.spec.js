@@ -172,4 +172,30 @@ test.describe('Refactored Toolbox Subtools', () => {
     await expect(result).toContainText('FROM users');
     await expect(result).toContainText('INNER JOIN profiles ON users.id = profiles.user_id');
   });
+
+  test('should navigate to Markdown Editor and sanitize malicious XSS input', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'Markdown Editor' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    // Fill markdown input with malicious XSS script
+    const textarea = page.locator('textarea[placeholder*="Write markdown..."]');
+    await textarea.fill('Hello **World** <script>alert("XSS")</script> <img src=x onerror=alert(1)>');
+
+    // Get the preview container
+    const preview = page.locator('.markdown-preview');
+    await expect(preview).toBeVisible();
+
+    // The rendered html should have **World** as bold text:
+    await expect(preview.locator('strong')).toContainText('World');
+
+    // The script tag should have been sanitized and removed from the DOM:
+    const scriptTag = preview.locator('script');
+    await expect(scriptTag).toHaveCount(0);
+
+    // The onerror attribute of the img tag should be stripped out:
+    const imgTag = preview.locator('img');
+    await expect(imgTag).toBeVisible();
+    await expect(imgTag).not.toHaveAttribute('onerror');
+  });
 });

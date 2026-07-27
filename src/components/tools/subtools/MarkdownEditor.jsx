@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 
 const MarkdownEditor = () => {
     const [md, setMd] = useState('# Hello Markdown\n\nEdit me to see live preview.');
@@ -58,7 +59,7 @@ const MarkdownEditor = () => {
                     placeholder="Write markdown..."
                     style={{lineHeight: '1.6'}}
                 />
-                <div className="card p-20 glass-card overflow-auto text-left markdown-preview" dangerouslySetInnerHTML={{ __html: marked.parse(md) }} />
+                <div className="card p-20 glass-card overflow-auto text-left markdown-preview" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(md)) }} />
             </div>
         </div>
     );
