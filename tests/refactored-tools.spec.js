@@ -34,6 +34,31 @@ test.describe('Refactored Toolbox Subtools', () => {
     await expect(result).not.toBeVisible();
   });
 
+  test('should calculate leap year February 29th difference correctly', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'Date Difference' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    const startInput = page.locator('label:has-text("Start Date") + input[type="date"]');
+    const endInput = page.locator('label:has-text("End Date") + input[type="date"]');
+
+    // 2024 is a leap year
+    await startInput.fill('2024-02-28');
+    await endInput.fill('2024-02-29');
+
+    await page.click('button:has-text("Calculate Difference")');
+
+    const result = page.locator('.tool-result-container');
+    await expect(result).toBeVisible();
+    await expect(result).toContainText('1 day');
+
+    // Click clear
+    const clearBtn = page.locator('button:has-text("Clear")');
+    await expect(clearBtn).toBeVisible();
+    await clearBtn.click();
+    await expect(result).not.toBeVisible();
+  });
+
   test('should navigate to Base64 Text Tool and encode/decode safely', async ({ page }) => {
     const card = page.locator('.card', { hasText: 'Base64' });
     await expect(card).toBeVisible();
