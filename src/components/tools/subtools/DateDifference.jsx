@@ -12,7 +12,7 @@ const DateDifference = () => {
         const y = dateObj.getFullYear();
         const m = String(dateObj.getMonth() + 1).padStart(2, '0');
         const d = String(dateObj.getDate()).padStart(2, '0');
-        return `${y}-${m}-${m === '02' && d === '29' ? '28' : d}`; // safe format
+        return `${y}-${m}-${d}`;
     };
 
     const getPredefinedDate = (type) => {
