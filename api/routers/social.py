@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Query
 import yt_dlp
 import requests
 import os
+import re
 from typing import Optional
 import google.generativeai as genai
 import anyio
@@ -86,6 +87,8 @@ def sync_get_sponsors(video_id: str):
 
 @router.get("/sponsor-segments")
 async def get_sponsors(video_id: str):
+    if not re.match(r'^[a-zA-Z0-9_-]{11}$', video_id):
+        raise HTTPException(status_code=400, detail="Invalid video ID format")
     try:
         return await anyio.to_thread.run_sync(sync_get_sponsors, video_id)
     except Exception:
