@@ -4,8 +4,33 @@ import random, string, requests, re
 from bs4 import BeautifulSoup, Comment
 from api.core.data_adv.kusto import generate_kusto_query
 import anyio
+from urllib.parse import urlparse
+import socket
+import ipaddress
 
 router = APIRouter()
+
+def validate_url_ssrf(url: str):
+    try:
+        parsed = urlparse(url)
+        if parsed.scheme not in ('http', 'https'):
+            raise ValueError(f"Invalid URL scheme: {parsed.scheme}. Only HTTP and HTTPS are allowed.")
+
+        hostname = parsed.hostname
+        if not hostname:
+            raise ValueError("Invalid URL: No hostname found.")
+
+        # Resolve hostname to IP addresses
+        addr_info = socket.getaddrinfo(hostname, None)
+        for item in addr_info:
+            ip_str = item[4][0]
+            ip = ipaddress.ip_address(ip_str)
+            if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast or ip.is_unspecified:
+                raise ValueError(f"Access to non-public/private IP address is restricted")
+    except ValueError:
+        raise
+    except Exception as e:
+        raise ValueError(f"Failed to validate URL host: {str(e)}")
 
 def html_to_gfm(soup):
     # Remove script, style, head, nav, footer, iframe, form elements
@@ -100,6 +125,7 @@ async def kusto_gen(data: dict):
         raise HTTPException(status_code=400, detail=str(e))
 
 def sync_url_to_markdown(url: str):
+    validate_url_ssrf(url)
     res = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"}, timeout=15)
     res.raise_for_status()
 
