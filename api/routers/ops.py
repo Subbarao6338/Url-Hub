@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-import psutil, datetime
+import psutil
+import datetime
 from api.core.ops.simulator import generate_telemetry
 
 router = APIRouter()
