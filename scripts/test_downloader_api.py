@@ -40,5 +40,28 @@ def test_downloader_api():
     # 2. Custom format
     res2 = run_test_download("https://www.youtube.com/watch?v=dQw4w9WgXcQ", format_id="best")
 
+    # 3. SSRF validation checks (loopback, private and invalid inputs)
+    print("Testing SSRF protection with loopback IP...")
+    ssrf_res1 = requests.get("http://localhost:8000/api/social/download?url=http://127.0.0.1/")
+    assert ssrf_res1.status_code == 400, f"Expected 400 for loopback IP, got {ssrf_res1.status_code}"
+    assert "restricted" in ssrf_res1.text or "Restricted" in ssrf_res1.text or "validation" in ssrf_res1.text or "ssrf" in ssrf_res1.text.lower()
+    print("SUCCESS: Loopback IP SSRF blocked!")
+
+    print("Testing SSRF protection with local hostname...")
+    ssrf_res2 = requests.get("http://localhost:8000/api/social/download?url=http://localhost:8000/api/health")
+    assert ssrf_res2.status_code == 400, f"Expected 400 for localhost, got {ssrf_res2.status_code}"
+    print("SUCCESS: Local hostname SSRF blocked!")
+
+    print("Testing SSRF protection for /info endpoint...")
+    info_ssrf = requests.get("http://localhost:8000/api/social/info?url=http://192.168.1.1/")
+    assert info_ssrf.status_code == 400, f"Expected 400 for private IP on /info, got {info_ssrf.status_code}"
+    print("SUCCESS: /info SSRF blocked!")
+
+    print("Testing SSRF protection for /summarize endpoint...")
+    sum_ssrf = requests.get("http://localhost:8000/api/social/summarize?url=http://10.0.0.1/")
+    assert sum_ssrf.status_code == 200, f"Expected 200 wrapper with error message for /summarize, got {sum_ssrf.status_code}"
+    assert sum_ssrf.json().get("success") is False
+    print("SUCCESS: /summarize SSRF blocked!")
+
 if __name__ == "__main__":
     test_downloader_api()

@@ -1,6 +1,8 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Form
-from typing import List, Optional
-import os, time, shutil, random
+from fastapi import APIRouter, UploadFile, File, HTTPException
+from typing import List
+import os
+import time
+import shutil
 import anyio
 from api.core.notion.parsers import process_uploaded_document
 
@@ -25,13 +27,14 @@ async def ingest_codebase(files: List[UploadFile] = File(...)):
     all_chunks = []
     try:
         for file in files:
-            file_path = os.path.join(UPLOAD_FOLDER, f"{int(time.time())}_{file.filename}")
+            safe_filename = os.path.basename(file.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, f"{int(time.time())}_{safe_filename}")
             with open(file_path, "wb") as b:
                 shutil.copyfileobj(file.file, b)
 
             try:
-                _, ext = os.path.splitext(file.filename)
-                chunks_data = await anyio.to_thread.run_sync(sync_process_file, file_path, ext, file.filename)
+                _, ext = os.path.splitext(safe_filename)
+                chunks_data = await anyio.to_thread.run_sync(sync_process_file, file_path, ext, safe_filename)
                 all_chunks.extend(chunks_data)
             finally:
                 if os.path.exists(file_path):

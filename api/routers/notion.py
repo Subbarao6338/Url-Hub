@@ -1,6 +1,11 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, BackgroundTasks
-from typing import Optional, List, Dict
-import os, time, shutil, threading, json, random
+from typing import Optional
+import os
+import time
+import shutil
+import threading
+import json
+import random
 from api.core.notion.notion_engine import NotionEngine
 from api.core.notion.parsers import process_uploaded_document
 from api.core.notion.scraper import ForumCrawler
@@ -119,15 +124,16 @@ def sync_process_and_ingest(file_path: str, ext: str, filename: str, token: str,
 @router.post("/upload")
 async def upload_document(token: str = Form(...), workspace_id: str = Form(...), database_id: Optional[str] = Form(None), file: UploadFile = File(...)):
     if not os.path.exists(UPLOAD_FOLDER): os.makedirs(UPLOAD_FOLDER)
-    file_path = os.path.join(UPLOAD_FOLDER, f"{int(time.time())}_{file.filename}")
+    safe_filename = os.path.basename(file.filename)
+    file_path = os.path.join(UPLOAD_FOLDER, f"{int(time.time())}_{safe_filename}")
     with open(file_path, "wb") as b: shutil.copyfileobj(file.file, b)
     try:
-        _, ext = os.path.splitext(file.filename)
+        _, ext = os.path.splitext(safe_filename)
         entry_id = await anyio.to_thread.run_sync(
             sync_process_and_ingest,
-            file_path, ext, file.filename, token, workspace_id, database_id
+            file_path, ext, safe_filename, token, workspace_id, database_id
         )
-        add_to_history("Upload", f"File: {file.filename}", "success")
+        add_to_history("Upload", f"File: {safe_filename}", "success")
         return {"success": True, "page_id": entry_id}
     except Exception as e:
         add_to_history("Upload", f"File: {file.filename}", "failed")

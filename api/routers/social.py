@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException
 import yt_dlp
 import requests
 import os
@@ -6,6 +6,7 @@ import re
 from typing import Optional
 import google.generativeai as genai
 import anyio
+from api.routers.utils import validate_url_ssrf
 
 router = APIRouter()
 
@@ -38,6 +39,10 @@ def sync_get_video_info(url: str):
 @router.get("/info")
 async def get_video_info(url: str):
     try:
+        validate_url_ssrf(url)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    try:
         return await anyio.to_thread.run_sync(sync_get_video_info, url)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -57,6 +62,11 @@ def sync_summarize_video(url: str):
 
 @router.get("/summarize")
 async def summarize_video(url: str):
+    try:
+        validate_url_ssrf(url)
+    except ValueError as e:
+        return {"success": False, "message": str(e)}
+
     if not GEMINI_KEY:
         return {"success": False, "message": "Gemini API key not configured"}
 
@@ -74,6 +84,10 @@ def sync_download_media(url: str, format_id: Optional[str] = None):
 
 @router.get("/download")
 async def download_media(url: str, format_id: Optional[str] = None):
+    try:
+        validate_url_ssrf(url)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     try:
         return await anyio.to_thread.run_sync(sync_download_media, url, format_id)
     except Exception as e:
