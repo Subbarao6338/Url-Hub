@@ -1,6 +1,7 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Form
+from fastapi import APIRouter, UploadFile, File, HTTPException
 import pandas as pd
-import io, os, numpy as np
+import io
+import numpy as np
 import anyio
 
 router = APIRouter()

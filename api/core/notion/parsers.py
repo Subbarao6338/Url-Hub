@@ -3,7 +3,6 @@ import email
 import shutil
 import json
 import csv
-import io
 import logging
 import zipfile
 import tarfile

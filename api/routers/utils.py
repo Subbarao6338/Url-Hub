@@ -1,6 +1,9 @@
 from fastapi import APIRouter, HTTPException, Form
 from fastapi.responses import HTMLResponse
-import random, string, requests, re
+import random
+import string
+import requests
+import re
 from bs4 import BeautifulSoup, Comment
 from api.core.data_adv.kusto import generate_kusto_query
 import anyio
@@ -26,7 +29,7 @@ def validate_url_ssrf(url: str):
             ip_str = item[4][0]
             ip = ipaddress.ip_address(ip_str)
             if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast or ip.is_unspecified:
-                raise ValueError(f"Access to non-public/private IP address is restricted")
+                raise ValueError("Access to non-public/private IP address is restricted")
     except ValueError:
         raise
     except Exception as e:

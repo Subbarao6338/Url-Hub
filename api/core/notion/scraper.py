@@ -4,7 +4,6 @@ from api.core.notion.notion_engine import NotionEngine
 from api.core.notion.parsers import clean_html_soup
 import re, time, random, logging
 from urllib.parse import urljoin, urlparse
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 
 logger = logging.getLogger(__name__)

@@ -6,6 +6,7 @@ from functools import wraps
 from notion_client import Client, APIResponseError
 from deep_translator import GoogleTranslator
 import requests
+from api.routers.utils import validate_url_ssrf
 
 logger = logging.getLogger(__name__)
 
@@ -139,7 +140,7 @@ class NotionEngine:
                 properties={"title": {"title": [{"text": {"content": translated_title}}]}}
             )
             return page["id"]
-        except Exception as e:
+        except Exception:
             # If it failed, maybe the parent key was wrong (e.g. it was a database but cache/retrieve said page)
             other_key = "database_id" if parent_key == "page_id" else "page_id"
             try:
@@ -205,6 +206,11 @@ class NotionEngine:
 
     def upload_media_mirror(self, url, folder="temp_cache"):
         if not os.path.exists(folder): os.makedirs(folder)
+        try:
+            validate_url_ssrf(url)
+        except Exception as e:
+            logger.error(f"SSRF validation failed for mirror URL {url}: {e}")
+            return None
         try:
             filename = url.split("/")[-1].split("?")[0]
             if not filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.mp4', '.webm')):
