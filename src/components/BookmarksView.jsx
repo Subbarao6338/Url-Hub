@@ -385,12 +385,9 @@ const BookmarkCard = React.memo(({ link, idx, openInNewTab, onPin, onEdit, onDel
   const cardRef = React.useRef(null);
 
   const startPress = (e) => {
-    // Only handle left clicks for mouse
-    if (e.type === 'mousedown' && e.button !== 0) return;
-
     const coords = {
-      x: e.clientX || (e.touches ? e.touches[0].clientX : 0),
-      y: e.clientY || (e.touches ? e.touches[0].clientY : 0)
+      x: e.touches ? e.touches[0].clientX : (e.clientX || 0),
+      y: e.touches ? e.touches[0].clientY : (e.clientY || 0)
     };
 
     cancelPress();
@@ -417,9 +414,12 @@ const BookmarkCard = React.memo(({ link, idx, openInNewTab, onPin, onEdit, onDel
   };
 
   const handleContextMenu = (e) => {
-    if (link.urls && link.urls.length > 1) {
-        e.preventDefault();
-    }
+    e.preventDefault();
+    const coords = {
+      x: e.clientX,
+      y: e.clientY
+    };
+    onLongPress(coords);
   };
 
   let hostname = '';
@@ -435,9 +435,6 @@ const BookmarkCard = React.memo(({ link, idx, openInNewTab, onPin, onEdit, onDel
       className={`card ${noAnimation ? 'no-animation' : ''}`}
       style={{'--delay': idx}}
       onClick={handleClick}
-      onMouseDown={startPress}
-      onMouseUp={cancelPress}
-      onMouseLeave={cancelPress}
       onTouchStart={startPress}
       onTouchEnd={cancelPress}
       onTouchMove={cancelPress}
