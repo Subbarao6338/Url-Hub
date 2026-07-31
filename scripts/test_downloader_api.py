@@ -1,5 +1,4 @@
 import requests
-import sys
 import time
 
 def run_test_download(url, format_id=None):
@@ -36,9 +35,9 @@ def test_downloader_api():
 
     # Test cases
     # 1. YouTube video
-    res1 = run_test_download("https://www.youtube.com/shorts/I6m6GCHXkTo")
+    run_test_download("https://www.youtube.com/shorts/I6m6GCHXkTo")
     # 2. Custom format
-    res2 = run_test_download("https://www.youtube.com/watch?v=dQw4w9WgXcQ", format_id="best")
+    run_test_download("https://www.youtube.com/watch?v=dQw4w9WgXcQ", format_id="best")
 
     # 3. SSRF validation checks (loopback, private and invalid inputs)
     print("Testing SSRF protection with loopback IP...")

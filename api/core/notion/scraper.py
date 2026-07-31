@@ -2,7 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 from api.core.notion.notion_engine import NotionEngine
 from api.core.notion.parsers import clean_html_soup
-import re, time, random, logging
+import re
+import time
+import random
+import logging
 from urllib.parse import urljoin, urlparse
 import threading
 

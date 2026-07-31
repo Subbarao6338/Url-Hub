@@ -30,8 +30,8 @@ def verify():
     # 2. Check ordering
     print("\nChecking link ordering (is_pinned DESC, title ASC)...")
     links = cursor.execute('SELECT title, is_pinned FROM links ORDER BY is_pinned DESC, title COLLATE NOCASE ASC LIMIT 10').fetchall()
-    for l in links:
-        print(f"[{'P' if l['is_pinned'] else ' '}] {l['title']}")
+    for link in links:
+        print(f"[{'P' if link['is_pinned'] else ' '}] {link['title']}")
 
     # 3. Test UNIQUE constraint
     print("\nTesting UNIQUE constraint...")
