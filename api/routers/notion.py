@@ -1,17 +1,18 @@
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException, BackgroundTasks
-from typing import Optional
+import json
 import os
-import time
+import random
 import shutil
 import threading
-import json
-import random
+import time
+
+import anyio
+from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, UploadFile
+from notion_client import Client
+
 from api.core.notion.notion_engine import NotionEngine
 from api.core.notion.parsers import process_uploaded_document
-from api.core.notion.scraper import ForumCrawler
 from api.core.notion.scanner import FolderScanner
-from notion_client import Client
-import anyio
+from api.core.notion.scraper import ForumCrawler
 
 router = APIRouter()
 UPLOAD_FOLDER = "/tmp/hub_cache"
@@ -54,7 +55,6 @@ def add_to_history(task_type, details, status="success"):
 load_history()
 
 def background_scraper(url, token, workspace_id, username=None, password=None, login_url=None, full_crawl=False):
-    global job_status
     job_status["status"] = "running"
     job_status["message"] = f"Scraping {url}..."
     try:
@@ -83,7 +83,6 @@ def background_scraper(url, token, workspace_id, username=None, password=None, l
         add_to_history("Scrape", f"URL: {url}", "failed")
 
 def background_folder_scan(folder_path, database_id, token, workspace_id):
-    global job_status
     job_status["status"] = "running"
     job_status["message"] = f"Scanning {folder_path}..."
 
@@ -108,21 +107,21 @@ def background_folder_scan(folder_path, database_id, token, workspace_id):
         add_to_history("Folder Scan", f"Path: {folder_path}", "failed")
 
 @router.post("/validate")
-async def validate_notion(token: str, workspace_id: Optional[str] = None):
+async def validate_notion(token: str, workspace_id: str | None = None):
     try:
         notion = Client(auth=token)
         await anyio.to_thread.run_sync(notion.users.me)
         return {"valid": True}
     except Exception as e: return {"valid": False, "error": str(e)}
 
-def sync_process_and_ingest(file_path: str, ext: str, filename: str, token: str, workspace_id: str, database_id: Optional[str]):
+def sync_process_and_ingest(file_path: str, ext: str, filename: str, token: str, workspace_id: str, database_id: str | None):
     chunks = process_uploaded_document(file_path, ext)
     engine = NotionEngine(token, workspace_id)
     entry_id = engine.ingest_content(filename, chunks, {"path": filename, "extension": ext.replace('.','')}, database_id)
     return entry_id
 
 @router.post("/upload")
-async def upload_document(token: str = Form(...), workspace_id: str = Form(...), database_id: Optional[str] = Form(None), file: UploadFile = File(...)):
+async def upload_document(token: str = Form(...), workspace_id: str = Form(...), database_id: str | None = Form(None), file: UploadFile = File(...)):
     if not os.path.exists(UPLOAD_FOLDER): os.makedirs(UPLOAD_FOLDER)
     safe_filename = os.path.basename(file.filename)
     file_path = os.path.join(UPLOAD_FOLDER, f"{int(time.time())}_{safe_filename}")
@@ -146,11 +145,10 @@ async def start_scrape(background_tasks: BackgroundTasks,
                       url: str = Form(...),
                       token: str = Form(...),
                       workspace_id: str = Form(...),
-                      username: Optional[str] = Form(None),
-                      password: Optional[str] = Form(None),
-                      login_url: Optional[str] = Form(None),
+                      username: str | None = Form(None),
+                      password: str | None = Form(None),
+                      login_url: str | None = Form(None),
                       full_crawl: bool = Form(False)):
-    global job_status
     if job_status["status"] == "running":
         return {"started": False, "message": "Job already running"}
 
@@ -159,8 +157,7 @@ async def start_scrape(background_tasks: BackgroundTasks,
     return {"started": True}
 
 @router.post("/scan-folder")
-async def scan_folder(background_tasks: BackgroundTasks, folder_path: str = Form(...), token: str = Form(...), workspace_id: str = Form(...), database_id: Optional[str] = Form(None)):
-    global job_status
+async def scan_folder(background_tasks: BackgroundTasks, folder_path: str = Form(...), token: str = Form(...), workspace_id: str = Form(...), database_id: str | None = Form(None)):
     if job_status["status"] == "running":
         return {"started": False, "message": "Job already running"}
 

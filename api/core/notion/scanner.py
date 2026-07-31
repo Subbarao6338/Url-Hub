@@ -1,5 +1,6 @@
-import os
 import logging
+import os
+
 from api.core.notion.parsers import process_uploaded_document
 
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ class FolderScanner:
                 if self.stop_event and self.stop_event.is_set():
                     break
 
-                name, ext = os.path.splitext(file)
+                _name, ext = os.path.splitext(file)
                 supported_exts = ['.pdf', '.docx', '.doc', '.html', '.htm', '.md', '.markdown', '.txt', '.mhtml', '.json', '.csv', '.yaml', '.yml', '.xml', '.zip', '.tar.gz', '.tgz', '.tar']
                 if ext.lower() in supported_exts or file.lower().endswith(('.tar.gz', '.tgz')):
                     file_path = os.path.join(root, file)

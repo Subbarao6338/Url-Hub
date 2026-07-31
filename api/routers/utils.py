@@ -1,15 +1,17 @@
-from fastapi import APIRouter, HTTPException, Form
-from fastapi.responses import HTMLResponse
-import random
-import string
-import requests
-import re
-from bs4 import BeautifulSoup, Comment
-from api.core.data_adv.kusto import generate_kusto_query
-import anyio
-from urllib.parse import urlparse
-import socket
 import ipaddress
+import re
+import secrets
+import socket
+import string
+from urllib.parse import urlparse
+
+import anyio
+import requests
+from bs4 import BeautifulSoup, Comment
+from fastapi import APIRouter, Form, HTTPException
+from fastapi.responses import HTMLResponse
+
+from api.core.data_adv.kusto import generate_kusto_query
 
 router = APIRouter()
 
@@ -33,7 +35,7 @@ def validate_url_ssrf(url: str):
     except ValueError:
         raise
     except Exception as e:
-        raise ValueError(f"Failed to validate URL host: {str(e)}")
+        raise ValueError(f"Failed to validate URL host: {e!s}")
 
 def html_to_gfm(soup):
     # Remove script, style, head, nav, footer, iframe, form elements
@@ -112,7 +114,7 @@ def html_to_gfm(soup):
 
 @router.get("/generate-otp")
 async def generate_otp_api(length: int = 6):
-    return {"otp": ''.join(random.choice(string.digits) for _ in range(length))}
+    return {"otp": ''.join(secrets.choice(string.digits) for _ in range(length))}
 
 @router.get("/regex-gen")
 async def regex_gen(pattern_type: str):
@@ -164,5 +166,5 @@ async def url_to_markdown_api(url: str = Form(...)):
         """
         return HTMLResponse(content=html_response)
     except Exception as e:
-        error_html = f'<div class="result-container p-15 rounded-xl border mt-20 text-left" style="background: rgba(var(--error-rgb), 0.1); border-color: var(--error); color: var(--error);">Error converting URL: {str(e)}</div>'
+        error_html = f'<div class="result-container p-15 rounded-xl border mt-20 text-left" style="background: rgba(var(--error-rgb), 0.1); border-color: var(--error); color: var(--error);">Error converting URL: {e!s}</div>'
         return HTMLResponse(content=error_html)

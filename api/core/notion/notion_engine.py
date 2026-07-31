@@ -1,11 +1,13 @@
+import logging
 import os
 import re
-import logging
 import time
 from functools import wraps
-from notion_client import Client, APIResponseError
-from deep_translator import GoogleTranslator
+
 import requests
+from deep_translator import GoogleTranslator
+from notion_client import APIResponseError, Client
+
 from api.routers.utils import validate_url_ssrf
 
 logger = logging.getLogger(__name__)
@@ -221,7 +223,7 @@ class NotionEngine:
             res = requests.get(url, stream=True, timeout=15)
             if res.status_code == 200:
                 with open(local_path, 'wb') as f:
-                    for chunk in res.iter_content(4096): f.write(chunk)
+                    f.writelines(res.iter_content(4096))
 
                 with open(local_path, "rb") as file_bytes:
                     up_res = requests.post("https://catbox.moe/user/api.php",
@@ -338,8 +340,8 @@ class NotionEngine:
         for row_str in data_rows:
             # Handle rows that might not start/end with | but are pipe-delimited
             content = row_str.strip()
-            if content.startswith('|'): content = content[1:]
-            if content.endswith('|'): content = content[:-1]
+            content = content.removeprefix('|')
+            content = content.removesuffix('|')
 
             # Use regex to split by | but ignore \|
             cells = [cell.strip() for cell in re.split(r'(?<!\\)\|', content)]

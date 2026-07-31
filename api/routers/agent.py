@@ -1,9 +1,10 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
-from typing import List
 import os
-import time
 import shutil
+import time
+
 import anyio
+from fastapi import APIRouter, File, HTTPException, UploadFile
+
 from api.core.notion.parsers import process_uploaded_document
 
 router = APIRouter()
@@ -20,7 +21,7 @@ def sync_process_file(file_path: str, ext: str, file_name: str):
     return result
 
 @router.post("/ingest")
-async def ingest_codebase(files: List[UploadFile] = File(...)):
+async def ingest_codebase(files: list[UploadFile] = File(...)):
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
 
