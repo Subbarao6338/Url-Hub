@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException
-from deep_translator import GoogleTranslator
-from pydantic import BaseModel
 import anyio
+from deep_translator import GoogleTranslator
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
 router = APIRouter()
 

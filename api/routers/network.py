@@ -1,14 +1,14 @@
+import asyncio
 import ipaddress
+import json
 import socket
+import ssl
+from datetime import datetime, timezone
+
+import anyio
+import requests
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
-import requests
-import ssl
-from typing import Optional
-import json
-from datetime import datetime
-import anyio
-import asyncio
 
 router = APIRouter()
 
@@ -44,7 +44,7 @@ def validate_domain(domain: str) -> str:
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Validation error: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Validation error: {e!s}")
     return cleaned_domain
 
 def query_doh(domain: str, qtype: str) -> list:
@@ -368,7 +368,7 @@ def parse_ssl_dict(cert: dict) -> dict:
             valid_from = dt_before.strftime('%Y-%m-%d %H:%M:%S')
             valid_until = dt_after.strftime('%Y-%m-%d %H:%M:%S')
 
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc).replace(tzinfo=None)
             days_left = (dt_after - now).days
             break
         except Exception:
@@ -496,7 +496,7 @@ def sync_get_ip_info(url: str):
     return res.json()
 
 @router.get("/ip-info")
-async def get_ip_info(ip: Optional[str] = None, request: Request = None):
+async def get_ip_info(ip: str | None = None, request: Request = None):
     is_htmx = request is not None and request.headers.get("hx-request") is not None
     if ip and not is_public_ip(ip):
         msg = f"Invalid or private IP address: {ip}"
@@ -544,12 +544,11 @@ async def dns_lookup(domain: str, request: Request = None):
 
 def sync_ssl_check(domain: str):
     context = ssl.create_default_context()
-    with socket.create_connection((domain, 443), timeout=5) as sock:
-        with context.wrap_socket(sock, server_hostname=domain) as ssock:
-            cert = ssock.getpeercert()
-            if not cert:
-                raise Exception("No certificate returned by peer")
-            return cert
+    with socket.create_connection((domain, 443), timeout=5) as sock, context.wrap_socket(sock, server_hostname=domain) as ssock:
+        cert = ssock.getpeercert()
+        if not cert:
+            raise Exception("No certificate returned by peer")
+        return cert
 
 @router.get("/ssl")
 async def ssl_check(domain: str, request: Request = None):

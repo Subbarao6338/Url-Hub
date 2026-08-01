@@ -1,6 +1,8 @@
-from fastapi import APIRouter
-import psutil
 import datetime
+
+import psutil
+from fastapi import APIRouter
+
 from api.core.ops.simulator import generate_telemetry
 
 router = APIRouter()
@@ -11,7 +13,7 @@ async def get_ops_status():
 
 @router.get("/logs")
 async def get_pipeline_logs():
-    return [{"timestamp": str(datetime.datetime.utcnow()), "pipeline": "system", "status": "success"}]
+    return [{"timestamp": str(datetime.datetime.now(datetime.timezone.utc)), "pipeline": "system", "status": "success"}]
 
 @router.get("/telemetry")
 async def get_live_telemetry():

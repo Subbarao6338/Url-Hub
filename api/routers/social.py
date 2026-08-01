@@ -1,11 +1,12 @@
-from fastapi import APIRouter, HTTPException
-import yt_dlp
-import requests
 import os
 import re
-from typing import Optional
-import google.generativeai as genai
+
 import anyio
+import google.generativeai as genai
+import requests
+import yt_dlp
+from fastapi import APIRouter, HTTPException
+
 from api.routers.utils import validate_url_ssrf
 
 router = APIRouter()
@@ -76,14 +77,14 @@ async def summarize_video(url: str):
     except Exception as e:
         return {"success": False, "message": str(e)}
 
-def sync_download_media(url: str, format_id: Optional[str] = None):
+def sync_download_media(url: str, format_id: str | None = None):
     ydl_opts = {'format': format_id if format_id else 'best'}
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
         return {"url": info.get('url'), "filename": f"{info.get('title')}.{info.get('ext')}"}
 
 @router.get("/download")
-async def download_media(url: str, format_id: Optional[str] = None):
+async def download_media(url: str, format_id: str | None = None):
     try:
         validate_url_ssrf(url)
     except ValueError as e:

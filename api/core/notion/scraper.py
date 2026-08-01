@@ -1,13 +1,15 @@
+import logging
+import random
+import re
+import threading
+import time
+from urllib.parse import urljoin, urlparse
+
 import requests
 from bs4 import BeautifulSoup
+
 from api.core.notion.notion_engine import NotionEngine
 from api.core.notion.parsers import clean_html_soup
-import re
-import time
-import random
-import logging
-from urllib.parse import urljoin, urlparse
-import threading
 
 logger = logging.getLogger(__name__)
 

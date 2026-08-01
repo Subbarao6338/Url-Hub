@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.routers import notion, agent, data_adv, doc_adv, ops, utils, social, network
+
+from api.routers import agent, data_adv, doc_adv, network, notion, ops, social, utils
 
 app = FastAPI(title="Epic Toolbox API")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])

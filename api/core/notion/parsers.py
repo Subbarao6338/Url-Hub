@@ -1,19 +1,20 @@
-import os
-import email
-import shutil
-import json
 import csv
+import email
+import json
 import logging
-import zipfile
+import os
+import shutil
 import tarfile
 import tempfile
-from bs4 import BeautifulSoup
-from pypdf import PdfReader
-from docx import Document
-from pptx import Presentation
+import zipfile
+
 import pytesseract
-from PIL import Image
+from bs4 import BeautifulSoup
+from docx import Document
 from pdf2image import convert_from_path
+from PIL import Image
+from pptx import Presentation
+from pypdf import PdfReader
 
 logger = logging.getLogger(__name__)
 
@@ -128,8 +129,7 @@ def clean_html_soup(soup):
             if not text: return
             if element.name == 'h1': text_content.append(f"# {text}")
             elif element.name == 'h2': text_content.append(f"## {text}")
-            elif element.name == 'h3': text_content.append(f"### {text}")
-            elif element.name in ['h4', 'h5', 'h6']: text_content.append(f"### {text}")
+            elif element.name == 'h3' or element.name in ['h4', 'h5', 'h6']: text_content.append(f"### {text}")
             elif element.name == 'li': text_content.append(f"- {text}")
             elif element.name == 'blockquote': text_content.append(f"> {text}")
             else: text_content.append(text)
