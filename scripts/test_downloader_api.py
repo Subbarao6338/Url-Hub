@@ -1,11 +1,10 @@
 import requests
 import time
 
+
 def run_test_download(url, format_id=None):
     print(f"Testing download for: {url} (format_id={format_id})")
-    params = {
-        "url": url
-    }
+    params = {"url": url}
     if format_id:
         params["format_id"] = format_id
 
@@ -20,6 +19,7 @@ def run_test_download(url, format_id=None):
     except Exception as e:
         print(f"ERROR: {str(e)}")
         return False
+
 
 def test_downloader_api():
     # Helper to be picked up by pytest or run directly
@@ -61,6 +61,7 @@ def test_downloader_api():
     assert sum_ssrf.status_code == 200, f"Expected 200 wrapper with error message for /summarize, got {sum_ssrf.status_code}"
     assert sum_ssrf.json().get("success") is False
     print("SUCCESS: /summarize SSRF blocked!")
+
 
 if __name__ == "__main__":
     test_downloader_api()

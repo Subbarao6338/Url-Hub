@@ -3,6 +3,7 @@ import email
 import json
 import logging
 import os
+from pathlib import Path
 import shutil
 import tarfile
 import tempfile
@@ -18,8 +19,10 @@ from pypdf import PdfReader
 
 logger = logging.getLogger(__name__)
 
+
 def is_tesseract_available():
     return shutil.which("tesseract") is not None
+
 
 def ocr_image(file_path):
     if not is_tesseract_available():
@@ -28,6 +31,7 @@ def ocr_image(file_path):
         return pytesseract.image_to_string(Image.open(file_path))
     except Exception as e:
         return f"[OCR Error: {e}]"
+
 
 def parse_pdf(file_path):
     reader = PdfReader(file_path)
@@ -42,7 +46,8 @@ def parse_pdf(file_path):
                 images = convert_from_path(file_path, first_page=index, last_page=index)
                 if images:
                     page_text = pytesseract.image_to_string(images[0])
-            except Exception: pass
+            except Exception:
+                pass
         if page_text:
             current_chunk.append(f"--- PDF Page {index} ---\n{page_text}")
         if len(current_chunk) == 10:
@@ -52,20 +57,29 @@ def parse_pdf(file_path):
         all_pages.append("\n\n".join(current_chunk))
     return all_pages
 
+
 def parse_docx(file_path):
     doc = Document(file_path)
     text_content = []
     for p in doc.paragraphs:
-        if not p.text.strip(): continue
-        style_name = p.style.name if p.style and hasattr(p.style, 'name') else ""
-        if style_name.startswith('Heading 1'): text_content.append(f"# {p.text}")
-        elif style_name.startswith('Heading 2'): text_content.append(f"## {p.text}")
-        elif style_name.startswith('Heading 3'): text_content.append(f"### {p.text}")
-        elif style_name.startswith('Heading'): text_content.append(f"#### {p.text}")
-        elif 'List' in style_name or p._element.xpath('./w:pPr/w:numPr'): text_content.append(f"- {p.text}")
-        else: text_content.append(p.text)
+        if not p.text.strip():
+            continue
+        style_name = p.style.name if p.style and hasattr(p.style, "name") else ""
+        if style_name.startswith("Heading 1"):
+            text_content.append(f"# {p.text}")
+        elif style_name.startswith("Heading 2"):
+            text_content.append(f"## {p.text}")
+        elif style_name.startswith("Heading 3"):
+            text_content.append(f"### {p.text}")
+        elif style_name.startswith("Heading"):
+            text_content.append(f"#### {p.text}")
+        elif "List" in style_name or p._element.xpath("./w:pPr/w:numPr"):
+            text_content.append(f"- {p.text}")
+        else:
+            text_content.append(p.text)
     chunk_size = 500
-    return ["\n".join(text_content[i:i + chunk_size]) for i in range(0, len(text_content), chunk_size)]
+    return ["\n".join(text_content[i : i + chunk_size]) for i in range(0, len(text_content), chunk_size)]
+
 
 def parse_pptx(file_path):
     prs = Presentation(file_path)
@@ -77,116 +91,157 @@ def parse_pptx(file_path):
                 slide_text.append(shape.text.strip())
         all_slides.append("\n".join(slide_text))
     chunk_size = 5
-    return ["\n\n".join(all_slides[i:i + chunk_size]) for i in range(0, len(all_slides), chunk_size)]
+    return ["\n\n".join(all_slides[i : i + chunk_size]) for i in range(0, len(all_slides), chunk_size)]
+
 
 def clean_html_soup(soup):
-    for script in soup(["script", "style", "nav", "footer"]): script.extract()
+    for script in soup(["script", "style", "nav", "footer"]):
+        script.extract()
     text_content = []
+
     def _get_inline_markdown(element):
-        if isinstance(element, str): return element
+        if isinstance(element, str):
+            return element
         parts = []
-        for child in element.children: parts.append(_get_inline_markdown(child))
+        for child in element.children:
+            parts.append(_get_inline_markdown(child))
         content = "".join(parts)
-        if not content.strip() and element.name not in ['br', 'hr']: return content
-        if element.name in ['b', 'strong']: return f"**{content}**"
-        if element.name in ['i', 'em']: return f"*{content}*"
-        if element.name == 'u': return f"<u>{content}</u>"
-        if element.name in ['s', 'strike', 'del']: return f"~~{content}~~"
-        if element.name == 'a':
-            href = element.get('href')
+        if not content.strip() and element.name not in ["br", "hr"]:
+            return content
+        if element.name in ["b", "strong"]:
+            return f"**{content}**"
+        if element.name in ["i", "em"]:
+            return f"*{content}*"
+        if element.name == "u":
+            return f"<u>{content}</u>"
+        if element.name in ["s", "strike", "del"]:
+            return f"~~{content}~~"
+        if element.name == "a":
+            href = element.get("href")
             return f"[{content}]({href})" if href else content
-        if element.name == 'code':
+        if element.name == "code":
             p = element.parent
             while p:
-                if p.name == 'pre': return content
+                if p.name == "pre":
+                    return content
                 p = p.parent
             return f"`{content}`"
         return content
 
     def _process_element(element):
-        if not element or element.name in ['script', 'style', 'nav', 'footer']: return
-        if element.name == 'hr': text_content.append("---"); return
-        if element.name == 'table':
+        if not element or element.name in ["script", "style", "nav", "footer"]:
+            return
+        if element.name == "hr":
+            text_content.append("---")
+            return
+        if element.name == "table":
             rows = []
-            for tr in element.find_all('tr', recursive=False):
+            for tr in element.find_all("tr", recursive=False):
                 cells = []
-                for td in tr.find_all(['td', 'th'], recursive=False):
+                for td in tr.find_all(["td", "th"], recursive=False):
                     cells.append(_get_inline_markdown(td).strip().replace("|", "\\|"))
-                if cells: rows.append("| " + " | ".join(cells) + " |")
+                if cells:
+                    rows.append("| " + " | ".join(cells) + " |")
             if rows:
-                num_cols = max(len(r.split('|')) - 2 for r in rows)
+                num_cols = max(len(r.split("|")) - 2 for r in rows)
                 if num_cols > 0:
                     separator = "| " + " | ".join(["---"] * num_cols) + " |"
                     rows.insert(1, separator)
                     text_content.append("\n".join(rows))
             return
-        if element.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'pre', 'code', 'blockquote']:
-            if element.name in ['pre', 'code'] and (element.name == 'pre' or element.parent.name != 'pre'):
+        if element.name in ["h1", "h2", "h3", "h4", "h5", "h6", "p", "li", "pre", "code", "blockquote"]:
+            if element.name in ["pre", "code"] and (element.name == "pre" or element.parent.name != "pre"):
                 text = element.get_text()
-                if text.strip(): text_content.append(f"```\n{text.strip()}\n```")
+                if text.strip():
+                    text_content.append(f"```\n{text.strip()}\n```")
                 return
             text = _get_inline_markdown(element).strip()
-            if not text: return
-            if element.name == 'h1': text_content.append(f"# {text}")
-            elif element.name == 'h2': text_content.append(f"## {text}")
-            elif element.name == 'h3' or element.name in ['h4', 'h5', 'h6']: text_content.append(f"### {text}")
-            elif element.name == 'li': text_content.append(f"- {text}")
-            elif element.name == 'blockquote': text_content.append(f"> {text}")
-            else: text_content.append(text)
+            if not text:
+                return
+            if element.name == "h1":
+                text_content.append(f"# {text}")
+            elif element.name == "h2":
+                text_content.append(f"## {text}")
+            elif element.name == "h3" or element.name in ["h4", "h5", "h6"]:
+                text_content.append(f"### {text}")
+            elif element.name == "li":
+                text_content.append(f"- {text}")
+            elif element.name == "blockquote":
+                text_content.append(f"> {text}")
+            else:
+                text_content.append(text)
             return
         for child in element.children:
-            if hasattr(child, 'name') and child.name: _process_element(child)
+            if hasattr(child, "name") and child.name:
+                _process_element(child)
             elif isinstance(child, str):
                 text = child.strip()
-                if text: text_content.append(text)
+                if text:
+                    text_content.append(text)
 
     for child in soup.children:
-        if hasattr(child, 'name') and child.name: _process_element(child)
+        if hasattr(child, "name") and child.name:
+            _process_element(child)
         elif isinstance(child, str):
             text = child.strip()
-            if text: text_content.append(text)
+            if text:
+                text_content.append(text)
     return "\n".join(text_content)
 
+
 def parse_html(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
-        soup = BeautifulSoup(f.read(), 'html.parser')
+    with open(file_path, "r", encoding="utf-8") as f:
+        soup = BeautifulSoup(f.read(), "html.parser")
     return [clean_html_soup(soup)]
 
+
 def parse_markdown(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f: return [f.read()]
+    with open(file_path, "r", encoding="utf-8") as f:
+        return [f.read()]
+
 
 def parse_txt(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f: return [f.read()]
+    with open(file_path, "r", encoding="utf-8") as f:
+        return [f.read()]
+
 
 def parse_json(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
         return [f"```json\n{json.dumps(data, indent=2)}\n```"]
 
+
 def parse_yaml(file_path):
     import yaml
-    with open(file_path, 'r', encoding='utf-8') as f:
+
+    with open(file_path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
         return [f"```yaml\n{yaml.dump(data, default_flow_style=False)}\n```"]
 
+
 def parse_csv(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         reader = csv.reader(f)
         rows = list(reader)
-        if not rows: return [""]
+        if not rows:
+            return [""]
         header = rows[0]
         markdown_table = "| " + " | ".join(header) + " |\n"
         markdown_table += "| " + " | ".join(["---"] * len(header)) + " |\n"
-        for row in rows[1:]: markdown_table += "| " + " | ".join(row) + " |\n"
+        for row in rows[1:]:
+            markdown_table += "| " + " | ".join(row) + " |\n"
         return [markdown_table]
+
 
 def parse_excel(file_path):
     from openpyxl import load_workbook
+
     wb = load_workbook(file_path, data_only=True)
     all_sheets = []
     for sheet in wb.worksheets:
         rows = list(sheet.values)
-        if not rows: continue
+        if not rows:
+            continue
         content = [f"## Sheet: {sheet.title}"]
         header = [str(cell).replace("|", "\\|") if cell is not None else "" for cell in rows[0]]
         markdown_table = "| " + " | ".join(header) + " |\n"
@@ -198,42 +253,47 @@ def parse_excel(file_path):
         all_sheets.append("\n".join(content))
     return all_sheets
 
+
 def parse_mhtml(file_path):
-    with open(file_path, 'rb') as f: msg = email.message_from_binary_file(f)
+    with open(file_path, "rb") as f:
+        msg = email.message_from_binary_file(f)
     for part in msg.walk():
         if part.get_content_type() == "text/html":
             try:
-                html_payload = part.get_payload(decode=True).decode(part.get_content_charset() or 'utf-8', errors='ignore')
-                return [clean_html_soup(BeautifulSoup(html_payload, 'html.parser'))]
-            except Exception: continue
+                html_payload = part.get_payload(decode=True).decode(part.get_content_charset() or "utf-8", errors="ignore")
+                return [clean_html_soup(BeautifulSoup(html_payload, "html.parser"))]
+            except Exception:
+                continue
     return [""]
 
+
 def is_within_directory(directory, target):
-    abs_directory = os.path.abspath(directory)
-    abs_target = os.path.abspath(target)
-    prefix = os.path.commonprefix([abs_directory, abs_target])
-    return prefix == abs_directory
+    abs_directory = Path(directory).resolve()
+    abs_target = Path(target).resolve()
+    return abs_directory in abs_target.parents or abs_target == abs_directory
+
 
 def extract_archive(file_path, temp_dir):
     """Safe extraction with Path Traversal protection."""
-    if file_path.endswith('.zip'):
-        with zipfile.ZipFile(file_path, 'r') as zip_ref:
+    if file_path.endswith(".zip"):
+        with zipfile.ZipFile(file_path, "r") as zip_ref:
             for member in zip_ref.infolist():
                 target_path = os.path.join(temp_dir, member.filename)
                 if not is_within_directory(temp_dir, target_path):
                     raise Exception(f"Potential Path Traversal in zip: {member.filename}")
             zip_ref.extractall(temp_dir)
-    elif file_path.endswith(('.tar.gz', '.tgz', '.tar')):
-        with tarfile.open(file_path, 'r:*') as tar_ref:
+    elif file_path.endswith((".tar.gz", ".tgz", ".tar")):
+        with tarfile.open(file_path, "r:*") as tar_ref:
             for member in tar_ref.getmembers():
                 target_path = os.path.join(temp_dir, member.name)
                 if not is_within_directory(temp_dir, target_path):
                     raise Exception(f"Potential Path Traversal in tar: {member.name}")
             tar_ref.extractall(temp_dir)
 
+
 def process_uploaded_document(file_path, extension):
     ext = extension.lower()
-    if ext in ['.zip', '.tar.gz', '.tgz', '.tar']:
+    if ext in [".zip", ".tar.gz", ".tgz", ".tar"]:
         all_chunks = []
         with tempfile.TemporaryDirectory() as temp_dir:
             extract_archive(file_path, temp_dir)
@@ -246,18 +306,32 @@ def process_uploaded_document(file_path, extension):
                         if chunks:
                             all_chunks.append(f"## File: {os.path.relpath(sub_file_path, temp_dir)}")
                             all_chunks.extend(chunks)
-                    except Exception: continue
+                    except Exception:
+                        continue
         return all_chunks
-    if ext == '.pdf': return parse_pdf(file_path)
-    elif ext in ['.png', '.jpg', '.jpeg', '.tiff', '.bmp']: return [ocr_image(file_path)]
-    elif ext in ['.docx', '.doc']: return parse_docx(file_path)
-    elif ext == '.pptx': return parse_pptx(file_path)
-    elif ext in ['.html', '.htm']: return parse_html(file_path)
-    elif ext in ['.md', '.markdown']: return parse_markdown(file_path)
-    elif ext == '.txt': return parse_txt(file_path)
-    elif ext == '.json': return parse_json(file_path)
-    elif ext in ['.yaml', '.yml']: return parse_yaml(file_path)
-    elif ext == '.csv': return parse_csv(file_path)
-    elif ext in ['.xlsx', '.xlsm', '.xltx', '.xltm']: return parse_excel(file_path)
-    elif ext == '.mhtml': return parse_mhtml(file_path)
-    else: raise ValueError(f"Unsupported document type: {extension}")
+    if ext == ".pdf":
+        return parse_pdf(file_path)
+    elif ext in [".png", ".jpg", ".jpeg", ".tiff", ".bmp"]:
+        return [ocr_image(file_path)]
+    elif ext in [".docx", ".doc"]:
+        return parse_docx(file_path)
+    elif ext == ".pptx":
+        return parse_pptx(file_path)
+    elif ext in [".html", ".htm"]:
+        return parse_html(file_path)
+    elif ext in [".md", ".markdown"]:
+        return parse_markdown(file_path)
+    elif ext == ".txt":
+        return parse_txt(file_path)
+    elif ext == ".json":
+        return parse_json(file_path)
+    elif ext in [".yaml", ".yml"]:
+        return parse_yaml(file_path)
+    elif ext == ".csv":
+        return parse_csv(file_path)
+    elif ext in [".xlsx", ".xlsm", ".xltx", ".xltm"]:
+        return parse_excel(file_path)
+    elif ext == ".mhtml":
+        return parse_mhtml(file_path)
+    else:
+        raise ValueError(f"Unsupported document type: {extension}")

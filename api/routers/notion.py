@@ -23,36 +23,36 @@ job_status = {"status": "idle", "message": "", "progress": 0}
 stop_event = threading.Event()
 task_history = []
 
+
 def load_history():
     global task_history
     if os.path.exists(HISTORY_FILE):
         try:
-            with open(HISTORY_FILE, 'r') as f:
+            with open(HISTORY_FILE, "r") as f:
                 task_history = json.load(f)
         except Exception:
             task_history = []
 
+
 def save_history():
     try:
-        if not os.path.exists(UPLOAD_FOLDER): os.makedirs(UPLOAD_FOLDER)
-        with open(HISTORY_FILE, 'w') as f:
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.makedirs(UPLOAD_FOLDER)
+        with open(HISTORY_FILE, "w") as f:
             json.dump(task_history, f)
     except Exception:
         pass
 
+
 def add_to_history(task_type, details, status="success"):
-    task_history.insert(0, {
-        "id": f"{int(time.time())}_{random.randint(1000, 9999)}",
-        "type": task_type,
-        "details": details,
-        "status": status,
-        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-    })
+    task_history.insert(0, {"id": f"{int(time.time())}_{random.randint(1000, 9999)}", "type": task_type, "details": details, "status": status, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
     if len(task_history) > 20:
         task_history.pop()
     save_history()
 
+
 load_history()
+
 
 def background_scraper(url, token, workspace_id, username=None, password=None, login_url=None, full_crawl=False):
     job_status["status"] = "running"
@@ -70,9 +70,9 @@ def background_scraper(url, token, workspace_id, username=None, password=None, l
             crawler.scrape_page(url)
 
         if stop_event.is_set():
-             job_status["status"] = "idle"
-             job_status["message"] = "Stopped by user"
-             add_to_history("Scrape", f"URL: {url}", "stopped")
+            job_status["status"] = "idle"
+            job_status["message"] = "Stopped by user"
+            add_to_history("Scrape", f"URL: {url}", "stopped")
         else:
             job_status["status"] = "success"
             job_status["message"] = "Scraping finished"
@@ -81,6 +81,7 @@ def background_scraper(url, token, workspace_id, username=None, password=None, l
         job_status["status"] = "failed"
         job_status["message"] = str(e)
         add_to_history("Scrape", f"URL: {url}", "failed")
+
 
 def background_folder_scan(folder_path, database_id, token, workspace_id):
     job_status["status"] = "running"
@@ -106,55 +107,54 @@ def background_folder_scan(folder_path, database_id, token, workspace_id):
         job_status["message"] = str(e)
         add_to_history("Folder Scan", f"Path: {folder_path}", "failed")
 
+
 @router.post("/validate")
 async def validate_notion(token: str, workspace_id: str | None = None):
     try:
         notion = Client(auth=token)
         await anyio.to_thread.run_sync(notion.users.me)
         return {"valid": True}
-    except Exception as e: return {"valid": False, "error": str(e)}
+    except Exception as e:
+        return {"valid": False, "error": str(e)}
+
 
 def sync_process_and_ingest(file_path: str, ext: str, filename: str, token: str, workspace_id: str, database_id: str | None):
     chunks = process_uploaded_document(file_path, ext)
     engine = NotionEngine(token, workspace_id)
-    entry_id = engine.ingest_content(filename, chunks, {"path": filename, "extension": ext.replace('.','')}, database_id)
+    entry_id = engine.ingest_content(filename, chunks, {"path": filename, "extension": ext.replace(".", "")}, database_id)
     return entry_id
+
 
 @router.post("/upload")
 async def upload_document(token: str = Form(...), workspace_id: str = Form(...), database_id: str | None = Form(None), file: UploadFile = File(...)):
-    if not os.path.exists(UPLOAD_FOLDER): os.makedirs(UPLOAD_FOLDER)
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
     safe_filename = os.path.basename(file.filename)
     file_path = os.path.join(UPLOAD_FOLDER, f"{int(time.time())}_{safe_filename}")
-    with open(file_path, "wb") as b: shutil.copyfileobj(file.file, b)
+    with open(file_path, "wb") as b:
+        shutil.copyfileobj(file.file, b)
     try:
         _, ext = os.path.splitext(safe_filename)
-        entry_id = await anyio.to_thread.run_sync(
-            sync_process_and_ingest,
-            file_path, ext, safe_filename, token, workspace_id, database_id
-        )
+        entry_id = await anyio.to_thread.run_sync(sync_process_and_ingest, file_path, ext, safe_filename, token, workspace_id, database_id)
         add_to_history("Upload", f"File: {safe_filename}", "success")
         return {"success": True, "page_id": entry_id}
     except Exception as e:
         add_to_history("Upload", f"File: {file.filename}", "failed")
         raise HTTPException(status_code=500, detail=str(e))
     finally:
-        if os.path.exists(file_path): os.remove(file_path)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
 
 @router.post("/start-scrape")
-async def start_scrape(background_tasks: BackgroundTasks,
-                      url: str = Form(...),
-                      token: str = Form(...),
-                      workspace_id: str = Form(...),
-                      username: str | None = Form(None),
-                      password: str | None = Form(None),
-                      login_url: str | None = Form(None),
-                      full_crawl: bool = Form(False)):
+async def start_scrape(background_tasks: BackgroundTasks, url: str = Form(...), token: str = Form(...), workspace_id: str = Form(...), username: str | None = Form(None), password: str | None = Form(None), login_url: str | None = Form(None), full_crawl: bool = Form(False)):
     if job_status["status"] == "running":
         return {"started": False, "message": "Job already running"}
 
     stop_event.clear()
     background_tasks.add_task(background_scraper, url, token, workspace_id, username, password, login_url, full_crawl)
     return {"started": True}
+
 
 @router.post("/scan-folder")
 async def scan_folder(background_tasks: BackgroundTasks, folder_path: str = Form(...), token: str = Form(...), workspace_id: str = Form(...), database_id: str | None = Form(None)):
@@ -165,18 +165,22 @@ async def scan_folder(background_tasks: BackgroundTasks, folder_path: str = Form
     background_tasks.add_task(background_folder_scan, folder_path, database_id, token, workspace_id)
     return {"started": True}
 
+
 @router.get("/status")
 async def get_status():
     return job_status
+
 
 @router.get("/history")
 async def get_history():
     return task_history
 
+
 @router.post("/stop")
 async def stop_task():
     stop_event.set()
     return {"stopped": True}
+
 
 @router.post("/clear-history")
 async def clear_history():

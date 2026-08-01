@@ -1,7 +1,8 @@
 import sqlite3
 import os
 
-DB_PATH = 'data/hub.db'
+DB_PATH = "data/hub.db"
+
 
 def verify():
     if not os.path.exists(DB_PATH):
@@ -14,12 +15,12 @@ def verify():
 
     # 1. Check for duplicates
     print("Checking for duplicates...")
-    dupes = cursor.execute('''
+    dupes = cursor.execute("""
         SELECT profile_id, title, url, COUNT(*)
         FROM links
         GROUP BY profile_id, title, url
         HAVING COUNT(*) > 1
-    ''').fetchall()
+    """).fetchall()
     if dupes:
         print(f"Found {len(dupes)} duplicates!")
         for d in dupes:
@@ -29,15 +30,14 @@ def verify():
 
     # 2. Check ordering
     print("\nChecking link ordering (is_pinned DESC, title ASC)...")
-    links = cursor.execute('SELECT title, is_pinned FROM links ORDER BY is_pinned DESC, title COLLATE NOCASE ASC LIMIT 10').fetchall()
+    links = cursor.execute("SELECT title, is_pinned FROM links ORDER BY is_pinned DESC, title COLLATE NOCASE ASC LIMIT 10").fetchall()
     for link in links:
         print(f"[{'P' if link['is_pinned'] else ' '}] {link['title']}")
 
     # 3. Test UNIQUE constraint
     print("\nTesting UNIQUE constraint...")
     try:
-        cursor.execute('INSERT INTO links (id, profile_id, title, url, category) VALUES (?, ?, ?, ?, ?)',
-                       ('test-id', 1, 'NotebookLM', 'https://notebooklm.google.com', 'AI'))
+        cursor.execute("INSERT INTO links (id, profile_id, title, url, category) VALUES (?, ?, ?, ?, ?)", ("test-id", 1, "NotebookLM", "https://notebooklm.google.com", "AI"))
         conn.commit()
         print("Error: Duplicate insertion succeeded!")
     except sqlite3.IntegrityError:
@@ -45,15 +45,16 @@ def verify():
 
     # 4. Check category ordering
     print("\nChecking category ordering...")
-    cats = cursor.execute('SELECT name FROM categories ORDER BY name ASC LIMIT 5').fetchall()
-    cat_names = [c['name'] for c in cats]
+    cats = cursor.execute("SELECT name FROM categories ORDER BY name ASC LIMIT 5").fetchall()
+    cat_names = [c["name"] for c in cats]
     print(f"Categories: {cat_names}")
     if cat_names == sorted(cat_names):
         print("Success: Categories are sorted.")
     else:
-         print("Error: Categories are NOT sorted even with ORDER BY.")
+        print("Error: Categories are NOT sorted even with ORDER BY.")
 
     conn.close()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     verify()

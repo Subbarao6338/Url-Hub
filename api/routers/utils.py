@@ -15,10 +15,11 @@ from api.core.data_adv.kusto import generate_kusto_query
 
 router = APIRouter()
 
+
 def validate_url_ssrf(url: str):
     try:
         parsed = urlparse(url)
-        if parsed.scheme not in ('http', 'https'):
+        if parsed.scheme not in ("http", "https"):
             raise ValueError(f"Invalid URL scheme: {parsed.scheme}. Only HTTP and HTTPS are allowed.")
 
         hostname = parsed.hostname
@@ -36,6 +37,7 @@ def validate_url_ssrf(url: str):
         raise
     except Exception as e:
         raise ValueError(f"Failed to validate URL host: {e!s}")
+
 
 def html_to_gfm(soup):
     # Remove script, style, head, nav, footer, iframe, form elements
@@ -57,47 +59,47 @@ def html_to_gfm(soup):
         tag = element.name
 
         # Inline elements / formatting
-        if tag in ['strong', 'b']:
+        if tag in ["strong", "b"]:
             content = "".join(convert_element(child) for child in element.children)
             return f"**{content}**" if content.strip() else ""
-        elif tag in ['em', 'i']:
+        elif tag in ["em", "i"]:
             content = "".join(convert_element(child) for child in element.children)
             return f"*{content}*" if content.strip() else ""
-        elif tag == 'code':
+        elif tag == "code":
             content = "".join(convert_element(child) for child in element.children)
             return f"`{content}`" if content.strip() else ""
-        elif tag == 'a':
-            href = element.get('href', '')
+        elif tag == "a":
+            href = element.get("href", "")
             content = "".join(convert_element(child) for child in element.children)
-            if content.strip() and href and not href.startswith('#') and not href.startswith('javascript:'):
+            if content.strip() and href and not href.startswith("#") and not href.startswith("javascript:"):
                 return f"[{content}]({href})"
             return content
-        elif tag == 'br':
+        elif tag == "br":
             return "\n"
 
         # Block elements
-        elif tag == 'p':
+        elif tag == "p":
             content = "".join(convert_element(child) for child in element.children)
             return f"\n\n{content}\n\n" if content.strip() else ""
-        elif tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+        elif tag in ["h1", "h2", "h3", "h4", "h5", "h6"]:
             level = int(tag[1])
             hashes = "#" * level
             content = "".join(convert_element(child) for child in element.children)
             return f"\n\n{hashes} {content.strip()}\n\n" if content.strip() else ""
-        elif tag == 'li':
+        elif tag == "li":
             # Check if parent is ol
             parent = element.parent
-            is_ordered = parent and parent.name == 'ol'
+            is_ordered = parent and parent.name == "ol"
             prefix = "1. " if is_ordered else "* "
             content = "".join(convert_element(child) for child in element.children)
             return f"\n{prefix}{content.strip()}" if content.strip() else ""
-        elif tag in ['ul', 'ol']:
+        elif tag in ["ul", "ol"]:
             content = "".join(convert_element(child) for child in element.children)
             return f"\n\n{content}\n\n" if content.strip() else ""
-        elif tag == 'pre':
+        elif tag == "pre":
             content = element.get_text()
             return f"\n\n```\n{content}\n```\n\n"
-        elif tag == 'hr':
+        elif tag == "hr":
             return "\n\n---\n\n"
 
         # Generic container
@@ -105,39 +107,46 @@ def html_to_gfm(soup):
         return content
 
     # Get body or the whole soup
-    body = soup.find('body') or soup
+    body = soup.find("body") or soup
     markdown = convert_element(body)
 
     # Post-processing: clean up extra whitespace/newlines
-    markdown = re.sub(r'\n{3,}', '\n\n', markdown)
+    markdown = re.sub(r"\n{3,}", "\n\n", markdown)
     return markdown.strip()
+
 
 @router.get("/generate-otp")
 async def generate_otp_api(length: int = 6):
-    return {"otp": ''.join(secrets.choice(string.digits) for _ in range(length))}
+    if length < 4 or length > 32:
+        raise HTTPException(status_code=400, detail="OTP length must be between 4 and 32")
+    return {"otp": "".join(secrets.choice(string.digits) for _ in range(length))}
+
 
 @router.get("/regex-gen")
 async def regex_gen(pattern_type: str):
     mapping = {"email": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", "url": r"https?://.*"}
     return {"regex": mapping.get(pattern_type, ".*")}
 
+
 @router.post("/kusto-gen")
 async def kusto_gen(data: dict):
     try:
-        query = generate_kusto_query(data['table'], data['fields'], data.get('joins'), data.get('filters'))
+        query = generate_kusto_query(data["table"], data["fields"], data.get("joins"), data.get("filters"))
         return {"query": query}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 def sync_url_to_markdown(url: str):
     validate_url_ssrf(url)
     res = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"}, timeout=15)
     res.raise_for_status()
 
-    soup = BeautifulSoup(res.content, 'html.parser')
+    soup = BeautifulSoup(res.content, "html.parser")
     title = soup.title.string if soup.title else url
     markdown = html_to_gfm(soup)
     return title, markdown
+
 
 @router.post("/url-to-markdown")
 async def url_to_markdown_api(url: str = Form(...)):
@@ -146,8 +155,8 @@ async def url_to_markdown_api(url: str = Form(...)):
 
     try:
         # Standardize URL schema if missing
-        if not url.startswith('http://') and not url.startswith('https://'):
-            url = 'https://' + url
+        if not url.startswith("http://") and not url.startswith("https://"):
+            url = "https://" + url
 
         title, markdown = await anyio.to_thread.run_sync(sync_url_to_markdown, url)
 

@@ -12,6 +12,7 @@ from api.routers.utils import validate_url_ssrf
 
 logger = logging.getLogger(__name__)
 
+
 def retry_notion_api(max_retries=3, backoff_factor=2):
     def decorator(func):
         @wraps(func)
@@ -25,7 +26,7 @@ def retry_notion_api(max_retries=3, backoff_factor=2):
                         retries += 1
                         if retries >= max_retries:
                             raise
-                        wait_time = backoff_factor ** retries
+                        wait_time = backoff_factor**retries
                         if e.status == 429:
                             # Try to get retry-after header if available
                             wait_time = int(e.headers.get("Retry-After", wait_time))
@@ -36,8 +37,11 @@ def retry_notion_api(max_retries=3, backoff_factor=2):
                 except Exception:
                     raise
             raise RuntimeError(f"Max retries reached for {func.__name__}")
+
         return wrapper
+
     return decorator
+
 
 class NotionEngine:
     def __init__(self, token, parent_id, enable_translation=True):
@@ -69,18 +73,22 @@ class NotionEngine:
         return self._parent_type_cache[parent_id]
 
     def _is_primarily_english(self, text):
-        if not text: return True
+        if not text:
+            return True
         # Simple heuristic: if > 80% of chars are ASCII, assume it's English/code
         ascii_chars = len([c for c in text if ord(c) < 128])
         return (ascii_chars / len(text)) > 0.8
 
     def clean_and_translate(self, text):
         cleaned = text.strip()
-        if not cleaned: return ""
-        if not self.enable_translation: return cleaned
-        if self._is_primarily_english(cleaned): return cleaned
+        if not cleaned:
+            return ""
+        if not self.enable_translation:
+            return cleaned
+        if self._is_primarily_english(cleaned):
+            return cleaned
         try:
-            translator = GoogleTranslator(source='auto', target='en')
+            translator = GoogleTranslator(source="auto", target="en")
             # Chunk text to avoid Google Translate limits (approx 5000 chars)
             translation_chunks = self.smart_chunk_text(cleaned, limit=4500)
             translated_parts = [translator.translate(c) for c in translation_chunks]
@@ -99,8 +107,8 @@ class NotionEngine:
 
             # Find the best split point
             split_idx = -1
-            space_idx = text.rfind(' ', 0, limit)
-            newline_idx = text.rfind('\n', 0, limit)
+            space_idx = text.rfind(" ", 0, limit)
+            newline_idx = text.rfind("\n", 0, limit)
 
             split_idx = max(space_idx, newline_idx)
 
@@ -137,19 +145,13 @@ class NotionEngine:
         parent_key = self._get_parent_key(target_parent)
 
         try:
-            page = self.client.pages.create(
-                parent={parent_key: target_parent},
-                properties={"title": {"title": [{"text": {"content": translated_title}}]}}
-            )
+            page = self.client.pages.create(parent={parent_key: target_parent}, properties={"title": {"title": [{"text": {"content": translated_title}}]}})
             return page["id"]
         except Exception:
             # If it failed, maybe the parent key was wrong (e.g. it was a database but cache/retrieve said page)
             other_key = "database_id" if parent_key == "page_id" else "page_id"
             try:
-                page = self.client.pages.create(
-                    parent={other_key: target_parent},
-                    properties={"title": {"title": [{"text": {"content": translated_title}}]}}
-                )
+                page = self.client.pages.create(parent={other_key: target_parent}, properties={"title": {"title": [{"text": {"content": translated_title}}]}})
                 self._parent_type_cache[target_parent] = other_key
                 return page["id"]
             except Exception as e2:
@@ -160,15 +162,8 @@ class NotionEngine:
     def create_database_row(self, database_id, title, metadata, fallback_parent_id=None):
         """Creates a row in a Notion Database with metadata properties."""
         try:
-            properties = {
-                "Name": {"title": [{"text": {"content": self.clean_and_translate(title)}}]},
-                "Path": {"rich_text": [{"text": {"content": metadata.get("path", "")}}]},
-                "Extension": {"select": {"name": metadata.get("extension", "unknown")}}
-            }
-            page = self.client.pages.create(
-                parent={"database_id": database_id},
-                properties=properties
-            )
+            properties = {"Name": {"title": [{"text": {"content": self.clean_and_translate(title)}}]}, "Path": {"rich_text": [{"text": {"content": metadata.get("path", "")}}]}, "Extension": {"select": {"name": metadata.get("extension", "unknown")}}}
+            page = self.client.pages.create(parent={"database_id": database_id}, properties=properties)
             return page["id"]
         except Exception as e:
             logger.error(f"Database row creation error for {title}: {e}")
@@ -207,29 +202,33 @@ class NotionEngine:
         return parent_id
 
     def upload_media_mirror(self, url, folder="temp_cache"):
-        if not os.path.exists(folder): os.makedirs(folder)
+        if not os.path.exists(folder):
+            os.makedirs(folder)
         try:
             validate_url_ssrf(url)
         except Exception as e:
             logger.error(f"SSRF validation failed for mirror URL {url}: {e}")
             return None
         try:
-            filename = url.split("/")[-1].split("?")[0]
-            if not filename.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.mp4', '.webm')):
+            import secrets
+
+            original_filename = url.split("/")[-1].split("?")[0]
+            _, ext = os.path.splitext(original_filename.lower())
+            if ext not in (".jpg", ".jpeg", ".png", ".gif", ".mp4", ".webm"):
                 return None
 
-            local_path = os.path.join(folder, filename)
+            safe_filename = secrets.token_hex(16) + ext
+            local_path = os.path.join(folder, safe_filename)
             logger.info(f"Downloading media for mirror: {url}")
             res = requests.get(url, stream=True, timeout=15)
             if res.status_code == 200:
-                with open(local_path, 'wb') as f:
+                with open(local_path, "wb") as f:
                     f.writelines(res.iter_content(4096))
 
                 with open(local_path, "rb") as file_bytes:
-                    up_res = requests.post("https://catbox.moe/user/api.php",
-                                            data={"reqtype": "fileupload"},
-                                            files={"fileToUpload": file_bytes}, timeout=20)
-                if os.path.exists(local_path): os.remove(local_path)
+                    up_res = requests.post("https://catbox.moe/user/api.php", data={"reqtype": "fileupload"}, files={"fileToUpload": file_bytes}, timeout=20)
+                if os.path.exists(local_path):
+                    os.remove(local_path)
                 if up_res.status_code == 200 and up_res.text.startswith("http"):
                     return up_res.text.strip()
                 else:
@@ -241,13 +240,14 @@ class NotionEngine:
         return None
 
     def _to_rich_text_objects(self, text, annotations):
-        if not text: return []
+        if not text:
+            return []
         rich_text = []
         annotations_copy = annotations.copy()
-        link_url = annotations_copy.pop('link', None)
+        link_url = annotations_copy.pop("link", None)
 
         for i in range(0, len(text), 2000):
-            chunk = text[i:i+2000]
+            chunk = text[i : i + 2000]
             obj = {"type": "text", "text": {"content": chunk or " "}}
             if annotations_copy:
                 obj["annotations"] = annotations_copy
@@ -258,16 +258,18 @@ class NotionEngine:
 
     def parse_markdown_to_rich_text(self, text):
         """Robust markdown parser for bold, italic, inline code, and links with nesting support."""
+
         def _parse(inner_text, current_annotations):
-            if not inner_text: return []
+            if not inner_text:
+                return []
 
             patterns = [
-                ('link', r'\[(?P<text>.*?)\]\((?P<url>.*?)\)'),
-                ('bold', r'(\*\*|__)(?P<text>.*?)\1'),
-                ('italic', r'(\*|_)(?P<text>.*?)\1'),
-                ('code', r'`(?P<text>.*?)`'),
-                ('strikethrough', r'~~(?P<text>.*?)~~'),
-                ('underline', r'<u>(?P<text>.*?)</u>'),
+                ("link", r"\[(?P<text>.*?)\]\((?P<url>.*?)\)"),
+                ("bold", r"(\*\*|__)(?P<text>.*?)\1"),
+                ("italic", r"(\*|_)(?P<text>.*?)\1"),
+                ("code", r"`(?P<text>.*?)`"),
+                ("strikethrough", r"~~(?P<text>.*?)~~"),
+                ("underline", r"<u>(?P<text>.*?)</u>"),
             ]
 
             best_match = None
@@ -289,43 +291,44 @@ class NotionEngine:
 
             result = []
             if best_match.start() > 0:
-                result.extend(_parse(inner_text[:best_match.start()], current_annotations))
+                result.extend(_parse(inner_text[: best_match.start()], current_annotations))
 
             new_ann = current_annotations.copy()
-            if best_type == 'link':
-                new_ann['link'] = best_match.group('url')
-                result.extend(_parse(best_match.group('text'), new_ann))
-            elif best_type == 'bold':
-                new_ann['bold'] = True
-                result.extend(_parse(best_match.group('text'), new_ann))
-            elif best_type == 'italic':
-                new_ann['italic'] = True
-                result.extend(_parse(best_match.group('text'), new_ann))
-            elif best_type == 'code':
-                new_ann['code'] = True
-                result.extend(_parse(best_match.group('text'), new_ann))
-            elif best_type == 'strikethrough':
-                new_ann['strikethrough'] = True
-                result.extend(_parse(best_match.group('text'), new_ann))
-            elif best_type == 'underline':
-                new_ann['underline'] = True
-                result.extend(_parse(best_match.group('text'), new_ann))
+            if best_type == "link":
+                new_ann["link"] = best_match.group("url")
+                result.extend(_parse(best_match.group("text"), new_ann))
+            elif best_type == "bold":
+                new_ann["bold"] = True
+                result.extend(_parse(best_match.group("text"), new_ann))
+            elif best_type == "italic":
+                new_ann["italic"] = True
+                result.extend(_parse(best_match.group("text"), new_ann))
+            elif best_type == "code":
+                new_ann["code"] = True
+                result.extend(_parse(best_match.group("text"), new_ann))
+            elif best_type == "strikethrough":
+                new_ann["strikethrough"] = True
+                result.extend(_parse(best_match.group("text"), new_ann))
+            elif best_type == "underline":
+                new_ann["underline"] = True
+                result.extend(_parse(best_match.group("text"), new_ann))
 
-            result.extend(_parse(inner_text[best_match.end():], current_annotations))
+            result.extend(_parse(inner_text[best_match.end() :], current_annotations))
             return result
 
         rich_results = _parse(text, {})
         return rich_results if rich_results else [{"type": "text", "text": {"content": " "}}]
 
     def _create_table_block(self, rows):
-        if not rows: return None
+        if not rows:
+            return None
 
         # Determine if there is a header row (the second row should be the separator)
         has_column_header = False
         if len(rows) > 1:
             second_row = rows[1].strip()
             # Relaxed regex for markdown table separator
-            if re.match(r'^\|?(\s*:?---:?\s*\|)*\s*:?---:?\s*\|?$', second_row) and '---' in second_row:
+            if re.match(r"^\|?(\s*:?---:?\s*\|)*\s*:?---:?\s*\|?$", second_row) and "---" in second_row:
                 has_column_header = True
                 data_rows = [rows[0]] + rows[2:]
             else:
@@ -333,31 +336,28 @@ class NotionEngine:
         else:
             data_rows = rows
 
-        if not data_rows: return None
+        if not data_rows:
+            return None
 
         table_children = []
         max_cols = 0
         for row_str in data_rows:
             # Handle rows that might not start/end with | but are pipe-delimited
             content = row_str.strip()
-            content = content.removeprefix('|')
-            content = content.removesuffix('|')
+            content = content.removeprefix("|")
+            content = content.removesuffix("|")
 
             # Use regex to split by | but ignore \|
-            cells = [cell.strip() for cell in re.split(r'(?<!\\)\|', content)]
+            cells = [cell.strip() for cell in re.split(r"(?<!\\)\|", content)]
             # Unescape \|
-            cells = [cell.replace('\\|', '|') for cell in cells]
+            cells = [cell.replace("\\|", "|") for cell in cells]
 
             max_cols = max(max_cols, len(cells))
-            row_block = {
-                "type": "table_row",
-                "table_row": {
-                    "cells": [self.parse_markdown_to_rich_text(cell) for cell in cells]
-                }
-            }
+            row_block = {"type": "table_row", "table_row": {"cells": [self.parse_markdown_to_rich_text(cell) for cell in cells]}}
             table_children.append(row_block)
 
-        if max_cols == 0: return None
+        if max_cols == 0:
+            return None
 
         # Normalize cell counts
         for row_block in table_children:
@@ -365,26 +365,18 @@ class NotionEngine:
             while len(cells) < max_cols:
                 cells.append([{"type": "text", "text": {"content": ""}}])
 
-        return {
-            "object": "block",
-            "type": "table",
-            "table": {
-                "table_width": max_cols,
-                "has_column_header": has_column_header,
-                "has_row_header": False,
-                "children": table_children
-            }
-        }
+        return {"object": "block", "type": "table", "table": {"table_width": max_cols, "has_column_header": has_column_header, "has_row_header": False, "children": table_children}}
 
     @retry_notion_api()
     def compile_and_append_blocks(self, page_id, text_segments, media_urls):
         blocks = []
         for text in text_segments:
             processed = self.clean_and_translate(text)
-            if not processed: continue
+            if not processed:
+                continue
 
             # Simple markdown-ish parsing
-            lines = processed.split('\n')
+            lines = processed.split("\n")
             in_code_block = False
             code_content = []
             code_lang = "plain text"
@@ -398,20 +390,99 @@ class NotionEngine:
                         full_code = "\n".join(code_content)
                         # Split code into chunks of 2000 if needed for rich text
                         rich_text = [{"type": "text", "text": {"content": c or " "}} for c in self.smart_chunk_text(full_code)]
-                        blocks.append({"object": "block", "type": "code",
-                                       "code": {"rich_text": rich_text[:100], "language": code_lang}})
+                        blocks.append({"object": "block", "type": "code", "code": {"rich_text": rich_text[:100], "language": code_lang}})
                         code_content = []
                         in_code_block = False
                     else:
                         if in_table:
                             table_block = self._create_table_block(table_rows)
-                            if table_block: blocks.append(table_block)
+                            if table_block:
+                                blocks.append(table_block)
                             table_rows = []
                             in_table = False
                         in_code_block = True
                         # Detect language
                         lang = line.strip("`").strip().lower()
-                        supported_langs = ["abap", "arduino", "bash", "basic", "c", "c#", "c++", "clojure", "coffeescript", "common lisp", "coq", "cpp", "crystal", "css", "dart", "diff", "docker", "elixir", "elm", "emacs lisp", "erlang", "f#", "flow", "fortran", "fsharp", "gherkin", "glsl", "go", "graphql", "groovy", "haskell", "html", "idris", "java", "javascript", "json", "julia", "kotlin", "latex", "less", "lisp", "livecodescript", "lua", "makefile", "markdown", "markup", "matlab", "mermaid", "nix", "objective-c", "ocaml", "pascal", "perl", "php", "plain text", "powershell", "prolog", "protobuf", "python", "r", "racket", "ruby", "rust", "sass", "scala", "scheme", "scss", "shell", "sql", "swift", "typescript", "vb.net", "verilog", "vhdl", "visual basic", "webassembly", "xml", "yaml"]
+                        supported_langs = [
+                            "abap",
+                            "arduino",
+                            "bash",
+                            "basic",
+                            "c",
+                            "c#",
+                            "c++",
+                            "clojure",
+                            "coffeescript",
+                            "common lisp",
+                            "coq",
+                            "cpp",
+                            "crystal",
+                            "css",
+                            "dart",
+                            "diff",
+                            "docker",
+                            "elixir",
+                            "elm",
+                            "emacs lisp",
+                            "erlang",
+                            "f#",
+                            "flow",
+                            "fortran",
+                            "fsharp",
+                            "gherkin",
+                            "glsl",
+                            "go",
+                            "graphql",
+                            "groovy",
+                            "haskell",
+                            "html",
+                            "idris",
+                            "java",
+                            "javascript",
+                            "json",
+                            "julia",
+                            "kotlin",
+                            "latex",
+                            "less",
+                            "lisp",
+                            "livecodescript",
+                            "lua",
+                            "makefile",
+                            "markdown",
+                            "markup",
+                            "matlab",
+                            "mermaid",
+                            "nix",
+                            "objective-c",
+                            "ocaml",
+                            "pascal",
+                            "perl",
+                            "php",
+                            "plain text",
+                            "powershell",
+                            "prolog",
+                            "protobuf",
+                            "python",
+                            "r",
+                            "racket",
+                            "ruby",
+                            "rust",
+                            "sass",
+                            "scala",
+                            "scheme",
+                            "scss",
+                            "shell",
+                            "sql",
+                            "swift",
+                            "typescript",
+                            "vb.net",
+                            "verilog",
+                            "vhdl",
+                            "visual basic",
+                            "webassembly",
+                            "xml",
+                            "yaml",
+                        ]
                         code_lang = lang if lang in supported_langs else "plain text"
                     continue
 
@@ -428,11 +499,13 @@ class NotionEngine:
                     continue
                 elif in_table:
                     table_block = self._create_table_block(table_rows)
-                    if table_block: blocks.append(table_block)
+                    if table_block:
+                        blocks.append(table_block)
                     table_rows = []
                     in_table = False
 
-                if not line.strip(): continue
+                if not line.strip():
+                    continue
 
                 block = {"object": "block"}
                 if line.startswith("# "):
@@ -443,22 +516,19 @@ class NotionEngine:
                     block.update({"type": "heading_3", "heading_3": {"rich_text": self.parse_markdown_to_rich_text(line[4:])}})
                 elif line.startswith("- "):
                     block.update({"type": "bulleted_list_item", "bulleted_list_item": {"rich_text": self.parse_markdown_to_rich_text(line[2:])}})
-                elif re.match(r'^\d+\.\s', line):
+                elif re.match(r"^\d+\.\s", line):
                     # Numbered list support: 1. Item
-                    match = re.match(r'^\d+\.\s(?P<content>.*)', line)
-                    block.update({"type": "numbered_list_item", "numbered_list_item": {"rich_text": self.parse_markdown_to_rich_text(match.group('content'))}})
+                    match = re.match(r"^\d+\.\s(?P<content>.*)", line)
+                    block.update({"type": "numbered_list_item", "numbered_list_item": {"rich_text": self.parse_markdown_to_rich_text(match.group("content"))}})
                 elif line.startswith("> [!"):
                     # Callout support: > [!INFO] Message
-                    match = re.match(r'> \[!(?P<type>\w+)\]\s*(?P<content>.*)', line)
+                    match = re.match(r"> \[!(?P<type>\w+)\]\s*(?P<content>.*)", line)
                     if match:
-                        callout_type = match.group('type').upper()
-                        content = match.group('content')
+                        callout_type = match.group("type").upper()
+                        content = match.group("content")
                         icon_map = {"INFO": "ℹ️", "WARNING": "⚠️", "ERROR": "🚨", "SUCCESS": "✅", "NOTE": "📝", "TIP": "💡"}
                         icon = icon_map.get(callout_type, "💡")
-                        block.update({"type": "callout", "callout": {
-                            "rich_text": self.parse_markdown_to_rich_text(content),
-                            "icon": {"type": "emoji", "emoji": icon}
-                        }})
+                        block.update({"type": "callout", "callout": {"rich_text": self.parse_markdown_to_rich_text(content), "icon": {"type": "emoji", "emoji": icon}}})
                     else:
                         block.update({"type": "quote", "quote": {"rich_text": self.parse_markdown_to_rich_text(line[2:])}})
                 elif line.startswith("> "):
@@ -474,33 +544,26 @@ class NotionEngine:
                     rich_text_objects = self.parse_markdown_to_rich_text(line)
                     # If we have more than 100 rich text objects, we must split into multiple paragraph blocks
                     for i in range(0, len(rich_text_objects), 100):
-                        blocks.append({"object": "block", "type": "paragraph",
-                                       "paragraph": {"rich_text": rich_text_objects[i:i+100]}})
+                        blocks.append({"object": "block", "type": "paragraph", "paragraph": {"rich_text": rich_text_objects[i : i + 100]}})
                     continue
 
                 blocks.append(block)
 
         for m_url in media_urls:
             stable_url = self.upload_media_mirror(m_url)
-            if not stable_url: continue
-            b_type = "video" if stable_url.lower().endswith(('.mp4', '.webm')) else "image"
-            blocks.append({
-                "object": "block",
-                "type": b_type,
-                b_type: {
-                    "type": "external",
-                    "external": {"url": stable_url},
-                    "caption": [{"type": "text", "text": {"content": f"Source: {m_url}"}}]
-                }
-            })
+            if not stable_url:
+                continue
+            b_type = "video" if stable_url.lower().endswith((".mp4", ".webm")) else "image"
+            blocks.append({"object": "block", "type": b_type, b_type: {"type": "external", "external": {"url": stable_url}, "caption": [{"type": "text", "text": {"content": f"Source: {m_url}"}}]}})
 
         # Final flush for tables
         if in_table:
             table_block = self._create_table_block(table_rows)
-            if table_block: blocks.append(table_block)
+            if table_block:
+                blocks.append(table_block)
 
         try:
             for i in range(0, len(blocks), 100):
-                self.client.blocks.children.append(block_id=page_id, children=blocks[i:i+100])
+                self.client.blocks.children.append(block_id=page_id, children=blocks[i : i + 100])
         except Exception as e:
             logger.error(f"Error executing batch append to {page_id}: {e}")
