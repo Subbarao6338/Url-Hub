@@ -87,7 +87,8 @@ class ForumCrawler:
                     time.sleep(random.uniform(1, 2))
                 else:
                     current_url = None
-            except Exception:
+            except Exception as e:
+                logger.error(f"Error scraping thread pages: {e}")
                 break
 
     def start_full_crawl(self):
@@ -107,8 +108,8 @@ class ForumCrawler:
                 if self.stop_event and self.stop_event.is_set():
                     break
                 self._crawl_board_recursive(b_label, b_route, root_id)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.error(f"Error during full crawl initialization: {e}")
 
     def _crawl_board_recursive(self, label, url, parent_id, depth=0):
         if depth > 3 or (self.stop_event and self.stop_event.is_set()):
@@ -136,8 +137,8 @@ class ForumCrawler:
                 tid = self.engine.safe_create_page(t_label, forum_id)
                 if tid:
                     self.scrape_thread_pages(t_route, tid, t_label)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.error(f"Error during board recursive crawl for {label}: {e}")
 
 
 def run_scraper(url, token, workspace_id):

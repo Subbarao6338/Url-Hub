@@ -46,8 +46,8 @@ def parse_pdf(file_path):
                 images = convert_from_path(file_path, first_page=index, last_page=index)
                 if images:
                     page_text = pytesseract.image_to_string(images[0])
-            except Exception:
-                pass
+            except Exception as e:
+                logger.error(f"Error performing OCR on PDF page {index}: {e}")
         if page_text:
             current_chunk.append(f"--- PDF Page {index} ---\n{page_text}")
         if len(current_chunk) == 10:
@@ -262,7 +262,8 @@ def parse_mhtml(file_path):
             try:
                 html_payload = part.get_payload(decode=True).decode(part.get_content_charset() or "utf-8", errors="ignore")
                 return [clean_html_soup(BeautifulSoup(html_payload, "html.parser"))]
-            except Exception:
+            except Exception as e:
+                logger.error(f"Error parsing MHTML html part: {e}")
                 continue
     return [""]
 
@@ -288,7 +289,12 @@ def extract_archive(file_path, temp_dir):
                 target_path = os.path.join(temp_dir, member.name)
                 if not is_within_directory(temp_dir, target_path):
                     raise Exception(f"Potential Path Traversal in tar: {member.name}")
-            tar_ref.extractall(temp_dir)
+            # Python 3.12+ supports 'data' filter for extra safety; also validated above.
+            try:
+                tar_ref.extractall(temp_dir, filter="data")  # nosec B202
+            except TypeError:
+                # Fallback for Python versions that do not support filter parameter
+                tar_ref.extractall(temp_dir)  # nosec B202
 
 
 def process_uploaded_document(file_path, extension):
@@ -306,7 +312,8 @@ def process_uploaded_document(file_path, extension):
                         if chunks:
                             all_chunks.append(f"## File: {os.path.relpath(sub_file_path, temp_dir)}")
                             all_chunks.extend(chunks)
-                    except Exception:
+                    except Exception as e:
+                        logger.error(f"Error processing sub-document {sub_file_path}: {e}")
                         continue
         return all_chunks
     if ext == ".pdf":
