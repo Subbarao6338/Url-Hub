@@ -10,15 +10,14 @@ from api.core.notion.parsers import process_uploaded_document
 router = APIRouter()
 UPLOAD_FOLDER = "/tmp/agent_cache"
 
+
 def sync_process_file(file_path: str, ext: str, file_name: str):
     chunks = process_uploaded_document(file_path, ext)
     result = []
     for i, chunk in enumerate(chunks):
-        result.append({
-            "pageContent": chunk,
-            "metadata": {"filename": file_name, "chunkIndex": i}
-        })
+        result.append({"pageContent": chunk, "metadata": {"filename": file_name, "chunkIndex": i}})
     return result
+
 
 @router.post("/ingest")
 async def ingest_codebase(files: list[UploadFile] = File(...)):
@@ -44,6 +43,7 @@ async def ingest_codebase(files: list[UploadFile] = File(...)):
         return {"success": True, "chunks": all_chunks}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/status")
 async def get_agent_status():

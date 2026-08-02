@@ -1,10 +1,11 @@
 import json
 
+
 def refactor():
     # 1. Load data
-    with open('data/url_links.json', 'r') as f:
+    with open("data/url_links.json", "r") as f:
         links = json.load(f)
-    with open('data/url_cat.json', 'r') as f:
+    with open("data/url_cat.json", "r") as f:
         cats = json.load(f)
 
     # 2. Define move rules
@@ -13,8 +14,8 @@ def refactor():
 
     new_links = []
     for link in links:
-        title = link.get('title', '')
-        old_cat = link.get('category', '')
+        title = link.get("title", "")
+        old_cat = link.get("category", "")
 
         new_cat = old_cat
 
@@ -42,7 +43,7 @@ def refactor():
         if new_cat == "Toolbox":
             continue
 
-        link['category'] = new_cat
+        link["category"] = new_cat
         new_links.append(link)
 
     # 3. Update categories
@@ -52,16 +53,19 @@ def refactor():
     cats["Calculators"] = "calculate"
     cats["Tools & Utilities"] = "construction"
 
-    if "Tools" in cats: del cats["Tools"]
-    if "Utilities" in cats: del cats["Utilities"]
+    if "Tools" in cats:
+        del cats["Tools"]
+    if "Utilities" in cats:
+        del cats["Utilities"]
 
     sorted_cats = {k: cats[k] for k in sorted(cats.keys())}
 
     # 4. Save
-    with open('data/url_links.json', 'w') as f:
+    with open("data/url_links.json", "w") as f:
         json.dump(new_links, f, indent=2)
-    with open('data/url_cat.json', 'w') as f:
+    with open("data/url_cat.json", "w") as f:
         json.dump(sorted_cats, f, indent=2)
+
 
 if __name__ == "__main__":
     refactor()

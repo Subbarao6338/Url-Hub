@@ -6,8 +6,11 @@ from api.routers import agent, data_adv, doc_adv, network, notion, ops, social, 
 app = FastAPI(title="Epic Toolbox API")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
+
 @app.get("/api/health")
-async def health(): return {"status": "healthy"}
+async def health():
+    return {"status": "healthy"}
+
 
 app.include_router(notion.router, prefix="/api/notion", tags=["Notion"])
 app.include_router(agent.router, prefix="/api/agent", tags=["AI Agent"])

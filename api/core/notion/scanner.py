@@ -5,6 +5,7 @@ from api.core.notion.parsers import process_uploaded_document
 
 logger = logging.getLogger(__name__)
 
+
 class FolderScanner:
     def __init__(self, engine, database_id=None, stop_event=None, status_callback=None):
         self.engine = engine
@@ -29,14 +30,14 @@ class FolderScanner:
                     break
 
                 _name, ext = os.path.splitext(file)
-                supported_exts = ['.pdf', '.docx', '.doc', '.html', '.htm', '.md', '.markdown', '.txt', '.mhtml', '.json', '.csv', '.yaml', '.yml', '.xml', '.zip', '.tar.gz', '.tgz', '.tar']
-                if ext.lower() in supported_exts or file.lower().endswith(('.tar.gz', '.tgz')):
+                supported_exts = [".pdf", ".docx", ".doc", ".html", ".htm", ".md", ".markdown", ".txt", ".mhtml", ".json", ".csv", ".yaml", ".yml", ".xml", ".zip", ".tar.gz", ".tgz", ".tar"]
+                if ext.lower() in supported_exts or file.lower().endswith((".tar.gz", ".tgz")):
                     file_path = os.path.join(root, file)
                     if self.status_callback:
                         self.status_callback(f"Ingesting: {file} ({i}/{total_files} in folder)")
                     try:
                         content_chunks = process_uploaded_document(file_path, ext)
-                        metadata = {"path": file_path, "extension": ext.lower().replace('.', '')}
+                        metadata = {"path": file_path, "extension": ext.lower().replace(".", "")}
                         self.engine.ingest_content(file, content_chunks, metadata, self.database_id, current_parent_id)
                     except Exception as e:
                         logger.error(f"Error processing {file_path}: {e}")

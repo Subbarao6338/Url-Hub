@@ -1,6 +1,7 @@
 import asyncio
 import ipaddress
 import json
+import re
 import socket
 import ssl
 from datetime import datetime, timezone
@@ -12,12 +13,14 @@ from fastapi.responses import HTMLResponse
 
 router = APIRouter()
 
+
 def is_public_ip(ip_str: str) -> bool:
     try:
         ip = ipaddress.ip_address(ip_str)
         return not (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast)
     except ValueError:
         return False
+
 
 def validate_domain(domain: str) -> str:
     if not domain or not domain.strip():
@@ -31,7 +34,10 @@ def validate_domain(domain: str) -> str:
         cleaned_domain = cleaned_domain[8:]
 
     # Strip paths, ports, or trailing slashes
-    cleaned_domain = cleaned_domain.split('/')[0].split(':')[0]
+    cleaned_domain = cleaned_domain.split("/")[0].split(":")[0]
+
+    if not re.match(r"^[a-zA-Z0-9.-]+$", cleaned_domain):
+        raise HTTPException(status_code=400, detail="Invalid characters in domain name")
 
     try:
         # Resolve domain to IP
@@ -46,6 +52,7 @@ def validate_domain(domain: str) -> str:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Validation error: {e!s}")
     return cleaned_domain
+
 
 def query_doh(domain: str, qtype: str) -> list:
     try:
@@ -69,6 +76,7 @@ def query_doh(domain: str, qtype: str) -> list:
             pass
     return []
 
+
 def format_error_html(message: str) -> str:
     return f"""
     <div class="result-container animate-fadeIn mt-20 text-left">
@@ -81,6 +89,7 @@ def format_error_html(message: str) -> str:
         </div>
     </div>
     """
+
 
 def format_ip_info_html(data: dict) -> str:
     ip = data.get("ip", "N/A")
@@ -156,6 +165,7 @@ def format_ip_info_html(data: dict) -> str:
     """
     return html
 
+
 def format_dns_html(domain: str, records: dict) -> str:
     rows = []
     has_any = False
@@ -221,6 +231,7 @@ def format_dns_html(domain: str, records: dict) -> str:
     </div>
     """
     return html
+
 
 def format_whois_html(domain: str, data: dict) -> str:
     ldh_name = data.get("ldhName", domain)
@@ -337,36 +348,37 @@ def format_whois_html(domain: str, data: dict) -> str:
     """
     return html
 
+
 def parse_ssl_dict(cert: dict) -> dict:
     subject_dict = {}
-    for item in cert.get('subject', []):
+    for item in cert.get("subject", []):
         for subitem in item:
             subject_dict[subitem[0]] = subitem[1]
 
     issuer_dict = {}
-    for item in cert.get('issuer', []):
+    for item in cert.get("issuer", []):
         for subitem in item:
             issuer_dict[subitem[0]] = subitem[1]
 
-    common_name = subject_dict.get('commonName', 'N/A')
-    issuer_name = issuer_dict.get('commonName', issuer_dict.get('organizationName', 'N/A'))
+    common_name = subject_dict.get("commonName", "N/A")
+    issuer_name = issuer_dict.get("commonName", issuer_dict.get("organizationName", "N/A"))
 
-    not_before_str = cert.get('notBefore', '')
-    not_after_str = cert.get('notAfter', '')
+    not_before_str = cert.get("notBefore", "")
+    not_after_str = cert.get("notAfter", "")
 
     days_left = -1
     valid_from = "N/A"
     valid_until = "N/A"
 
-    for fmt in ('%b %d %H:%M:%S %Y %Z', '%b  %d %H:%M:%S %Y %Z', '%b %d %H:%M:%S %Y'):
+    for fmt in ("%b %d %H:%M:%S %Y %Z", "%b  %d %H:%M:%S %Y %Z", "%b %d %H:%M:%S %Y"):
         try:
             clean_before = " ".join(not_before_str.split())
             clean_after = " ".join(not_after_str.split())
             dt_before = datetime.strptime(clean_before, fmt)
             dt_after = datetime.strptime(clean_after, fmt)
 
-            valid_from = dt_before.strftime('%Y-%m-%d %H:%M:%S')
-            valid_until = dt_after.strftime('%Y-%m-%d %H:%M:%S')
+            valid_from = dt_before.strftime("%Y-%m-%d %H:%M:%S")
+            valid_until = dt_after.strftime("%Y-%m-%d %H:%M:%S")
 
             now = datetime.now(timezone.utc).replace(tzinfo=None)
             days_left = (dt_after - now).days
@@ -374,22 +386,15 @@ def parse_ssl_dict(cert: dict) -> dict:
         except Exception:
             pass
 
-    serial = cert.get('serialNumber', 'N/A')
+    serial = cert.get("serialNumber", "N/A")
 
     alt_names = []
-    for type_name, val in cert.get('subjectAltName', []):
-        if type_name == 'DNS':
+    for type_name, val in cert.get("subjectAltName", []):
+        if type_name == "DNS":
             alt_names.append(val)
 
-    return {
-        "common_name": common_name,
-        "issuer": issuer_name,
-        "valid_from": valid_from,
-        "valid_until": valid_until,
-        "days_left": days_left,
-        "serial": serial,
-        "alt_names": alt_names
-    }
+    return {"common_name": common_name, "issuer": issuer_name, "valid_from": valid_from, "valid_until": valid_until, "days_left": days_left, "serial": serial, "alt_names": alt_names}
+
 
 def format_ssl_html(domain: str, raw_cert: dict) -> str:
     parsed = parse_ssl_dict(raw_cert)
@@ -491,9 +496,11 @@ def format_ssl_html(domain: str, raw_cert: dict) -> str:
     """
     return html
 
+
 def sync_get_ip_info(url: str):
     res = requests.get(url, timeout=5)
     return res.json()
+
 
 @router.get("/ip-info")
 async def get_ip_info(ip: str | None = None, request: Request = None):
@@ -517,6 +524,7 @@ async def get_ip_info(ip: str | None = None, request: Request = None):
             return HTMLResponse(content=format_error_html(msg))
         raise HTTPException(status_code=400, detail=msg)
 
+
 @router.get("/dns")
 async def dns_lookup(domain: str, request: Request = None):
     is_htmx = request is not None and request.headers.get("hx-request") is not None
@@ -526,10 +534,7 @@ async def dns_lookup(domain: str, request: Request = None):
         loop = asyncio.get_running_loop()
         record_types = ["A", "AAAA", "MX", "TXT", "NS"]
 
-        tasks = [
-            loop.run_in_executor(None, query_doh, cleaned_domain, rtype)
-            for rtype in record_types
-        ]
+        tasks = [loop.run_in_executor(None, query_doh, cleaned_domain, rtype) for rtype in record_types]
         results = await asyncio.gather(*tasks)
         records = dict(zip(record_types, results))
 
@@ -537,10 +542,11 @@ async def dns_lookup(domain: str, request: Request = None):
             return HTMLResponse(content=format_dns_html(cleaned_domain, records))
         return {"domain": cleaned_domain, "records": records}
     except Exception as e:
-        msg = e.detail if hasattr(e, 'detail') else str(e)
+        msg = e.detail if hasattr(e, "detail") else str(e)
         if is_htmx:
             return HTMLResponse(content=format_error_html(msg))
         raise HTTPException(status_code=400, detail=msg)
+
 
 def sync_ssl_check(domain: str):
     context = ssl.create_default_context()
@@ -549,6 +555,7 @@ def sync_ssl_check(domain: str):
         if not cert:
             raise Exception("No certificate returned by peer")
         return cert
+
 
 @router.get("/ssl")
 async def ssl_check(domain: str, request: Request = None):
@@ -560,16 +567,18 @@ async def ssl_check(domain: str, request: Request = None):
             return HTMLResponse(content=format_ssl_html(cleaned_domain, cert))
         return cert
     except Exception as e:
-        msg = e.detail if hasattr(e, 'detail') else str(e)
+        msg = e.detail if hasattr(e, "detail") else str(e)
         if is_htmx:
             return HTMLResponse(content=format_error_html(msg))
         raise HTTPException(status_code=400, detail=msg)
+
 
 def sync_whois_lookup(domain: str):
     res = requests.get(f"https://rdap.org/domain/{domain}", timeout=5)
     if res.status_code != 200:
         raise Exception(f"RDAP query failed with status code {res.status_code}")
     return res.json()
+
 
 @router.get("/whois")
 async def whois_lookup(domain: str, request: Request = None):
@@ -581,7 +590,7 @@ async def whois_lookup(domain: str, request: Request = None):
             return HTMLResponse(content=format_whois_html(cleaned_domain, data))
         return data
     except Exception as e:
-        msg = e.detail if hasattr(e, 'detail') else str(e)
+        msg = e.detail if hasattr(e, "detail") else str(e)
         if is_htmx:
             return HTMLResponse(content=format_error_html(msg))
         raise HTTPException(status_code=400, detail=msg)
