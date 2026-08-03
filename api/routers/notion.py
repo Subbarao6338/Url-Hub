@@ -24,13 +24,18 @@ stop_event = threading.Event()
 task_history = []
 
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 def load_history():
     global task_history
     if os.path.exists(HISTORY_FILE):
         try:
             with open(HISTORY_FILE, "r") as f:
                 task_history = json.load(f)
-        except Exception:
+        except Exception as e:
+            logger.error(f"Error loading history: {e}")
             task_history = []
 
 
@@ -40,12 +45,17 @@ def save_history():
             os.makedirs(UPLOAD_FOLDER)
         with open(HISTORY_FILE, "w") as f:
             json.dump(task_history, f)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.error(f"Error saving history: {e}")
+
+
+import secrets
 
 
 def add_to_history(task_type, details, status="success"):
-    task_history.insert(0, {"id": f"{int(time.time())}_{random.randint(1000, 9999)}", "type": task_type, "details": details, "status": status, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+    # Generate a cryptographically secure random 4-digit ID suffix using secrets (instead of standard random)
+    secure_rand = 1000 + secrets.randbelow(9000)
+    task_history.insert(0, {"id": f"{int(time.time())}_{secure_rand}", "type": task_type, "details": details, "status": status, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
     if len(task_history) > 20:
         task_history.pop()
     save_history()

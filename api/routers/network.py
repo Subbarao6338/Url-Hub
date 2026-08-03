@@ -54,6 +54,10 @@ def validate_domain(domain: str) -> str:
     return cleaned_domain
 
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 def query_doh(domain: str, qtype: str) -> list:
     try:
         url = f"https://cloudflare-dns.com/dns-query?name={domain}&type={qtype}"
@@ -63,7 +67,8 @@ def query_doh(domain: str, qtype: str) -> list:
             data = res.json()
             answers = data.get("Answer", [])
             return [ans.get("data") for ans in answers if "data" in ans]
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Cloudflare DoH failed, trying Google DoH: {e}")
         # Fallback to Google DoH
         try:
             url = f"https://dns.google/resolve?name={domain}&type={qtype}"
@@ -72,8 +77,8 @@ def query_doh(domain: str, qtype: str) -> list:
                 data = res.json()
                 answers = data.get("Answer", [])
                 return [ans.get("data") for ans in answers if "data" in ans]
-        except Exception:
-            pass
+        except Exception as ex:
+            logger.error(f"Google DoH failed as well: {ex}")
     return []
 
 
