@@ -1,6 +1,7 @@
 import asyncio
 import ipaddress
 import json
+import logging
 import re
 import socket
 import ssl
@@ -10,6 +11,8 @@ import anyio
 import requests
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -52,10 +55,6 @@ def validate_domain(domain: str) -> str:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Validation error: {e!s}")
     return cleaned_domain
-
-
-import logging
-logger = logging.getLogger(__name__)
 
 
 def query_doh(domain: str, qtype: str) -> list:

@@ -1,6 +1,7 @@
 import json
+import logging
 import os
-import random
+import secrets
 import shutil
 import threading
 import time
@@ -14,6 +15,8 @@ from api.core.notion.parsers import process_uploaded_document
 from api.core.notion.scanner import FolderScanner
 from api.core.notion.scraper import ForumCrawler
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter()
 UPLOAD_FOLDER = "/tmp/hub_cache"
 HISTORY_FILE = os.path.join(UPLOAD_FOLDER, "notion_task_history.json")
@@ -22,10 +25,6 @@ HISTORY_FILE = os.path.join(UPLOAD_FOLDER, "notion_task_history.json")
 job_status = {"status": "idle", "message": "", "progress": 0}
 stop_event = threading.Event()
 task_history = []
-
-
-import logging
-logger = logging.getLogger(__name__)
 
 
 def load_history():
@@ -49,7 +48,6 @@ def save_history():
         logger.error(f"Error saving history: {e}")
 
 
-import secrets
 
 
 def add_to_history(task_type, details, status="success"):
