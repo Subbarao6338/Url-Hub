@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 
-// Import subtools
-import SubnetCalc from './subtools/SubnetCalc';
-import SpeedTest from './subtools/SpeedTest';
-import IpInfo from './subtools/IpInfo';
-import DnsLookup from './subtools/DnsLookup';
-import WhoisLookup from './subtools/WhoisLookup';
-import SslChecker from './subtools/SslChecker';
-import PingTester from './subtools/PingTester';
-import GeoTool from './subtools/GeoTool';
-import BluetoothScanner from './subtools/BluetoothScanner';
+// Lazy load subtools
+const SubnetCalc = lazy(() => import('./subtools/SubnetCalc'));
+const SpeedTest = lazy(() => import('./subtools/SpeedTest'));
+const IpInfo = lazy(() => import('./subtools/IpInfo'));
+const DnsLookup = lazy(() => import('./subtools/DnsLookup'));
+const WhoisLookup = lazy(() => import('./subtools/WhoisLookup'));
+const SslChecker = lazy(() => import('./subtools/SslChecker'));
+const PingTester = lazy(() => import('./subtools/PingTester'));
+const GeoTool = lazy(() => import('./subtools/GeoTool'));
+const BluetoothScanner = lazy(() => import('./subtools/BluetoothScanner'));
 
 const NETWORK_CATEGORIES = [
   {
@@ -126,15 +126,17 @@ const NetworkTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        {activeTab === 'ip-info' && <IpInfo />}
-        {activeTab === 'dns' && <DnsLookup />}
-        {activeTab === 'whois' && <WhoisLookup />}
-        {activeTab === 'ssl' && <SslChecker />}
-        {activeTab === 'subnet' && <SubnetCalc />}
-        {activeTab === 'speed' && <SpeedTest />}
-        {activeTab === 'ping' && <PingTester />}
-        {activeTab === 'geo' && <GeoTool />}
-        {activeTab === 'bluetooth' && <BluetoothScanner />}
+        <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
+          {activeTab === 'ip-info' && <IpInfo />}
+          {activeTab === 'dns' && <DnsLookup />}
+          {activeTab === 'whois' && <WhoisLookup />}
+          {activeTab === 'ssl' && <SslChecker />}
+          {activeTab === 'subnet' && <SubnetCalc />}
+          {activeTab === 'speed' && <SpeedTest />}
+          {activeTab === 'ping' && <PingTester />}
+          {activeTab === 'geo' && <GeoTool />}
+          {activeTab === 'bluetooth' && <BluetoothScanner />}
+        </Suspense>
       </div>
     </div>
   );
