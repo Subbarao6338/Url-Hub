@@ -53,6 +53,9 @@ const SqlFormatter = () => {
             // Tokenize by spaces but keep parentheses and commas as separate tokens
             const tokens = sql.replace(/([(),])/g, ' $1 ').split(/\s+/).filter(t => t.length > 0);
 
+            // Keep track of parentheses kind (isSubquery or standard expression) to correctly match depth levels
+            const parenStack = [];
+
             tokens.forEach((token, idx) => {
                 const upperToken = token.toUpperCase();
 
@@ -67,6 +70,8 @@ const SqlFormatter = () => {
                     const nextToken = tokens[idx + 1]?.toUpperCase();
                     const isSubquery = nextToken === 'SELECT';
 
+                    parenStack.push(isSubquery);
+
                     if (isSubquery) {
                         if (currentLine.trim()) lines.push(currentLine.trimEnd());
                         lines.push("  ".repeat(depth) + "(");
@@ -80,22 +85,9 @@ const SqlFormatter = () => {
                     depth = Math.max(0, depth - 1);
                     if (currentLine.trim()) lines.push(currentLine.trimEnd());
 
-                    // If it was a subquery, close on new line
-                    const prevTokens = tokens.slice(0, idx);
-                    let openCount = 0;
-                    let lastOpenSelectIdx = -1;
-                    for(let i = idx - 1; i >= 0; i--) {
-                        if (tokens[i] === ')') openCount++;
-                        if (tokens[i] === '(') {
-                            if (openCount === 0) {
-                                if (tokens[i+1]?.toUpperCase() === 'SELECT') lastOpenSelectIdx = i;
-                                break;
-                            }
-                            openCount--;
-                        }
-                    }
+                    const isSubquery = parenStack.pop();
 
-                    if (lastOpenSelectIdx !== -1) {
+                    if (isSubquery) {
                         lines.push("  ".repeat(depth) + ")");
                         currentLine = "  ".repeat(depth) + " ";
                     } else {

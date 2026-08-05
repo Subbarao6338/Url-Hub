@@ -73,9 +73,9 @@ const JsonToTs = () => {
 
             const getUniqueInterfaceName = (key) => {
                 let name = key.charAt(0).toUpperCase() + key.slice(1);
-                // Remove non-alphanumeric for interface name
+                // Remove non-alphanumeric for interface name and ensure it starts with a letter
                 name = name.replace(/[^a-zA-Z0-9]/g, '');
-                if (!name) name = 'Item';
+                if (!name || /^[0-9]/.test(name)) name = 'Item' + name;
 
                 let uniqueName = name;
                 let counter = 1;
@@ -87,7 +87,8 @@ const JsonToTs = () => {
             };
 
             const generateInterface = (o, name, originalArray = null) => {
-                if (interfaces.has(name)) return;
+                // If we already have a fully generated interface under this name, skip
+                if (interfaces.has(name) && interfaces.get(name) !== '') return;
                 // Add a placeholder to handle circular references if they were possible (though JSON isn't circular)
                 interfaces.set(name, '');
 
@@ -99,8 +100,10 @@ const JsonToTs = () => {
                 } else {
                     entries.forEach(([k, v]) => {
                         const type = getTypeName(v, k);
+                        // Sanitize property keys if they contain special characters
+                        const sanitizedKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(k) ? k : `"${k}"`;
                         const isOptional = originalArray && originalArray.some(item => item && typeof item === 'object' && item[k] === undefined);
-                        str += `  ${k}${isOptional ? '?' : ''}: ${type};\n`;
+                        str += `  ${sanitizedKey}${isOptional ? '?' : ''}: ${type};\n`;
                     });
                 }
                 str += '}\n';
