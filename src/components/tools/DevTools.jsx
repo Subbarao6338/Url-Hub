@@ -1,30 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 
-// Import subtools
-import SqlFormatter from './subtools/SqlFormatter';
-import DiffViewer from './subtools/DiffViewer';
-import RegexTester from './subtools/RegexTester';
-import HashHmac from './subtools/HashHmac';
-import QrBarcodeGen from './subtools/QrBarcodeGen';
-import JsonToTs from './subtools/JsonToTs';
-import ColorPicker from './subtools/ColorPicker';
-import UnitConverter from './subtools/UnitConverter';
-import KqlFormatter from './subtools/KqlFormatter';
-import CurrencyConverter from './subtools/CurrencyConverter';
-import JwtDebugger from './subtools/JwtDebugger';
-import CronParser from './subtools/CronParser';
-import CodeMinifier from './subtools/CodeMinifier';
-import XmlTools from './subtools/XmlTools';
-import CodeInspiration from './subtools/CodeInspiration';
-import JsonFormatter from './subtools/JsonFormatter';
-import Base64Tool from './subtools/Base64Tool';
-import YamlJsonConverter from './subtools/YamlJsonConverter';
-import OtpGenerator from './subtools/OtpGenerator';
-import UrlTool from './subtools/UrlTool';
-import PasswordTool from './subtools/PasswordTool';
-import RsaTool from './subtools/RsaTool';
-import MarkdownTable from './subtools/MarkdownTable';
-import SqlBuilder from './subtools/SqlBuilder';
+// Lazy load subtools
+const SqlFormatter = lazy(() => import('./subtools/SqlFormatter'));
+const DiffViewer = lazy(() => import('./subtools/DiffViewer'));
+const RegexTester = lazy(() => import('./subtools/RegexTester'));
+const HashHmac = lazy(() => import('./subtools/HashHmac'));
+const QrBarcodeGen = lazy(() => import('./subtools/QrBarcodeGen'));
+const JsonToTs = lazy(() => import('./subtools/JsonToTs'));
+const ColorPicker = lazy(() => import('./subtools/ColorPicker'));
+const UnitConverter = lazy(() => import('./subtools/UnitConverter'));
+const KqlFormatter = lazy(() => import('./subtools/KqlFormatter'));
+const CurrencyConverter = lazy(() => import('./subtools/CurrencyConverter'));
+const JwtDebugger = lazy(() => import('./subtools/JwtDebugger'));
+const CronParser = lazy(() => import('./subtools/CronParser'));
+const CodeMinifier = lazy(() => import('./subtools/CodeMinifier'));
+const XmlTools = lazy(() => import('./subtools/XmlTools'));
+const CodeInspiration = lazy(() => import('./subtools/CodeInspiration'));
+const JsonFormatter = lazy(() => import('./subtools/JsonFormatter'));
+const Base64Tool = lazy(() => import('./subtools/Base64Tool'));
+const YamlJsonConverter = lazy(() => import('./subtools/YamlJsonConverter'));
+const OtpGenerator = lazy(() => import('./subtools/OtpGenerator'));
+const UrlTool = lazy(() => import('./subtools/UrlTool'));
+const PasswordTool = lazy(() => import('./subtools/PasswordTool'));
+const RsaTool = lazy(() => import('./subtools/RsaTool'));
+const MarkdownTable = lazy(() => import('./subtools/MarkdownTable'));
+const SqlBuilder = lazy(() => import('./subtools/SqlBuilder'));
 
 const DEV_CATEGORIES = [
   {
@@ -157,30 +157,32 @@ const DevTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        {activeTab === 'json-fmt' && <JsonFormatter />}
-        {activeTab === 'sql' && <SqlFormatter />}
-        {activeTab === 'diff' && <DiffViewer />}
-        {activeTab === 'regex' && <RegexTester />}
-        {activeTab === 'security' && <HashHmac />}
-        {activeTab === 'qr-barcode' && <QrBarcodeGen />}
-        {activeTab === 'json-ts' && <JsonToTs />}
-        {activeTab === 'color' && <ColorPicker />}
-        {activeTab === 'converter' && <UnitConverter />}
-        {activeTab === 'currency' && <CurrencyConverter />}
-        {activeTab === 'kusto' && <KqlFormatter />}
-        {activeTab === 'jwt' && <JwtDebugger />}
-        {activeTab === 'cron' && <CronParser />}
-        {activeTab === 'minifier' && <CodeMinifier />}
-        {(activeTab === 'xml-fmt' || activeTab === 'xml-json') && <XmlTools />}
-        {activeTab === 'url' && <UrlTool />}
-        {activeTab === 'base64' && <Base64Tool />}
-        {activeTab === 'yaml' && <YamlJsonConverter />}
-        {activeTab === 'otp' && <OtpGenerator />}
-        {activeTab === 'password' && <PasswordTool />}
-        {activeTab === 'rsa' && <RsaTool />}
-        {activeTab === 'inspiration' && <CodeInspiration />}
-        {activeTab === 'md-table' && <MarkdownTable />}
-        {activeTab === 'sql-builder' && <SqlBuilder />}
+        <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
+          {activeTab === 'json-fmt' && <JsonFormatter />}
+          {activeTab === 'sql' && <SqlFormatter />}
+          {activeTab === 'diff' && <DiffViewer />}
+          {activeTab === 'regex' && <RegexTester />}
+          {activeTab === 'security' && <HashHmac />}
+          {activeTab === 'qr-barcode' && <QrBarcodeGen />}
+          {activeTab === 'json-ts' && <JsonToTs />}
+          {activeTab === 'color' && <ColorPicker />}
+          {activeTab === 'converter' && <UnitConverter />}
+          {activeTab === 'currency' && <CurrencyConverter />}
+          {activeTab === 'kusto' && <KqlFormatter />}
+          {activeTab === 'jwt' && <JwtDebugger />}
+          {activeTab === 'cron' && <CronParser />}
+          {activeTab === 'minifier' && <CodeMinifier />}
+          {(activeTab === 'xml-fmt' || activeTab === 'xml-json') && <XmlTools />}
+          {activeTab === 'url' && <UrlTool />}
+          {activeTab === 'base64' && <Base64Tool />}
+          {activeTab === 'yaml' && <YamlJsonConverter />}
+          {activeTab === 'otp' && <OtpGenerator />}
+          {activeTab === 'password' && <PasswordTool />}
+          {activeTab === 'rsa' && <RsaTool />}
+          {activeTab === 'inspiration' && <CodeInspiration />}
+          {activeTab === 'md-table' && <MarkdownTable />}
+          {activeTab === 'sql-builder' && <SqlBuilder />}
+        </Suspense>
       </div>
     </div>
   );

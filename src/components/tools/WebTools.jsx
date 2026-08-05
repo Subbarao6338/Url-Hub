@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import ToolResult from './ToolResult';
 
-// Import subtools
-import SocialAudit from './subtools/SocialAudit';
-import SocialDownloader from './subtools/SocialDownloader';
-import WebArchive from './subtools/WebArchive';
-import UrlToPdf from './subtools/UrlToPdf';
-import UserScripts from './subtools/UserScripts';
-import Bookmarklets from './subtools/Bookmarklets';
-import UrlToMarkdown from './subtools/UrlToMarkdown';
+// Lazy load subtools
+const SocialAudit = lazy(() => import('./subtools/SocialAudit'));
+const SocialDownloader = lazy(() => import('./subtools/SocialDownloader'));
+const WebArchive = lazy(() => import('./subtools/WebArchive'));
+const UrlToPdf = lazy(() => import('./subtools/UrlToPdf'));
+const UserScripts = lazy(() => import('./subtools/UserScripts'));
+const Bookmarklets = lazy(() => import('./subtools/Bookmarklets'));
+const UrlToMarkdown = lazy(() => import('./subtools/UrlToMarkdown'));
 
 const WEB_TABS = [
   { id: 'social', label: 'Social Audit', icon: 'share' },
@@ -89,13 +89,15 @@ const WebTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        {activeTab === 'social' && <SocialAudit />}
-        {activeTab === 'social-downloader' && <SocialDownloader />}
-        {activeTab === 'archive' && <WebArchive />}
-        {activeTab === 'url2pdf' && <UrlToPdf />}
-        {activeTab === 'userscripts' && <UserScripts />}
-        {activeTab === 'bookmarklets' && <Bookmarklets />}
-        {activeTab === 'url2markdown' && <UrlToMarkdown />}
+        <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
+          {activeTab === 'social' && <SocialAudit />}
+          {activeTab === 'social-downloader' && <SocialDownloader />}
+          {activeTab === 'archive' && <WebArchive />}
+          {activeTab === 'url2pdf' && <UrlToPdf />}
+          {activeTab === 'userscripts' && <UserScripts />}
+          {activeTab === 'bookmarklets' && <Bookmarklets />}
+          {activeTab === 'url2markdown' && <UrlToMarkdown />}
+        </Suspense>
       </div>
     </div>
   );

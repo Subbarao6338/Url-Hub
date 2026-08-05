@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import ToolResult from './ToolResult';
 
-// Import subtools
-import AgeCalculator from './subtools/AgeCalculator';
-import TimestampTool from './subtools/TimestampTool';
-import Stopwatch from './subtools/Stopwatch';
-import Pomodoro from './subtools/Pomodoro';
-import WorldClock from './subtools/WorldClock';
-import TimezoneConverter from './subtools/TimezoneConverter';
-import DateDifference from './subtools/DateDifference';
-import Countdown from './subtools/Countdown';
-import PanchangamTool from './subtools/PanchangamTool';
-import WordRankCalculator from './subtools/WordRankCalculator';
+// Lazy load subtools
+const AgeCalculator = lazy(() => import('./subtools/AgeCalculator'));
+const TimestampTool = lazy(() => import('./subtools/TimestampTool'));
+const Stopwatch = lazy(() => import('./subtools/Stopwatch'));
+const Pomodoro = lazy(() => import('./subtools/Pomodoro'));
+const WorldClock = lazy(() => import('./subtools/WorldClock'));
+const TimezoneConverter = lazy(() => import('./subtools/TimezoneConverter'));
+const DateDifference = lazy(() => import('./subtools/DateDifference'));
+const Countdown = lazy(() => import('./subtools/Countdown'));
+const PanchangamTool = lazy(() => import('./subtools/PanchangamTool'));
+const WordRankCalculator = lazy(() => import('./subtools/WordRankCalculator'));
 
 const DATETIME_TABS = [
   { id: 'age', label: 'Age Calculator', icon: 'cake' },
@@ -95,16 +95,18 @@ const DateTimeTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        {activeTab === 'age' && <AgeCalculator />}
-        {activeTab === 'timestamp' && <TimestampTool />}
-        {activeTab === 'stopwatch' && <Stopwatch />}
-        {activeTab === 'pomodoro' && <Pomodoro />}
-        {activeTab === 'worldclock' && <WorldClock />}
-        {activeTab === 'timezone' && <TimezoneConverter />}
-        {activeTab === 'datediff' && <DateDifference />}
-        {activeTab === 'countdown' && <Countdown />}
-        {activeTab === 'panchangam' && <PanchangamTool />}
-        {activeTab === 'word-rank' && <WordRankCalculator />}
+        <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
+          {activeTab === 'age' && <AgeCalculator />}
+          {activeTab === 'timestamp' && <TimestampTool />}
+          {activeTab === 'stopwatch' && <Stopwatch />}
+          {activeTab === 'pomodoro' && <Pomodoro />}
+          {activeTab === 'worldclock' && <WorldClock />}
+          {activeTab === 'timezone' && <TimezoneConverter />}
+          {activeTab === 'datediff' && <DateDifference />}
+          {activeTab === 'countdown' && <Countdown />}
+          {activeTab === 'panchangam' && <PanchangamTool />}
+          {activeTab === 'word-rank' && <WordRankCalculator />}
+        </Suspense>
       </div>
     </div>
   );

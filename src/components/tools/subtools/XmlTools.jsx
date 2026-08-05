@@ -113,12 +113,22 @@ const XmlTools = () => {
         }
     };
 
+    const handleClear = () => {
+        setInput('');
+        setResult(null);
+    };
+
     return (
         <div className="card p-30 glass-card grid gap-15">
             <textarea className="pill w-full font-mono" rows="8" placeholder="Paste XML here..." value={input} onChange={e=>setInput(e.target.value)} />
-            <div className="grid grid-2-cols gap-10">
-                <button className="btn-primary" onClick={formatXml}>Format XML</button>
-                <button className="pill" onClick={xmlToJson}>XML to JSON</button>
+            <div className="flex gap-10">
+                <button className="btn-primary flex-1" onClick={formatXml}>Format XML</button>
+                <button className="pill flex-1" onClick={xmlToJson}>XML to JSON</button>
+                {(input || result) && (
+                    <button className="pill" onClick={handleClear} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)' }}>
+                        Clear
+                    </button>
+                )}
             </div>
             <ToolResult result={result} />
         </div>

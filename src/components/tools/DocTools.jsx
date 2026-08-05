@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 
-// Import subtools
-import PdfHub from './subtools/PdfHub';
-import ImageHub from './subtools/ImageHub';
-import TextHub from './subtools/TextHub';
-import MarkdownEditor from './subtools/MarkdownEditor';
-import DocTranslator from './subtools/DocTranslator';
-import BatchConverter from './subtools/BatchConverter';
-import DocxToMd from './subtools/DocxToMd';
-import OcrTool from './subtools/OcrTool';
+// Lazy load subtools
+const PdfHub = lazy(() => import('./subtools/PdfHub'));
+const ImageHub = lazy(() => import('./subtools/ImageHub'));
+const TextHub = lazy(() => import('./subtools/TextHub'));
+const MarkdownEditor = lazy(() => import('./subtools/MarkdownEditor'));
+const DocTranslator = lazy(() => import('./subtools/DocTranslator'));
+const BatchConverter = lazy(() => import('./subtools/BatchConverter'));
+const DocxToMd = lazy(() => import('./subtools/DocxToMd'));
+const OcrTool = lazy(() => import('./subtools/OcrTool'));
 
 const DOC_CATEGORIES = [
   {
@@ -124,14 +124,16 @@ const DocTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        {activeTab === 'pdf' && <PdfHub />}
-        {activeTab === 'image' && <ImageHub />}
-        {activeTab === 'text' && <TextHub />}
-        {activeTab === 'md-editor' && <MarkdownEditor />}
-        {activeTab === 'doc-translator' && <DocTranslator />}
-        {activeTab === 'batch' && <BatchConverter />}
-        {activeTab === 'docx-md' && <DocxToMd />}
-        {activeTab === 'ocr' && <OcrTool />}
+        <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
+          {activeTab === 'pdf' && <PdfHub />}
+          {activeTab === 'image' && <ImageHub />}
+          {activeTab === 'text' && <TextHub />}
+          {activeTab === 'md-editor' && <MarkdownEditor />}
+          {activeTab === 'doc-translator' && <DocTranslator />}
+          {activeTab === 'batch' && <BatchConverter />}
+          {activeTab === 'docx-md' && <DocxToMd />}
+          {activeTab === 'ocr' && <OcrTool />}
+        </Suspense>
       </div>
     </div>
   );

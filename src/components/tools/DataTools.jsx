@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 
-// Import subtools
-import DataViewer from './subtools/DataViewer';
-import SyntheticDataTool from './subtools/SyntheticDataTool';
-import MockDataGenerator from './subtools/MockDataGenerator';
-import DataAnonymizer from './subtools/DataAnonymizer';
-import ReconciliationTool from './subtools/ReconciliationTool';
-import ImageLab from './subtools/ImageLab';
-import JsonCsvConverter from './subtools/JsonCsvConverter';
-import DataScienceHub from './subtools/DataScienceHub';
-import AdvancedDataHub from './subtools/AdvancedDataHub';
-import FinanceHub from './subtools/FinanceHub';
+// Lazy load subtools
+const DataViewer = lazy(() => import('./subtools/DataViewer'));
+const SyntheticDataTool = lazy(() => import('./subtools/SyntheticDataTool'));
+const MockDataGenerator = lazy(() => import('./subtools/MockDataGenerator'));
+const DataAnonymizer = lazy(() => import('./subtools/DataAnonymizer'));
+const ReconciliationTool = lazy(() => import('./subtools/ReconciliationTool'));
+const ImageLab = lazy(() => import('./subtools/ImageLab'));
+const JsonCsvConverter = lazy(() => import('./subtools/JsonCsvConverter'));
+const DataScienceHub = lazy(() => import('./subtools/DataScienceHub'));
+const AdvancedDataHub = lazy(() => import('./subtools/AdvancedDataHub'));
+const FinanceHub = lazy(() => import('./subtools/FinanceHub'));
 
 const DATA_CATEGORIES = [
   {
@@ -129,16 +129,18 @@ const DataTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        {activeTab === 'viewer' && <DataViewer setGlobalData={setGlobalData} setRawFile={() => {}} />}
-        {activeTab === 'science' && <DataScienceHub data={globalData} />}
-        {activeTab === 'adv-data' && <AdvancedDataHub data={globalData} />}
-        {activeTab === 'reconcile' && <ReconciliationTool />}
-        {activeTab === 'synthetic' && <SyntheticDataTool data={globalData} />}
-        {activeTab === 'image-lab' && <ImageLab />}
-        {activeTab === 'anonymizer' && <DataAnonymizer data={globalData} />}
-        {activeTab === 'json-csv' && <JsonCsvConverter />}
-        {activeTab === 'mock' && <MockDataGenerator />}
-        {activeTab === 'finance' && <FinanceHub />}
+        <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
+          {activeTab === 'viewer' && <DataViewer setGlobalData={setGlobalData} setRawFile={() => {}} />}
+          {activeTab === 'science' && <DataScienceHub data={globalData} />}
+          {activeTab === 'adv-data' && <AdvancedDataHub data={globalData} />}
+          {activeTab === 'reconcile' && <ReconciliationTool />}
+          {activeTab === 'synthetic' && <SyntheticDataTool data={globalData} />}
+          {activeTab === 'image-lab' && <ImageLab />}
+          {activeTab === 'anonymizer' && <DataAnonymizer data={globalData} />}
+          {activeTab === 'json-csv' && <JsonCsvConverter />}
+          {activeTab === 'mock' && <MockDataGenerator />}
+          {activeTab === 'finance' && <FinanceHub />}
+        </Suspense>
       </div>
     </div>
   );
