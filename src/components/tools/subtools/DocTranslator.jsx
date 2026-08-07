@@ -200,9 +200,12 @@ const DocTranslator = () => {
         const sortedKeys = Object.keys(DICTIONARY).sort((a, b) => b.length - a.length);
 
         sortedKeys.forEach(key => {
-            const regex = new RegExp(`(?<=\\s|^|[.,!?;])${key}(?=\\s|$|[.,!?;])`, 'gi');
-            translated = translated.replace(regex, (matched) => {
-                return DICTIONARY[key.toLowerCase()];
+            // Escape RegExp special characters and support multi-space variability
+            const escapedKey = key.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&').replace(/\s+/g, '\\s+');
+            // Use safe, lookbehind-free word boundary boundaries for maximum browser compatibility
+            const regex = new RegExp(`(^|[^a-zA-Z0-9_'])${escapedKey}([^a-zA-Z0-9_']|$)`, 'gi');
+            translated = translated.replace(regex, (match, p1, p2) => {
+                return p1 + DICTIONARY[key.toLowerCase()] + p2;
             });
         });
 
