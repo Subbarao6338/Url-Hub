@@ -16,11 +16,28 @@ const CURRENCIES = [
     { code: 'ZAR', name: 'South African Rand (R)' }
 ];
 
+// Robust static fallback exchange rates (relative to USD) if the live API fails or is offline
+const FALLBACK_RATES = {
+    USD: 1.0,
+    EUR: 0.92,
+    GBP: 0.79,
+    JPY: 155.5,
+    INR: 83.5,
+    CAD: 1.37,
+    AUD: 1.51,
+    CHF: 0.90,
+    CNY: 7.25,
+    NZD: 1.63,
+    SGD: 1.35,
+    ZAR: 18.2
+};
+
 const CurrencyConverter = () => {
     const [amount, setAmount] = useState('100');
     const [fromCur, setFromCur] = useState('USD');
     const [toCur, setToCur] = useState('INR');
     const [rates, setRates] = useState(null);
+    const [isFallback, setIsFallback] = useState(false);
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
 
@@ -33,12 +50,16 @@ const CurrencyConverter = () => {
             const data = await response.json();
             if (data.rates) {
                 setRates(data.rates);
-                calculateConversion(data.rates);
+                setIsFallback(false);
+                calculateConversion(data.rates, false);
             } else {
                 throw new Error('Invalid rate response format.');
             }
         } catch (e) {
-            setResult({ error: `Could not retrieve live exchange rates: ${e.message}` });
+            console.warn("Live currency rates API down. Using enterprise offline fallback rates.", e.message);
+            setRates(FALLBACK_RATES);
+            setIsFallback(true);
+            calculateConversion(FALLBACK_RATES, true);
         } finally {
             setLoading(false);
         }
@@ -48,7 +69,7 @@ const CurrencyConverter = () => {
         fetchRates();
     }, []);
 
-    const calculateConversion = (activeRates = rates) => {
+    const calculateConversion = (activeRates = rates, activeFallback = isFallback) => {
         if (!activeRates) return;
         const parsedAmount = parseFloat(amount);
         if (isNaN(parsedAmount) || parsedAmount <= 0) {
@@ -63,7 +84,7 @@ const CurrencyConverter = () => {
             text: `${parsedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${fromCur} = ${targetAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${toCur}`,
             meta: {
                 rate: `1 ${fromCur} = ${(targetAmount / parsedAmount).toFixed(4)} ${toCur}`,
-                source: 'Live Exchange Rates API (Online)'
+                source: activeFallback ? 'Local Offline Dictionary (Fallback Rates)' : 'Live Exchange Rates API (Online)'
             }
         });
     };
@@ -78,12 +99,19 @@ const CurrencyConverter = () => {
         if (rates) {
             calculateConversion();
         }
-    }, [amount, fromCur, toCur, rates]);
+    }, [amount, fromCur, toCur, rates, isFallback]);
 
     return (
         <div className="card p-30 glass-card text-center grid gap-15">
             <h3>Currency Exchange & Converter</h3>
             <p className="smallest opacity-6">Real-time currency exchange rates and calculator powered by the Open Exchange Rate API.</p>
+
+            {isFallback && (
+                <div className="alert-info smallest p-10 rounded-lg opacity-8 flex-center gap-10 animate-fadeIn">
+                    <span className="material-icons color-info" style={{ fontSize: '1rem' }}>cloud_off</span>
+                    <span>Offline Mode: Using cached standard fallback exchange rates.</span>
+                </div>
+            )}
 
             <div className="form-group text-left">
                 <label className="smallest opacity-6 uppercase ml-10">Amount</label>
