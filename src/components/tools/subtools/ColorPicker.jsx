@@ -3,6 +3,7 @@ import ToolResult from '../ToolResult';
 
 const ColorPicker = () => {
     const [color, setColor] = useState('#4a7c59');
+    const [copyResult, setCopyResult] = useState(null);
 
     const hexToRgb = (hex) => {
         const r = parseInt(hex.slice(1, 3), 16);
@@ -13,11 +14,13 @@ const ColorPicker = () => {
 
     const handleReset = () => {
         setColor('#4a7c59');
+        setCopyResult(null);
     };
 
     const copyToClipboard = (text, label) => {
         navigator.clipboard.writeText(text);
-        alert(`Copied ${label} value to clipboard: ${text}`);
+        setCopyResult({ text: `Copied ${label} value to clipboard: ${text}`, success: true });
+        setTimeout(() => setCopyResult(null), 3000);
     };
 
     return (
@@ -46,6 +49,7 @@ const ColorPicker = () => {
                     </button>
                 </div>
             )}
+            {copyResult && <ToolResult result={copyResult} />}
             <ToolResult result={{ text: `HEX: ${color.toUpperCase()}\nRGB: ${hexToRgb(color)}` }} title="Color Values" />
         </div>
     );
