@@ -28,8 +28,12 @@ const PasswordTool = () => {
 
         if (!charset) {
             setPassword('');
+            setResult({ error: 'Please select at least one character type option (Uppercase, Lowercase, Numbers, or Symbols).' });
             return;
         }
+
+        // Clear error if there is any when option is restored
+        setResult(null);
 
         let generated = '';
         const array = new Uint32Array(length);
@@ -47,6 +51,11 @@ const PasswordTool = () => {
     }, [generatePassword]);
 
     useEffect(() => {
+        if (!password) {
+            setStrength({ score: 0, label: 'None', color: '#888888' });
+            return;
+        }
+
         let score = 0;
         if (password.length > 8) score++;
         if (password.length > 12) score++;
@@ -67,6 +76,7 @@ const PasswordTool = () => {
     }, [password]);
 
     const copyToClipboard = () => {
+        if (!password) return;
         navigator.clipboard.writeText(password);
         setResult({ text: 'Password copied to clipboard!', success: true });
         setTimeout(() => setResult(null), 2000);
@@ -86,13 +96,15 @@ const PasswordTool = () => {
                     type="text"
                     readOnly
                     value={password}
+                    placeholder="No password generated"
                     className="pill w-full font-mono text-lg text-center"
-                    style={{ padding: '15px 50px', letterSpacing: '2px' }}
+                    style={{ padding: '15px 50px', letterSpacing: password ? '2px' : 'normal' }}
                 />
                 <button
                     className="absolute right-10 top-50-translate-y material-icons cursor-pointer"
-                    style={{ background: 'none', border: 'none', color: 'var(--primary)' }}
+                    style={{ background: 'none', border: 'none', color: password ? 'var(--primary)' : '#ccc' }}
                     onClick={copyToClipboard}
+                    disabled={!password}
                 >
                     content_copy
                 </button>
