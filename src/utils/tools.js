@@ -65,6 +65,7 @@ export const TOOLS = [
     { id: 'color', title: 'Color Picker', icon: 'palette', category: 'Design & Creative', component: DevTools, subTools: [] },
 
     // 10. Developer
+    { id: 'api-tester', title: 'REST API Tester', icon: 'api', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'json-fmt', title: 'JSON Formatter', icon: 'data_object', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'sql', title: 'SQL Formatter', icon: 'storage', category: 'Developer', component: DevTools, subTools: [] },
     { id: 'xml-fmt', title: 'XML Formatter', icon: 'format_align_left', category: 'Developer', component: DevTools, subTools: [] },
