@@ -223,4 +223,28 @@ test.describe('Refactored Toolbox Subtools', () => {
     await expect(imgTag).toBeVisible();
     await expect(imgTag).not.toHaveAttribute('onerror');
   });
+
+  test('should navigate to REST API Tester and allow method selection & configuration', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'REST API Tester' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    // Verify header exists
+    await expect(page.locator('h3:has-text("REST API Client & Tester")')).toBeVisible();
+
+    // Select input field value
+    const urlInput = page.locator('input[placeholder*="api.example.com"]');
+    await expect(urlInput).toHaveValue('https://jsonplaceholder.typicode.com/posts/1');
+
+    // Change Method to POST and verify request configuration layout shows body section
+    const methodSelect = page.locator('select.select-field');
+    await methodSelect.selectOption('POST');
+
+    // Click Request Configuration tab
+    await page.click('button:has-text("Request Configuration")');
+
+    // Body text area should be visible
+    const bodyArea = page.locator('textarea[placeholder*="key"]');
+    await expect(bodyArea).toBeVisible();
+  });
 });

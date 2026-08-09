@@ -25,12 +25,14 @@ const PasswordTool = lazy(() => import('./subtools/PasswordTool'));
 const RsaTool = lazy(() => import('./subtools/RsaTool'));
 const MarkdownTable = lazy(() => import('./subtools/MarkdownTable'));
 const SqlBuilder = lazy(() => import('./subtools/SqlBuilder'));
+const ApiClientTester = lazy(() => import('./subtools/ApiClientTester'));
 
 const DEV_CATEGORIES = [
   {
     id: 'web-data',
     title: 'Web & Data',
     tools: [
+      { id: 'api-tester', label: 'REST API Tester', icon: 'api', description: 'Real-time REST API Client & HTTP request sender.' },
       { id: 'json-fmt', label: 'JSON Formatter', icon: 'data_object', description: 'Prettify and validate JSON data.' },
       { id: 'sql', label: 'SQL Formatter', icon: 'storage', description: 'Format SQL queries for better readability.' },
       { id: 'xml-fmt', label: 'XML Formatter', icon: 'format_align_left', description: 'Format and validate XML documents.' },
@@ -182,6 +184,7 @@ const DevTools = ({ toolId, onSubtoolChange }) => {
           {activeTab === 'inspiration' && <CodeInspiration />}
           {activeTab === 'md-table' && <MarkdownTable />}
           {activeTab === 'sql-builder' && <SqlBuilder />}
+          {activeTab === 'api-tester' && <ApiClientTester />}
         </Suspense>
       </div>
     </div>
