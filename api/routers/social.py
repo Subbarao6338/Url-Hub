@@ -1,5 +1,6 @@
 import os
 import re
+import warnings
 
 import anyio
 import google.generativeai as genai
@@ -8,6 +9,8 @@ import yt_dlp
 from fastapi import APIRouter, HTTPException
 
 from api.routers.utils import validate_url_ssrf
+
+warnings.filterwarnings("ignore", category=FutureWarning, module="google.generativeai")
 
 router = APIRouter()
 

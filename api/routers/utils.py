@@ -137,9 +137,37 @@ async def kusto_gen(data: dict):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+def safe_requests_get(url: str, **kwargs):
+    from urllib.parse import urljoin
+    current_url = url
+    max_redirects = 5
+    redirects_followed = 0
+    headers = kwargs.get("headers", {})
+    timeout = kwargs.get("timeout", 10)
+
+    while True:
+        validate_url_ssrf(current_url)
+        res = requests.get(current_url, headers=headers, timeout=timeout, allow_redirects=False)
+
+        if res.is_redirect or (300 <= res.status_code < 400):
+            redirects_followed += 1
+            if redirects_followed > max_redirects:
+                raise ValueError("Too many redirects")
+
+            location = res.headers.get("Location")
+            if not location:
+                break
+
+            current_url = urljoin(current_url, location)
+        else:
+            break
+
+    validate_url_ssrf(current_url)
+    return res
+
+
 def sync_url_to_markdown(url: str):
-    validate_url_ssrf(url)
-    res = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"}, timeout=15)
+    res = safe_requests_get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"}, timeout=15)
     res.raise_for_status()
 
     soup = BeautifulSoup(res.content, "html.parser")

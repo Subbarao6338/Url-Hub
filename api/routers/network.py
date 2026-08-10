@@ -20,7 +20,7 @@ router = APIRouter()
 def is_public_ip(ip_str: str) -> bool:
     try:
         ip = ipaddress.ip_address(ip_str)
-        return not (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast)
+        return not (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast or ip.is_unspecified)
     except ValueError:
         return False
 
