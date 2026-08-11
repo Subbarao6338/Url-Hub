@@ -247,4 +247,38 @@ test.describe('Refactored Toolbox Subtools', () => {
     const bodyArea = page.locator('textarea[placeholder*="key"]');
     await expect(bodyArea).toBeVisible();
   });
+
+  test('should navigate to JWT Debugger and verify preset loading, decoding and token generation', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'JWT Debugger' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    // Header validation
+    await expect(page.locator('h3:has-text("JSON Web Token (JWT) Workstation")')).toBeVisible();
+
+    // Try a preset sample
+    const sampleBtn = page.locator('button:has-text("OAuth Access")');
+    await expect(sampleBtn).toBeVisible();
+    await sampleBtn.click();
+
+    // Signature status should show Verified (using precise class or .font-bold selector)
+    await expect(page.locator('.font-bold.small:has-text("Signature Verified")')).toBeVisible();
+
+    // Verify headers have loaded
+    await expect(page.locator('pre').first()).toContainText('HS256');
+
+    // Switch to Generate tab
+    const genTabBtn = page.locator('button:has-text("Generate & Sign")');
+    await expect(genTabBtn).toBeVisible();
+    await genTabBtn.click();
+
+    // Generate signed token
+    const generateBtn = page.locator('button:has-text("Generate & Sign JWT Token")');
+    await expect(generateBtn).toBeVisible();
+    await generateBtn.click();
+
+    // Verify token output is displayed
+    const toolResult = page.locator('.tool-result-container');
+    await expect(toolResult).toBeVisible();
+  });
 });
