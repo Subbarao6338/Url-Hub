@@ -281,4 +281,64 @@ test.describe('Refactored Toolbox Subtools', () => {
     const toolResult = page.locator('.tool-result-container');
     await expect(toolResult).toBeVisible();
   });
+
+  test('should navigate to Diff Viewer, load JSON preset, and toggle side-by-side vs inline', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'Diff Viewer' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    // Verify header
+    await expect(page.locator('h3:has-text("Enterprise Diff Viewer")')).toBeVisible();
+
+    // Select JSON preset
+    const select = page.locator('select');
+    await select.selectOption('JSON Configuration');
+
+    // Stats banner should display additions/deletions
+    const stats = page.locator('.diff-stats-banner');
+    await expect(stats).toBeVisible();
+    await expect(stats).toContainText('insertions');
+    await expect(stats).toContainText('deletions');
+
+    // Visual viewer pane should be visible
+    const viewer = page.locator('.diff-visual-viewer');
+    await expect(viewer).toBeVisible();
+    await expect(viewer).toContainText('epic-toolbox');
+
+    // Toggle to Inline View
+    const inlineBtn = page.locator('button:has-text("Inline View")');
+    await expect(inlineBtn).toBeVisible();
+    await inlineBtn.click();
+
+    await expect(page.locator('.inline-pane')).toBeVisible();
+  });
+
+  test('should navigate to Regex Tester, load preset, and visualize matches', async ({ page }) => {
+    const card = page.locator('.card', { hasText: 'Regex Tester' });
+    await expect(card).toBeVisible();
+    await card.click();
+
+    // Verify header
+    await expect(page.locator('h3:has-text("Enterprise Regex Workstation")')).toBeVisible();
+
+    // Fill in custom regex to find emails without anchors
+    const regexInput = page.locator('input[placeholder*="([a-zA-Z0-9]+)"]');
+    await expect(regexInput).toBeVisible();
+    await regexInput.fill('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}');
+
+    // Run Regex Test
+    const runBtn = page.locator('button', { hasText: 'Analyze Captured Groups' });
+    await expect(runBtn).toBeVisible();
+    await runBtn.click();
+
+    // ToolResult should show matches count
+    const toolResult = page.locator('.tool-result-container');
+    await expect(toolResult).toBeVisible();
+    await expect(toolResult).toContainText('Found 2 matches');
+
+    // Visual highlights should be visible and contain the matched token
+    const visualPanel = page.locator('.regex-visual-panel');
+    await expect(visualPanel).toBeVisible();
+    await expect(visualPanel).toContainText('support@example.com');
+  });
 });
