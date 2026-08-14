@@ -341,4 +341,42 @@ test.describe('Refactored Toolbox Subtools', () => {
     await expect(visualPanel).toBeVisible();
     await expect(visualPanel).toContainText('support@example.com');
   });
+
+  test('should load sample dataset in Data Viewer and detect multivariate anomalies in Advanced Hub', async ({ page }) => {
+    // Navigate to Data Viewer card
+    const dataViewerCard = page.locator('.card', { hasText: 'Data Viewer' });
+    await expect(dataViewerCard).toBeVisible();
+    await dataViewerCard.click();
+
+    // Load sample dataset
+    const loadBtn = page.locator('button:has-text("Load Sample Employee Dataset")');
+    await expect(loadBtn).toBeVisible();
+    await loadBtn.click();
+
+    // Table with Barbara Lopez should be visible
+    const table = page.locator('table');
+    await expect(table).toBeVisible();
+    await expect(table).toContainText('Barbara Lopez');
+
+    // Go back to Hub
+    const backBtn = page.locator('button:has-text("Back to Hub")');
+    await expect(backBtn).toBeVisible();
+    await backBtn.click();
+
+    // Navigate to Advanced Hub card
+    const advHubCard = page.locator('.card', { hasText: 'Advanced Hub' });
+    await expect(advHubCard).toBeVisible();
+    await advHubCard.click();
+
+    // Run Multivariate Anomaly detection
+    const multivariateBtn = page.locator('button:has-text("Multivariate Anomaly")');
+    await expect(multivariateBtn).toBeVisible();
+    await multivariateBtn.click();
+
+    // Result container should show that Barbara Lopez is detected as an anomaly
+    const resultContainer = page.locator('.tool-result-container');
+    await expect(resultContainer).toBeVisible();
+    await expect(resultContainer).toContainText('Barbara Lopez');
+    await expect(resultContainer).toContainText('Mahalanobis Distance');
+  });
 });
