@@ -91,14 +91,15 @@ const Sidebar = ({
         </div>
       </div>
 
-      <nav className="sidebar-nav">
+      <nav className="sidebar-nav" aria-label="Sidebar Navigation">
         {!hideToolbox && (
           <button
             className={`sidebar-nav-item ${currentTab === 'toolbox' ? 'active' : ''}`}
             onClick={() => setTab('toolbox')}
             title="Toolbox"
+            aria-label="Navigate to Toolbox"
           >
-            <span className="material-icons-outlined">handyman</span>
+            <span className="material-icons-outlined" aria-hidden="true">handyman</span>
             <span className="nav-label">Toolbox</span>
           </button>
         )}
@@ -108,8 +109,9 @@ const Sidebar = ({
             className={`sidebar-nav-item ${currentTab === 'bookmarks' ? 'active' : ''}`}
             onClick={() => setTab('bookmarks')}
             title="Bookmarks"
+            aria-label="Navigate to Bookmarks"
           >
-            <span className="material-icons-outlined">bookmarks</span>
+            <span className="material-icons-outlined" aria-hidden="true">bookmarks</span>
             <span className="nav-label">Bookmarks</span>
           </button>
         )}
@@ -119,8 +121,9 @@ const Sidebar = ({
             className={`sidebar-nav-item ${currentTab === 'projects' ? 'active' : ''}`}
             onClick={() => setTab('projects')}
             title="Projects"
+            aria-label="Navigate to Projects"
           >
-            <span className="material-icons-outlined">architecture</span>
+            <span className="material-icons-outlined" aria-hidden="true">architecture</span>
             <span className="nav-label">Projects</span>
           </button>
         )}
@@ -129,8 +132,9 @@ const Sidebar = ({
           className="sidebar-nav-item"
           onClick={onSettingsClick}
           title="Settings"
+          aria-label="Open Settings"
         >
-          <span className="material-icons-outlined">settings</span>
+          <span className="material-icons-outlined" aria-hidden="true">settings</span>
           <span className="nav-label">Settings</span>
         </button>
       </nav>
