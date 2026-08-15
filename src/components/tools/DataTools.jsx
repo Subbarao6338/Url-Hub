@@ -1,4 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
+import ErrorBoundary from '../ErrorBoundary';
 
 // Lazy load subtools
 const DataViewer = lazy(() => import('./subtools/DataViewer'));
@@ -129,18 +130,20 @@ const DataTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
-          {activeTab === 'viewer' && <DataViewer setGlobalData={setGlobalData} setRawFile={() => {}} />}
-          {activeTab === 'science' && <DataScienceHub data={globalData} />}
-          {activeTab === 'adv-data' && <AdvancedDataHub data={globalData} />}
-          {activeTab === 'reconcile' && <ReconciliationTool />}
-          {activeTab === 'synthetic' && <SyntheticDataTool data={globalData} />}
-          {activeTab === 'image-lab' && <ImageLab />}
-          {activeTab === 'anonymizer' && <DataAnonymizer data={globalData} />}
-          {activeTab === 'json-csv' && <JsonCsvConverter />}
-          {activeTab === 'mock' && <MockDataGenerator />}
-          {activeTab === 'finance' && <FinanceHub />}
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
+            {activeTab === 'viewer' && <DataViewer setGlobalData={setGlobalData} setRawFile={() => {}} />}
+            {activeTab === 'science' && <DataScienceHub data={globalData} />}
+            {activeTab === 'adv-data' && <AdvancedDataHub data={globalData} />}
+            {activeTab === 'reconcile' && <ReconciliationTool />}
+            {activeTab === 'synthetic' && <SyntheticDataTool data={globalData} />}
+            {activeTab === 'image-lab' && <ImageLab />}
+            {activeTab === 'anonymizer' && <DataAnonymizer data={globalData} />}
+            {activeTab === 'json-csv' && <JsonCsvConverter />}
+            {activeTab === 'mock' && <MockDataGenerator />}
+            {activeTab === 'finance' && <FinanceHub />}
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </div>
   );

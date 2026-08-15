@@ -1,5 +1,6 @@
-import requests
 import time
+
+import requests
 
 
 def run_test_download(url, format_id=None):
@@ -17,7 +18,7 @@ def run_test_download(url, format_id=None):
             print(f"FAILED: Status {response.status_code}, Detail: {response.text}")
             return False
     except Exception as e:
-        print(f"ERROR: {str(e)}")
+        print(f"ERROR: {e!s}")
         return False
 
 

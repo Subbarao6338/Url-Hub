@@ -1,4 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
+import ErrorBoundary from '../ErrorBoundary';
 
 // Lazy load subtools
 const PdfHub = lazy(() => import('./subtools/PdfHub'));
@@ -124,16 +125,18 @@ const DocTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
-          {activeTab === 'pdf' && <PdfHub />}
-          {activeTab === 'image' && <ImageHub />}
-          {activeTab === 'text' && <TextHub />}
-          {activeTab === 'md-editor' && <MarkdownEditor />}
-          {activeTab === 'doc-translator' && <DocTranslator />}
-          {activeTab === 'batch' && <BatchConverter />}
-          {activeTab === 'docx-md' && <DocxToMd />}
-          {activeTab === 'ocr' && <OcrTool />}
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
+            {activeTab === 'pdf' && <PdfHub />}
+            {activeTab === 'image' && <ImageHub />}
+            {activeTab === 'text' && <TextHub />}
+            {activeTab === 'md-editor' && <MarkdownEditor />}
+            {activeTab === 'doc-translator' && <DocTranslator />}
+            {activeTab === 'batch' && <BatchConverter />}
+            {activeTab === 'docx-md' && <DocxToMd />}
+            {activeTab === 'ocr' && <OcrTool />}
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </div>
   );
