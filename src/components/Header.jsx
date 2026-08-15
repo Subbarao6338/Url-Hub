@@ -7,10 +7,21 @@ const Header = memo(({ appName, currentProfile, profiles, setView, hideBookmarks
     <header className="top-bar glass-card">
       <div
         className="logo-container"
+        role="button"
+        tabIndex={0}
+        aria-label={`${appName || 'Epic Toolbox'} - Switch tab`}
         onClick={() => {
           if (hideBookmarks) setView('toolbox');
           else if (hideToolbox) setView('bookmarks');
           else setView(currentTab === 'bookmarks' ? 'toolbox' : 'bookmarks');
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (hideBookmarks) setView('toolbox');
+            else if (hideToolbox) setView('bookmarks');
+            else setView(currentTab === 'bookmarks' ? 'toolbox' : 'bookmarks');
+          }
         }}
       >
         <div className="logo-icon-wrapper">
