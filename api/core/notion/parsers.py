@@ -3,11 +3,11 @@ import email
 import json
 import logging
 import os
-from pathlib import Path
 import shutil
 import tarfile
 import tempfile
 import zipfile
+from pathlib import Path
 
 import pytesseract
 from bs4 import BeautifulSoup

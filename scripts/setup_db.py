@@ -1,6 +1,6 @@
-import sqlite3
-import os
 import json
+import os
+import sqlite3
 import uuid
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "hub.db")

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
+import ErrorBoundary from '../ErrorBoundary';
 
 // Lazy load subtools
 const SqlFormatter = lazy(() => import('./subtools/SqlFormatter'));
@@ -159,33 +160,35 @@ const DevTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
-          {activeTab === 'json-fmt' && <JsonFormatter />}
-          {activeTab === 'sql' && <SqlFormatter />}
-          {activeTab === 'diff' && <DiffViewer />}
-          {activeTab === 'regex' && <RegexTester />}
-          {activeTab === 'security' && <HashHmac />}
-          {activeTab === 'qr-barcode' && <QrBarcodeGen />}
-          {activeTab === 'json-ts' && <JsonToTs />}
-          {activeTab === 'color' && <ColorPicker />}
-          {activeTab === 'converter' && <UnitConverter />}
-          {activeTab === 'currency' && <CurrencyConverter />}
-          {activeTab === 'kusto' && <KqlFormatter />}
-          {activeTab === 'jwt' && <JwtDebugger />}
-          {activeTab === 'cron' && <CronParser />}
-          {activeTab === 'minifier' && <CodeMinifier />}
-          {(activeTab === 'xml-fmt' || activeTab === 'xml-json') && <XmlTools />}
-          {activeTab === 'url' && <UrlTool />}
-          {activeTab === 'base64' && <Base64Tool />}
-          {activeTab === 'yaml' && <YamlJsonConverter />}
-          {activeTab === 'otp' && <OtpGenerator />}
-          {activeTab === 'password' && <PasswordTool />}
-          {activeTab === 'rsa' && <RsaTool />}
-          {activeTab === 'inspiration' && <CodeInspiration />}
-          {activeTab === 'md-table' && <MarkdownTable />}
-          {activeTab === 'sql-builder' && <SqlBuilder />}
-          {activeTab === 'api-tester' && <ApiClientTester />}
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
+            {activeTab === 'json-fmt' && <JsonFormatter />}
+            {activeTab === 'sql' && <SqlFormatter />}
+            {activeTab === 'diff' && <DiffViewer />}
+            {activeTab === 'regex' && <RegexTester />}
+            {activeTab === 'security' && <HashHmac />}
+            {activeTab === 'qr-barcode' && <QrBarcodeGen />}
+            {activeTab === 'json-ts' && <JsonToTs />}
+            {activeTab === 'color' && <ColorPicker />}
+            {activeTab === 'converter' && <UnitConverter />}
+            {activeTab === 'currency' && <CurrencyConverter />}
+            {activeTab === 'kusto' && <KqlFormatter />}
+            {activeTab === 'jwt' && <JwtDebugger />}
+            {activeTab === 'cron' && <CronParser />}
+            {activeTab === 'minifier' && <CodeMinifier />}
+            {(activeTab === 'xml-fmt' || activeTab === 'xml-json') && <XmlTools />}
+            {activeTab === 'url' && <UrlTool />}
+            {activeTab === 'base64' && <Base64Tool />}
+            {activeTab === 'yaml' && <YamlJsonConverter />}
+            {activeTab === 'otp' && <OtpGenerator />}
+            {activeTab === 'password' && <PasswordTool />}
+            {activeTab === 'rsa' && <RsaTool />}
+            {activeTab === 'inspiration' && <CodeInspiration />}
+            {activeTab === 'md-table' && <MarkdownTable />}
+            {activeTab === 'sql-builder' && <SqlBuilder />}
+            {activeTab === 'api-tester' && <ApiClientTester />}
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </div>
   );

@@ -19,24 +19,34 @@ def sync_detect_anomalies(file_content: bytes):
     return {"success": True, "anomaly_count": int(anomalies.sum()), "anomalies": df[anomalies].head(10).to_dict(orient="records")}
 
 
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+
 @router.post("/anomaly-detect")
 async def detect_anomalies(file: UploadFile = File(...)):
     try:
         content = await file.read()
+        if len(content) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail="File size exceeds maximum limit of 10 MB")
         return await anyio.to_thread.run_sync(sync_detect_anomalies, content)
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 def sync_check_quality(file_content: bytes):
     df = pd.read_csv(io.BytesIO(file_content))
-    return {"success": True, "report": [{"column": c, "missing": int(df[c].isnull().sum()), "unique": int(df[c].nunique())} for c in df.columns]}
+    return {"success": True, "report": [{"column": str(c), "missing": int(df[c].isnull().sum()), "unique": int(df[c].nunique())} for c in df.columns]}
 
 
 @router.post("/data-quality")
 async def check_quality(file: UploadFile = File(...)):
     try:
         content = await file.read()
+        if len(content) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail="File size exceeds maximum limit of 10 MB")
         return await anyio.to_thread.run_sync(sync_check_quality, content)
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

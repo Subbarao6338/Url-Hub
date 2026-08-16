@@ -1,4 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
+import ErrorBoundary from '../ErrorBoundary';
 import ToolResult from './ToolResult';
 
 // Lazy load subtools
@@ -89,15 +90,17 @@ const WebTools = ({ toolId, onSubtoolChange }) => {
       </div>
 
       <div className="hub-content animate-fadeIn">
-        <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
-          {activeTab === 'social' && <SocialAudit />}
-          {activeTab === 'social-downloader' && <SocialDownloader />}
-          {activeTab === 'archive' && <WebArchive />}
-          {activeTab === 'url2pdf' && <UrlToPdf />}
-          {activeTab === 'userscripts' && <UserScripts />}
-          {activeTab === 'bookmarklets' && <Bookmarklets />}
-          {activeTab === 'url2markdown' && <UrlToMarkdown />}
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<div className="text-center p-20 rotating material-icons">refresh</div>}>
+            {activeTab === 'social' && <SocialAudit />}
+            {activeTab === 'social-downloader' && <SocialDownloader />}
+            {activeTab === 'archive' && <WebArchive />}
+            {activeTab === 'url2pdf' && <UrlToPdf />}
+            {activeTab === 'userscripts' && <UserScripts />}
+            {activeTab === 'bookmarklets' && <Bookmarklets />}
+            {activeTab === 'url2markdown' && <UrlToMarkdown />}
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </div>
   );
