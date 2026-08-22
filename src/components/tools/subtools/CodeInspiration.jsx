@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import ToolResult from '../ToolResult';
+import { copyToClipboard } from '../../../utils/helpers';
 
 const CodeInspiration = () => {
     const [category, setCategory] = useState('All');
+    const [copiedName, setCopiedName] = useState(null);
+
     const snippets = [
         {
             name: 'Debounce Function',
@@ -36,6 +39,13 @@ const CodeInspiration = () => {
         }
     ];
 
+    const handleCopy = (snippet) => {
+        copyToClipboard(snippet.code, () => {
+            setCopiedName(snippet.name);
+            setTimeout(() => setCopiedName(null), 2500);
+        });
+    };
+
     const filtered = category === 'All' ? snippets : snippets.filter(s => s.cat === category);
     const categories = ['All', ...new Set(snippets.map(s => s.cat))];
 
@@ -56,9 +66,11 @@ const CodeInspiration = () => {
                                 <h4 style={{margin: 0}}>{s.name}</h4>
                                 <span className="badge smallest mt-5" style={{opacity: 0.7}}>{s.cat}</span>
                             </div>
-                            <button className="pill" style={{fontSize: '0.7rem'}} onClick={() => { navigator.clipboard.writeText(s.code); alert('Copied!'); }}>
-                                <span className="material-icons v-middle mr-5" style={{fontSize: '1rem'}}>content_copy</span>
-                                Copy
+                            <button className="pill" style={{fontSize: '0.7rem'}} onClick={() => handleCopy(s)}>
+                                <span className="material-icons v-middle mr-5" style={{fontSize: '1rem'}}>
+                                    {copiedName === s.name ? 'check' : 'content_copy'}
+                                </span>
+                                {copiedName === s.name ? 'Copied!' : 'Copy'}
                             </button>
                         </div>
                         <pre className="smallest font-mono opacity-8 p-15 bg-surface rounded-lg border" style={{maxHeight: '200px', overflow: 'auto'}}>{s.code}</pre>

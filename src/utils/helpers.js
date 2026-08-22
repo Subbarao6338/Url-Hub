@@ -1,14 +1,44 @@
-
 /**
- * Copy text to clipboard.
+ * Copy text to clipboard using navigator.clipboard or document.execCommand fallback.
  * @param {string} text - The text to copy.
- * @param {function} onComplete - Callback function called after copying.
+ * @param {function} [onComplete] - Callback function called after copying.
  */
 export const copyToClipboard = (text, onComplete) => {
   if (!text) return;
-  navigator.clipboard.writeText(text).then(() => {
-    if (onComplete) onComplete();
-  });
+
+  const handleComplete = () => {
+    if (typeof onComplete === 'function') {
+      onComplete();
+    }
+  };
+
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    navigator.clipboard.writeText(text).then(handleComplete).catch(() => {
+      fallbackCopyToClipboard(text, handleComplete);
+    });
+  } else {
+    fallbackCopyToClipboard(text, handleComplete);
+  }
+};
+
+const fallbackCopyToClipboard = (text, onComplete) => {
+  try {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    const successful = document.execCommand('copy');
+    document.body.removeChild(textArea);
+    if (successful && onComplete) {
+      onComplete();
+    }
+  } catch (err) {
+    console.error('Fallback copy failed', err);
+  }
 };
 
 /**

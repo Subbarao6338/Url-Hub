@@ -1,4 +1,5 @@
 import { detectMultivariateAnomalies, runDataQualitySuite, generateSyntheticData } from './dataAnalysis';
+import { describe, it, expect } from 'vitest';
 
 describe('Data Analysis Utilities', () => {
     const sampleData = [
@@ -19,6 +20,11 @@ describe('Data Analysis Utilities', () => {
         it('should return empty for empty data', () => {
             expect(detectMultivariateAnomalies([])).toEqual([]);
         });
+
+        it('should handle single item array without throwing error', () => {
+            const result = detectMultivariateAnomalies([{ id: 1, val: 10, score: 5 }]);
+            expect(Array.isArray(result)).toBe(true);
+        });
     });
 
     describe('runDataQualitySuite', () => {
@@ -34,6 +40,11 @@ describe('Data Analysis Utilities', () => {
             expect(nullExpectation.success).toBe(false);
             expect(nullExpectation.unexpected_count).toBe(1);
         });
+
+        it('should return empty report for empty or non-array input', () => {
+            expect(runDataQualitySuite([])).toEqual([]);
+            expect(runDataQualitySuite(null)).toEqual([]);
+        });
     });
 
     describe('generateSyntheticData', () => {
@@ -41,6 +52,10 @@ describe('Data Analysis Utilities', () => {
             const synthetic = generateSyntheticData(sampleData, 10);
             expect(synthetic.length).toBe(10);
             expect(Object.keys(synthetic[0])).toEqual(Object.keys(sampleData[0]));
+        });
+
+        it('should return empty array when sample data is empty', () => {
+            expect(generateSyntheticData([], 5)).toEqual([]);
         });
     });
 });

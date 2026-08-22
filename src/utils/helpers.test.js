@@ -3,12 +3,18 @@ import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('Helpers Utilities', () => {
     beforeEach(() => {
+        // Ensure document.execCommand exists in jsdom for spying/stubbing
+        if (!document.execCommand) {
+            document.execCommand = vi.fn();
+        }
+
         // Mock navigator.clipboard
         Object.defineProperty(global.navigator, 'clipboard', {
             value: {
                 writeText: vi.fn().mockResolvedValue(undefined)
             },
-            configurable: true
+            configurable: true,
+            writable: true
         });
 
         // Mock URL object methods
@@ -25,7 +31,6 @@ describe('Helpers Utilities', () => {
             const callback = vi.fn();
             copyToClipboard('test text', callback);
 
-            // Wait for promise resolution
             await new Promise(process.nextTick);
 
             expect(navigator.clipboard.writeText).toHaveBeenCalledWith('test text');
@@ -37,6 +42,36 @@ describe('Helpers Utilities', () => {
             copyToClipboard('', callback);
             expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
             expect(callback).not.toHaveBeenCalled();
+        });
+
+        it('should fallback to execCommand when navigator.clipboard is missing', () => {
+            Object.defineProperty(global.navigator, 'clipboard', {
+                value: undefined,
+                configurable: true,
+                writable: true
+            });
+
+            const execCommandSpy = vi.spyOn(document, 'execCommand').mockReturnValue(true);
+            const callback = vi.fn();
+
+            copyToClipboard('fallback text', callback);
+
+            expect(execCommandSpy).toHaveBeenCalledWith('copy');
+            expect(callback).toHaveBeenCalled();
+        });
+
+        it('should fallback to execCommand when clipboard.writeText rejects', async () => {
+            navigator.clipboard.writeText.mockRejectedValue(new Error('Permission denied'));
+
+            const execCommandSpy = vi.spyOn(document, 'execCommand').mockReturnValue(true);
+            const callback = vi.fn();
+
+            copyToClipboard('fallback text', callback);
+
+            await new Promise(process.nextTick);
+
+            expect(execCommandSpy).toHaveBeenCalledWith('copy');
+            expect(callback).toHaveBeenCalled();
         });
     });
 

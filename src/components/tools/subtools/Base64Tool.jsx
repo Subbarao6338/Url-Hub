@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ToolResult from '../ToolResult';
+import { copyToClipboard } from '../../../utils/helpers';
 
 const Base64Tool = () => {
     const [input, setInput] = useState('');
@@ -42,10 +43,7 @@ const Base64Tool = () => {
 
         const validation = validateBase64(cleaned);
         if (validation.valid) {
-            // It's technically valid Base64. Let's see if it looks encoded or like standard words.
-            // Pure ASCII words usually have spaces. If there are no spaces and only Base64 chars, suggest decode.
             if (/^[a-zA-Z0-9+/=]+$/.test(cleaned)) {
-                // If contains symbols/equals or high randomness, suggest Decode.
                 if (cleaned.includes('=') || cleaned.length > 20) {
                     return { type: 'decode', text: 'Detected Base64 format. You might want to Decode this.' };
                 }
@@ -54,13 +52,9 @@ const Base64Tool = () => {
         return { type: 'encode', text: 'Detected Plain Text format. You might want to Encode this.' };
     };
 
-    const handleAutoCopy = async (textToCopy) => {
-        if (navigator.clipboard && textToCopy) {
-            try {
-                await navigator.clipboard.writeText(textToCopy);
-            } catch (err) {
-                console.warn('Auto-copy failed: ', err);
-            }
+    const handleAutoCopy = (textToCopy) => {
+        if (textToCopy) {
+            copyToClipboard(textToCopy);
         }
     };
 
@@ -82,13 +76,9 @@ const Base64Tool = () => {
 
     const detectAndSetPreview = (text) => {
         const trimmed = text.trim();
-        // Check if the decoded text is an image data URL
         if (trimmed.startsWith('data:image/')) {
             setPreviewUrl(trimmed);
         } else {
-            // Or maybe the input was a raw base64 string of an image without the data url prefix? Let's check common signatures
-            // PNG signature starts with iVBORw0KGgo
-            // JPEG starts with /9j/
             if (trimmed.startsWith('iVBORw0KGgo')) {
                 setPreviewUrl(`data:image/png;base64,${trimmed}`);
             } else if (trimmed.startsWith('/9j/')) {
@@ -110,7 +100,6 @@ const Base64Tool = () => {
             const validation = validateBase64(cleanedInput);
 
             if (!validation.valid) {
-                // Try decoding anyway as fallback, but warn if it crashes
                 try {
                     const decoded = decodeURIComponent(escape(atob(cleanedInput)));
                     setResult({
@@ -136,7 +125,6 @@ const Base64Tool = () => {
             detectAndSetPreview(decoded);
             handleAutoCopy(decoded);
         } catch (e) {
-            // Check if the input itself is a data image url
             if (input.trim().startsWith('data:image/')) {
                 setPreviewUrl(input.trim());
                 setResult({
@@ -154,7 +142,7 @@ const Base64Tool = () => {
     const handleFile = (selectedFile) => {
         if (!selectedFile) return;
         setFile(selectedFile);
-        setResult(null); // Clear previous results
+        setResult(null);
         setPreviewUrl(null);
     };
 
@@ -193,7 +181,6 @@ const Base64Tool = () => {
         if (fileInput) fileInput.value = '';
     };
 
-    // Drag & Drop event handlers
     const handleDragOver = (e) => {
         e.preventDefault();
         setIsDragging(true);
@@ -215,7 +202,7 @@ const Base64Tool = () => {
     const resultBytes = result && result.text ? getByteSize(result.text) : 0;
     const detection = getAutoDetectionMessage(input);
 
-    const isInputExtremelyLarge = inputBytes > 5 * 1024 * 1024; // 5MB warning limit
+    const isInputExtremelyLarge = inputBytes > 5 * 1024 * 1024;
 
     return (
         <div className="card p-30 glass-card grid gap-20 animate-fadeIn">

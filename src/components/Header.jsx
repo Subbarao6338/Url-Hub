@@ -4,12 +4,12 @@ const Header = memo(({ appName, currentProfile, profiles, setView, hideBookmarks
   const profile = profiles.find(p => p.name === currentProfile) || { icon: 'inbox' };
 
   return (
-    <header className="top-bar glass-card">
+    <header className="top-bar glass-card" role="banner">
       <div
         className="logo-container"
         role="button"
         tabIndex={0}
-        aria-label={`${appName || 'Epic Toolbox'} - Switch tab`}
+        aria-label={`${appName || 'Epic Toolbox'} - Switch active tab`}
         onClick={() => {
           if (hideBookmarks) setView('toolbox');
           else if (hideToolbox) setView('bookmarks');
@@ -25,7 +25,7 @@ const Header = memo(({ appName, currentProfile, profiles, setView, hideBookmarks
         }}
       >
         <div className="logo-icon-wrapper">
-            <img src="/assets/favicon.svg" className="app-logo-img" alt="Logo" style={{ width: '28px', height: '28px' }} />
+            <img src="/assets/favicon.svg" className="app-logo-img" alt="Epic Toolbox Logo" style={{ width: '28px', height: '28px' }} />
         </div>
         <h1 className="page-title">
           {appName || 'Epic Toolbox'}
