@@ -673,7 +673,7 @@
   {
     "title": "JSFiddle",
     "url": "https://jsfiddle.net",
-    "category": "Coding",
+    "category": "Developer",
     "urls": [
       "https://jsfiddle.net"
     ]
@@ -681,7 +681,7 @@
   {
     "title": "Regex101",
     "url": "https://regex101.com",
-    "category": "Coding",
+    "category": "Developer",
     "urls": [
       "https://regex101.com"
     ]
@@ -689,7 +689,7 @@
   {
     "title": "JSON Formatter",
     "url": "https://jsonformatter.org",
-    "category": "Coding",
+    "category": "Developer",
     "urls": [
       "https://jsonformatter.org"
     ]
@@ -1331,7 +1331,7 @@
     "url": "https://mycards.hdfcbank.com/home",
     "category": "Banking / Finance",
     "urls": [
-      "https://mycards.hdfcbank.com/home"
+      "https://mycards.hdfcbank.com/home", "https://mycards.hdfc.bank.in/"
     ]
   },
   {
@@ -1417,7 +1417,7 @@
   {
     "title": "AI Code Translator",
     "url": "https://ai-code-translator.com/#translate",
-    "category": "Coding",
+    "category": "Developer",
     "urls": [
       "https://ai-code-translator.com/#translate"
     ]
@@ -1531,7 +1531,7 @@
   {
     "title": "Google AI Studio",
     "url": "https://aistudio.google.com/",
-    "category": "Coding",
+    "category": "Developer",
     "urls": [
       "https://aistudio.google.com/"
     ]
@@ -2241,7 +2241,7 @@
     "urls": [
       "https://jules.google.com/"
     ],
-    "category": "Coding"
+    "category": "Developer"
   },
   {
     "title": "Lovable",
@@ -2249,7 +2249,7 @@
     "urls": [
       "https://lovable.dev/"
     ],
-    "category": "Coding"
+    "category": "Developer"
   },
   {
     "title": "Bolt",
@@ -2257,7 +2257,7 @@
     "urls": [
       "https://bolt.new/"
     ],
-    "category": "Coding"
+    "category": "Developer"
   },
   {
     "title": "Emergent",
@@ -2265,7 +2265,7 @@
     "urls": [
       "https://emergent.sh/"
     ],
-    "category": "Coding"
+    "category": "Developer"
   },
   {
     "title": "Replit",
@@ -2273,7 +2273,7 @@
     "urls": [
       "https://replit.com/"
     ],
-    "category": "Coding"
+    "category": "Developer"
   },
   {
     "title": "OpenDAW",
@@ -2501,7 +2501,7 @@
     "title": "Readme Hub",
     "url": "https://iamkaif.me/readme-hub/",
     "urls": ["https://iamkaif.me/readme-hub/"],
-    "category": "Coding"
+    "category": "Developer"
   },
   {
     "title": "Vidbox Dev",
@@ -2706,5 +2706,287 @@
     "url": "https://www.nykaafashion.com/",
     "urls": ["https://www.nykaafashion.com/"],
     "category": "Shopping"
+  },
+  {
+    "title": "Pulse Regn Creative",
+    "url": "https://pulse.regncreative.com/",
+    "urls": ["https://pulse.regncreative.com/"],
+    "category": "Windows"
+  },
+  {
+    "title": "Photopea | Online Photo Editor",
+    "url": "https://www.photopea.com/",
+    "urls": ["https://www.photopea.com/"],
+    "category": "Media"
+  },
+  {
+    "title": "SafeHaven Store",
+    "url": "https://store.colourswift.com/",
+    "urls": ["https://store.colourswift.com/"],
+    "category": "Android"
+  },
+  {
+    "title": "Cleanup.pictures",
+    "url": "https://cleanup.pictures/",
+    "urls": ["https://cleanup.pictures/"],
+    "category": "Media"
+  },
+  {
+    "title": "Squoosh",
+    "url": "https://squoosh.app/",
+    "urls": ["https://squoosh.app/"],
+    "category": "Media"
+  },
+  {
+    "title": "PDF Candy",
+    "url": "https://pdfcandy.com/",
+    "urls": ["https://pdfcandy.com/"],
+    "category": "Documents"
+  },
+  {
+    "title": "Aroma Cares",
+    "url": "https://www.aromacares.com/",
+    "urls": ["https://www.aromacares.com/"],
+    "category": "Shopping"
+  },
+  {
+    "title": "Clash Dev Analyser",
+    "url": "https://clashdevanalyser.vercel.app/?mode=user&u=Subbarao6338",
+    "urls": ["https://clashdevanalyser.vercel.app/?mode=user&u=Subbarao6338"],
+    "category": "Developer"
+  },
+  {
+    "title": "Openvid",
+    "url": "https://openvid.dev/en",
+    "urls": ["https://openvid.dev/en"],
+    "category": "Media"
+  },
+  {
+    "title": "Penpot",
+    "url": "https://penpot.app/",
+    "urls": ["https://penpot.app/"],
+    "category": "Media"
+  },
+  {
+    "title": "PDF Clear",
+    "url": "https://www.pdfclear.com/",
+    "urls": ["https://www.pdfclear.com/"],
+    "category": "Documents"
+  },
+  {
+    "title": "DanByte",
+    "url": "https://danbyte.net/",
+    "urls": ["https://danbyte.net/"],
+    "category": "Windows"
+  },
+  {
+    "title": "Mermify",
+    "url": "https://tra-sco.github.io/mermify/",
+    "urls": ["https://tra-sco.github.io/mermify/"],
+    "category": "Developer"
+  },
+  {
+    "title": "W3Schools Online Web Tutorials",
+    "url": "https://www.w3schools.com/",
+    "urls": ["https://www.w3schools.com/"],
+    "category": "Developer"
+  },
+  {
+    "title": "TPoint Tech",
+    "url": "https://www.tpointtech.com/",
+    "urls": ["https://www.tpointtech.com/"],
+    "category": "Developer"
+  },
+  {
+    "title": "Programming Hub",
+    "url": "https://programminghub.io/",
+    "urls": ["https://programminghub.io/"],
+    "category": "Developer"
+  },
+  {
+    "title": "Codecademy",
+    "url": "https://www.codecademy.com/",
+    "urls": ["https://www.codecademy.com/"],
+    "category": "Developer"
+  },
+  {
+    "title": "GeeksforGeeks",
+    "url": "https://www.geeksforgeeks.org/",
+    "urls": ["https://www.geeksforgeeks.org/"],
+    "category": "Developer"
+  },
+  {
+    "title": "Programiz",
+    "url": "https://www.programiz.com/",
+    "urls": ["https://www.programiz.com/"],
+    "category": "Developer"
+  },
+  {
+    "title": "Coursera",
+    "url": "https://www.coursera.org/",
+    "urls": ["https://www.coursera.org/"],
+    "category": "Developer"
+  },
+  {
+    "title": "CodeChef IDE",
+    "url": "https://www.codechef.com/ide",
+    "urls": ["https://www.codechef.com/ide"],
+    "category": "Developer"
+  },
+  {
+    "title": "JDoodle Online Compiler",
+    "url": "https://www.jdoodle.com/",
+    "urls": ["https://www.jdoodle.com/"],
+    "category": "Developer"
+  },
+  {
+    "title": "OneCompiler",
+    "url": "https://onecompiler.com/",
+    "urls": ["https://onecompiler.com/"],
+    "category": "Developer"
+  },
+  {
+    "title": "Knowledge Hub",
+    "url": "https://subbarao6338.github.io/knowledge/",
+    "urls": ["https://subbarao6338.github.io/knowledge/"],
+    "category": "Productivity"
+  },
+  {
+    "title": "Compiler Explorer (Godbolt)",
+    "url": "https://godbolt.org/",
+    "urls": ["https://godbolt.org/"],
+    "category": "Developer"
+  },
+  {
+    "title": "MeeBhoomi AP",
+    "url": "https://meebhoomi.ap.gov.in/",
+    "urls": ["https://meebhoomi.ap.gov.in/"],
+    "category": "Govt."
+  },
+  {
+    "title": "Awesome Open AI Developer Tools",
+    "url": "https://sami-uysal.github.io/awesome-open-ai-developer-tools/",
+    "urls": ["https://sami-uysal.github.io/awesome-open-ai-developer-tools/"],
+    "category": "Developer"
+  },
+  {
+    "title": "BentoPDF",
+    "url": "https://www.bentopdf.com/",
+    "urls": ["https://www.bentopdf.com/"],
+    "category": "Documents"
+  },
+  {
+    "title": "CKYC India Search",
+    "url": "https://www.ckycindia.in/",
+    "urls": ["https://www.ckycindia.in/"],
+    "category": "Govt."
+  },
+  {
+    "title": "PDFding",
+    "url": "https://www.pdfding.com/",
+    "urls": ["https://www.pdfding.com/"],
+    "category": "Documents"
+  },
+  {
+    "title": "Ditto",
+    "url": "https://www.ditto.site/",
+    "urls": ["https://www.ditto.site/"],
+    "category": "Developer"
+  },
+  {
+    "title": "Yatko App",
+    "url": "https://yatko.app/",
+    "urls": ["https://yatko.app/"],
+    "category": "Developer"
+  },
+  {
+    "title": "Screenshot Studio",
+    "url": "https://www.screenshot-studio.com/",
+    "urls": ["https://www.screenshot-studio.com/"],
+    "category": "Media"
+  },
+  {
+    "title": "PDFcraft",
+    "url": "https://pdfcraft.devtoolcafe.com/en/tools/",
+    "urls": ["https://pdfcraft.devtoolcafe.com/en/tools/"],
+    "category": "Documents"
+  },
+  {
+    "title": "Justalink",
+    "url": "https://jaival-11.github.io/justalink/",
+    "urls": ["https://jaival-11.github.io/justalink/"],
+    "category": "Tools & Utilities"
+  },
+  {
+    "title": "WiFiCard",
+    "url": "https://wificard.io/",
+    "urls": ["https://wificard.io/"],
+    "category": "Tools & Utilities"
+  },
+  {
+    "title": "Monoleaf",
+    "url": "https://web.monoleaf.org/",
+    "urls": ["https://web.monoleaf.org/"],
+    "category": "Documents"
+  },
+  {
+    "title": "Valor Cyber",
+    "url": "https://rao.valor-cyber.com/",
+    "urls": ["https://rao.valor-cyber.com/"],
+    "category": "Windows"
+  },
+  {
+    "title": "Curium QR",
+    "url": "https://app.curium.design/",
+    "urls": ["https://app.curium.design/"],
+    "category": "Tools & Utilities"
+  },
+  {
+    "title": "JSGlobe",
+    "url": "https://jsglobe.com/",
+    "urls": ["https://jsglobe.com/"],
+    "category": "Tools & Utilities"
+  },
+  {
+    "title": "Agiofit",
+    "url": "https://agiofit.org/",
+    "urls": ["https://agiofit.org/"],
+    "category": "Tools & Utilities"
+  },
+  {
+    "title": "Coldmill",
+    "url": "https://batushn.github.io/coldmill/",
+    "urls": ["https://batushn.github.io/coldmill/"],
+    "category": "Windows"
+  },
+  {
+    "title": "Git Calendar",
+    "url": "https://git-calendar.org/w/2026/8/16",
+    "urls": ["https://git-calendar.org/w/2026/8/16"],
+    "category": "Date & Time"
+  },
+  {
+    "title": "Vieta Math Editor",
+    "url": "https://liamhawtin.github.io/vieta-math/",
+    "urls": ["https://liamhawtin.github.io/vieta-math/"],
+    "category": "Calculators"
+  },
+  {
+    "title": "HA.mr",
+    "url": "https://ha.mr/",
+    "urls": ["https://ha.mr/"],
+    "category": "Tools & Utilities"
+  },
+  {
+    "title": "ClashFLAC",
+    "url": "https://clashflac.pages.dev/",
+    "urls": ["https://clashflac.pages.dev/"],
+    "category": "Music"
+  },
+  {
+    "title": "Walitex App",
+    "url": "https://walitex.app/",
+    "urls": ["https://walitex.app/"],
+    "category": "Android"
   }
 ]
