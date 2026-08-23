@@ -42,12 +42,6 @@
     "category": "Documents"
   },
   {
-    "title": "simpleghar hindi",
-    "url": "https://simpleghar.com/hindi",
-    "urls": ["https://simpleghar.com/hindi"],
-    "category": "Shopping"
-  },
-  {
     "title": "NotebookLM",
     "url": "https://notebooklm.google.com",
     "urls": [
@@ -882,11 +876,11 @@
     ]
   },
   {
-    "title": "Simpleghar Telugu",
+    "title": "Simpleghar",
     "url": "https://simpleghar.com/telugu",
     "category": "Shopping",
     "urls": [
-      "https://simpleghar.com/telugu"
+      "https://simpleghar.com/telugu", "https://simpleghar.com/hindi"
     ]
   },
   {
@@ -1563,7 +1557,7 @@
   {
     "title": "Diagrams",
     "url": "https://www.draw.io",
-    "category": "Productivity",
+    "category": "Developer",
     "urls": [
       "https://www.draw.io"
     ]
@@ -2712,12 +2706,6 @@
     "url": "https://pulse.regncreative.com/",
     "urls": ["https://pulse.regncreative.com/"],
     "category": "Windows"
-  },
-  {
-    "title": "Photopea | Online Photo Editor",
-    "url": "https://www.photopea.com/",
-    "urls": ["https://www.photopea.com/"],
-    "category": "Media"
   },
   {
     "title": "SafeHaven Store",
