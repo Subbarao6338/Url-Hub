@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ToolResult from '../ToolResult';
+import { copyToClipboard } from '../../../utils/helpers';
 
 const ColorPicker = () => {
     const [color, setColor] = useState('#4a7c59');
@@ -17,10 +18,11 @@ const ColorPicker = () => {
         setCopyResult(null);
     };
 
-    const copyToClipboard = (text, label) => {
-        navigator.clipboard.writeText(text);
-        setCopyResult({ text: `Copied ${label} value to clipboard: ${text}`, success: true });
-        setTimeout(() => setCopyResult(null), 3000);
+    const handleCopy = (text, label) => {
+        copyToClipboard(text, () => {
+            setCopyResult({ text: `Copied ${label} value to clipboard: ${text}`, success: true });
+            setTimeout(() => setCopyResult(null), 3000);
+        });
     };
 
     return (
@@ -29,13 +31,13 @@ const ColorPicker = () => {
                 <input type="color" className="cursor-pointer" style={{width: '150px', height: '150px', border: 'none', background: 'none'}} value={color} onChange={e=>setColor(e.target.value)} />
             </div>
             <div className="grid grid-2-cols gap-10">
-                <div className="card p-15 bg-surface rounded-xl cursor-pointer" onClick={() => copyToClipboard(color.toUpperCase(), 'HEX')} title="Click to Copy HEX">
+                <div className="card p-15 bg-surface rounded-xl cursor-pointer" onClick={() => handleCopy(color.toUpperCase(), 'HEX')} title="Click to Copy HEX">
                     <div className="smallest opacity-6 uppercase flex-center gap-5">
                         HEX <span className="material-icons" style={{fontSize: '0.9rem'}}>content_copy</span>
                     </div>
                     <div className="font-mono font-bold">{color.toUpperCase()}</div>
                 </div>
-                <div className="card p-15 bg-surface rounded-xl cursor-pointer" onClick={() => copyToClipboard(hexToRgb(color), 'RGB')} title="Click to Copy RGB">
+                <div className="card p-15 bg-surface rounded-xl cursor-pointer" onClick={() => handleCopy(hexToRgb(color), 'RGB')} title="Click to Copy RGB">
                     <div className="smallest opacity-6 uppercase flex-center gap-5">
                         RGB <span className="material-icons" style={{fontSize: '0.9rem'}}>content_copy</span>
                     </div>

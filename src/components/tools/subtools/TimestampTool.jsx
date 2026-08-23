@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { copyToClipboard } from '../../../utils/helpers';
 
 const TimestampTool = () => {
   const [currentTs, setCurrentTs] = useState(Math.floor(Date.now() / 1000));
@@ -23,8 +24,7 @@ const TimestampTool = () => {
   }, [isLive]);
 
   const handleCopyCurrent = () => {
-    navigator.clipboard.writeText(currentTs.toString());
-    showCopyFeedback('Copied current timestamp!');
+    copyToClipboard(currentTs.toString(), () => showCopyFeedback('Copied current timestamp!'));
   };
 
   const showCopyFeedback = (msg) => {
@@ -176,11 +176,11 @@ const TimestampTool = () => {
                 <div className="grid gap-5">
                   <div className="flex-between">
                     <span><strong>Seconds:</strong> <span className="text-brand font-bold">{convertedTs.secs}</span></span>
-                    <button className="pill smallest px-10 py-2" onClick={() => { navigator.clipboard.writeText(convertedTs.secs.toString()); showCopyFeedback('Copied seconds!'); }}>Copy</button>
+                    <button className="pill smallest px-10 py-2" onClick={() => copyToClipboard(convertedTs.secs.toString(), () => showCopyFeedback('Copied seconds!'))}>Copy</button>
                   </div>
                   <div className="flex-between">
                     <span><strong>Milliseconds:</strong> <span className="text-brand">{convertedTs.ms}</span></span>
-                    <button className="pill smallest px-10 py-2" onClick={() => { navigator.clipboard.writeText(convertedTs.ms.toString()); showCopyFeedback('Copied milliseconds!'); }}>Copy</button>
+                    <button className="pill smallest px-10 py-2" onClick={() => copyToClipboard(convertedTs.ms.toString(), () => showCopyFeedback('Copied milliseconds!'))}>Copy</button>
                   </div>
                 </div>
               )}

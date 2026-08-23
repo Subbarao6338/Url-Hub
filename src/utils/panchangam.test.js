@@ -47,6 +47,13 @@ describe('Panchangam Utilities', () => {
         expect(result.vara).toBeTypeOf('string');
     });
 
+    it('should handle boundary date strings and default parameters', () => {
+        const result = calculatePanchangam('1970-01-01', '00:00:00', 0, 0, 0);
+        expect(result).toBeDefined();
+        expect(result.samvatsara).toBeTypeOf('string');
+        expect(result.tithi).toBeTypeOf('string');
+    });
+
     it('should fall back gracefully or return expected object structure for all cities', () => {
         CITIES.forEach(city => {
             const result = calculatePanchangam('2026-10-05', '08:30:00', city.lat, city.lng, city.tz);
