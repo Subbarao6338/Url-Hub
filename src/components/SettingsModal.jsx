@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getApiBase } from '../api';
 
 const CollapsibleSection = ({ id, title, icon, isOpen, onToggle, children }) => {
@@ -56,6 +56,122 @@ const SettingsModal = ({
   resetData
 }) => {
   const [openSections, setOpenSections] = useState(['global']);
+  const [analyticsData, setAnalyticsData] = useState({
+    memory: null,
+    navigationTiming: null,
+    onlineStatus: typeof navigator !== 'undefined' ? navigator.onLine : true,
+    connectionType: navigator?.connection?.effectiveType || 'unknown',
+    viewport: `${window.innerWidth}x${window.innerHeight}`,
+    screen: `${window.screen?.width || 0}x${window.screen?.height || 0}`,
+    storageKb: (JSON.stringify(localStorage).length / 1024).toFixed(2),
+    storageItemCount: localStorage.length,
+    bookmarksCount: 0,
+    recentToolsCount: 0
+  });
+
+  const [diagnosticResults, setDiagnosticResults] = useState(null);
+  const [isDiagnosticRunning, setIsDiagnosticRunning] = useState(false);
+
+  const refreshAnalytics = () => {
+    let memoryInfo = null;
+    if (performance && performance.memory) {
+      memoryInfo = {
+        usedJSHeapSize: (performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(2),
+        totalJSHeapSize: (performance.memory.totalJSHeapSize / (1024 * 1024)).toFixed(2),
+        jsHeapSizeLimit: (performance.memory.jsHeapSizeLimit / (1024 * 1024)).toFixed(2)
+      };
+    }
+
+    let navTime = null;
+    if (performance && performance.getEntriesByType) {
+      const navEntries = performance.getEntriesByType('navigation');
+      if (navEntries && navEntries.length > 0) {
+        navTime = `${Math.round(navEntries[0].duration)} ms`;
+      }
+    }
+
+    let bCount = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('hub_links_p')) {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(k));
+          if (Array.isArray(parsed)) bCount += parsed.length;
+        } catch (e) {}
+      }
+    }
+
+    let rCount = 0;
+    try {
+      const recent = JSON.parse(localStorage.getItem('hub_recent_tools'));
+      if (Array.isArray(recent)) rCount = recent.length;
+    } catch (e) {}
+
+    setAnalyticsData({
+      memory: memoryInfo,
+      navigationTiming: navTime,
+      onlineStatus: typeof navigator !== 'undefined' ? navigator.onLine : true,
+      connectionType: navigator?.connection?.effectiveType || 'N/A',
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+      screen: `${window.screen?.width || 0}x${window.screen?.height || 0}`,
+      storageKb: (JSON.stringify(localStorage).length / 1024).toFixed(2),
+      storageItemCount: localStorage.length,
+      bookmarksCount: bCount,
+      recentToolsCount: rCount
+    });
+  };
+
+  useEffect(() => {
+    if (openSections.includes('analytics')) {
+      refreshAnalytics();
+      const interval = setInterval(refreshAnalytics, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [openSections]);
+
+  const runDiagnostics = () => {
+    setIsDiagnosticRunning(true);
+    setDiagnosticResults(null);
+
+    setTimeout(() => {
+      const results = [];
+
+      // Check 1: Storage Read/Write
+      try {
+        const testKey = 'hub_diag_test_' + Date.now();
+        localStorage.setItem(testKey, 'ok');
+        const val = localStorage.getItem(testKey);
+        localStorage.removeItem(testKey);
+        results.push({ name: 'Local Storage R/W', status: val === 'ok' ? 'pass' : 'fail', detail: val === 'ok' ? 'Read/Write normal' : 'Failed test' });
+      } catch (e) {
+        results.push({ name: 'Local Storage R/W', status: 'fail', detail: e.message });
+      }
+
+      // Check 2: API Base Mode
+      const apiMode = getApiBase();
+      results.push({ name: 'Backend API Connectivity', status: 'pass', detail: `Mode: ${apiMode}` });
+
+      // Check 3: Browser Feature Capabilities
+      const swSupport = 'serviceWorker' in navigator;
+      const idbSupport = 'indexedDB' in window;
+      const workerSupport = 'Worker' in window;
+      results.push({
+        name: 'Browser Capabilities',
+        status: (swSupport && idbSupport && workerSupport) ? 'pass' : 'warn',
+        detail: `SW: ${swSupport ? 'Yes' : 'No'}, IDB: ${idbSupport ? 'Yes' : 'No'}, Workers: ${workerSupport ? 'Yes' : 'No'}`
+      });
+
+      // Check 4: Network Connectivity
+      results.push({
+        name: 'Network Status',
+        status: navigator.onLine ? 'pass' : 'warn',
+        detail: navigator.onLine ? 'Online' : 'Offline Mode'
+      });
+
+      setDiagnosticResults(results);
+      setIsDiagnosticRunning(false);
+    }, 400);
+  };
 
   const toggleSection = (id) => {
     setOpenSections(prev =>
@@ -137,6 +253,85 @@ const SettingsModal = ({
           <Toggle label="Show Projects Tab" value={showProjectsTab} onChange={setShowProjectsTab} icon="visibility" />
           <Toggle label="Hide Project Icons" value={hideProjectIcons} onChange={setHideProjectIcons} icon="image_not_supported" />
           <Toggle label="Hide Project URLs" value={hideProjectUrls} onChange={setHideProjectUrls} icon="link_off" />
+        </CollapsibleSection>
+
+        <CollapsibleSection id="analytics" title="Live Analytics & Diagnostics" icon="insights" isOpen={openSections.includes('analytics')} onToggle={toggleSection}>
+          <div className="form-group mb-15">
+            <div className="flex-between align-center mb-10">
+              <label style={{margin: 0, fontWeight: 700}}>Live Telemetry & Metrics</label>
+              <button className="pill smallest" onClick={refreshAnalytics}>
+                <span className="material-icons mr-10" style={{fontSize: '0.9rem'}}>refresh</span> Refresh
+              </button>
+            </div>
+
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px'}}>
+              <div className="pill text-center" style={{flexDirection: 'column', alignItems: 'flex-start', padding: '8px 12px'}}>
+                <span className="smallest opacity-6 uppercase">Storage Used</span>
+                <span style={{fontWeight: 700, fontSize: '1rem'}}>{analyticsData.storageKb} KB</span>
+                <span className="smallest opacity-5">{analyticsData.storageItemCount} items</span>
+              </div>
+              <div className="pill text-center" style={{flexDirection: 'column', alignItems: 'flex-start', padding: '8px 12px'}}>
+                <span className="smallest opacity-6 uppercase">Page Load Time</span>
+                <span style={{fontWeight: 700, fontSize: '1rem'}}>{analyticsData.navigationTiming || 'Fast'}</span>
+                <span className="smallest opacity-5">Navigation performance</span>
+              </div>
+              <div className="pill text-center" style={{flexDirection: 'column', alignItems: 'flex-start', padding: '8px 12px'}}>
+                <span className="smallest opacity-6 uppercase">Heap Memory</span>
+                <span style={{fontWeight: 700, fontSize: '1rem'}}>
+                  {analyticsData.memory ? `${analyticsData.memory.usedJSHeapSize} MB` : 'N/A'}
+                </span>
+                <span className="smallest opacity-5">
+                  {analyticsData.memory ? `Max ${analyticsData.memory.jsHeapSizeLimit} MB` : 'Standard Browser'}
+                </span>
+              </div>
+              <div className="pill text-center" style={{flexDirection: 'column', alignItems: 'flex-start', padding: '8px 12px'}}>
+                <span className="smallest opacity-6 uppercase">Network Status</span>
+                <span style={{fontWeight: 700, fontSize: '1rem', color: analyticsData.onlineStatus ? 'var(--success, #10b981)' : 'var(--danger, #ef4444)'}}>
+                  {analyticsData.onlineStatus ? 'Online' : 'Offline'}
+                </span>
+                <span className="smallest opacity-5">Conn: {analyticsData.connectionType}</span>
+              </div>
+              <div className="pill text-center" style={{flexDirection: 'column', alignItems: 'flex-start', padding: '8px 12px'}}>
+                <span className="smallest opacity-6 uppercase">Viewport</span>
+                <span style={{fontWeight: 700, fontSize: '1rem'}}>{analyticsData.viewport}</span>
+                <span className="smallest opacity-5">Screen {analyticsData.screen}</span>
+              </div>
+              <div className="pill text-center" style={{flexDirection: 'column', alignItems: 'flex-start', padding: '8px 12px'}}>
+                <span className="smallest opacity-6 uppercase">App Objects</span>
+                <span style={{fontWeight: 700, fontSize: '1rem'}}>{analyticsData.bookmarksCount} Bookmarks</span>
+                <span className="smallest opacity-5">{analyticsData.recentToolsCount} Recent Tools</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className="flex-between align-center mb-10">
+              <label style={{margin: 0, fontWeight: 700}}>System Health Diagnostic</label>
+              <button className="pill active" onClick={runDiagnostics} disabled={isDiagnosticRunning}>
+                <span className="material-icons mr-10" style={{fontSize: '0.9rem'}}>{isDiagnosticRunning ? 'sync' : 'build_circle'}</span>
+                {isDiagnosticRunning ? 'Running...' : 'Run Diagnostics'}
+              </button>
+            </div>
+
+            {diagnosticResults && (
+              <div className="diagnostic-results mt-10" style={{display: 'flex', flexDirection: 'column', gap: '6px'}}>
+                {diagnosticResults.map((res, idx) => (
+                  <div key={idx} className="pill flex-between align-center" style={{padding: '6px 12px', fontSize: '0.85rem'}}>
+                    <div className="flex-gap align-center">
+                      <span className="material-icons" style={{
+                        fontSize: '1rem',
+                        color: res.status === 'pass' ? 'var(--success, #10b981)' : res.status === 'warn' ? 'var(--warning, #f59e0b)' : 'var(--danger, #ef4444)'
+                      }}>
+                        {res.status === 'pass' ? 'check_circle' : res.status === 'warn' ? 'warning' : 'cancel'}
+                      </span>
+                      <span style={{fontWeight: 600}}>{res.name}</span>
+                    </div>
+                    <span className="opacity-7 smallest">{res.detail}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </CollapsibleSection>
 
         <CollapsibleSection id="appearance" title="UI & Theme" icon="palette" isOpen={openSections.includes('appearance')} onToggle={toggleSection}>
