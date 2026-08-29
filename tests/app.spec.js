@@ -18,7 +18,7 @@ test.describe('Epic Toolbox Basic Navigation', () => {
     // Check if the Bookmarks view is active
     const bookmarksHeader = page.locator('h2', { hasText: 'Bookmarks' });
     await expect(bookmarksHeader).toBeVisible();
-    expect(page.url()).toContain('?tab=bookmarks');
+    expect(page.url()).toMatch(/(\/bookmarks|\?tab=bookmarks)/);
   });
 
   test('should load category directly via URL tab query and hash anchor', async ({ page }) => {

@@ -44,7 +44,7 @@ function App() {
     if (window.location.hash) {
       return 'bookmarks';
     }
-    return storage.get('hub_startup_tab', 'bookmarks');
+    return storage.get('hub_startup_tab', 'toolbox');
   };
 
   const [currentTab, setCurrentTab] = useState(getInitialTab);
@@ -79,7 +79,7 @@ function App() {
       } else if (event.state && event.state.tab) {
         setCurrentTab(event.state.tab);
       } else {
-        setCurrentTab(storage.get('hub_startup_tab', 'bookmarks'));
+        setCurrentTab(storage.get('hub_startup_tab', 'toolbox'));
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -148,7 +148,7 @@ function App() {
   const [showStats, setShowStats] = useLocalStorageState('hub_show_stats', true, 'boolean');
   const [autoFocusSearch, setAutoFocusSearch] = useLocalStorageState('hub_auto_focus_search', false, 'boolean');
   const [openInNewTab, setOpenInNewTab] = useLocalStorageState('hub_open_newtab', true, 'boolean');
-  const [startupTab, setStartupTab] = useLocalStorageState('hub_startup_tab', 'bookmarks');
+  const [startupTab, setStartupTab] = useLocalStorageState('hub_startup_tab', 'toolbox');
   const [hideRecentTools, setHideRecentTools] = useLocalStorageState('hub_hide_recent_tools', false, 'boolean');
 
   // Ensure recentTools is always an array to avoid crashes

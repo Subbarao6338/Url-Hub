@@ -122,7 +122,9 @@
   --text-muted: #5f6e65;
   --border: #e0dbcd;
   --sidebar-bg: rgba(244, 240, 230, 0.7);
-  --primary-glow: rgba(var(--primary-rgb), 0.12);
+  --primary: #155e37;
+  --primary-rgb: 21, 94, 55;
+  --primary-glow: rgba(21, 94, 55, 0.15);
   --primary-container: #dcfce7;
   --on-primary-container: #155e37;
   --brand-primary: #155e37;
@@ -146,7 +148,8 @@
 [data-color="violet"] { --primary: var(--violet); --primary-rgb: var(--violet-rgb); }
 [data-color="slate"] { --primary: var(--slate); --primary-rgb: var(--slate-rgb); }
 
-/* Nature theme default primary accent override if no explicit color is set or if nature theme is selected */
+/* Nature theme default primary accent override if nature theme is selected with default color */
+[data-theme="nature"][data-color="indigo"],
 :root[data-theme="nature"]:not([data-color]) {
   --primary: #155e37;
   --primary-rgb: 21, 94, 55;
