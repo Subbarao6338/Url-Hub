@@ -30,7 +30,24 @@ function App() {
   const [profiles, setProfiles] = useState([
     { id: 1, name: 'Default', icon: 'home' }
   ]);
-  const [currentTab, setCurrentTab] = useState(storage.get('hub_startup_tab', 'toolbox'));
+
+  const getInitialTab = () => {
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab');
+    if (tabParam && ['bookmarks', 'toolbox', 'projects'].includes(tabParam)) {
+      return tabParam;
+    }
+    const pathSegment = window.location.pathname.replace(/^\/+|\/+$/g, '').split('/')[0];
+    if (['bookmarks', 'toolbox', 'projects'].includes(pathSegment)) {
+      return pathSegment;
+    }
+    if (window.location.hash) {
+      return 'bookmarks';
+    }
+    return storage.get('hub_startup_tab', 'bookmarks');
+  };
+
+  const [currentTab, setCurrentTab] = useState(getInitialTab);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActive, setSearchActive] = useState(false);
   const [theme, setTheme] = useLocalStorageState('hub_theme', 'light');
@@ -44,7 +61,8 @@ function App() {
     if ('vibrate' in navigator) navigator.vibrate([10, 5, 10]);
     if (!skipHistory) {
       const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.set('tab', tab);
+      currentUrl.pathname = `/${tab}`;
+      currentUrl.searchParams.delete('tab');
       window.history.pushState({ tab }, '', `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
     }
   }, []);
@@ -52,11 +70,16 @@ function App() {
   useEffect(() => {
     const handlePopState = (event) => {
       const params = new URLSearchParams(window.location.search);
-      const tab = params.get('tab');
-      if (tab && ['bookmarks', 'toolbox', 'projects'].includes(tab)) {
-        setCurrentTab(tab);
+      const tabParam = params.get('tab');
+      const pathSegment = window.location.pathname.replace(/^\/+|\/+$/g, '').split('/')[0];
+      if (tabParam && ['bookmarks', 'toolbox', 'projects'].includes(tabParam)) {
+        setCurrentTab(tabParam);
+      } else if (['bookmarks', 'toolbox', 'projects'].includes(pathSegment)) {
+        setCurrentTab(pathSegment);
       } else if (event.state && event.state.tab) {
         setCurrentTab(event.state.tab);
+      } else {
+        setCurrentTab(storage.get('hub_startup_tab', 'bookmarks'));
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -77,14 +100,18 @@ function App() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const tab = params.get('tab');
-    if (tab && ['bookmarks', 'toolbox', 'projects'].includes(tab)) {
-      setCurrentTab(tab);
-    } else if (window.location.hash && !tab) {
+    const tabParam = params.get('tab');
+    const pathSegment = window.location.pathname.replace(/^\/+|\/+$/g, '').split('/')[0];
+    if (tabParam && ['bookmarks', 'toolbox', 'projects'].includes(tabParam)) {
+      setCurrentTab(tabParam);
+    } else if (['bookmarks', 'toolbox', 'projects'].includes(pathSegment)) {
+      setCurrentTab(pathSegment);
+    } else if (window.location.hash) {
       // If there's a hash anchor but no tab specified, default tab to bookmarks if category matching
       setCurrentTab('bookmarks');
       const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.set('tab', 'bookmarks');
+      currentUrl.pathname = '/bookmarks';
+      currentUrl.searchParams.delete('tab');
       window.history.replaceState({ tab: 'bookmarks' }, '', `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
     }
   }, []);
@@ -121,7 +148,7 @@ function App() {
   const [showStats, setShowStats] = useLocalStorageState('hub_show_stats', true, 'boolean');
   const [autoFocusSearch, setAutoFocusSearch] = useLocalStorageState('hub_auto_focus_search', false, 'boolean');
   const [openInNewTab, setOpenInNewTab] = useLocalStorageState('hub_open_newtab', true, 'boolean');
-  const [startupTab, setStartupTab] = useLocalStorageState('hub_startup_tab', 'toolbox');
+  const [startupTab, setStartupTab] = useLocalStorageState('hub_startup_tab', 'bookmarks');
   const [hideRecentTools, setHideRecentTools] = useLocalStorageState('hub_hide_recent_tools', false, 'boolean');
 
   // Ensure recentTools is always an array to avoid crashes
