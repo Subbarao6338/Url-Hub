@@ -38,11 +38,43 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   }, []);
+  const getHashCategory = useCallback(() => {
+    if (window.location.hash) {
+      const hash = decodeURIComponent(window.location.hash.substring(1));
+      return hash || 'All';
+    }
+    return 'All';
+  }, []);
+
   const [categories, setCategories] = useState({});
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategoryState] = useState(() => getHashCategory());
   const [loading, setLoading] = useState(true);
   const [collapsedCategories, setCollapsedCategories] = useState({});
   const prevProfileIdRef = React.useRef(profileId);
+
+  const setActiveCategory = useCallback((cat, skipHashUpdate = false) => {
+    setActiveCategoryState(cat);
+    if (!skipHashUpdate) {
+      const newHash = cat === 'All' ? '' : `#${encodeURIComponent(cat)}`;
+      if (window.location.hash !== newHash) {
+        window.history.pushState(window.history.state, '', `${window.location.pathname}${window.location.search}${newHash}`);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleHashOrPopState = () => {
+      const catFromHash = getHashCategory();
+      setActiveCategoryState(catFromHash);
+    };
+
+    window.addEventListener('hashchange', handleHashOrPopState);
+    window.addEventListener('popstate', handleHashOrPopState);
+    return () => {
+      window.removeEventListener('hashchange', handleHashOrPopState);
+      window.removeEventListener('popstate', handleHashOrPopState);
+    };
+  }, [getHashCategory]);
 
   useEffect(() => {
     if (!profileId) return;
@@ -81,9 +113,24 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
     loadData();
 
     if (isProfileChange) {
-        setActiveCategory('All');
+        const hashCat = getHashCategory();
+        setActiveCategoryState(hashCat);
     }
-  }, [profileId, refreshTrigger]);
+  }, [profileId, refreshTrigger, getHashCategory]);
+
+  useEffect(() => {
+    if (!loading && window.location.hash) {
+      const rawHash = decodeURIComponent(window.location.hash.substring(1));
+      if (rawHash) {
+        setTimeout(() => {
+          const sectionEl = document.getElementById(`category-${rawHash}`);
+          if (sectionEl) {
+            sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      }
+    }
+  }, [loading]);
 
   const currentLinks = useMemo(() => Array.isArray(links) ? links : [], [links]);
 
@@ -341,7 +388,7 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
     />
       ) : (
         cats.map(cat => (
-          <div key={cat} className={`category-section ${collapsedCategories[cat] ? 'collapsed' : ''}`}>
+          <div key={cat} id={`category-${cat}`} className={`category-section ${collapsedCategories[cat] ? 'collapsed' : ''}`}>
             <div className="category-header" onClick={() => toggleCategoryCollapse(cat)}>
               <div className="category-title">
                 <span className="material-icons">{categories[cat] || 'folder'}</span>

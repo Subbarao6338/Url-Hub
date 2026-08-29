@@ -1,11 +1,15 @@
 import React from 'react';
 
 const CategoryNav = ({ categories, activeCategory, setActiveCategory, showStats, stats, totalCount, extraCategories = [] }) => {
+  const handleCategoryClick = (catName) => {
+    setActiveCategory(catName);
+  };
+
   return (
     <nav className="main-category-nav scrollable-x">
       <div
         className={`pill ${activeCategory === 'All' ? 'active' : ''}`}
-        onClick={() => setActiveCategory('All')}
+        onClick={() => handleCategoryClick('All')}
       >
         <span className="material-icons">home</span>
         <span>All</span>
@@ -16,7 +20,7 @@ const CategoryNav = ({ categories, activeCategory, setActiveCategory, showStats,
         <div
           key={cat.name}
           className={`pill ${activeCategory === cat.name ? 'active' : ''}`}
-          onClick={() => setActiveCategory(cat.name)}
+          onClick={() => handleCategoryClick(cat.name)}
         >
           <span className="material-icons">{cat.icon}</span>
           <span>{cat.name}</span>
@@ -28,7 +32,7 @@ const CategoryNav = ({ categories, activeCategory, setActiveCategory, showStats,
         <div
           key={cat}
           className={`pill ${activeCategory === cat ? 'active' : ''}`}
-          onClick={() => setActiveCategory(cat)}
+          onClick={() => handleCategoryClick(cat)}
         >
           <span className="material-icons">{categories[cat] || 'folder'}</span>
           <span>{cat}</span>

@@ -43,13 +43,19 @@ function App() {
     setCurrentTab(tab);
     if ('vibrate' in navigator) navigator.vibrate([10, 5, 10]);
     if (!skipHistory) {
-      window.history.pushState({ tab }, '', `?tab=${tab}`);
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('tab', tab);
+      window.history.pushState({ tab }, '', `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
     }
   }, []);
 
   useEffect(() => {
     const handlePopState = (event) => {
-      if (event.state && event.state.tab) {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab');
+      if (tab && ['bookmarks', 'toolbox', 'projects'].includes(tab)) {
+        setCurrentTab(tab);
+      } else if (event.state && event.state.tab) {
         setCurrentTab(event.state.tab);
       }
     };
@@ -74,6 +80,12 @@ function App() {
     const tab = params.get('tab');
     if (tab && ['bookmarks', 'toolbox', 'projects'].includes(tab)) {
       setCurrentTab(tab);
+    } else if (window.location.hash && !tab) {
+      // If there's a hash anchor but no tab specified, default tab to bookmarks if category matching
+      setCurrentTab('bookmarks');
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('tab', 'bookmarks');
+      window.history.replaceState({ tab: 'bookmarks' }, '', `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
     }
   }, []);
 

@@ -11,13 +11,34 @@ test.describe('Epic Toolbox Basic Navigation', () => {
     await expect(toolboxHeader).toBeVisible();
   });
 
-  test('should navigate to Bookmarks tab', async ({ page }) => {
+  test('should navigate to Bookmarks tab and update query params', async ({ page }) => {
     const bookmarksTab = page.locator('button', { hasText: 'Bookmarks' });
     await bookmarksTab.click();
 
     // Check if the Bookmarks view is active
     const bookmarksHeader = page.locator('h2', { hasText: 'Bookmarks' });
     await expect(bookmarksHeader).toBeVisible();
+    expect(page.url()).toContain('?tab=bookmarks');
+  });
+
+  test('should load category directly via URL tab query and hash anchor', async ({ page }) => {
+    await page.goto('http://localhost:5173/?tab=bookmarks#Streaming');
+    const bookmarksHeader = page.locator('h2', { hasText: 'Bookmarks' });
+    await expect(bookmarksHeader).toBeVisible();
+
+    const activePill = page.locator('.main-category-nav .pill.active');
+    await expect(activePill).toContainText('Streaming');
+  });
+
+  test('should update hash when clicking category pill in Bookmarks', async ({ page }) => {
+    await page.goto('http://localhost:5173/?tab=bookmarks');
+    const bookmarksHeader = page.locator('h2', { hasText: 'Bookmarks' });
+    await expect(bookmarksHeader).toBeVisible();
+
+    const streamingPill = page.locator('.main-category-nav .pill', { hasText: 'Streaming' });
+    await streamingPill.click();
+
+    await expect(page).toHaveURL(/.*#Streaming$/);
   });
 
   test('should open a tool category', async ({ page }) => {
